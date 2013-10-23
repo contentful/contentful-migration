@@ -49,7 +49,7 @@ var Client = redefine.Class({
     if (!options.query) options.query = {};
     _.extend(options.headers, {
       'Authorization': 'Bearer ' + this.options.accessToken,
-      'Content-Type': 'application/vnd.contentful.v1+json'
+      'Content-Type': 'application/vnd.contentful.management.v1+json'
     });
 
     var uri = [
