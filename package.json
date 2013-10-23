@@ -14,10 +14,10 @@
   "author": "Stephan Seidt <stephan@contentful.com>",
   "license": "MIT",
   "dependencies": {
-    "pacta": "~0.2.0",
-    "questor": "~0.0.3",
-    "redefine": "~0.2.0",
-    "underscore-contrib": "~0.1.4"
+    "pacta": "0.2.0",
+    "questor": "0.0.3",
+    "redefine": "0.2.0",
+    "underscore-contrib": "0.1.4"
   },
   "devDependencies": {
     "buster": "~0.7.6"
