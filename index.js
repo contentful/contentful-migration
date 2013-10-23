@@ -1,7 +1,6 @@
 'use strict';
 
 var _ = require('underscore-contrib');
-var Promise = require('pacta').Promise;
 var questor = require('questor');
 var redefine = require('redefine');
 var querystring = require('querystring');
@@ -62,87 +61,61 @@ var Client = redefine.Class({
       !_.isEmpty(options.query) ? '?' + querystring.stringify(options.query) : ''
     ].join('');
 
-    var parseResponseBody = options.ignoreResponseBody ? function() {} : parseJSONBody;
+    return questor(uri, options).then(function(response) {
+      if (options.ignoreResponseBody) {
+        return;
+      }
 
-    var promise = new Promise();
-    var request = questor(uri, options);
-    request.onRejected(function(reason) {
-      if (reason instanceof Error) return reason;
+      return JSON.parse(response.body);
+    }, function(reason) {
+      if (reason instanceof Error) {
+        throw reason;
+      }
       // 1. Parse proper error here
       // 2. If json parsing fails, create new Error(plaintext)
-      var apiError = parseJSONBody(reason);
+      var apiError = JSON.parse(reason.body);
       var message = apiError.sys.id;
       if (apiError.details) {
         message += ': ' + JSON.stringify(apiError.details);
       }
-      return new Error(message);
-    }).map(_.bound(promise, 'reject'));
-    request.map(parseResponseBody).map(_.bound(promise, 'resolve'));
-    return promise;
+      throw new Error(message);
+    });
   },
 
   createSpace: function(space) {
-    var promise = new Promise();
-    var request = this.request('/spaces', {
+    return this.request('/spaces', {
       method: 'POST',
       body: JSON.stringify(space)
-    });
-    request
-      .map(_.partial(Space.parse, this))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    }).then(_.partial(Space.parse, this));
   },
 
   getSpace: function(identifiable) {
     var id = getId(identifiable);
-    var promise = new Promise();
-    var request = this.request('/spaces/' + id);
-    request
-      .map(_.partial(Space.parse, this))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    return this.request('/spaces/' + id).then(_.partial(Space.parse, this));
   },
 
   getSpaces: function() {
-    var promise = new Promise();
-    var request = this.request('/spaces');
-    request
-      .map(_.partial(SearchResult.parse, this))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    return this.request('/spaces').then(_.partial(SearchResult.parse, this));
   },
 
   updateSpace: function(space) {
-    var promise = new Promise();
     var id = getId(space);
     var version = getVersion(space);
-    var request = this.request('/spaces/' + id, {
+    return this.request('/spaces/' + id, {
       method: 'PUT',
       headers: {
         'X-Contentful-Version': version
       },
       body: JSON.stringify(getData(space))
-    });
-    request
-      .map(_.partial(Space.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    }).then(_.partial(Space.parse, this.client));
   },
 
   deleteSpace: function(identifiable) {
     var id = getId(identifiable);
-    var promise = new Promise();
-    var request = this.request('/spaces/' + id, {
+    return this.request('/spaces/' + id, {
       method: 'DELETE',
       ignoreResponseBody: true
     });
-    request.map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
   }
 });
 
@@ -160,101 +133,64 @@ var Space = redefine.Class({
   //
 
   createContentType: function(contentType) {
-    var promise = new Promise();
     // TODO: Allow creation by ID
-    var request = this.client.request('/spaces/' + this.sys.id + '/content_types', {
+    return this.client.request('/spaces/' + this.sys.id + '/content_types', {
       method: 'POST',
       body: JSON.stringify(contentType)
-    });
-    request
-      .map(_.partial(ContentType.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    }).then(_.partial(ContentType.parse, this.client));
   },
 
   getContentType: function(id) {
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + this.sys.id + '/content_types/' + id);
-    request
-      .map(_.partial(ContentType.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    return this.client.request('/spaces/' + this.sys.id + '/content_types/' + id)
+      .then(_.partial(ContentType.parse, this.client));
   },
 
   getContentTypes: function(object) {
     var query = Query.parse(object);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + this.sys.id + '/content_types', {query: query});
-    request.map(_.partial(SearchResult.parse, this.client))
-           .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    return this.client.request('/spaces/' + this.sys.id + '/content_types', {query: query})
+      .then(_.partial(SearchResult.parse, this.client));
   },
 
   updateContentType: function(contentType) {
     var spaceId = getId(this);
     var id = getId(contentType);
     var version = getVersion(contentType);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + spaceId + '/content_types/' + id, {
+    return this.client.request('/spaces/' + spaceId + '/content_types/' + id, {
       method: 'PUT',
       headers: {
         'X-Contentful-Version': version
       },
       body: JSON.stringify(getData(contentType))
-    });
-    request
-      .map(_.partial(ContentType.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    }).then(_.partial(ContentType.parse, this.client));
   },
 
   deleteContentType: function(contentType) {
     var spaceId = getId(this);
     var id = getId(contentType);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + spaceId + '/content_types/' + id, {
+    return this.client.request('/spaces/' + spaceId + '/content_types/' + id, {
       method: 'DELETE',
       ignoreResponseBody: true
     });
-    request.map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
   },
 
   publishContentType: function(contentType, publishVersion) {
     var spaceId = getId(this);
     var id = getId(contentType);
     var version = publishVersion || getVersion(contentType);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + spaceId + '/content_types/' + id + '/published', {
+    return this.client.request('/spaces/' + spaceId + '/content_types/' + id + '/published', {
       method: 'PUT',
       headers: {
         'X-Contentful-Version': version
       }
-    });
-    request
-      .map(_.partial(ContentType.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    }).then(_.partial(ContentType.parse, this.client));
   },
 
   unpublishContentType: function(contentType) {
     var spaceId = getId(this);
     var id = getId(contentType);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + spaceId + '/content_types/' + id + '/published', {
+    return this.client.request('/spaces/' + spaceId + '/content_types/' + id + '/published', {
       method: 'DELETE'
-    });
-    request
-      .map(_.partial(ContentType.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    }).then(_.partial(ContentType.parse, this.client));
   },
 
   //
@@ -264,132 +200,83 @@ var Space = redefine.Class({
   createEntry: function(contentType, entry) {
     var spaceId = getId(this);
     var contentTypeId = getId(contentType);
-    var promise = new Promise();
     // TODO: Allow creation by ID
-    var request = this.client.request('/spaces/' + spaceId + '/entries', {
+    return this.client.request('/spaces/' + spaceId + '/entries', {
       method: 'POST',
       headers: {
         'X-Contentful-Content-Type': contentTypeId
       },
       body: JSON.stringify(getData(entry))
-    });
-    request
-      .map(_.partial(Entry.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    }).then(_.partial(Entry.parse, this.client));
   },
 
   getEntry: function(id) {
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + this.sys.id + '/entries/' + id);
-    request
-      .map(_.partial(Entry.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    return this.client.request('/spaces/' + this.sys.id + '/entries/' + id)
+      .then(_.partial(Entry.parse, this.client));
   },
 
   getEntries: function(object) {
     var query = Query.parse(object);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + this.sys.id + '/entries', {query: query});
-    request.map(_.partial(SearchResult.parse, this.client))
-           .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    return this.client.request('/spaces/' + this.sys.id + '/entries', {query: query})
+      .then(_.partial(SearchResult.parse, this.client));
   },
 
   updateEntry: function(entry) {
     var spaceId = getId(this);
     var id = getId(entry);
     var version = getVersion(entry);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + spaceId + '/entries/' + id, {
+    return this.client.request('/spaces/' + spaceId + '/entries/' + id, {
       method: 'PUT',
       headers: {
         'X-Contentful-Version': version
       },
       body: JSON.stringify(getData(entry))
-    });
-    request
-      .map(_.partial(Entry.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    }).then(_.partial(Entry.parse, this.client));
   },
 
   publishEntry: function(entry, publishVersion) {
     var spaceId = getId(this);
     var id = getId(entry);
     var version = publishVersion || getVersion(entry);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + spaceId + '/entries/' + id + '/published', {
+    return this.client.request('/spaces/' + spaceId + '/entries/' + id + '/published', {
       method: 'PUT',
       headers: {
         'X-Contentful-Version': version
       }
-    });
-    request
-      .map(_.partial(Entry.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    }).then(_.partial(Entry.parse, this.client));
   },
 
   unpublishEntry: function(entry) {
     var spaceId = getId(this);
     var id = getId(entry);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + spaceId + '/entries/' + id + '/published', {
+    return this.client.request('/spaces/' + spaceId + '/entries/' + id + '/published', {
       method: 'DELETE'
-    });
-    request
-      .map(_.partial(Entry.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    }).then(_.partial(Entry.parse, this.client));
   },
 
   deleteEntry: function(identifiable) {
     var spaceId = getId(this);
     var id = getId(identifiable);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + spaceId + '/entries/' + id, {
+    return this.client.request('/spaces/' + spaceId + '/entries/' + id, {
       method: 'DELETE',
       ignoreResponseBody: true
     });
-    request.map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
   },
 
   archiveEntry: function(entry) {
     var spaceId = getId(this);
     var id = getId(entry);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + spaceId + '/entries/' + id + '/archived', {
+    return this.client.request('/spaces/' + spaceId + '/entries/' + id + '/archived', {
       method: 'PUT'
-    });
-    request
-      .map(_.partial(Entry.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    }).then(_.partial(Entry.parse, this.client));
   },
 
   unarchiveEntry: function(entry) {
     var spaceId = getId(this);
     var id = getId(entry);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + spaceId + '/entries/' + id + '/archived', {
+    return this.client.request('/spaces/' + spaceId + '/entries/' + id + '/archived', {
       method: 'DELETE'
-    });
-    request
-      .map(_.partial(Entry.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    }).then(_.partial(Entry.parse, this.client));
   },
 
   //
@@ -397,148 +284,94 @@ var Space = redefine.Class({
   //
 
   createAsset: function(asset) {
-    var promise = new Promise();
     // TODO: Allow creation by ID
-    var request = this.client.request('/spaces/' + this.sys.id + '/assets', {
+    return this.client.request('/spaces/' + this.sys.id + '/assets', {
       method: 'POST',
       body: JSON.stringify(asset)
-    });
-    request
-      .map(_.partial(Asset.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    }).then(_.partial(Asset.parse, this.client));
   },
 
   getAsset: function(identifiable) {
     var id = getId(identifiable);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + this.sys.id + '/assets/' + id);
-    request
-      .map(_.partial(Asset.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    return this.client.request('/spaces/' + this.sys.id + '/assets/' + id)
+      .then(_.partial(Asset.parse, this.client));
   },
 
   getAssets: function(object) {
     var query = Query.parse(object);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + this.sys.id + '/assets', {query: query});
-    request.map(_.partial(SearchResult.parse, this.client))
-           .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    return this.client.request('/spaces/' + this.sys.id + '/assets', {query: query})
+     .then(_.partial(SearchResult.parse, this.client));
   },
 
   updateAsset: function(asset) {
     var spaceId = getId(this);
     var id = getId(asset);
     var version = getVersion(asset);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + spaceId + '/assets/' + id, {
+    return this.client.request('/spaces/' + spaceId + '/assets/' + id, {
       method: 'PUT',
       headers: {
         'X-Contentful-Version': version
       },
       body: JSON.stringify(getData(asset))
-    });
-    request
-      .map(_.partial(Asset.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    }).then(_.partial(Asset.parse, this.client));
   },
 
   processAssetFile: function(asset, fileId, processVersion) {
     var spaceId = getId(this);
     var id = getId(asset);
     var version = processVersion || getVersion(asset);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + spaceId + '/assets/' + id + '/files/' + fileId + '/process', {
+    return this.client.request('/spaces/' + spaceId + '/assets/' + id + '/files/' + fileId + '/process', {
       method: 'PUT',
       headers: {
         'X-Contentful-Version': version
       },
       ignoreResponseBody: true
     });
-    request
-      .map(_.bind(promise.resolve, promise, this));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
   },
 
   publishAsset: function(asset, publishVersion) {
     var spaceId = getId(this);
     var id = getId(asset);
     var version = publishVersion || getVersion(asset);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + spaceId + '/assets/' + id + '/published', {
+    return this.client.request('/spaces/' + spaceId + '/assets/' + id + '/published', {
       method: 'PUT',
       headers: {
         'X-Contentful-Version': version
       }
-    });
-    request
-      .map(_.partial(Asset.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    }).then(_.partial(Asset.parse, this.client));
   },
 
   unpublishAsset: function(asset) {
     var spaceId = getId(this);
     var id = getId(asset);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + spaceId + '/assets/' + id + '/published', {
+    return this.client.request('/spaces/' + spaceId + '/assets/' + id + '/published', {
       method: 'DELETE'
-    });
-    request
-      .map(_.partial(Asset.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    }).then(_.partial(Asset.parse, this.client));
   },
 
   deleteAsset: function(identifiable) {
     var spaceId = getId(this);
     var id = getId(identifiable);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + spaceId + '/assets/' + id, {
+    return this.client.request('/spaces/' + spaceId + '/assets/' + id, {
       method: 'DELETE',
       ignoreResponseBody: true
     });
-    request.map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
   },
 
   archiveAsset: function(asset) {
     var spaceId = getId(this);
     var id = getId(asset);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + spaceId + '/assets/' + id + '/archived', {
+    return this.client.request('/spaces/' + spaceId + '/assets/' + id + '/archived', {
       method: 'PUT'
-    });
-    request
-      .map(_.partial(Asset.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    }).then(_.partial(Asset.parse, this.client));
   },
 
   unarchiveAsset: function(asset) {
     var spaceId = getId(this);
     var id = getId(asset);
-    var promise = new Promise();
-    var request = this.client.request('/spaces/' + spaceId + '/assets/' + id + '/archived', {
+    return this.client.request('/spaces/' + spaceId + '/assets/' + id + '/archived', {
       method: 'DELETE'
-    });
-    request
-      .map(_.partial(Entry.parse, this.client))
-      .map(_.bound(promise, 'resolve'));
-    request.onRejected(_.bound(promise, 'reject'));
-    return promise;
+    }).then(_.partial(Entry.parse, this.client));
   }
 });
 
@@ -706,10 +539,6 @@ function parseResource(client) {
     Type = parseableResourceTypes[resource.sys.type];
     return Type.parse(client, space, resource);
   }
-}
-
-function parseJSONBody(response) {
-  return JSON.parse(response.responseText);
 }
 
 function stringifyArrayValues(object) {

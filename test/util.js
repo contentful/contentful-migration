@@ -2,7 +2,7 @@
 
 var _ = require('underscore-contrib');
 var contentful = require('..');
-var Promise = require('pacta').Promise;
+var q = require('q');
 
 exports.client = contentful.createClient({
   accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
@@ -13,7 +13,5 @@ exports.client = contentful.createClient({
 exports.wait = wait;
 function wait(ms) {
   if (!ms) { ms = 5000; }
-  var promise = new Promise();
-  setTimeout(_.bound(promise, 'resolve'), ms);
-  return promise;
+  return q.delay(ms);
 }
