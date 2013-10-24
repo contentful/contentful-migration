@@ -1,6 +1,5 @@
 'use strict';
 
-var _ = require('underscore-contrib');
 var contentful = require('..');
 var q = require('q');
 
