@@ -45,6 +45,18 @@ For now, please check out the
 [Content Management API documentation](https://www.contentful.com/developers/documentation/content-management-api)
 to learn how the API and the JavaScript client work.
 
+## Unit Tests
+
+Set the following environment variables to valid values:
+- `CONTENTFUL_ACCESS_TOKEN` - a valid access token value
+- `CONTENTFUL_MANAGEMENT_HOSTNAME` - the Contentful host name (without protocol)
+
+Then execute the unit tests:
+
+``` sh
+npm test
+```
+
 ## License
 
 MIT
