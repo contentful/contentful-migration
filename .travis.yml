@@ -8,3 +8,5 @@ env:
   global:
   - secure: W4h/LYjYBWO6UMY7itLvbwzqs5Ty7LH0Q9Ee4bZGfM0dlTUTID1nIyfv4vx6jiKzc48ic7bJAAIzCiz6hEBtEubRDzk1ZlU2dpzBEEeyUhr3fS24Jo+YmvI61YOFWOVQQVIOAVc3ni/QOwzSE63tq96OoTFgJPERz9liBxJV8EU=
   - secure: HL25hBH/KY2KUetynrsnry0giXfNcjvPbzSKZhcCfP3B1uWqNJ9ZZehgmEoMZM0NHp12+j/RmuWfJhm3nclkFOsMBtaUaM1wzWMRa9PKN2Lz1UX2BmiChwFkB7HuGVnlkJ/3Dez0MXua+BIdUeHQ1FjZrmsJQNifFbmBisqo0LE=
+flowdock:
+  - secure: lKoJdDX1B34uMyuE2EQFihyNUEQ2nLfM7esCDHcCjOOHSc4DtzxduDmCEv1a6Zw6T//sTo/ZR35ywEzdQuqFYy7oGuwJnnfseX4wgx8weH+Gq5K7MErtwIcqCJGOqfrXreItuJ394JqiMzhhcWRHScrsKf4/iDlOab28iuvWiV4=
