@@ -8,6 +8,8 @@ var util = require('../util');
 var client = util.client;
 var wait = util.wait;
 
+var UPLOAD_URI = 'https://www.filepicker.io/api/file/ufhWaldSTVqZIkyCidIb';
+
 buster.testCase('Asset', {
   prepare: function() {
     this.timeout = 30e3;
@@ -32,7 +34,7 @@ buster.testCase('Asset', {
         file: {'en-US': {
           contentType: 'image/jpeg',
           fileName: 'example.jpg',
-          upload: 'https://www.filepicker.io/api/file/ycaxVGCzRUm874WWq0Lu'
+          upload: UPLOAD_URI
         }}
       }
     }).then(function(asset) {
