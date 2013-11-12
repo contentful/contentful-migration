@@ -12,7 +12,7 @@ if (process.env.CONTENTFUL_MANAGEMENT_HOSTNAME === undefined) {
 exports.client = contentful.createClient({
   accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
   host: process.env.CONTENTFUL_MANAGEMENT_HOSTNAME,
-  secure: false
+  secure: true
 });
 
 exports.wait = wait;
