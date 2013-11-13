@@ -63,6 +63,14 @@ buster.testCase('Entry', {
     });
   },
 
+  'can not be updated with invalid data ': function() {
+    this.entry.fields.foo = {'en-US': 'bar'};
+    return this.space.updateEntry(this.entry).catch(function(error) {
+      assert.defined(error);
+    });
+
+  },
+
   'can be read': function() {
     return this.space.getEntry(this.entry.sys.id).then(function(entry) {
       assert.equals(entry.fields.title['en-US'], 'Bacon Pancakes');
