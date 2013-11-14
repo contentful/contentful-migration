@@ -46,6 +46,14 @@ buster.testCase('Asset', {
     assert.equals(this.asset.fields.title['en-US'], 'Lemongrab');
   },
 
+  'can be created with specific ID': function() {
+    return this.space.createAsset({
+      sys: {id: 'foobar'}
+    }).then(function(asset) {
+      assert.equals(asset.sys.id, 'foobar');
+    });
+  },
+
   'can be updated': function() {
     this.asset.fields.description = {'en-US': 'ACCEPTABLE'};
     return this.space.updateAsset(this.asset).then(function(asset) {

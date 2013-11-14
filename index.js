@@ -32,6 +32,26 @@ function getData(resource) {
   return _.omit(resource, 'sys');
 }
 
+function creationMethodForResource(resource) {
+  var hasId = _.hasPath(resource, ['sys', 'id']);
+  return hasId ? 'PUT' : 'POST';
+}
+
+function creationPathForResource(space, type, resource) {
+  var hasId = _.hasPath(resource, ['sys', 'id']);
+  var resourceName = {
+    Asset: 'assets',
+    ContentType: 'content_types',
+    Entry: 'entries'
+  }[type];
+  var path = '/spaces/' + space.sys.id + '/' + resourceName;
+  if (hasId) {
+    var id = _.getPath(resource, ['sys', 'id']);
+    path += '/' + id;
+  }
+  return path;
+}
+
 var Client = redefine.Class({
   constructor: function Client(options) {
     enforcep(options, 'accessToken');
@@ -133,9 +153,9 @@ var Space = redefine.Class({
   //
 
   createContentType: function(contentType) {
-    // TODO: Allow creation by ID
-    return this.client.request('/spaces/' + this.sys.id + '/content_types', {
-      method: 'POST',
+    var path = creationPathForResource(this, 'ContentType', contentType);
+    return this.client.request(path, {
+      method: creationMethodForResource(contentType),
       body: JSON.stringify(contentType)
     }).then(_.partial(ContentType.parse, this.client));
   },
@@ -198,11 +218,10 @@ var Space = redefine.Class({
   //
 
   createEntry: function(contentType, entry) {
-    var spaceId = getId(this);
     var contentTypeId = getId(contentType);
-    // TODO: Allow creation by ID
-    return this.client.request('/spaces/' + spaceId + '/entries', {
-      method: 'POST',
+    var path = creationPathForResource(this, 'Entry', entry);
+    return this.client.request(path, {
+      method: creationMethodForResource(entry),
       headers: {
         'X-Contentful-Content-Type': contentTypeId
       },
@@ -284,9 +303,9 @@ var Space = redefine.Class({
   //
 
   createAsset: function(asset) {
-    // TODO: Allow creation by ID
-    return this.client.request('/spaces/' + this.sys.id + '/assets', {
-      method: 'POST',
+    var path = creationPathForResource(this, 'Asset', asset);
+    return this.client.request(path, {
+      method: creationMethodForResource(asset),
       body: JSON.stringify(asset)
     }).then(_.partial(Asset.parse, this.client));
   },

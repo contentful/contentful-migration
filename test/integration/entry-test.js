@@ -56,6 +56,14 @@ buster.testCase('Entry', {
     assert.equals(this.entry.fields.title['en-US'], 'Bacon Pancakes');
   },
 
+  'can be created with specific ID': function() {
+    return this.space.createEntry(this.contentType, {
+      sys: {id: 'foobar'}
+    }).then(function(entry) {
+      assert.equals(entry.sys.id, 'foobar');
+    });
+  },
+
   'can be updated': function() {
     this.entry.fields.difficulty = {'en-US': 4.2};
     return this.space.updateEntry(this.entry).then(function(entry) {

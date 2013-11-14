@@ -42,6 +42,14 @@ buster.testCase('Content Type', {
     assert.equals(this.contentType.name, 'Recipe');
   },
 
+  'can be created with specific ID': function() {
+    return this.space.createContentType({
+      sys: {id: 'foobar'}
+    }).then(function(contentType) {
+      assert.equals(contentType.sys.id, 'foobar');
+    });
+  },
+
   'can be updated': function() {
     this.contentType.description = 'Omnom.';
     return this.space.updateContentType(this.contentType).then(function(contentType) {
