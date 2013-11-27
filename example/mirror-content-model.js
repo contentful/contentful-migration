@@ -19,13 +19,13 @@ var client = contentful.createClient({
 var log = console.log.bind(log);
 
 Promise.all([
-  client.getSpace(srcSpaceId).catch(function() {
+  client.getSpace(srcSpaceId).catch(function(error) {
     console.log('Could not find source Space %s using access token %s', srcSpaceId, accessToken);
-    return Promise.rejected();
+    return error;
   }),
-  client.getSpace(destSpaceId).catch(function() {
+  client.getSpace(destSpaceId).catch(function(error) {
     console.log('Could not find destination Space %s using access token %s', destSpaceId, accessToken);
-    return Promise.rejected();
+    return error;
   })
 ]).spread(function(srcSpace, destSpace) {
   srcSpace.getContentTypes().map(function(contentType) {
@@ -40,7 +40,7 @@ Promise.all([
     }).catch(function(error) {
       console.log('Could not duplicate Content Type %s from %s to %s',
                   contentType.sys.id, srcSpaceId, destSpaceId);
-      throw error;
+      return error;
     });
   });
 });
