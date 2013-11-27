@@ -28,7 +28,7 @@ Promise.all([
     return error;
   })
 ]).spread(function(srcSpace, destSpace) {
-  srcSpace.getContentTypes().map(function(contentType) {
+  srcSpace.getContentTypes({limit: 1000}).map(function(contentType) {
     destSpace.createContentType(contentType).then(function() {
       console.log('Duplicated Content Type %s from %s to %s',
                   contentType.sys.id, srcSpaceId, destSpaceId);
