@@ -19,8 +19,14 @@ var client = contentful.createClient({
 var log = console.log.bind(log);
 
 Promise.all([
-  client.getSpace(srcSpaceId),
-  client.getSpace(destSpaceId)
+  client.getSpace(srcSpaceId).catch(function() {
+    console.log('Could not find source Space %s using access token %s', srcSpaceId, accessToken);
+    return Promise.rejected();
+  }),
+  client.getSpace(destSpaceId).catch(function() {
+    console.log('Could not find destination Space %s using access token %s', destSpaceId, accessToken);
+    return Promise.rejected();
+  })
 ]).spread(function(srcSpace, destSpace) {
   srcSpace.getContentTypes().map(function(contentType) {
     destSpace.createContentType(contentType).then(function() {
@@ -28,9 +34,13 @@ Promise.all([
                   contentType.sys.id, srcSpaceId, destSpaceId);
     }).catch(function(error) {
       var errorType = JSON.parse(error.body).sys.id;
-      if (errorType === 'VersionMismatch') {
-        console.log('Content Type %s already exists in %s', contentType.sys.id, destSpaceId);
-      }
+      return errorType === 'VersionMismatch';
+    }, function() {
+      console.log('Content Type %s already exists in %s', contentType.sys.id, destSpaceId);
+    }).catch(function(error) {
+      console.log('Could not duplicate Content Type %s from %s to %s',
+                  contentType.sys.id, srcSpaceId, destSpaceId);
+      throw error;
     });
   });
 });
