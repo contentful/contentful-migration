@@ -45,6 +45,18 @@ For now, please check out the
 [Content Management API documentation](https://www.contentful.com/developers/documentation/content-management-api)
 to learn how the API and the JavaScript client work.
 
+## Examples
+
+This library comes with a few example scripts
+
+#### Cloning a Space's Content Model
+
+Note: Destination Space has to exist. It won't be created by the Script.
+
+``` sh
+$ example/mirror-content-model.js $CONTENTFUL_ACCESS_TOKEN $SOURCE_SPACE_ID $DEST_SPACE_ID
+```
+
 ## Unit Tests
 
 Set the following environment variables to valid values:
