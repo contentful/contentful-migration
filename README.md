@@ -3,6 +3,7 @@
 Javascript client for [Contentful's](https://www.contentful.com) Content Management API:
 
 - [Documentation](https://www.contentful.com/developers/documentation/content-management-api)
+- [Create an access token for the Content Management API (need account)](https://www.contentful.com/developers/documentation/content-management-api/#getting-started)
 
 ## Install
 
@@ -19,11 +20,13 @@ ready!
 
 ## Usage
 
+[Create an access token](https://www.contentful.com/developers/documentation/content-management-api/#getting-started) for the Content Management API first. Use it as the `accessToken` parameter when creating the client.
+
 ``` js
 var contentful = require('contentful-management');
 
 var client = contentful.createClient({
-  // A valid access token for your user
+  // A valid access token for your user (see above on how to create a valid access token)
   accessToken: 'b4c0n73n7fu1',
 
   // Enable or disable SSL. Enabled by default.
