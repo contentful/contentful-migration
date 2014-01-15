@@ -13,7 +13,7 @@ In node, using [npm](http://npmjs.org):
 npm install contentful-management
 ```
 
-Note: The next minor version release of `dist/contentful.min.js` will
+Note: The next minor version release of `dist/contentful-management.min.js` will
 be much smaller. Please use a package manager to keep your JS
 dependencies up to date and get the newest version right when it's
 ready!

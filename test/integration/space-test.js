@@ -1,11 +1,5 @@
 'use strict';
 
-var buster = require('buster');
-var assert = buster.assert;
-
-var _ = require('underscore-contrib');
-var client = require('../util').client;
-
 buster.testCase('Space', {
   prepare: function() {
     this.timeout = 30e3;

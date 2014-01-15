@@ -1,28 +1,24 @@
 {
   "name": "contentful-management",
-  "version": "0.0.5",
   "description": "Client for Contentful's Content Management API",
+  "version": "0.0.5",
   "homepage": "https://www.contentful.com/developers/documentation/content-management-api/",
   "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "test": "node_modules/.bin/buster-test -r specification"
-  },
   "repository": "git@github.com:contentful/contentful-management.js.git",
   "author": "Stephan Seidt <stephan@contentful.com>",
   "license": "MIT",
   "dependencies": {
-    "q": "~0.9.7",
-    "questor": "1.0.0-alpha",
     "redefine": "~0.2.0",
-    "underscore-contrib": "~0.1.4"
+    "questor": "1.0.0-alpha.2",
+    "underscore-contrib": "~0.2.1"
   },
   "devDependencies": {
-    "buster": "~0.7.6"
+    "buster": "~0.7.6",
+    "bluebird": "~1.0.0",
+    "envify": "~1.0.1"
   },
-  "optionalDependencies": {
-    "optimist": "~0.6.0"
+  "scripts": {
+    "test": "buster-test -g node_integration",
+    "prepare-browser-test": "browserify -d -s helper -t envify -x buster test/helper.js > test/bundle-helper.js"
   }
 }

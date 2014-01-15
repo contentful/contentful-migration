@@ -2,14 +2,16 @@
 
 var config = module.exports;
 
-config.integration = {
-  environment: 'node',
+config.browser_integration = {
+  environment: 'browser',
   rootPath: '../',
-  sources: [
-    'index.js'
-  ],
-  tests: [
-    'test/**/*-test.js'
-  ]
+  tests: ['test/integration/*-test.js'],
+  testHelpers: ['test/bundle-helper.js']
 };
 
+config.node_integration = {
+  environment: 'node',
+  rootPath: '../',
+  tests: ['test/integration/*-test.js'],
+  testHelpers: ['test/helper.js']
+};

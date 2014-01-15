@@ -1,7 +1,7 @@
 'use strict';
 
 var contentful = require('..');
-var q = require('q');
+var Promise = require('bluebird');
 
 if (process.env.CONTENTFUL_ACCESS_TOKEN === undefined) {
     throw new ReferenceError('Environment variable must be defined: CONTENTFUL_ACCESS_TOKEN');
@@ -18,5 +18,5 @@ exports.client = contentful.createClient({
 exports.wait = wait;
 function wait(ms) {
   if (!ms) { ms = 5000; }
-  return q.delay(ms);
+  return Promise.delay(ms);
 }

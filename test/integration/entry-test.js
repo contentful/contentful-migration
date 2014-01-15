@@ -1,11 +1,5 @@
 'use strict';
 
-var buster = require('buster');
-var assert = buster.assert;
-var refute = buster.refute;
-
-var util = require('../util');
-var client = util.client;
 var wait = util.wait;
 
 buster.testCase('Entry', {

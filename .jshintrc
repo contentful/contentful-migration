@@ -7,5 +7,13 @@
   "strict": true,
   "trailing": true,
   "unused": true,
-  "latedef": "nofunc"
+  "latedef": "nofunc",
+  "predef": [
+    "_",
+    "assert",
+    "buster",
+    "client",
+    "refute",
+    "util"
+  ]
 }
