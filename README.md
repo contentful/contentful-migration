@@ -3,6 +3,7 @@
 Javascript client for [Contentful's](https://www.contentful.com) Content Management API:
 
 - [Documentation](https://www.contentful.com/developers/documentation/content-management-api)
+- [Examples](#examples)
 - [Create an access token for the Content Management API (need account)](https://www.contentful.com/developers/documentation/content-management-api/#getting-started)
 
 ## Install
@@ -53,6 +54,8 @@ to learn how the API and the JavaScript client work.
 This library comes with a few example scripts
 
 #### Cloning a Space's Content Model
+
+[View Source](https://github.com/contentful/contentful-management.js/blob/master/example/mirror-content-model.js)
 
 Note: Destination Space has to exist. It won't be created by the Script.
 
