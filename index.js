@@ -66,40 +66,28 @@ var Client = redefine.Class({
     if (!options) options = {};
     if (!options.headers) options.headers = {};
     if (!options.query) options.query = {};
-    _.extend(options.headers, {
-      'Authorization': 'Bearer ' + this.options.accessToken,
-      'Content-Type': 'application/vnd.contentful.management.v1+json'
-    });
+    options.headers['Content-Type'] = 'application/vnd.contentful.management.v1+json';
+    options.query.access_token = this.options.accessToken;
 
     var uri = [
       this.options.secure ? 'https' : 'http',
       '://',
       _.first(this.options.host.split(':')),
       ':',
-      this.options.secure ? '443' : '80',
+      this.options.host.split(':')[1] || (this.options.secure ? '443' : '80'),
       path,
-      !_.isEmpty(options.query) ? '?' + querystring.stringify(options.query) : ''
+      '?',
+      querystring.stringify(options.query)
     ].join('');
 
-    return questor(uri, options).then(function(response) {
-      if (options.ignoreResponseBody) {
-        return;
-      }
-
-      return JSON.parse(response.body);
-    }, function(reason) {
-      if (reason instanceof Error) {
-        throw reason;
-      }
-      // 1. Parse proper error here
-      // 2. If json parsing fails, create new Error(plaintext)
-      var apiError = JSON.parse(reason.body);
-      var message = apiError.sys.id;
-      if (apiError.details) {
-        message += ': ' + JSON.stringify(apiError.details);
-      }
-      throw new Error(message);
-    });
+    return questor(uri, options)
+      .then(parseJSONBody)
+      .catch(Error, function(error) {
+        throw error;
+      })
+      .catch(function(error) {
+        throw parseJSONBody(error);
+      });
   },
 
   createSpace: function(space) {
@@ -600,4 +588,9 @@ function walkMutate(input, pred, mutator) {
   }
 
   return input;
+}
+
+function parseJSONBody(response) {
+  if (!response.body) return;
+  return JSON.parse(response.body);
 }
