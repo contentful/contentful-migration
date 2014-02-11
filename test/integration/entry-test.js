@@ -9,7 +9,7 @@ buster.testCase('Entry', {
     var that = this;
     return client.createSpace({
       name: 'Entry Integration Test'
-    }).then(function(space) {
+    }, 'contentful').then(function(space) {
       that.space = space;
       return space.createContentType({
         name: 'Recipe',

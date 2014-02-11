@@ -11,7 +11,7 @@ buster.testCase('Asset', {
     var that = this;
     return client.createSpace({
       name: 'Asset Integration Test'
-    }).then(function(space) {
+    }, 'contentful').then(function(space) {
       that.space = space;
     });
   },
