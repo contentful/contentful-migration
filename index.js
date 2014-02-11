@@ -90,10 +90,15 @@ var Client = redefine.Class({
       });
   },
 
-  createSpace: function(space) {
+  createSpace: function(space, organizationId) {
+    var headers = {};
+    if (organizationId) {
+      headers['X-Contentful-Organization'] = organizationId;
+    }
     return this.request('/spaces', {
       method: 'POST',
-      body: JSON.stringify(space)
+      body: JSON.stringify(space),
+      headers: headers
     }).then(_.partial(Space.parse, this));
   },
 
