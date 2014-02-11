@@ -82,11 +82,11 @@ var Client = redefine.Class({
 
     return questor(uri, options)
       .then(parseJSONBody)
-      .catch(Error, function(error) {
-        throw error;
-      })
       .catch(function(error) {
-        throw parseJSONBody(error);
+        return 'body' in error;
+      }, function(response) {
+        var error = parseJSONBody(response);
+        throw new Error('message' in error ? error.message : response.body);
       });
   },
 
