@@ -38,9 +38,9 @@ launchers:
 
 launch_in_ci:
   - Node
-  - BS_Chrome
-  - BS_Firefox
-  - BS_IE10
+#  - BS_Chrome
+#  - BS_Firefox
+#  - BS_IE10
 #  - BS_IOS7
 
 launch_in_dev:

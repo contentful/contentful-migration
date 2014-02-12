@@ -27,6 +27,6 @@
     "bundle": "browserify -s contentful-management index.js > dist/contentful-management.js",
     "minify-bundle": "uglifyjs dist/contentful-management.js -m -c > dist/contentful-management.min.js",
     "prepare-browser-test": "browserify -d -t envify -x buster test/helper.js > test/bundle-helper.js",
-    "test": "buster-test"
+    "test": "testem ci"
   }
 }
