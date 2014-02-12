@@ -81,7 +81,7 @@ buster.testCase('Asset', {
     var asset = this.asset;
     var space = this.space;
     return space.processAssetFile(asset, 'en-US').then(function() {
-      return wait();
+      return wait(20e3);
     }).then(function() {
       return space.getAsset(asset.sys.id);
     }).then(function(asset) {
@@ -98,7 +98,7 @@ buster.testCase('Asset', {
     var asset = this.asset;
     var space = this.space;
     return space.processAssetFile(asset, 'en-US').then(function() {
-      return wait();
+      return wait(20e3);
     }).then(function() {
       return space.getAsset(asset.sys.id);
     }).then(function(asset) {
