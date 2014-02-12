@@ -2,7 +2,7 @@
 
 var wait = util.wait;
 
-var UPLOAD_URI = 'https://www.filepicker.io/api/file/ufhWaldSTVqZIkyCidIb';
+var UPLOAD_URI = 'https://s3.amazonaws.com/test.contentful.com/doge.jpg';
 
 buster.testCase('Asset', {
   prepare: function() {
