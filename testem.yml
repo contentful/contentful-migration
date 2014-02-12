@@ -1,10 +1,10 @@
 framework: buster
 
-on_start:
-  command: browserstack tunnel localhost:<port>
-  wait_for_text: Tunnel is running
+# on_start:
+#   command: browserstack tunnel localhost:<port>
+#   wait_for_text: Tunnel is running
 
-before_tests: npm run prepare-browser-test
+# before_tests: npm run prepare-browser-test
 
 src_files:
   - index.js
