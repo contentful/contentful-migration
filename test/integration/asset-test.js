@@ -78,10 +78,12 @@ buster.testCase('Asset', {
   },
 
   'can be published': function() {
+    this.timeout = 120e3;
+
     var asset = this.asset;
     var space = this.space;
     return space.processAssetFile(asset, 'en-US').then(function() {
-      return wait(20e3);
+      return wait(60e3);
     }).then(function() {
       return space.getAsset(asset.sys.id);
     }).then(function(asset) {
@@ -95,10 +97,12 @@ buster.testCase('Asset', {
   },
 
   'can be unpublished': function() {
+    this.timeout = 120e3;
+
     var asset = this.asset;
     var space = this.space;
     return space.processAssetFile(asset, 'en-US').then(function() {
-      return wait(20e3);
+      return wait(60e3);
     }).then(function() {
       return space.getAsset(asset.sys.id);
     }).then(function(asset) {
