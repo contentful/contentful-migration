@@ -12,7 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "redefine": "~0.2.0",
-    "questor": "1.0.0-alpha.2",
+    "questor": "1.0.0-alpha.3",
     "underscore-contrib": "0.2.2"
   },
   "devDependencies": {
