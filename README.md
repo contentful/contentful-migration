@@ -55,12 +55,34 @@ This library comes with a few example scripts
 
 #### Cloning a Space's Content Model
 
-[View Source](https://github.com/contentful/contentful-management.js/blob/master/example/mirror-content-model.js)
+[View Source](example/mirror-content-model.js)
 
 Note: Destination Space has to exist. It won't be created by the Script.
 
 ``` sh
 $ example/mirror-content-model.js $CONTENTFUL_ACCESS_TOKEN $SOURCE_SPACE_ID $DEST_SPACE_ID
+```
+
+### Migrating Entry fields
+
+Sometimes you need to migrate content from one field to another.
+This is a script which migrates all values from one field to another
+field, using a specific mapping function if it's provided.
+
+Currently this supports mapping from Text to Symbol.
+But it would be very simple to convert e.g. numbers to symbols
+or even location strings to locations by geocoding.
+PRs are very welcome!
+
+[View Source](example/migrate-fields.js)
+
+``` sh
+$ example/migrate-fields.js \
+    --access-token $CONTENTFUL_MANAGEMENT_API_ACCESS_TOKEN \
+    --space-id $SPACE_ID \
+    --content-type-id $CONTENT_TYPE_ID \
+    --source-field-id $SOURCE_FIELD_ID \
+    --destination-field-id $DESTINATION_FIELD_ID
 ```
 
 ## Unit Tests
