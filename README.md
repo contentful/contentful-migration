@@ -53,7 +53,7 @@ to learn how the API and the JavaScript client work.
 
 This library comes with a few example scripts
 
-#### Cloning a Space's Content Model
+### Cloning a Space's Content Model
 
 [View Source](example/mirror-content-model.js)
 
@@ -68,6 +68,8 @@ $ example/mirror-content-model.js $CONTENTFUL_ACCESS_TOKEN $SOURCE_SPACE_ID $DES
 Sometimes you need to migrate content from one field to another.
 This is a script which migrates all values from one field to another
 field, using a specific mapping function if it's provided.
+It'll do this for each entry of a specific Content Type in a Space,
+going through it slice by slice.
 
 Currently this supports mapping from Text to Symbol.
 But it would be very simple to convert e.g. numbers to symbols
