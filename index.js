@@ -86,7 +86,20 @@ var Client = redefine.Class({
         return 'body' in error;
       }, function(response) {
         var error = parseJSONBody(response);
-        throw new Error('message' in error ? error.message : response.body);
+        throw new exports.APIError(error, {
+          method: options.method,
+          uri: uri,
+          body: options.body
+        });
+      })
+      .catch(SyntaxError, function (err) {
+        // Attach request info if JSON.parse throws
+        err.request = {
+          method: options.method,
+          uri: uri,
+          body: options.body
+        };
+        throw err;
       });
   },
 
@@ -514,6 +527,8 @@ var Link = redefine.Class({
 exports.createClient = _.fnull(function(options) {
   return new Client(options);
 }, {});
+
+exports.APIError = require('./api-error');
 
 function compacto(object) {
   return _.reduce(object, function(compacted, value, key) {
