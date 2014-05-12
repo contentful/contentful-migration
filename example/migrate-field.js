@@ -97,7 +97,7 @@ client.getSpace(spaceId).catch(function(error) {
   });
 });
 
-var limit = 10;
+var limit = 5;
 function mapAllEntries(space, contentTypeId, map, skip) {
   if (!skip) { skip = 0; }
   return space.getEntries({
