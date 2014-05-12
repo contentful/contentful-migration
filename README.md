@@ -53,6 +53,26 @@ to learn how the API and the JavaScript client work.
 
 This library comes with a few example scripts
 
+### Cloning a Space
+
+[View Source](example/clone-space.js)
+
+This clones a Space's complete content model & content.
+It's intended to be used to create one-time clones of Spaces,
+not for synchronization.
+
+``` sh
+$ example/clone-space.js \
+  --access-token $CONTENTFUL_ACCESS_TOKEN \
+  --source-space-id $SOURCE_SPACE_ID \
+  --destination-space-id $DESTINATION_SPACE_ID
+```
+
+Omit the `destination-space-id` parameter to make the script create a
+Space. When doing that you might have to specify a
+`destination-organization-id` parameter if your user is in multiple
+organizations.
+
 ### Cloning a Space's Content Model
 
 [View Source](example/mirror-content-model.js)
