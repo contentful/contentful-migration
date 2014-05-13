@@ -81,32 +81,47 @@ client.getSpace(sourceSpaceId).catch(function(error) {
     }, null);
   }).then(function() {
     return forEachEntry(sourceSpace, function(entry) {
-      console.log('Creating entry %s', entry.sys.id);
+      console.log('Creating Entry %s', entry.sys.id);
       return destinationSpace.createEntry(entry.sys.contentType.sys.id, entry).catch(function(error) {
-        console.log(error);
+        console.log('Error creating Entry\n%s', error.toString());
+        throw error;
+      });
+    });
+  }).then(function() {
+    return forEachAsset(sourceSpace, function(asset) {
+      console.log('Creating Asset %s', asset.sys.id);
+      return destinationSpace.createAsset(asset).catch(function(error) {
+        console.log('Error creating Asset\n%s', error.toString());
         throw error;
       });
     });
   });
-});
+}).done();
 
 var limit = 10;
-function forEachEntry(space, map, skip) {
+function forEach(methodName, space, map, skip) {
   if (!skip) { skip = 0; }
-  return space.getEntries({
+  if (!_.isFunction(space[methodName])) {
+    throw new Error('Invalid Space method name: ' + methodName);
+  }
+  var fn = space[methodName].bind(space);
+  return fn({
     order: 'sys.createdAt',
     limit: limit,
     skip: skip
-  }).then(function(entries) {
-    console.log('Cloning %d entries at %d/%d', entries.length, entries.skip, entries.total);
-    return Promise.reduce(entries, function(memo, entry) {
-      return map(entry);
+  }).then(function(items) {
+    console.log('Cloning %d items at %d/%d', items.length, items.skip, items.total);
+    return Promise.reduce(items, function(memo, item) {
+      return map(item);
     }, null).then(function() {
-      if (entries.length === 0) {
+      if (items.length === 0) {
         return;
       } else {
-        return forEachEntry(space, map, skip + entries.length);
+        return forEach(methodName, space, map, skip + items.length);
       }
     });
   });
 }
+
+var forEachEntry = _.partial(forEach, 'getEntries');
+var forEachAsset = _.partial(forEach, 'getAssets');
