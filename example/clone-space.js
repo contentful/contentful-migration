@@ -59,7 +59,8 @@ client.getSpace(sourceSpaceId).catch(function(error) {
     });
   } else {
     destinationSpacePromise = client.createSpace({
-      name: 'Clone of ' + sourceSpace.name
+      name: 'Clone of ' + sourceSpace.name,
+      locales: sourceSpace.locales
     }, destinationOrganizationId).delay(5e3);
   }
 
