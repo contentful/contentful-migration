@@ -448,9 +448,8 @@ var SearchResult = redefine.Class({
   statics: {
     parse: function(client, object) {
       walkMutate(object, isParseableResource, _.partial(parseResource, client));
-      var items = resolveLinks(object);
       return redefine(
-        items, {
+        object.items, {
           limit: object.limit,
           skip: object.skip,
           total: object.total
@@ -558,27 +557,6 @@ function stringifyArrayValues(object) {
     object[key] = _.isArray(value) ? value.join(',') : value;
     return object;
   }, {});
-}
-
-function resolveLinks(response) {
-  walkMutate(response, isLink, function(link) {
-    return getLink(response, link) || link;
-  });
-  return response.items;
-}
-
-function isLink(object) {
-  return _.getPath(object, ['sys', 'type']) === 'Link';
-}
-
-function getLink(response, link) {
-  var type = link.sys.linkType;
-  var id = link.sys.id;
-  var pred = function(resource) {
-    return resource.sys.type === type && resource.sys.id === id;
-  };
-  return _.find(response.items, pred) ||
-    response.includes && _.find(response.includes[type], pred);
 }
 
 function walkMutate(input, pred, mutator) {
