@@ -91,14 +91,21 @@ client.getSpace(sourceSpaceId).catch(function(error) {
       console.log('Creating Asset %s', asset.sys.id);
       var localeCode = _.first(_.keys(asset.fields.file));
 
+      if (!localeCode) return;
+
       var sourceFile = asset.fields.file[localeCode];
+      var sourceFileUrl = sourceFile.url || sourceFile.upload;
+
+      if (/^\/\//.test(sourceFileUrl)) {
+        sourceFileUrl = 'http:' + sourceFileUrl;
+      }
 
       var destinationAsset = {
         fields: _.extend(_.pick(asset.fields, 'title', 'description'), {
           file: _.zipObject([[localeCode, {
             contentType: sourceFile.contentType,
             fileName: sourceFile.fileName,
-            upload: 'https:' + sourceFile.url
+            upload: sourceFileUrl
           }]])
         }),
       };
