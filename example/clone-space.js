@@ -59,8 +59,7 @@ client.getSpace(sourceSpaceId).catch(function(error) {
     });
   } else {
     destinationSpacePromise = client.createSpace({
-      name: 'Clone of ' + sourceSpace.name,
-      locales: sourceSpace.locales
+      name: 'Clone of ' + sourceSpace.name
     }, destinationOrganizationId).delay(5e3);
   }
 
@@ -90,8 +89,29 @@ client.getSpace(sourceSpaceId).catch(function(error) {
   }).then(function() {
     return forEachAsset(sourceSpace, function(asset) {
       console.log('Creating Asset %s', asset.sys.id);
-      return destinationSpace.createAsset(asset).catch(function(error) {
+      var localeCode = _.first(_.keys(asset.fields.file));
+
+      var sourceFile = asset.fields.file[localeCode];
+
+      var destinationAsset = {
+        fields: _.extend(_.pick(asset.fields, 'title', 'description'), {
+          file: _.zipObject([[localeCode, {
+            contentType: sourceFile.contentType,
+            fileName: sourceFile.fileName,
+            upload: 'https:' + sourceFile.url
+          }]])
+        }),
+      };
+
+      return destinationSpace.createAsset(destinationAsset).catch(function(error) {
         console.log('Error creating Asset\n%s', error.toString());
+        throw error;
+      }).then(function(asset) {
+        console.log('Processing Asset %s', asset.sys.id);
+        var localeCode = _.first(_.keys(asset.fields.file));
+        return destinationSpace.processAssetFile(asset, localeCode);
+      }).catch(function(error) {
+        console.log('Error processing Asset\n%s', error.toString());
         throw error;
       });
     });
