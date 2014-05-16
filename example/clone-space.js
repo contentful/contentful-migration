@@ -10,9 +10,19 @@ var yargs = require('yargs')
     demand: true,
     description: 'Contentful Management API Access Token'
   })
+
+  .options('destination-access-token', {
+    description:
+    'Access token of destination Space if different from source. ' +
+      'Defaults to value of `access-token.`'
+  })
   .options('host', {
-    demand: true,
+    default: 'api.contentful.com',
     description: 'Contentful Management API Hostname'
+  })
+  .options('destination-host', {
+    default: 'api.contentful.com',
+    description: 'Host of destinated API. Defaults to value of `host`.'
   })
   .options('source-space-id', {
     demand: true,
@@ -36,7 +46,9 @@ var _ = require('lodash');
 var contentful = require('../index');
 
 var accessToken = argv['access-token'];
+var destinationAccessToken = argv['destination-access-token'] || accessToken;
 var host = argv.host;
+var destinationHost = argv['destination-host'] || host;
 var sourceSpaceId = argv['source-space-id'];
 var destinationSpaceId = argv['destination-space-id'];
 var destinationOrganizationId = argv['destination-organization-id'];
@@ -46,6 +58,11 @@ var client = contentful.createClient({
   host: host
 });
 
+var destinationClient = contentful.createClient({
+  accessToken: destinationAccessToken,
+  host: destinationHost
+});
+
 client.getSpace(sourceSpaceId).catch(function(error) {
   console.log('Could not find source Space %s using access token %s', sourceSpaceId, accessToken);
   throw error;
@@ -53,12 +70,12 @@ client.getSpace(sourceSpaceId).catch(function(error) {
   var destinationSpacePromise;
 
   if (destinationSpaceId) {
-    destinationSpacePromise = client.getSpace(destinationSpaceId).catch(function(error) {
+    destinationSpacePromise = destinationClient.getSpace(destinationSpaceId).catch(function(error) {
       console.log('Could not find destination Space %s using access token %s', destinationSpaceId, accessToken);
       throw error;
     });
   } else {
-    destinationSpacePromise = client.createSpace({
+    destinationSpacePromise = destinationClient.createSpace({
       name: 'Clone of ' + sourceSpace.name
     }, destinationOrganizationId).delay(5e3);
   }
@@ -89,33 +106,40 @@ client.getSpace(sourceSpaceId).catch(function(error) {
   }).then(function() {
     return forEachAsset(sourceSpace, function(asset) {
       console.log('Creating Asset %s', asset.sys.id);
-      var localeCode = _.first(_.keys(asset.fields.file));
 
-      if (!localeCode) return;
+      var destinationAsset = _.pick(asset, 'sys');
 
-      var sourceFile = asset.fields.file[localeCode];
-      var sourceFileUrl = sourceFile.url || sourceFile.upload;
-
-      if (/^\/\//.test(sourceFileUrl)) {
-        sourceFileUrl = 'http:' + sourceFileUrl;
+      if (asset.fields) {
+        destinationAsset.fields = _.pick(asset.fields, 'title', 'description');
       }
 
-      var destinationAsset = {
-        fields: _.extend(_.pick(asset.fields, 'title', 'description'), {
-          file: _.zipObject([[localeCode, {
+      if (asset.fields && asset.fields.file) {
+        var localeCode = _.first(_.keys(asset.fields.file));
+
+        if (localeCode && asset.fields.file[localeCode]) {
+          var sourceFile = asset.fields.file[localeCode];
+          var sourceFileUrl = sourceFile.url || sourceFile.upload;
+
+          if (/^\/\//.test(sourceFileUrl)) {
+            sourceFileUrl = 'http:' + sourceFileUrl;
+          }
+
+          destinationAsset.fields.file = _.zipObject([[localeCode, {
             contentType: sourceFile.contentType,
             fileName: sourceFile.fileName,
             upload: sourceFileUrl
-          }]])
-        }),
-      };
+          }]]);
+        }
+      }
 
       return destinationSpace.createAsset(destinationAsset).catch(function(error) {
         console.log('Error creating Asset\n%s', error.toString());
         throw error;
       }).then(function(asset) {
         console.log('Processing Asset %s', asset.sys.id);
+        if (!asset.fields || !asset.fields.file) { return; }
         var localeCode = _.first(_.keys(asset.fields.file));
+        if (!localeCode) { return; }
         return destinationSpace.processAssetFile(asset, localeCode);
       }).catch(function(error) {
         console.log('Error processing Asset\n%s', error.toString());
