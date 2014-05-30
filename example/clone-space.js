@@ -89,10 +89,15 @@ client.getSpace(sourceSpaceId).catch(function(error) {
   return sourceSpace.getContentTypes({
     limit: 1000
   }).then(function(sourceContentTypes) {
-    return Promise.reduce(sourceContentTypes, function(result, contentType) {
-      console.log('Creating & publishing Content Type %s', contentType.name);
-      return destinationSpace.createContentType(contentType).then(function(contentType) {
-        return destinationSpace.publishContentType(contentType);
+    return Promise.reduce(sourceContentTypes, function(result, sourceContentType) {
+      console.log('Creating Content Type %s', sourceContentType.name);
+      return destinationSpace.createContentType(sourceContentType).then(function(destinationContentType) {
+        if (!('publishedVersion' in sourceContentType.sys)) {
+          return;
+        }
+
+        console.log('Publishing Content Type %s', destinationContentType.name);
+        return destinationSpace.publishContentType(destinationContentType);
       });
     }, null);
   }).then(function() {
