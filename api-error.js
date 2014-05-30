@@ -31,7 +31,7 @@ var customFormatters = {
 
 function formatMessage (error) {
   if ('message' in error) {
-    return error.message;
+    return error.message + ' ' + JSON.stringify(error);
   }
 
   if (customFormatters[error.sys.id]) {
