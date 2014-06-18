@@ -21,7 +21,6 @@ var yargs = require('yargs')
     description: 'Contentful Management API Hostname'
   })
   .options('destination-host', {
-    default: 'api.contentful.com',
     description: 'Host of destinated API. Defaults to value of `host`.'
   })
   .options('source-space-id', {
