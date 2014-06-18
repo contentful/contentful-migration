@@ -26,7 +26,7 @@ buster.testCase('Space', {
       name: 'Space Fascination Test'
     };
     return client.updateSpace(space).then(function(space) {
-      assert.equals(space.sys.version, 1);
+      assert.equals(space.sys.version, 2);
     });
   },
 
