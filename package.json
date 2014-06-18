@@ -17,7 +17,7 @@
     "underscore-contrib": "0.2.2"
   },
   "devDependencies": {
-    "bluebird": "~1.0.0",
+    "bluebird": "~2.1.2",
     "browserify": "~3.20.0",
     "browserstack-cli": "~0.3.1",
     "buster": "~0.7.6",

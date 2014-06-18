@@ -100,14 +100,6 @@ client.getSpace(sourceSpaceId).catch(function(error) {
       });
     }, null);
   }).then(function() {
-    return forEachEntry(sourceSpace, function(entry) {
-      console.log('Creating Entry %s', entry.sys.id);
-      return destinationSpace.createEntry(entry.sys.contentType.sys.id, entry).catch(function(error) {
-        console.log('Error creating Entry\n%s', error.toString());
-        throw error;
-      });
-    });
-  }).then(function() {
     return forEachAsset(sourceSpace, function(asset) {
       console.log('Creating Asset %s', asset.sys.id);
 
@@ -149,6 +141,28 @@ client.getSpace(sourceSpaceId).catch(function(error) {
         console.log('Error processing Asset\n%s', error.toString());
         throw error;
       });
+    });
+  }).then(function() {
+    var sourceEntries = [];
+    return forEachEntry(sourceSpace, function(entry) {
+      sourceEntries.push(entry);
+      console.log('Creating Entry %s', entry.sys.id);
+      return destinationSpace.createEntry(entry.sys.contentType.sys.id, entry).catch(function(error) {
+        console.log('Error creating Entry %s\n%s', entry.sys.id, error.toString());
+        throw error;
+      });
+    }).delay(5e3).then(function() {
+      return Promise.map(sourceEntries, function(sourceEntry) {
+        if (!('publishedVersion' in sourceEntry.sys)) {
+          return;
+        }
+
+        console.log('Publishing Entry %s', sourceEntry.sys.id);
+        return destinationSpace.publishEntry(sourceEntry, 1).catch(function(error) {
+          console.log('Error publishing Entry %s\n%s', sourceEntry.sys.id, error.toString());
+          throw error;
+        });
+      }, {concurrency: 1});
     });
   });
 }).done();
