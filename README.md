@@ -6,6 +6,13 @@ Javascript client for [Contentful's](https://www.contentful.com) Content Managem
 - [Examples](#examples)
 - [Create an access token for the Content Management API (need account)](https://www.contentful.com/developers/documentation/content-management-api/#getting-started)
 
+Supported browsers/environments:
+
+- Chrome
+- Firefox
+- IE10
+- node.js >= 0.8
+
 ## Install
 
 In node, using [npm](http://npmjs.org):
