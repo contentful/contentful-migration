@@ -82,13 +82,13 @@ organizations.
 
 ### Cloning a Space's Content Model Only
 
-If you just want the content-model for a space to be cloned, add the `--content-model-only` flag.
+If you just want the content-model for a space to be cloned, add the `--only-content-types` flag.
 ``` sh
 $ example/clone-space.js \
   --access-token $CONTENTFUL_ACCESS_TOKEN \
   --source-space-id $SOURCE_SPACE_ID \
   --destination-space-id $DESTINATION_SPACE_ID
-  --content-model-only
+  --only-content-types
 ```
 
 ### Migrating Entry fields
