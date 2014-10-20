@@ -32,7 +32,11 @@ var yargs = require('yargs')
   })
   .options('destination-organization-id', {
     description: 'ID of Organization destinaiton Space should be created in. Only required if destination Spacen to specified and your user is in multiple organizations.'
+  })
+  .options('content-model-only', {
+    description: 'Only copy the Content Types from the source to the destination space'
   });
+
 var argv = yargs.argv;
 
 if (argv.help) {
@@ -51,6 +55,7 @@ var destinationHost = argv['destination-host'] || host;
 var sourceSpaceId = argv['source-space-id'];
 var destinationSpaceId = argv['destination-space-id'];
 var destinationOrganizationId = argv['destination-organization-id'];
+var contentModelOnly = argv['content-model-only'];
 
 var client = contentful.createClient({
   accessToken: accessToken,
@@ -100,6 +105,10 @@ client.getSpace(sourceSpaceId).catch(function(error) {
       });
     }, null);
   }).then(function() {
+    if (contentModelOnly) {
+      return;
+    }
+
     return forEachAsset(sourceSpace, function(asset) {
       console.log('Creating Asset %s', asset.sys.id);
 
@@ -143,6 +152,10 @@ client.getSpace(sourceSpaceId).catch(function(error) {
       });
     });
   }).then(function() {
+    if (contentModelOnly) {
+      return;
+    }
+
     var sourceEntries = [];
     return forEachEntry(sourceSpace, function(entry) {
       sourceEntries.push(entry);
