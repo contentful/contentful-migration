@@ -33,7 +33,7 @@ var yargs = require('yargs')
   .options('destination-organization-id', {
     description: 'ID of Organization destinaiton Space should be created in. Only required if destination Spacen to specified and your user is in multiple organizations.'
   })
-  .options('content-model-only', {
+  .options('only-content-types', {
     description: 'Only copy the Content Types from the source to the destination space'
   });
 
@@ -55,7 +55,7 @@ var destinationHost = argv['destination-host'] || host;
 var sourceSpaceId = argv['source-space-id'];
 var destinationSpaceId = argv['destination-space-id'];
 var destinationOrganizationId = argv['destination-organization-id'];
-var contentModelOnly = argv['content-model-only'];
+var onlyContentTypes = argv['only-content-types'];
 
 var client = contentful.createClient({
   accessToken: accessToken,
@@ -118,7 +118,7 @@ function clone (sourceSpace, destinationSpace) {
       });
     }, null);
   }).then(function() {
-    if (contentModelOnly) {
+    if (onlyContentTypes) {
       return;
     }
 
@@ -165,7 +165,7 @@ function clone (sourceSpace, destinationSpace) {
       });
     });
   }).then(function() {
-    if (contentModelOnly) {
+    if (onlyContentTypes) {
       return;
     }
 
