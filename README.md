@@ -80,9 +80,9 @@ Space. When doing that you might have to specify a
 `destination-organization-id` parameter if your user is in multiple
 organizations.
 
-### Cloning a Space's Content Model Only
+### Cloning a Space's Content Types Only
 
-If you just want the content-model for a space to be cloned, add the `--only-content-types` flag.
+If you just want the content types for a space to be cloned, add the `--only-content-types` flag.
 ``` sh
 $ example/clone-space.js \
   --access-token $CONTENTFUL_ACCESS_TOKEN \
