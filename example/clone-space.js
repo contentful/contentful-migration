@@ -32,7 +32,11 @@ var yargs = require('yargs')
   })
   .options('destination-organization-id', {
     description: 'ID of Organization destinaiton Space should be created in. Only required if destination Spacen to specified and your user is in multiple organizations.'
+  })
+  .options('only-content-types', {
+    description: 'Only copy the Content Types from the source to the destination space'
   });
+
 var argv = yargs.argv;
 
 if (argv.help) {
@@ -51,6 +55,7 @@ var destinationHost = argv['destination-host'] || host;
 var sourceSpaceId = argv['source-space-id'];
 var destinationSpaceId = argv['destination-space-id'];
 var destinationOrganizationId = argv['destination-organization-id'];
+var onlyContentTypes = argv['only-content-types'];
 
 var client = contentful.createClient({
   accessToken: accessToken,
@@ -62,10 +67,19 @@ var destinationClient = contentful.createClient({
   host: destinationHost
 });
 
-client.getSpace(sourceSpaceId).catch(function(error) {
+client.getSpace(sourceSpaceId)
+      .catch(reportInvalidSpace)
+      .then(getDestinationSpace)
+      .tap(logSummary)
+      .spread(clone)
+      .done();
+
+function reportInvalidSpace (error) {
   console.log('Could not find source Space %s using access token %s', sourceSpaceId, accessToken);
   throw error;
-}).then(function(sourceSpace) {
+}
+
+function getDestinationSpace (sourceSpace) {
   var destinationSpacePromise;
 
   if (destinationSpaceId) {
@@ -80,11 +94,15 @@ client.getSpace(sourceSpaceId).catch(function(error) {
   }
 
   return [sourceSpace, destinationSpacePromise];
-}).spread(function(sourceSpace, destinationSpace) {
-  console.log('Cloning from Space "%s" (%s) to "%s" (%s)',
-             sourceSpace.name, sourceSpace.sys.id,
-             destinationSpace.name, destinationSpace.sys.id);
+}
 
+function logSummary (spaces) {
+  console.log('Cloning from Space "%s" (%s) to "%s" (%s)',
+             spaces[0].name, spaces[0].sys.id,
+             spaces[1].name, spaces[1].sys.id);
+}
+
+function clone (sourceSpace, destinationSpace) {
   return sourceSpace.getContentTypes({
     limit: 1000
   }).then(function(sourceContentTypes) {
@@ -100,6 +118,10 @@ client.getSpace(sourceSpaceId).catch(function(error) {
       });
     }, null);
   }).then(function() {
+    if (onlyContentTypes) {
+      return;
+    }
+
     return forEachAsset(sourceSpace, function(asset) {
       console.log('Creating Asset %s', asset.sys.id);
 
@@ -143,6 +165,10 @@ client.getSpace(sourceSpaceId).catch(function(error) {
       });
     });
   }).then(function() {
+    if (onlyContentTypes) {
+      return;
+    }
+
     var sourceEntries = [];
     return forEachEntry(sourceSpace, function(entry) {
       sourceEntries.push(entry);
@@ -165,7 +191,7 @@ client.getSpace(sourceSpaceId).catch(function(error) {
       }, {concurrency: 1});
     });
   });
-}).done();
+}
 
 var limit = 10;
 function forEach(methodName, space, map, skip) {
