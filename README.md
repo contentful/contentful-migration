@@ -80,14 +80,15 @@ Space. When doing that you might have to specify a
 `destination-organization-id` parameter if your user is in multiple
 organizations.
 
-### Cloning a Space's Content Model
+### Cloning a Space's Content Model Only
 
-[View Source](example/mirror-content-model.js)
-
-Note: Destination Space has to exist. It won't be created by the Script.
-
+If you just want the content-model for a space to be cloned, add the `--content-model-only` flag.
 ``` sh
-$ example/mirror-content-model.js $CONTENTFUL_ACCESS_TOKEN $SOURCE_SPACE_ID $DEST_SPACE_ID
+$ example/clone-space.js \
+  --access-token $CONTENTFUL_ACCESS_TOKEN \
+  --source-space-id $SOURCE_SPACE_ID \
+  --destination-space-id $DESTINATION_SPACE_ID
+  --content-model-only
 ```
 
 ### Migrating Entry fields
