@@ -97,7 +97,6 @@ function getDestinationSpace (sourceSpace) {
 }
 
 function logSummary (spaces) {
-  console.log(spaces);
   console.log('Cloning from Space "%s" (%s) to "%s" (%s)',
              spaces[0].name, spaces[0].sys.id,
              spaces[1].name, spaces[1].sys.id);
