@@ -93,7 +93,7 @@ function getDestinationSpace (sourceSpace) {
     }, destinationOrganizationId).delay(5e3);
   }
 
-  return [sourceSpace, destinationSpacePromise];
+  return Promise.all([sourceSpace, destinationSpacePromise]);
 }
 
 function logSummary (spaces) {
