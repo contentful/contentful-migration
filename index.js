@@ -4,6 +4,7 @@ var _ = require('underscore-contrib');
 var questor = require('questor');
 var redefine = require('redefine');
 var querystring = require('querystring');
+var rateLimit = require('./rate-limit');
 
 // Identifiable
 // Object{sys: {id: Id}} -> Id
@@ -58,12 +59,17 @@ var Client = redefine.Class({
 
     this.options = _.defaults({}, options, {
       host: 'api.contentful.com',
-      secure: true
+      secure: true,
+      rateLimit: 6
     });
+
+    // decorate this.request with a rate limiter
+    this.request = rateLimit(this.options.rateLimit, 1000, this.request);
   },
 
   request: function(path, options) {
     if (!options) options = {};
+    if (!options.method) options.method = 'GET';
     if (!options.headers) options.headers = {};
     if (!options.query) options.query = {};
     options.headers['Content-Type'] = 'application/vnd.contentful.management.v1+json';
@@ -80,11 +86,17 @@ var Client = redefine.Class({
       querystring.stringify(options.query)
     ].join('');
 
+    var self = this;
     return questor(uri, options)
       .then(parseJSONBody)
       .catch(function(error) {
         return 'body' in error;
       }, function(response) {
+        // Rate-limited by the server, retry the request
+        if (response.status === 429) {
+          return self.request(path, options);
+        }
+        // Otherwise parse, wrap, and rethrow the error
         var error = parseJSONBody(response);
         throw new exports.APIError(error, {
           method: options.method,
