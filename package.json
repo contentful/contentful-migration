@@ -11,13 +11,13 @@
   "author": "Stephan Seidt <stephan@contentful.com>",
   "license": "MIT",
   "dependencies": {
+    "bluebird": "~2.1.2",
     "redefine": "~0.2.0",
     "questor": "1.0.0",
     "inherits": "^2.0.1",
     "underscore-contrib": "0.2.2"
   },
   "devDependencies": {
-    "bluebird": "~2.1.2",
     "browserify": "~3.20.0",
     "browserstack-cli": "~0.3.1",
     "buster": "~0.7.6",
