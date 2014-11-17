@@ -11,8 +11,8 @@
   "author": "Stephan Seidt <stephan@contentful.com>",
   "license": "MIT",
   "dependencies": {
-    "bluebird": "~2.1.2",
-    "redefine": "~0.2.0",
+    "bluebird": "^2.1.2",
+    "redefine": "^0.2.0",
     "questor": "1.0.0",
     "inherits": "^2.0.1",
     "underscore-contrib": "0.2.2"
