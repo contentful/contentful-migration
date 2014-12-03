@@ -87,7 +87,7 @@ If you just want the content types for a space to be cloned, add the `--only-con
 $ example/clone-space.js \
   --access-token $CONTENTFUL_ACCESS_TOKEN \
   --source-space-id $SOURCE_SPACE_ID \
-  --destination-space-id $DESTINATION_SPACE_ID
+  --destination-space-id $DESTINATION_SPACE_ID \
   --only-content-types
 ```
 
