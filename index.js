@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('underscore-contrib');
+var bluebird = require('bluebird');
 var questor = require('questor');
 var redefine = require('redefine');
 var querystring = require('querystring');
@@ -60,20 +61,24 @@ var Client = redefine.Class({
     this.options = _.defaults({}, options, {
       host: 'api.contentful.com',
       secure: true,
-      rateLimit: 6
+      rateLimit: 6,
+      retryOnTooManyRequests: true,
+      maxRetries: 5
     });
 
     // decorate this.request with a rate limiter
     this.request = rateLimit(this.options.rateLimit, 1000, this.request);
   },
 
-  request: function(path, options) {
+  request: function(path, options, attempt) {
     if (!options) options = {};
     if (!options.method) options.method = 'GET';
     if (!options.headers) options.headers = {};
     if (!options.query) options.query = {};
     options.headers['Content-Type'] = 'application/vnd.contentful.management.v1+json';
     options.query.access_token = this.options.accessToken;
+    
+    attempt = attempt || 0;
 
     var uri = [
       this.options.secure ? 'https' : 'http',
@@ -92,9 +97,12 @@ var Client = redefine.Class({
       .catch(function(error) {
         return 'body' in error;
       }, function(response) {
-        // Rate-limited by the server, retry the request
-        if (response.status === 429) {
-          return self.request(path, options);
+        // Rate-limited by the server, maybe back-off and retry
+        if (response.status === 429 && self.options.retryOnTooManyRequests && attempt < self.options.maxRetries) {
+          attempt += 1;
+          return Bluebird.delay(Math.pow(attempt, 2) * 1000).then(function () {
+            return self.request(path, options, attempt);
+          });
         }
         // Otherwise parse, wrap, and rethrow the error
         var error = parseJSONBody(response);
