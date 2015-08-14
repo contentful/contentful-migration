@@ -541,6 +541,7 @@ npm test
 MIT
 
 [get-token]: https://www.contentful.com/developers/docs/references/authentication/#the-management-api
+[search-parameters]: http://docs.contentfulcda.apiary.io/#reference/search-parameters
 [collection]: #collections-and-pagination
 [Space]: #space-api
 [ContentType]: #contenttype-api
