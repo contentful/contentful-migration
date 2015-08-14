@@ -1,11 +1,14 @@
 'use strict';
 
+require('es6-promise').polyfill();
+
 var _ = require('underscore-contrib');
-var bluebird = require('bluebird');
 var questor = require('questor');
 var redefine = require('redefine');
 var querystring = require('querystring');
-var rateLimit = require('./rate-limit');
+
+var APIError = require('./lib/api-error');
+var rateLimit = require('./lib/rate-limit');
 
 // Identifiable
 // Object{sys: {id: Id}} -> Id
@@ -99,9 +102,8 @@ var Client = redefine.Class({
       }, function(response) {
         // Rate-limited by the server, maybe back-off and retry
         if (response.status === 429 && self.options.retryOnTooManyRequests && attempt < self.options.maxRetries) {
-          attempt += 1;
-          return Bluebird.delay(Math.pow(attempt, 2) * 1000).then(function () {
-            return self.request(path, options, attempt);
+          return Bluebird.delay(Math.pow(2, attempt) * 1000).then(function () {
+            return self.request(path, options, attempt + 1);
           });
         }
         // Otherwise parse, wrap, and rethrow the error
@@ -548,7 +550,7 @@ exports.createClient = _.fnull(function(options) {
   return new Client(options);
 }, {});
 
-exports.APIError = require('./api-error');
+exports.APIError = APIError
 
 function compacto(object) {
   return _.reduce(object, function(compacted, value, key) {
