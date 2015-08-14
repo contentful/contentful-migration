@@ -293,7 +293,7 @@ space.deleteEntry(entry)
 
 Returns a promise for nothing, which should still be checked for errors.
 
-#### Space#getEntries(query) -> EntryPromise
+#### Space#getEntries(query) -> EntryCollectionPromise
 
 Search & filter all of the entries in a space. The `query` parameter should be
 an object of querystring key-value pairs. The permissible keys are documented
