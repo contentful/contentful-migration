@@ -8,6 +8,7 @@ var redefine = require('redefine');
 var querystring = require('querystring');
 
 var APIError = require('./lib/api-error');
+var createBackoff = require('./lib/backoff');
 var rateLimit = require('./lib/rate-limit');
 
 // Identifiable
@@ -73,7 +74,7 @@ var Client = redefine.Class({
     this.request = rateLimit(this.options.rateLimit, 1000, this.request);
   },
 
-  request: function(path, options, attempt) {
+  request: function(path, options, backoff) {
     if (!options) options = {};
     if (!options.method) options.method = 'GET';
     if (!options.headers) options.headers = {};
@@ -81,7 +82,9 @@ var Client = redefine.Class({
     options.headers['Content-Type'] = 'application/vnd.contentful.management.v1+json';
     options.query.access_token = this.options.accessToken;
     
-    attempt = attempt || 0;
+    if (!backoff && this.options.retryOnTooManyRequests) {
+      backoff = createBackoff(this.options.maxRetries)
+    }
 
     var uri = [
       this.options.secure ? 'https' : 'http',
@@ -95,34 +98,39 @@ var Client = redefine.Class({
     ].join('');
 
     var self = this;
-    return questor(uri, options)
-      .then(parseJSONBody)
-      .catch(function(error) {
-        return 'body' in error;
-      }, function(response) {
-        // Rate-limited by the server, maybe back-off and retry
-        if (response.status === 429 && self.options.retryOnTooManyRequests && attempt < self.options.maxRetries) {
-          return Bluebird.delay(Math.pow(2, attempt) * 1000).then(function () {
-            return self.request(path, options, attempt + 1);
+    var response = questor(uri, options).then(parseJSONBody)
+
+    if (backoff) {
+      response = response.catch(function(error) {
+        // Rate-limited by the server, maybe backoff and retry
+        if (error.status === 429) {
+          return backoff(error, function () {
+            return self.request(path, options, backoff);
           });
         }
-        // Otherwise parse, wrap, and rethrow the error
-        var error = parseJSONBody(response);
-        throw new exports.APIError(error, {
-          method: options.method,
-          uri: uri,
-          body: options.body
-        });
+        throw error
       })
-      .catch(SyntaxError, function (err) {
-        // Attach request info if JSON.parse throws
-        err.request = {
+    }
+    
+    return response.catch(function (error) {
+      if (!('body' in error)) {
+        // Attach request info to errors that don't have a response body
+        error.request = {
           method: options.method,
           uri: uri,
           body: options.body
         };
-        throw err;
+        throw error;
+      }
+
+      // Otherwise parse, wrap, and rethrow the error
+      error = parseJSONBody(error);
+      throw new APIError(error, {
+        method: options.method,
+        uri: uri,
+        body: options.body
       });
+    });
   },
 
   createSpace: function(space, organizationId) {
