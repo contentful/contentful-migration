@@ -1,6 +1,6 @@
 'use strict';
 
-require('es6-promise').polyfill();
+var Promise = require('es6-promise');
 
 var _ = require('underscore-contrib');
 var questor = require('questor');

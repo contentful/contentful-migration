@@ -1,7 +1,7 @@
 'use strict';
 
-require('es6-promise').polyfill()
-var buster = require('buster')
+var Promise = require('es6-promise');
+var buster = require('buster');
 
 var createBackoff = require('../../lib/backoff');
 

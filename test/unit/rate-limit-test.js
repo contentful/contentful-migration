@@ -1,6 +1,6 @@
 'use strict';
 
-require('es6-promise').polyfill()
+var Promise = require('es6-promise');
 var buster = require('buster')
 
 var rateLimit = require('../../lib/rate-limit');
