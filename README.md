@@ -617,8 +617,8 @@ MIT
 [search-parameters]: http://docs.contentfulcda.apiary.io/#reference/search-parameters
 [collection]: #collections-and-pagination
 [Space]: #space-api
-[ContentType]: #contenttype-api
-[Entry]: #entry-api
-[Asset]: #asset-api
+[ContentType]: #contenttype-properties
+[Entry]: #entry-properties
+[Asset]: #asset-properties
 [process-asset]: #spaceprocessassetfile---promise
 [create-content-type]: #spacecreatecontenttype---contenttypepromise
