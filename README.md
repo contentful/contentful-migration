@@ -296,8 +296,8 @@ Returns a promise for nothing, which should still be checked for errors.
 #### Space#getEntries(query) -> EntryCollectionPromise
 
 Search & filter all of the entries in a space. The `query` parameter should be
-an object of querystring key-value pairs. The permissible keys are documented
-in [the API Documentation][search-parameters].
+an object of querystring key-value pairs. The [query examples](#query-examples)
+section containts more examples of the kinds of queries you can perform.
 
 ```js
 space.getEntries({content_type: 'blog-post'})
@@ -372,9 +372,9 @@ Returns a promise for an updated version of the asset.
 
 #### Space#getAssets(query) -> AssetCollectionPromise
 
-Search & filter all of the entries in a space. The `query` parameter should be
-an object of querystring key-value pairs. The permissible keys are documented
-in [the API Documentation][search-parameters].
+Search & filter all of the assets in a space. The `query` parameter should be
+an object of querystring key-value pairs. The [query examples](#query-examples)
+section containts more examples of the kinds of queries you can perform.
 
 ```js
 space.getAssets({'fields.file.url[exists]': false})
@@ -499,6 +499,78 @@ If neither property is present, the `upload` property must be set to a valid
 publically accessible URL before calling [Space#processAssetFile][process-asset].
 
 Note that an asset with unprocessed files can not be published.
+
+### Query Examples
+
+You can filter & search the entries and assets in your space by passing query
+params to [`Space#getEntries`](#spacegetentriesquery---entrycollectionpromise)
+and [`Space#getAssets`](#spacegetassetsquery---assetcollectionpromise). There are
+a few predefined query parameter names (such as `content_type` and `order`), and
+you can also query against document properties by using a dot-separated property
+path (followed by an optional operator in square brackets) as a query parameter
+name.
+
+For example: `fields.name[ne]` means "entries where `fields.name` is not-equal
+to ...". Full documentation of the allowed query parameters & field operators
+can be found in [our API Documentation][search-parameters], but below are some
+examples of common queries to get you started:
+
+Search entries that have been updated since the 1st of January, 2013:
+
+```js
+space.getEntries({ 'sys.updatedAt[gte]': '2013-01-01T00:00:00Z' })
+```
+
+Retrieve a specific set of entries by their `sys.id`:
+
+```js
+space.getEntries({ 'sys.id[in]': [ 'finn', 'jake' ] })
+```
+
+Search for `cat` entries that have less than three lives left:
+
+```js
+space.getEntries({
+  'content_type': 'cat',
+  'fields.lives[lt]': 3
+})
+```
+
+> Specifying the `content_type` query parameter is _required_ when querying on
+> fields (such as `fields.lives` above). Note that `'cat'` is the content type
+> **ID** and not it's name.
+
+Full-text search for entries with "bacon" anywhere in their textual content:
+
+```js
+space.getEntries({ query: 'bacon' })
+```
+
+Full-text search for dogs with "bacon" specifically in the `description` field:
+
+```js
+space.getEntries({
+  'content_type': 'dog',
+  'fields.description[match]': 'bacon'
+})
+```
+
+Get the 50 most recently created entries, and the next 50:
+
+```js
+space.getEntries({
+  order: '-sys.createdAt',
+  limit: 50
+})
+
+space.getEntries({
+  order: '-sys.createdAt',
+  skip: 50,
+  limit: 50
+})
+```
+
+See also: [Collections and pagination][collection].
 
 ### Collections and pagination
 
