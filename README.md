@@ -620,5 +620,5 @@ MIT
 [ContentType]: #contenttype-properties
 [Entry]: #entry-properties
 [Asset]: #asset-properties
-[process-asset]: #spaceprocessassetfile---promise
+[process-asset]: #spaceprocessassetfileasset-locale---promise
 [create-content-type]: #spacecreatecontenttype---contenttypepromise
