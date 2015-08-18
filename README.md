@@ -92,7 +92,7 @@ $ example/migrate-fields.js \
 
 To use the Content Management API you will need an access token. The easiest
 way to get a token for local scripts/experimentation is by using the OAuth app
-embedded in our [documentation][get-token].
+embedded in our [Developer center documentation][get-token].
 
 ``` js
 var contentful = require('contentful-management');
