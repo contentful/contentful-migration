@@ -2,7 +2,8 @@
 
 Javascript client for [Contentful's](https://www.contentful.com) Content Management API:
 
-- [Documentation](https://www.contentful.com/developers/documentation/content-management-api)
+- [API Documentation](#api)
+- [REST API Documentation](https://www.contentful.com/developers/documentation/content-management-api)
 - [Examples](#examples)
 - [Create an access token for the Content Management API (need account)](https://www.contentful.com/developers/documentation/content-management-api/#getting-started)
 
