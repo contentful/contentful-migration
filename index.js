@@ -1,10 +1,15 @@
 'use strict';
 
+var Promise = require('es6-promise');
+
 var _ = require('underscore-contrib');
 var questor = require('questor');
 var redefine = require('redefine');
 var querystring = require('querystring');
-var rateLimit = require('./rate-limit');
+
+var APIError = require('./lib/api-error');
+var createBackoff = require('./lib/backoff');
+var rateLimit = require('./lib/rate-limit');
 
 // Identifiable
 // Object{sys: {id: Id}} -> Id
@@ -60,20 +65,26 @@ var Client = redefine.Class({
     this.options = _.defaults({}, options, {
       host: 'api.contentful.com',
       secure: true,
-      rateLimit: 6
+      rateLimit: 6,
+      retryOnTooManyRequests: true,
+      maxRetries: 5
     });
 
     // decorate this.request with a rate limiter
     this.request = rateLimit(this.options.rateLimit, 1000, this.request);
   },
 
-  request: function(path, options) {
+  request: function(path, options, backoff) {
     if (!options) options = {};
     if (!options.method) options.method = 'GET';
     if (!options.headers) options.headers = {};
     if (!options.query) options.query = {};
     options.headers['Content-Type'] = 'application/vnd.contentful.management.v1+json';
     options.query.access_token = this.options.accessToken;
+    
+    if (!backoff && this.options.retryOnTooManyRequests) {
+      backoff = createBackoff(this.options.maxRetries)
+    }
 
     var uri = [
       this.options.secure ? 'https' : 'http',
@@ -87,32 +98,39 @@ var Client = redefine.Class({
     ].join('');
 
     var self = this;
-    return questor(uri, options)
-      .then(parseJSONBody)
-      .catch(function(error) {
-        return 'body' in error;
-      }, function(response) {
-        // Rate-limited by the server, retry the request
-        if (response.status === 429) {
-          return self.request(path, options);
+    var response = questor(uri, options).then(parseJSONBody)
+
+    if (backoff) {
+      response = response.catch(function(error) {
+        // Rate-limited by the server, maybe backoff and retry
+        if (error.status === 429) {
+          return backoff(error, function () {
+            return self.request(path, options, backoff);
+          });
         }
-        // Otherwise parse, wrap, and rethrow the error
-        var error = parseJSONBody(response);
-        throw new exports.APIError(error, {
-          method: options.method,
-          uri: uri,
-          body: options.body
-        });
+        throw error
       })
-      .catch(SyntaxError, function (err) {
-        // Attach request info if JSON.parse throws
-        err.request = {
+    }
+    
+    return response.catch(function (error) {
+      if (!('body' in error)) {
+        // Attach request info to errors that don't have a response body
+        error.request = {
           method: options.method,
           uri: uri,
           body: options.body
         };
-        throw err;
+        throw error;
+      }
+
+      // Otherwise parse, wrap, and rethrow the error
+      error = parseJSONBody(error);
+      throw new APIError(error, {
+        method: options.method,
+        uri: uri,
+        body: options.body
       });
+    });
   },
 
   createSpace: function(space, organizationId) {
@@ -540,7 +558,7 @@ exports.createClient = _.fnull(function(options) {
   return new Client(options);
 }, {});
 
-exports.APIError = require('./api-error');
+exports.APIError = APIError
 
 function compacto(object) {
   return _.reduce(object, function(compacted, value, key) {
