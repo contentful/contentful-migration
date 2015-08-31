@@ -75,7 +75,7 @@ But it would be very simple to convert e.g. numbers to symbols
 or even location strings to locations by geocoding.
 PRs are very welcome!
 
-[View Source](example/migrate-fields.js)
+[View Source](example/migrate-field.js)
 
 ``` sh
 $ example/migrate-fields.js \
