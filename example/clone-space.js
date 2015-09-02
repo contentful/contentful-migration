@@ -70,7 +70,10 @@ var destinationClient = contentful.createClient({
 client.getSpace(sourceSpaceId)
       .catch(reportInvalidSpace)
       .then(getDestinationSpace)
-      .tap(logSummary)
+      .then(function (summary) {
+        logSummary(summary);
+        return summary;
+      })
       .spread(clone)
       .done();
 
@@ -106,7 +109,7 @@ function clone (sourceSpace, destinationSpace) {
   return sourceSpace.getContentTypes({
     limit: 1000
   }).then(function(sourceContentTypes) {
-    return Promise.reduce(sourceContentTypes, function(result, sourceContentType) {
+    return reduce$(sourceContentTypes, function(result, sourceContentType) {
       console.log('Creating Content Type %s', sourceContentType.name);
       return destinationSpace.createContentType(sourceContentType).then(function(destinationContentType) {
         if (!('publishedVersion' in sourceContentType.sys)) {
@@ -178,7 +181,7 @@ function clone (sourceSpace, destinationSpace) {
         throw error;
       });
     }).delay(5e3).then(function() {
-      return Promise.map(sourceEntries, function(sourceEntry) {
+      return Promise.all(sourceEntries.map(function(sourceEntry) {
         if (!('publishedVersion' in sourceEntry.sys)) {
           return;
         }
@@ -188,7 +191,7 @@ function clone (sourceSpace, destinationSpace) {
           console.log('Error publishing Entry %s\n%s', sourceEntry.sys.id, error.toString());
           throw error;
         });
-      }, {concurrency: 1});
+      }));
     });
   });
 }
@@ -206,7 +209,7 @@ function forEach(methodName, space, map, skip) {
     skip: skip
   }).then(function(items) {
     console.log('Cloning %d items at %d/%d', items.length, items.skip, items.total);
-    return Promise.reduce(items, function(memo, item) {
+    return reduce$(items, function(memo, item) {
       return map(item);
     }, null).then(function() {
       if (items.length === 0) {
@@ -216,6 +219,14 @@ function forEach(methodName, space, map, skip) {
       }
     });
   });
+}
+
+function reduce$ (array, fn, acc) {
+  return array.reduce(function (prev, value) {
+    return prev.then(function (acc) {
+      return fn(acc, value);
+    });
+  }, Promise.resolve(acc));
 }
 
 var forEachEntry = _.partial(forEach, 'getEntries');
