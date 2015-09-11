@@ -9,7 +9,7 @@ buster.testCase('Content Type', {
     var that = this;
     return client.createSpace({
       name: 'Content Type Integration Test'
-    }, 'contentful').then(function(space) {
+    }, process.env.CONTENTFUL_ORGANIZATION_ID).then(function(space) {
       that.space = space;
     });
   },
