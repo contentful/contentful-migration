@@ -5,7 +5,3 @@ node_js:
 cache:
   directories:
   - node_modules
-before_install:
-  - npm install -g npm@1.4.13
-before_script:
-  - npm install -g travis-notify-geckoboard
