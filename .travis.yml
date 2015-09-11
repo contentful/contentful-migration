@@ -5,8 +5,6 @@ node_js:
 cache:
   directories:
   - node_modules
-after_script:
-  - travis-notify-geckoboard -a $GECKOBOARD_API_KEY -w $GECKOBOARD_WIDGET_KEY
 before_install:
   - npm install -g npm@1.4.13
 before_script:
