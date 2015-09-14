@@ -7,7 +7,7 @@ buster.testCase('Space', {
     var that = this;
     return client.createSpace({
       name: 'Space Integration Test'
-    }, 'contentful').then(function(space) {
+    }, process.env.CONTENTFUL_ORGANIZATION_ID).then(function(space) {
       that.space = space;
     });
   },
@@ -49,7 +49,7 @@ buster.testCase('Space', {
   'can be deleted': function() {
     return client.createSpace({
       name: 'Space Integration Test'
-    }, 'contentful').then(function(space) {
+    }, process.env.CONTENTFUL_ORGANIZATION_ID).then(function(space) {
       assert(true);
       return client.deleteSpace(space);
     });

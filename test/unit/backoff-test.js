@@ -1,6 +1,6 @@
 'use strict';
 
-var Promise = require('es6-promise');
+var Promise = require('es6-promise').Promise;
 var buster = require('buster');
 
 var createBackoff = require('../../lib/backoff');
