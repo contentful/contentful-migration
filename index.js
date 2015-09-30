@@ -184,6 +184,42 @@ var Space = redefine.Class({
     }
   },
 
+  // Space functions
+  /**
+   * Gets all locales enabled in space.
+   * @returns JSON of locale data for space
+   */
+  getLocales: function() {
+    return this.client.request('/spaces/' + this.sys.id + '/locales');
+  },
+
+
+  /**
+   * Creates a locale
+   * @param name  The readable name of the locale, e.g. U.S English
+   * @param code  the i18n abbreviation, e.g. en-US
+   */
+  createLocale: function(name, code) {
+    var localeInfo = {"name":name,"code":code};
+    var localePath = '/spaces/' + this.sys.id + '/locales';
+    return this.client.request(localePath, {
+      method: 'POST',
+      body: localeInfo
+    });
+  },
+
+  /**
+   *
+   * @param localeID
+   * @returns {*|{method: string, uri: string, body: *}}
+   */
+  deleteLocale: function(localeID) {
+    var localePath = '/spaces/' + this.sys.id + '/locales/' + localeID;
+    return this.client.request(localePath, {
+      method: 'DELETE'
+    });
+  },
+
   //
   // Content Type functions
   //
