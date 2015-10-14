@@ -166,7 +166,7 @@ methods documented below, a space has the following data properties:
 }
 ```
 
-#### Space#createContentType(contentTypeId, entry) -> ContentTypePromise
+#### Space#createContentType(data) -> ContentTypePromise
 
 Create a new content type by providing a name, fields, optional description,
 and an optional ID. If you do not provide the `sys.id` property, an ID will be
@@ -306,7 +306,7 @@ space.getEntries({content_type: 'blog-post'})
 
 Returns a promise for a [collection][] of [Entry][] objects.
 
-#### Space#createAsset(contentTypeId, entry) -> AssetPromise
+#### Space#createAsset(data) -> AssetPromise
 
 Create a new asset by providing field values and and an optional ID. If you do
 not provide the `sys.id` property, an ID will be generated for you.
