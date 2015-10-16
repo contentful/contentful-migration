@@ -235,6 +235,11 @@ space.deleteContentType(contentType)
 Retrieve all content types for the space. Returns a promise for a [collection][]
 of [ContentType][] objects.
 
+#### Space#getPublishedContentTypes() -> ContentTypeCollectionPromise
+
+Retrieve all published content types for the space. Returns a promise for a [collection][]
+of [ContentType][] objects.
+
 #### Space#createEntry(contentType, entry) -> EntryPromise
 
 Create a new entry by providing field values and and an optional ID. If you do
@@ -306,6 +311,11 @@ space.getEntries({content_type: 'blog-post'})
 
 Returns a promise for a [collection][] of [Entry][] objects.
 
+#### Space#getPublishedEntries(query) -> EntryCollectionPromise
+
+Search & filter all of the published entries in a space. Works like getEntries.
+
+Returns a promise for a [collection][] of [Entry][] objects.
 #### Space#createAsset(data) -> AssetPromise
 
 Create a new asset by providing field values and and an optional ID. If you do
@@ -383,6 +393,11 @@ space.getAssets({'fields.file.url[exists]': false})
 
 Returns a promise for a [collection][] of [Asset][] objects.
 
+#### Space#getPublishedAssets(query) -> AssetCollectionPromise
+
+Search & filter all of the assets in a space. Works like getAssets.
+
+Returns a promise for a [collection][] of [Asset][] objects.
 ### ContentType properties
 
 Each content type defines a schema for entries in it's `fields` array. Every

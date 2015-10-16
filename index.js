@@ -81,7 +81,7 @@ var Client = redefine.Class({
     if (!options.query) options.query = {};
     options.headers['Content-Type'] = 'application/vnd.contentful.management.v1+json';
     options.query.access_token = this.options.accessToken;
-    
+
     if (!backoff && this.options.retryOnTooManyRequests) {
       backoff = createBackoff(this.options.maxRetries)
     }
@@ -111,7 +111,7 @@ var Client = redefine.Class({
         throw error
       })
     }
-    
+
     return response.catch(function (error) {
       if (!('body' in error)) {
         // Attach request info to errors that don't have a response body
@@ -243,6 +243,12 @@ var Space = redefine.Class({
       .then(_.partial(SearchResult.parse, this.client));
   },
 
+  getPublishedContentTypes: function(object) {
+    var query = Query.parse(object);
+    return this.client.request('/spaces/' + this.sys.id + '/public/content_types', {query: query})
+      .then(_.partial(SearchResult.parse, this.client));
+  },
+
   updateContentType: function(contentType) {
     var spaceId = getId(this);
     var id = getId(contentType);
@@ -309,6 +315,12 @@ var Space = redefine.Class({
   getEntries: function(object) {
     var query = Query.parse(object);
     return this.client.request('/spaces/' + this.sys.id + '/entries', {query: query})
+      .then(_.partial(SearchResult.parse, this.client));
+  },
+
+  getPublishedEntries: function(object) {
+    var query = Query.parse(object);
+    return this.client.request('/spaces/' + this.sys.id + '/public/entries', {query: query})
       .then(_.partial(SearchResult.parse, this.client));
   },
 
@@ -391,6 +403,12 @@ var Space = redefine.Class({
   getAssets: function(object) {
     var query = Query.parse(object);
     return this.client.request('/spaces/' + this.sys.id + '/assets', {query: query})
+     .then(_.partial(SearchResult.parse, this.client));
+  },
+
+  getPublishedAssets: function(object) {
+    var query = Query.parse(object);
+    return this.client.request('/spaces/' + this.sys.id + '/public/assets', {query: query})
      .then(_.partial(SearchResult.parse, this.client));
   },
 
