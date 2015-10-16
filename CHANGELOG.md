@@ -1,6 +1,6 @@
 # Changelog
 
-## Upcoming
+## v0.3.0 - 2015-10-16
 - Add methods to get published entities
 
 ## 0.2.0
