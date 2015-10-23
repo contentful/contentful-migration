@@ -1,6 +1,6 @@
 # Changelog
 
-## Upcoming
+## v0.4.0 - 2015-10-23
 - Fix locale methods
 - Change API of locale methods
 - Add locale update method
