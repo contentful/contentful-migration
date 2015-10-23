@@ -126,7 +126,7 @@ Returns a promise for a [Space][] object.
 
 ### Client#deleteSpace -> Promise
 
-Delete a space and all of it's content. **Warning:** there is no undo!
+Delete a space and all of its content. **Warning:** there is no undo!
 
 ```js
 client.deleteSpace(space);
@@ -191,10 +191,28 @@ edit content types).
 
 Returns a promise for a [ContentType][].
 
+#### Space#updateContentType(data) -> ContentTypePromise
+
+Updates an existing content type. The provided data object needs to have
+`sys.id` and `sys.version` properties. The version provided should be the version
+of the content type retrieved from the server.
+
+Read more about [updating resources](https://www.contentful.com/developers/docs/references/content-management-api/#/introduction/updating-resources) on the CMA documentation.
+
 #### Space#getContentType(id) -> ContentTypePromise
 
-Retrieve a content type by it's ID (**not** it's name). Returns a promise for a
+Retrieve a content type by its ID (**not** its name). Returns a promise for a
 [ContentType][].
+
+#### Space#getContentTypes() -> ContentTypeCollectionPromise
+
+Retrieve all content types for the space. Returns a promise for a [collection][]
+of [ContentType][] objects.
+
+#### Space#getPublishedContentTypes() -> ContentTypeCollectionPromise
+
+Retrieve all published content types for the space. Returns a promise for a [collection][]
+of [ContentType][] objects.
 
 #### Space#publishContentType(contentType) -> ContentTypePromise
 
@@ -211,7 +229,7 @@ Returns a promise for an updated version of the content type.
 
 Unpublish a [content type][]. This operation is not allowed if there
 are any entries of this content type (because entries may only be created for
-published content types). If you wish to delete a content type and all of it's
+published content types). If you wish to delete a content type and all of its
 entries, you will need to iterate over the entries and delete them before
 unpublishing and deleting the content type.
 
@@ -229,16 +247,6 @@ therefore have no entries) before it can be deleted.
 ```js
 space.deleteContentType(contentType)
 ```
-
-#### Space#getContentTypes() -> ContentTypeCollectionPromise
-
-Retrieve all content types for the space. Returns a promise for a [collection][]
-of [ContentType][] objects.
-
-#### Space#getPublishedContentTypes() -> ContentTypeCollectionPromise
-
-Retrieve all published content types for the space. Returns a promise for a [collection][]
-of [ContentType][] objects.
 
 #### Space#createEntry(contentType, entry) -> EntryPromise
 
@@ -260,13 +268,56 @@ fields][].
 
 Returns a promise for an [Entry][].
 
+#### Space#updateEntry(data) -> ContentTypePromise
+
+Updates an existing entry. The provided data object needs to have
+`sys.id` and `sys.version` properties. The version provided should be the version
+of the entry retrieved from the server.
+
+Read more about [updating resources](https://www.contentful.com/developers/docs/references/content-management-api/#/introduction/updating-resources) on the CMA documentation.
+
+#### Space#getEntries(query) -> EntryCollectionPromise
+
+Search & filter all of the entries in a space. The `query` parameter should be
+an object of querystring key-value pairs. The [query examples](#query-examples)
+section containts more examples of the kinds of queries you can perform.
+
+```js
+space.getEntries({content_type: 'blog-post'})
+```
+
+Returns a promise for a [collection][] of [Entry][] objects.
+
+#### Space#getPublishedEntries(query) -> EntryCollectionPromise
+
+Search & filter all of the published entries in a space. Works like getEntries.
+
+Returns a promise for a [collection][] of [Entry][] objects.
 #### Space#getEntry(id) -> EntryPromise
 
-Retrieve an entry by it's ID. Returns a promise for an [Entry][].
+Retrieve an entry by its ID. Returns a promise for an [Entry][].
 
 ```js
 space.getEntry('hello-world')
 ```
+
+#### Space#getEntries(query) -> EntryCollectionPromise
+
+Search & filter all of the entries in a space. The `query` parameter should be
+an object of querystring key-value pairs. The [query examples](#query-examples)
+section containts more examples of the kinds of queries you can perform.
+
+```js
+space.getEntries({content_type: 'blog-post'})
+```
+
+Returns a promise for a [collection][] of [Entry][] objects.
+
+#### Space#getPublishedEntries(query) -> EntryCollectionPromise
+
+Search & filter all of the published entries in a space. Works like getEntries.
+
+Returns a promise for a [collection][] of [Entry][] objects.
 
 #### Space#publishEntry(entry) -> EntryPromise
 
@@ -289,6 +340,26 @@ space.unpublishEntry(entry)
 
 Returns a promise for an updated version of the entry.
 
+#### Space#archiveEntry(entry) -> EntryPromise
+
+Archive an [Entry][]. The Entry needs to be previously unpublished.
+
+```js
+space.archiveEntry(entry)
+```
+
+Returns a promise for an updated version of the entry.
+
+#### Space#unarchiveEntry(entry) -> EntryPromise
+
+Unarchive an [Entry][].
+
+```js
+space.unarchiveEntry(entry)
+```
+
+Returns a promise for an updated version of the entry.
+
 #### Space#deleteEntry(entry) -> Promise
 
 Delete an entry. Note that entries must be unpublished before deleting them.
@@ -299,23 +370,6 @@ space.deleteEntry(entry)
 
 Returns a promise for nothing, which should still be checked for errors.
 
-#### Space#getEntries(query) -> EntryCollectionPromise
-
-Search & filter all of the entries in a space. The `query` parameter should be
-an object of querystring key-value pairs. The [query examples](#query-examples)
-section containts more examples of the kinds of queries you can perform.
-
-```js
-space.getEntries({content_type: 'blog-post'})
-```
-
-Returns a promise for a [collection][] of [Entry][] objects.
-
-#### Space#getPublishedEntries(query) -> EntryCollectionPromise
-
-Search & filter all of the published entries in a space. Works like getEntries.
-
-Returns a promise for a [collection][] of [Entry][] objects.
 #### Space#createAsset(data) -> AssetPromise
 
 Create a new asset by providing field values and and an optional ID. If you do
@@ -338,6 +392,15 @@ space.createAsset({
 Returns a promise for an [Asset][], which must be [processed][process-asset]
 before it can be published.
 
+#### Space#updateAsset(data) -> ContentTypePromise
+
+Updates an existing asset. The provided data object needs to have
+`sys.id` and `sys.version` properties. The version provided should be the version
+of the asset retrieved from the server.
+
+Read more about [updating resources](https://www.contentful.com/developers/docs/references/content-management-api/#/introduction/updating-resources) on the CMA documentation.
+
+
 #### Space#processAssetFile(asset, locale) -> Promise
 
 Process the file for a particular asset & locale. Note that this operation is
@@ -354,11 +417,30 @@ order to detect when an asset has finished processing, retrieve the asset using
 
 #### Space#getAsset(id) -> AssetPromise
 
-Retrieve an asset by it's ID. Returns a promise for an [Asset][].
+Retrieve an asset by its ID. Returns a promise for an [Asset][].
 
 ```js
 space.getAsset('dinosaurs')
 ```
+
+
+#### Space#getAssets(query) -> AssetCollectionPromise
+
+Search & filter all of the assets in a space. The `query` parameter should be
+an object of querystring key-value pairs. The [query examples](#query-examples)
+section containts more examples of the kinds of queries you can perform.
+
+```js
+space.getAssets({'fields.file.url[exists]': false})
+```
+
+Returns a promise for a [collection][] of [Asset][] objects.
+
+#### Space#getPublishedAssets(query) -> AssetCollectionPromise
+
+Search & filter all of the assets in a space. Works like getAssets.
+
+Returns a promise for a [collection][] of [Asset][] objects.
 
 #### Space#publishAsset(asset) -> AssetPromise
 
@@ -381,27 +463,68 @@ space.unpublishAsset(asset)
 
 Returns a promise for an updated version of the asset.
 
-#### Space#getAssets(query) -> AssetCollectionPromise
+#### Space#archiveAsset(asset) -> AssetPromise
 
-Search & filter all of the assets in a space. The `query` parameter should be
-an object of querystring key-value pairs. The [query examples](#query-examples)
-section containts more examples of the kinds of queries you can perform.
+Archive an [Asset][]. The Asset needs to be previously unpublished.
 
 ```js
-space.getAssets({'fields.file.url[exists]': false})
+space.archiveAsset(asset)
 ```
 
-Returns a promise for a [collection][] of [Asset][] objects.
+Returns a promise for an updated version of the asset.
 
-#### Space#getPublishedAssets(query) -> AssetCollectionPromise
+#### Space#unarchiveAsset(asset) -> AssetPromise
 
-Search & filter all of the assets in a space. Works like getAssets.
+Unarchive an [Asset][].
 
-Returns a promise for a [collection][] of [Asset][] objects.
+```js
+space.unarchiveAsset(asset)
+```
+
+Returns a promise for an updated version of the asset.
+
+#### Space#createLocale(data) -> LocalePromise
+
+Create a new locale by providing a name, and locale code. You can also specify
+if the locale should be made available in the Content Management API and
+Content Delivery API (both are enabled by default)
+
+```js
+space.createLocale({
+  name: 'German',
+  code: 'de',
+  contentManagementApi: true,
+  contentDeliveryApi: true
+})
+```
+
+Returns a promise for a [Locale][].
+
+#### Space#updateLocale(data) -> LocalePromise
+
+Updates an existing locale. The provided data object needs to have
+`sys.id` and `sys.version` properties. The version provided should be the version
+of the locale retrieved from the server.
+
+Read more about [updating resources](https://www.contentful.com/developers/docs/references/content-management-api/#/introduction/updating-resources) on the CMA documentation.
+
+#### Space#getLocale(id) -> LocalePromise
+
+Retrieve a locale its ID (**not** its name or code). Returns a promise for a
+[Locale][].
+
+#### Space#deleteLocale(locale) -> Promise
+
+Delete a locale. Any content for this locale in existing entries will be gone.
+
+```js
+space.deleteLocale(locale)
+```
+
 ### ContentType properties
 
-Each content type defines a schema for entries in it's `fields` array. Every
-entry has a corresponding content type, and it's _own_ `fields` property, which
+Each content type defines a schema for entries in its `fields` array. Every
+entry has a corresponding content type, and its _own_ `fields` property, which
 is an object. The allowed keys and values in an entries `fields` object
 correspond to the field ids defined in that entries content type.
 
@@ -436,8 +559,8 @@ A complete content type (the one created in [create-content-type][]) looks like:
 ### Entry properties
 
 An entry is a piece of content containing fields and values. Every entry has a
-corresponding content type (denoted by it's `sys.contentType` property) that
-defines what keys are allowed in it's `fields` property, and what types those
+corresponding content type (denoted by its `sys.contentType` property) that
+defines what keys are allowed in its `fields` property, and what types those
 keys can contain. Note that field values are always nested in an object whose
 keys correspond to the locales available in a space.
 
@@ -554,7 +677,7 @@ space.getEntries({
 
 > Specifying the `content_type` query parameter is _required_ when querying on
 > fields (such as `fields.lives` above). Note that `'cat'` is the content type
-> **ID** and not it's name.
+> **ID** and not its name.
 
 Full-text search for entries with "bacon" anywhere in their textual content:
 

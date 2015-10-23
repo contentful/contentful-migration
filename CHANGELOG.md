@@ -4,6 +4,7 @@
 - Fix locale methods
 - Change API of locale methods
 - Add locale update method
+- Improve documentation and document some undocumented methods
 
 ## v0.3.0 - 2015-10-16
 - Add methods to get published entities

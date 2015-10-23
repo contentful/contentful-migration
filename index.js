@@ -184,38 +184,6 @@ var Space = redefine.Class({
     }
   },
 
-  // Space functions
-  getLocales: function() {
-    return this.client.request('/spaces/' + this.sys.id + '/locales')
-      .then(_.partial(SearchResult.parse, this.client));
-  },
-
-
-  createLocale: function(locale) {
-    return this.client.request('/spaces/' + this.sys.id + '/locales', {
-      method: 'POST',
-      body: JSON.stringify(locale)
-    }).then(_.partial(Locale.parse, this.client));
-  },
-
-  updateLocale: function(locale) {
-    var id = getId(locale);
-    var version = getVersion(locale);
-    return this.client.request('/spaces/' + this.sys.id + '/locales/' + id, {
-      method: 'PUT',
-      headers: {
-        'X-Contentful-Version': version
-      },
-      body: JSON.stringify(locale)
-    }).then(_.partial(Locale.parse, this.client));
-  },
-
-  deleteLocale: function(identifiable) {
-    var id = getId(identifiable);
-    return this.client.request('/spaces/' + this.sys.id + '/locales/' + id, {
-      method: 'DELETE'
-    });
-  },
 
   //
   // Content Type functions
@@ -478,6 +446,37 @@ var Space = redefine.Class({
     return this.client.request('/spaces/' + spaceId + '/assets/' + id + '/archived', {
       method: 'DELETE'
     }).then(_.partial(Entry.parse, this.client));
+  },
+
+  getLocales: function() {
+    return this.client.request('/spaces/' + this.sys.id + '/locales')
+      .then(_.partial(SearchResult.parse, this.client));
+  },
+
+  createLocale: function(locale) {
+    return this.client.request('/spaces/' + this.sys.id + '/locales', {
+      method: 'POST',
+      body: JSON.stringify(locale)
+    }).then(_.partial(Locale.parse, this.client));
+  },
+
+  updateLocale: function(locale) {
+    var id = getId(locale);
+    var version = getVersion(locale);
+    return this.client.request('/spaces/' + this.sys.id + '/locales/' + id, {
+      method: 'PUT',
+      headers: {
+        'X-Contentful-Version': version
+      },
+      body: JSON.stringify(locale)
+    }).then(_.partial(Locale.parse, this.client));
+  },
+
+  deleteLocale: function(identifiable) {
+    var id = getId(identifiable);
+    return this.client.request('/spaces/' + this.sys.id + '/locales/' + id, {
+      method: 'DELETE'
+    });
   }
 });
 
