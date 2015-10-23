@@ -83,7 +83,7 @@ var Client = redefine.Class({
     options.query.access_token = this.options.accessToken;
 
     if (!backoff && this.options.retryOnTooManyRequests) {
-      backoff = createBackoff(this.options.maxRetries)
+      backoff = createBackoff(this.options.maxRetries);
     }
 
     var uri = [
@@ -98,7 +98,7 @@ var Client = redefine.Class({
     ].join('');
 
     var self = this;
-    var response = questor(uri, options).then(parseJSONBody)
+    var response = questor(uri, options).then(parseJSONBody);
 
     if (backoff) {
       response = response.catch(function(error) {
@@ -108,8 +108,8 @@ var Client = redefine.Class({
             return self.request(path, options, backoff);
           });
         }
-        throw error
-      })
+        throw error;
+      });
     }
 
     return response.catch(function (error) {
@@ -185,37 +185,34 @@ var Space = redefine.Class({
   },
 
   // Space functions
-  /**
-   * Gets all locales enabled in space.
-   * @returns JSON of locale data for space
-   */
   getLocales: function() {
-    return this.client.request('/spaces/' + this.sys.id + '/locales');
+    return this.client.request('/spaces/' + this.sys.id + '/locales')
+      .then(_.partial(SearchResult.parse, this.client));
   },
 
 
-  /**
-   * Creates a locale
-   * @param name  The readable name of the locale, e.g. U.S English
-   * @param code  the i18n abbreviation, e.g. en-US
-   */
-  createLocale: function(name, code) {
-    var localeInfo = {"name":name,"code":code};
-    var localePath = '/spaces/' + this.sys.id + '/locales';
-    return this.client.request(localePath, {
+  createLocale: function(locale) {
+    return this.client.request('/spaces/' + this.sys.id + '/locales', {
       method: 'POST',
-      body: localeInfo
-    });
+      body: JSON.stringify(locale)
+    }).then(_.partial(Locale.parse, this.client));
   },
 
-  /**
-   *
-   * @param localeID
-   * @returns {*|{method: string, uri: string, body: *}}
-   */
-  deleteLocale: function(localeID) {
-    var localePath = '/spaces/' + this.sys.id + '/locales/' + localeID;
-    return this.client.request(localePath, {
+  updateLocale: function(locale) {
+    var id = getId(locale);
+    var version = getVersion(locale);
+    return this.client.request('/spaces/' + this.sys.id + '/locales/' + id, {
+      method: 'PUT',
+      headers: {
+        'X-Contentful-Version': version
+      },
+      body: JSON.stringify(locale)
+    }).then(_.partial(Locale.parse, this.client));
+  },
+
+  deleteLocale: function(identifiable) {
+    var id = getId(identifiable);
+    return this.client.request('/spaces/' + this.sys.id + '/locales/' + id, {
       method: 'DELETE'
     });
   },
@@ -514,6 +511,24 @@ var Entry = redefine.Class({
   }
 });
 
+var Locale = redefine.Class({
+  constructor: function Locale() {},
+
+  statics: {
+    parse: function(client, object) {
+      return redefine(_.extend(new Locale(), {
+        sys: Sys.parse(object.sys),
+        code: object.code,
+        name: object.name,
+        contentDeliveryApi: object.contentDeliveryApi,
+        contentManagementApi: object.contentManagementApi
+      }), {
+        client: client
+      });
+    }
+  }
+});
+
 var ContentType = redefine.Class({
   constructor: function ContentType() {},
 
@@ -630,7 +645,8 @@ var parseableResourceTypes =  {
   Asset: Asset,
   ContentType: ContentType,
   Entry: Entry,
-  Space: Space
+  Space: Space,
+  Locale: Locale
 };
 
 function isParseableResource(object) {
