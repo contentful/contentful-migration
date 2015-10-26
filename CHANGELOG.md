@@ -1,5 +1,8 @@
 # Changelog
 
+## Upcoming
+- Expose full error object on the APIError instances
+
 ## v0.4.0 - 2015-10-23
 - Fix locale methods
 - Change API of locale methods
