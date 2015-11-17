@@ -113,7 +113,7 @@ var Client = redefine.Class({
     }
 
     return response.catch(function (error) {
-      if (!('body' in error)) {
+      if (error && !error.body) {
         // Attach request info to errors that don't have a response body
         error.request = {
           method: options.method,
@@ -124,12 +124,20 @@ var Client = redefine.Class({
       }
 
       // Otherwise parse, wrap, and rethrow the error
-      error = parseJSONBody(error);
-      throw new APIError(error, {
-        method: options.method,
-        uri: uri,
-        body: options.body
-      });
+      var parsedError = parseJSONBody(error);
+      if (parsedError) {
+        throw new APIError(parsedError, {
+          method: options.method,
+          uri: uri,
+          body: options.body
+        });
+      } else {
+        throw new APIError(error, {
+          method: options.method,
+          uri: uri,
+          body: options.body
+        });
+      }
     });
   },
 
