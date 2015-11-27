@@ -8,6 +8,7 @@ var redefine = require('redefine');
 var querystring = require('querystring');
 
 var APIError = require('./lib/api-error');
+var PropError = require('./lib/prop-error');
 var createBackoff = require('./lib/backoff');
 var rateLimit = require('./lib/rate-limit');
 
@@ -19,7 +20,7 @@ function getId(identifiable) {
     return identifiable;
   }
   if (!_.hasPath(identifiable, ['sys', 'id'])) {
-    throw new TypeError('Expected resource to have an ID in sys.id');
+    throw new PropError('Expected resource to have an ID in sys.id', identifiable);
   }
   return _.getPath(identifiable, ['sys', 'id']);
 }
@@ -28,7 +29,7 @@ function getId(identifiable) {
 // {sys: {version: Version}} -> Version
 function getVersion(resource) {
   if (!_.hasPath(resource, ['sys', 'version'])) {
-    throw new TypeError('Expected resource to have a version in sys.version');
+    throw new PropError('Expected resource to have a version in sys.version', resource);
   }
   return _.getPath(resource, ['sys', 'version']);
 }
@@ -645,7 +646,7 @@ function compacto(object) {
 
 function enforcep(object, property) {
   if (!_.exists(object[property]))
-    throw new TypeError('Expected property ' + property);
+    throw new PropError('Expected property ' + property, object);
 }
 
 var parseableResourceTypes =  {
