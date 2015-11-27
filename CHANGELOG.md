@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.7.0
+- Improve missing property errors
+
 ## v0.5.0 - 2015-10-26
 - Expose full error object on the APIError instances
 
