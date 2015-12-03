@@ -130,13 +130,15 @@ var Client = redefine.Class({
         throw new APIError(parsedError, {
           method: options.method,
           uri: uri,
-          body: options.body
+          body: options.body,
+          headers: options.headers
         });
       } else {
         throw new APIError(error, {
           method: options.method,
           uri: uri,
-          body: options.body
+          body: options.body,
+          headers: options.headers
         });
       }
     });
@@ -271,11 +273,30 @@ var Space = redefine.Class({
 
   createEntry: function(contentType, entry) {
     var contentTypeId = getId(contentType);
+    if(!contentTypeId) {
+      throw new PropError('Entry creation needs a content type id', {
+        contentType: contentType,
+        entry: entry
+      });
+    }
     var path = creationPathForResource(this, 'Entry', entry);
     return this.client.request(path, {
       method: creationMethodForResource(entry),
       headers: {
         'X-Contentful-Content-Type': contentTypeId
+      },
+      body: JSON.stringify(getData(entry))
+    }).then(_.partial(Entry.parse, this.client));
+  },
+
+  updateEntry: function(entry) {
+    var spaceId = getId(this);
+    var id = getId(entry);
+    var version = getVersion(entry);
+    return this.client.request('/spaces/' + spaceId + '/entries/' + id, {
+      method: 'PUT',
+      headers: {
+        'X-Contentful-Version': version
       },
       body: JSON.stringify(getData(entry))
     }).then(_.partial(Entry.parse, this.client));
@@ -296,19 +317,6 @@ var Space = redefine.Class({
     var query = Query.parse(object);
     return this.client.request('/spaces/' + this.sys.id + '/public/entries', {query: query})
       .then(_.partial(SearchResult.parse, this.client));
-  },
-
-  updateEntry: function(entry) {
-    var spaceId = getId(this);
-    var id = getId(entry);
-    var version = getVersion(entry);
-    return this.client.request('/spaces/' + spaceId + '/entries/' + id, {
-      method: 'PUT',
-      headers: {
-        'X-Contentful-Version': version
-      },
-      body: JSON.stringify(getData(entry))
-    }).then(_.partial(Entry.parse, this.client));
   },
 
   publishEntry: function(entry, publishVersion) {
