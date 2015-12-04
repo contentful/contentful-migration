@@ -288,11 +288,6 @@ space.getEntries({content_type: 'blog-post'})
 
 Returns a promise for a [collection][] of [Entry][] objects.
 
-#### Space#getPublishedEntries(query) -> EntryCollectionPromise
-
-Search & filter all of the published entries in a space. Works like getEntries.
-
-Returns a promise for a [collection][] of [Entry][] objects.
 #### Space#getEntry(id) -> EntryPromise
 
 Retrieve an entry by its ID. Returns a promise for an [Entry][].
