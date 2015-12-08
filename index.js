@@ -1,9 +1,7 @@
 'use strict';
 
-var Promise = require('es6-promise').Promise;
-
 var _ = require('underscore-contrib');
-var questor = require('questor');
+var axios = require('axios');
 var redefine = require('redefine');
 var querystring = require('querystring');
 
@@ -97,9 +95,10 @@ var Client = redefine.Class({
       '?',
       querystring.stringify(options.query)
     ].join('');
+    options.url = uri;
 
     var self = this;
-    var response = questor(uri, options).then(parseJSONBody);
+    var response = axios(options).then(extractData);
 
     if (backoff) {
       response = response.catch(function(error) {
@@ -114,7 +113,7 @@ var Client = redefine.Class({
     }
 
     return response.catch(function (error) {
-      if (error && !error.body) {
+      if (error && !error.data) {
         // Attach request info to errors that don't have a response body
         error.request = {
           method: options.method,
@@ -125,7 +124,7 @@ var Client = redefine.Class({
       }
 
       // Otherwise parse, wrap, and rethrow the error
-      var parsedError = parseJSONBody(error);
+      var parsedError = extractData(error);
       if (parsedError) {
         throw new APIError(parsedError, {
           method: options.method,
@@ -643,7 +642,7 @@ exports.createClient = _.fnull(function(options) {
   return new Client(options);
 }, {});
 
-exports.APIError = APIError
+exports.APIError = APIError;
 
 function compacto(object) {
   return _.reduce(object, function(compacted, value, key) {
@@ -704,7 +703,7 @@ function walkMutate(input, pred, mutator) {
   return input;
 }
 
-function parseJSONBody(response) {
-  if (!response.body) return;
-  return JSON.parse(response.body);
+function extractData(response) {
+  if (!response.data) return;
+  return response.data;
 }
