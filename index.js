@@ -122,7 +122,7 @@ var Client = redefine.Class({
         error.request = {
           method: options.method,
           uri: uri,
-          body: options.body
+          body: options.data
         };
         throw error;
       }
@@ -133,14 +133,14 @@ var Client = redefine.Class({
         throw new APIError(parsedError, {
           method: options.method,
           uri: uri,
-          body: options.body,
+          body: options.data,
           headers: options.headers
         });
       } else {
         throw new APIError(error, {
           method: options.method,
           uri: uri,
-          body: options.body,
+          body: options.data,
           headers: options.headers
         });
       }
@@ -154,7 +154,7 @@ var Client = redefine.Class({
     }
     return this.request('/spaces', {
       method: 'POST',
-      body: JSON.stringify(space),
+      data: JSON.stringify(space),
       headers: headers
     }).then(_.partial(Space.parse, this));
   },
@@ -176,7 +176,7 @@ var Client = redefine.Class({
       headers: {
         'X-Contentful-Version': version
       },
-      body: JSON.stringify(getData(space))
+      data: JSON.stringify(getData(space))
     }).then(_.partial(Space.parse, this.client));
   },
 
@@ -207,7 +207,7 @@ var Space = redefine.Class({
     var path = creationPathForResource(this, 'ContentType', contentType);
     return this.client.request(path, {
       method: creationMethodForResource(contentType),
-      body: JSON.stringify(contentType)
+      data: JSON.stringify(contentType)
     }).then(_.partial(ContentType.parse, this.client));
   },
 
@@ -237,7 +237,7 @@ var Space = redefine.Class({
       headers: {
         'X-Contentful-Version': version
       },
-      body: JSON.stringify(getData(contentType))
+      data: JSON.stringify(getData(contentType))
     }).then(_.partial(ContentType.parse, this.client));
   },
 
@@ -288,7 +288,7 @@ var Space = redefine.Class({
       headers: {
         'X-Contentful-Content-Type': contentTypeId
       },
-      body: JSON.stringify(getData(entry))
+      data: JSON.stringify(getData(entry))
     }).then(_.partial(Entry.parse, this.client));
   },
 
@@ -301,7 +301,7 @@ var Space = redefine.Class({
       headers: {
         'X-Contentful-Version': version
       },
-      body: JSON.stringify(getData(entry))
+      data: JSON.stringify(getData(entry))
     }).then(_.partial(Entry.parse, this.client));
   },
 
@@ -375,7 +375,7 @@ var Space = redefine.Class({
     var path = creationPathForResource(this, 'Asset', asset);
     return this.client.request(path, {
       method: creationMethodForResource(asset),
-      body: JSON.stringify(asset)
+      data: JSON.stringify(asset)
     }).then(_.partial(Asset.parse, this.client));
   },
 
@@ -406,7 +406,7 @@ var Space = redefine.Class({
       headers: {
         'X-Contentful-Version': version
       },
-      body: JSON.stringify(getData(asset))
+      data: JSON.stringify(getData(asset))
     }).then(_.partial(Asset.parse, this.client));
   },
 
@@ -476,7 +476,7 @@ var Space = redefine.Class({
   createLocale: function(locale) {
     return this.client.request('/spaces/' + this.sys.id + '/locales', {
       method: 'POST',
-      body: JSON.stringify(locale)
+      data: JSON.stringify(locale)
     }).then(_.partial(Locale.parse, this.client));
   },
 
@@ -488,7 +488,7 @@ var Space = redefine.Class({
       headers: {
         'X-Contentful-Version': version
       },
-      body: JSON.stringify(locale)
+      data: JSON.stringify(locale)
     }).then(_.partial(Locale.parse, this.client));
   },
 
