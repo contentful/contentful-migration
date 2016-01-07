@@ -66,8 +66,10 @@ var Client = redefine.Class({
       secure: true,
       rateLimit: 6,
       retryOnTooManyRequests: true,
-      maxRetries: 5
+      maxRetries: 5,
     });
+
+    this.agent = options.agent;
 
     // decorate this.request with a rate limiter
     this.request = rateLimit(this.options.rateLimit, 1000, this.request);
@@ -96,6 +98,8 @@ var Client = redefine.Class({
       querystring.stringify(options.query)
     ].join('');
     options.url = uri;
+
+    if(this.agent) options.agent = this.agent;
 
     var self = this;
     var response = axios(options).then(extractData);

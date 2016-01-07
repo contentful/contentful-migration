@@ -79,6 +79,8 @@ var client = contentful.createClient({
 });
 ```
 
+If you'd like to use contentful.js with an http proxy, look into [https-proxy-agent](https://www.npmjs.com/package/https-proxy-agent). If you pass down an agent through the relevant initialization option it gets passed down to axios and subsequently to Node's http module.
+
 ### Client#getSpace(id) -> SpacePromise
 
 ```js
