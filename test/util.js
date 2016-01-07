@@ -1,5 +1,8 @@
 'use strict';
 
+var Promise = require('es6-promise');
+global.Promise = Promise;
+
 var contentful = require('..');
 
 if (process.env.CONTENTFUL_ACCESS_TOKEN === undefined) {
@@ -16,4 +19,3 @@ exports.client = contentful.createClient({
   host: process.env.CONTENTFUL_MANAGEMENT_HOSTNAME,
   secure: true
 });
-

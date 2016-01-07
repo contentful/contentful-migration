@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.8.1
+- Fix requirements for es6-promise
+
 ## v0.8.0
 - Use axios instead of questor
 
