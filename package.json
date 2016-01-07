@@ -1,7 +1,7 @@
 {
   "name": "contentful-management",
   "description": "Client for Contentful's Content Management API",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "homepage": "https://www.contentful.com/developers/documentation/content-management-api/",
   "main": "index.js",
   "browser": {
