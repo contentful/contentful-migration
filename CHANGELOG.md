@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.8.0
+- Use axios instead of questor
+
 ## v0.7.0
 - Improve missing property errors
 
