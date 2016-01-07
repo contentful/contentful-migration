@@ -11,7 +11,7 @@
   "author": "Stephan Seidt <stephan@contentful.com>",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.7.0",
+    "axios": "^0.8.1",
     "es6-promise": "^2.3.0",
     "inherits": "^2.0.1",
     "redefine": "^0.2.0",
