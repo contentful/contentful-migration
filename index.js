@@ -81,6 +81,7 @@ var Client = redefine.Class({
     if (!options.headers) options.headers = {};
     if (!options.query) options.query = {};
     options.headers['Content-Type'] = 'application/vnd.contentful.management.v1+json';
+    options.headers['User-Agent'] = 'contentful-management.js/0.x';
     options.query.access_token = this.options.accessToken;
 
     if (!backoff && this.options.retryOnTooManyRequests) {
