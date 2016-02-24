@@ -612,7 +612,7 @@ var Sys = redefine.Class({
     parse: function(object) {
       return _.extend(
         new Sys(),
-        _.pick(object, 'id', 'version', 'type', 'locale', 'archivedVersion', 'publishedVersion'),
+        _.pick(object, 'id', 'version', 'type', 'locale', 'archivedVersion', 'publishedVersion', 'revision'),
         compacto({
           archivedAt: object.archivedAt && new Date(object.archivedAt),
           archivedBy: object.archivedBy && Link.parse(object.archivedBy),
