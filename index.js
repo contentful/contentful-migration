@@ -1,65 +1,63 @@
-'use strict';
+var _ = require('underscore-contrib')
+var axios = require('axios')
+var redefine = require('redefine')
+var querystring = require('querystring')
 
-var _ = require('underscore-contrib');
-var axios = require('axios');
-var redefine = require('redefine');
-var querystring = require('querystring');
-
-var APIError = require('./lib/api-error');
-var PropError = require('./lib/prop-error');
-var createBackoff = require('./lib/backoff');
-var rateLimit = require('./lib/rate-limit');
+var APIError = require('./lib/api-error')
+var PropError = require('./lib/prop-error')
+var createBackoff = require('./lib/backoff')
+var rateLimit = require('./lib/rate-limit')
 
 // Identifiable
 // Object{sys: {id: Id}} -> Id
 // String -> Id
-function getId(identifiable) {
+function getId (identifiable) {
   if (_.isString(identifiable)) {
-    return identifiable;
+    return identifiable
   }
   if (!_.hasPath(identifiable, ['sys', 'id'])) {
-    throw new PropError('Expected resource to have an ID in sys.id', identifiable);
+    throw new PropError('Expected resource to have an ID in sys.id', identifiable)
   }
-  return _.getPath(identifiable, ['sys', 'id']);
+  return _.getPath(identifiable, ['sys', 'id'])
 }
 
 // Versioned
 // {sys: {version: Version}} -> Version
-function getVersion(resource) {
+function getVersion (resource) {
   if (!_.hasPath(resource, ['sys', 'version'])) {
-    throw new PropError('Expected resource to have a version in sys.version', resource);
+    throw new PropError('Expected resource to have a version in sys.version', resource)
   }
-  return _.getPath(resource, ['sys', 'version']);
+  return _.getPath(resource, ['sys', 'version'])
 }
 
 // {sys: Object, ...} -> {...}
-function getData(resource) {
-  return _.omit(resource, 'sys');
+function getData (resource) {
+  return _.omit(resource, 'sys')
 }
 
-function creationMethodForResource(resource) {
-  var hasId = _.hasPath(resource, ['sys', 'id']);
-  return hasId ? 'PUT' : 'POST';
+function creationMethodForResource (resource) {
+  var hasId = _.hasPath(resource, ['sys', 'id'])
+  return hasId ? 'PUT' : 'POST'
 }
 
-function creationPathForResource(space, type, resource) {
-  var hasId = _.hasPath(resource, ['sys', 'id']);
+function creationPathForResource (space, type, resource) {
+  var hasId = _.hasPath(resource, ['sys', 'id'])
   var resourceName = {
     Asset: 'assets',
     ContentType: 'content_types',
     Entry: 'entries'
-  }[type];
-  var path = '/spaces/' + space.sys.id + '/' + resourceName;
+  }[type]
+  var path = '/spaces/' + space.sys.id + '/' + resourceName
   if (hasId) {
-    var id = _.getPath(resource, ['sys', 'id']);
-    path += '/' + id;
+    var id = _.getPath(resource, ['sys', 'id'])
+    path += '/' + id
   }
-  return path;
+  return path
 }
 
 var Client = redefine.Class({
-  constructor: function Client(options) {
-    enforcep(options, 'accessToken');
+  constructor: function Client (options) {
+    enforcep(options, 'accessToken')
 
     this.options = _.defaults({}, options, {
       host: 'api.contentful.com',
@@ -67,25 +65,25 @@ var Client = redefine.Class({
       rateLimit: 6,
       retryOnTooManyRequests: true,
       maxRetries: 5,
-    });
+    })
 
-    this.agent = options.agent;
+    this.agent = options.agent
 
     // decorate this.request with a rate limiter
-    this.request = rateLimit(this.options.rateLimit, 1000, this.request);
+    this.request = rateLimit(this.options.rateLimit, 1000, this.request)
   },
 
-  request: function(path, options, backoff) {
-    if (!options) options = {};
-    if (!options.method) options.method = 'GET';
-    if (!options.headers) options.headers = {};
-    if (!options.query) options.query = {};
-    options.headers['Content-Type'] = 'application/vnd.contentful.management.v1+json';
-    options.headers['X-Contentful-User-Agent'] = 'contentful-management.js/0.x';
-    options.query.access_token = this.options.accessToken;
+  request: function (path, options, backoff) {
+    if (!options) options = {}
+    if (!options.method) options.method = 'GET'
+    if (!options.headers) options.headers = {}
+    if (!options.query) options.query = {}
+    options.headers['Content-Type'] = 'application/vnd.contentful.management.v1+json'
+    options.headers['X-Contentful-User-Agent'] = 'contentful-management.js/0.x'
+    options.query.access_token = this.options.accessToken
 
     if (!backoff && this.options.retryOnTooManyRequests) {
-      backoff = createBackoff(this.options.maxRetries);
+      backoff = createBackoff(this.options.maxRetries)
     }
 
     var uri = [
@@ -97,24 +95,24 @@ var Client = redefine.Class({
       path,
       '?',
       querystring.stringify(options.query)
-    ].join('');
-    options.url = uri;
+    ].join('')
+    options.url = uri
 
-    if(this.agent) options.agent = this.agent;
+    if (this.agent) options.agent = this.agent
 
-    var self = this;
-    var response = axios(options).then(extractData);
+    var self = this
+    var response = axios(options).then(extractData)
 
     if (backoff) {
-      response = response.catch(function(error) {
+      response = response.catch(function (error) {
         // Rate-limited by the server, maybe backoff and retry
         if (error.status === 429) {
           return backoff(error, function () {
-            return self.request(path, options, backoff);
-          });
+            return self.request(path, options, backoff)
+          })
         }
-        throw error;
-      });
+        throw error
+      })
     }
 
     return response.catch(function (error) {
@@ -124,418 +122,417 @@ var Client = redefine.Class({
           method: options.method,
           uri: uri,
           body: options.data
-        };
-        throw error;
+        }
+        throw error
       }
 
       // Otherwise parse, wrap, and rethrow the error
-      var parsedError = extractData(error);
+      var parsedError = extractData(error)
       if (parsedError) {
         throw new APIError(parsedError, {
           method: options.method,
           uri: uri,
           body: options.data,
           headers: options.headers
-        });
+        })
       } else {
         throw new APIError(error, {
           method: options.method,
           uri: uri,
           body: options.data,
           headers: options.headers
-        });
+        })
       }
-    });
+    })
   },
 
-  createSpace: function(space, organizationId) {
-    var headers = {};
+  createSpace: function (space, organizationId) {
+    var headers = {}
     if (organizationId) {
-      headers['X-Contentful-Organization'] = organizationId;
+      headers['X-Contentful-Organization'] = organizationId
     }
     return this.request('/spaces', {
       method: 'POST',
       data: JSON.stringify(space),
       headers: headers
-    }).then(_.partial(Space.parse, this));
+    }).then(_.partial(Space.parse, this))
   },
 
-  getSpace: function(identifiable) {
-    var id = getId(identifiable);
-    return this.request('/spaces/' + id).then(_.partial(Space.parse, this));
+  getSpace: function (identifiable) {
+    var id = getId(identifiable)
+    return this.request('/spaces/' + id).then(_.partial(Space.parse, this))
   },
 
-  getSpaces: function() {
-    return this.request('/spaces').then(_.partial(SearchResult.parse, this));
+  getSpaces: function () {
+    return this.request('/spaces').then(_.partial(SearchResult.parse, this))
   },
 
-  updateSpace: function(space) {
-    var id = getId(space);
-    var version = getVersion(space);
+  updateSpace: function (space) {
+    var id = getId(space)
+    var version = getVersion(space)
     return this.request('/spaces/' + id, {
       method: 'PUT',
       headers: {
         'X-Contentful-Version': version
       },
       data: JSON.stringify(getData(space))
-    }).then(_.partial(Space.parse, this.client));
+    }).then(_.partial(Space.parse, this.client))
   },
 
-  deleteSpace: function(identifiable) {
-    var id = getId(identifiable);
+  deleteSpace: function (identifiable) {
+    var id = getId(identifiable)
     return this.request('/spaces/' + id, {
       method: 'DELETE',
       ignoreResponseBody: true
-    });
+    })
   }
-});
+})
 
 var Space = redefine.Class({
-  constructor: function Space() {},
+  constructor: function Space () {},
 
   statics: {
-    parse: function(client, object) {
-      return redefine(_.extend(new Space(), object), {client: client});
+    parse: function (client, object) {
+      return redefine(_.extend(new Space(), object), {client: client})
     }
   },
-
 
   //
   // Content Type functions
   //
 
-  createContentType: function(contentType) {
-    var path = creationPathForResource(this, 'ContentType', contentType);
+  createContentType: function (contentType) {
+    var path = creationPathForResource(this, 'ContentType', contentType)
     return this.client.request(path, {
       method: creationMethodForResource(contentType),
       data: JSON.stringify(contentType)
-    }).then(_.partial(ContentType.parse, this.client));
+    }).then(_.partial(ContentType.parse, this.client))
   },
 
-  getContentType: function(id) {
+  getContentType: function (id) {
     return this.client.request('/spaces/' + this.sys.id + '/content_types/' + id)
-      .then(_.partial(ContentType.parse, this.client));
+      .then(_.partial(ContentType.parse, this.client))
   },
 
-  getContentTypes: function(object) {
-    var query = Query.parse(object);
+  getContentTypes: function (object) {
+    var query = Query.parse(object)
     return this.client.request('/spaces/' + this.sys.id + '/content_types', {query: query})
-      .then(_.partial(SearchResult.parse, this.client));
+      .then(_.partial(SearchResult.parse, this.client))
   },
 
-  getPublishedContentTypes: function(object) {
-    var query = Query.parse(object);
+  getPublishedContentTypes: function (object) {
+    var query = Query.parse(object)
     return this.client.request('/spaces/' + this.sys.id + '/public/content_types', {query: query})
-      .then(_.partial(SearchResult.parse, this.client));
+      .then(_.partial(SearchResult.parse, this.client))
   },
 
-  updateContentType: function(contentType) {
-    var spaceId = getId(this);
-    var id = getId(contentType);
-    var version = getVersion(contentType);
+  updateContentType: function (contentType) {
+    var spaceId = getId(this)
+    var id = getId(contentType)
+    var version = getVersion(contentType)
     return this.client.request('/spaces/' + spaceId + '/content_types/' + id, {
       method: 'PUT',
       headers: {
         'X-Contentful-Version': version
       },
       data: JSON.stringify(getData(contentType))
-    }).then(_.partial(ContentType.parse, this.client));
+    }).then(_.partial(ContentType.parse, this.client))
   },
 
-  deleteContentType: function(contentType) {
-    var spaceId = getId(this);
-    var id = getId(contentType);
+  deleteContentType: function (contentType) {
+    var spaceId = getId(this)
+    var id = getId(contentType)
     return this.client.request('/spaces/' + spaceId + '/content_types/' + id, {
       method: 'DELETE',
       ignoreResponseBody: true
-    });
+    })
   },
 
-  publishContentType: function(contentType, publishVersion) {
-    var spaceId = getId(this);
-    var id = getId(contentType);
-    var version = publishVersion || getVersion(contentType);
+  publishContentType: function (contentType, publishVersion) {
+    var spaceId = getId(this)
+    var id = getId(contentType)
+    var version = publishVersion || getVersion(contentType)
     return this.client.request('/spaces/' + spaceId + '/content_types/' + id + '/published', {
       method: 'PUT',
       headers: {
         'X-Contentful-Version': version
       }
-    }).then(_.partial(ContentType.parse, this.client));
+    }).then(_.partial(ContentType.parse, this.client))
   },
 
-  unpublishContentType: function(contentType) {
-    var spaceId = getId(this);
-    var id = getId(contentType);
+  unpublishContentType: function (contentType) {
+    var spaceId = getId(this)
+    var id = getId(contentType)
     return this.client.request('/spaces/' + spaceId + '/content_types/' + id + '/published', {
       method: 'DELETE'
-    }).then(_.partial(ContentType.parse, this.client));
+    }).then(_.partial(ContentType.parse, this.client))
   },
 
   //
   // Entry functions
   //
 
-  createEntry: function(contentType, entry) {
-    var contentTypeId = getId(contentType);
-    if(!contentTypeId) {
+  createEntry: function (contentType, entry) {
+    var contentTypeId = getId(contentType)
+    if (!contentTypeId) {
       throw new PropError('Entry creation needs a content type id', {
         contentType: contentType,
         entry: entry
-      });
+      })
     }
-    var path = creationPathForResource(this, 'Entry', entry);
+    var path = creationPathForResource(this, 'Entry', entry)
     return this.client.request(path, {
       method: creationMethodForResource(entry),
       headers: {
         'X-Contentful-Content-Type': contentTypeId
       },
       data: JSON.stringify(getData(entry))
-    }).then(_.partial(Entry.parse, this.client));
+    }).then(_.partial(Entry.parse, this.client))
   },
 
-  updateEntry: function(entry) {
-    var spaceId = getId(this);
-    var id = getId(entry);
-    var version = getVersion(entry);
+  updateEntry: function (entry) {
+    var spaceId = getId(this)
+    var id = getId(entry)
+    var version = getVersion(entry)
     return this.client.request('/spaces/' + spaceId + '/entries/' + id, {
       method: 'PUT',
       headers: {
         'X-Contentful-Version': version
       },
       data: JSON.stringify(getData(entry))
-    }).then(_.partial(Entry.parse, this.client));
+    }).then(_.partial(Entry.parse, this.client))
   },
 
-  getEntry: function(id) {
+  getEntry: function (id) {
     return this.client.request('/spaces/' + this.sys.id + '/entries/' + id)
-      .then(_.partial(Entry.parse, this.client));
+      .then(_.partial(Entry.parse, this.client))
   },
 
-  getEntries: function(object) {
-    var query = Query.parse(object);
+  getEntries: function (object) {
+    var query = Query.parse(object)
     return this.client.request('/spaces/' + this.sys.id + '/entries', {query: query})
-      .then(_.partial(SearchResult.parse, this.client));
+      .then(_.partial(SearchResult.parse, this.client))
   },
 
-  getPublishedEntries: function(object) {
-    var query = Query.parse(object);
+  getPublishedEntries: function (object) {
+    var query = Query.parse(object)
     return this.client.request('/spaces/' + this.sys.id + '/public/entries', {query: query})
-      .then(_.partial(SearchResult.parse, this.client));
+      .then(_.partial(SearchResult.parse, this.client))
   },
 
-  publishEntry: function(entry, publishVersion) {
-    var spaceId = getId(this);
-    var id = getId(entry);
-    var version = publishVersion || getVersion(entry);
+  publishEntry: function (entry, publishVersion) {
+    var spaceId = getId(this)
+    var id = getId(entry)
+    var version = publishVersion || getVersion(entry)
     return this.client.request('/spaces/' + spaceId + '/entries/' + id + '/published', {
       method: 'PUT',
       headers: {
         'X-Contentful-Version': version
       }
-    }).then(_.partial(Entry.parse, this.client));
+    }).then(_.partial(Entry.parse, this.client))
   },
 
-  unpublishEntry: function(entry) {
-    var spaceId = getId(this);
-    var id = getId(entry);
+  unpublishEntry: function (entry) {
+    var spaceId = getId(this)
+    var id = getId(entry)
     return this.client.request('/spaces/' + spaceId + '/entries/' + id + '/published', {
       method: 'DELETE'
-    }).then(_.partial(Entry.parse, this.client));
+    }).then(_.partial(Entry.parse, this.client))
   },
 
-  deleteEntry: function(identifiable) {
-    var spaceId = getId(this);
-    var id = getId(identifiable);
+  deleteEntry: function (identifiable) {
+    var spaceId = getId(this)
+    var id = getId(identifiable)
     return this.client.request('/spaces/' + spaceId + '/entries/' + id, {
       method: 'DELETE',
       ignoreResponseBody: true
-    });
+    })
   },
 
-  archiveEntry: function(entry) {
-    var spaceId = getId(this);
-    var id = getId(entry);
+  archiveEntry: function (entry) {
+    var spaceId = getId(this)
+    var id = getId(entry)
     return this.client.request('/spaces/' + spaceId + '/entries/' + id + '/archived', {
       method: 'PUT'
-    }).then(_.partial(Entry.parse, this.client));
+    }).then(_.partial(Entry.parse, this.client))
   },
 
-  unarchiveEntry: function(entry) {
-    var spaceId = getId(this);
-    var id = getId(entry);
+  unarchiveEntry: function (entry) {
+    var spaceId = getId(this)
+    var id = getId(entry)
     return this.client.request('/spaces/' + spaceId + '/entries/' + id + '/archived', {
       method: 'DELETE'
-    }).then(_.partial(Entry.parse, this.client));
+    }).then(_.partial(Entry.parse, this.client))
   },
 
   //
   // Asset functions
   //
 
-  createAsset: function(asset) {
-    var path = creationPathForResource(this, 'Asset', asset);
+  createAsset: function (asset) {
+    var path = creationPathForResource(this, 'Asset', asset)
     return this.client.request(path, {
       method: creationMethodForResource(asset),
       data: JSON.stringify(asset)
-    }).then(_.partial(Asset.parse, this.client));
+    }).then(_.partial(Asset.parse, this.client))
   },
 
-  getAsset: function(identifiable) {
-    var id = getId(identifiable);
+  getAsset: function (identifiable) {
+    var id = getId(identifiable)
     return this.client.request('/spaces/' + this.sys.id + '/assets/' + id)
-      .then(_.partial(Asset.parse, this.client));
+      .then(_.partial(Asset.parse, this.client))
   },
 
-  getAssets: function(object) {
-    var query = Query.parse(object);
+  getAssets: function (object) {
+    var query = Query.parse(object)
     return this.client.request('/spaces/' + this.sys.id + '/assets', {query: query})
-     .then(_.partial(SearchResult.parse, this.client));
+      .then(_.partial(SearchResult.parse, this.client))
   },
 
-  getPublishedAssets: function(object) {
-    var query = Query.parse(object);
+  getPublishedAssets: function (object) {
+    var query = Query.parse(object)
     return this.client.request('/spaces/' + this.sys.id + '/public/assets', {query: query})
-     .then(_.partial(SearchResult.parse, this.client));
+      .then(_.partial(SearchResult.parse, this.client))
   },
 
-  updateAsset: function(asset) {
-    var spaceId = getId(this);
-    var id = getId(asset);
-    var version = getVersion(asset);
+  updateAsset: function (asset) {
+    var spaceId = getId(this)
+    var id = getId(asset)
+    var version = getVersion(asset)
     return this.client.request('/spaces/' + spaceId + '/assets/' + id, {
       method: 'PUT',
       headers: {
         'X-Contentful-Version': version
       },
       data: JSON.stringify(getData(asset))
-    }).then(_.partial(Asset.parse, this.client));
+    }).then(_.partial(Asset.parse, this.client))
   },
 
-  processAssetFile: function(asset, fileId, processVersion) {
-    var spaceId = getId(this);
-    var id = getId(asset);
-    var version = processVersion || getVersion(asset);
+  processAssetFile: function (asset, fileId, processVersion) {
+    var spaceId = getId(this)
+    var id = getId(asset)
+    var version = processVersion || getVersion(asset)
     return this.client.request('/spaces/' + spaceId + '/assets/' + id + '/files/' + fileId + '/process', {
       method: 'PUT',
       headers: {
         'X-Contentful-Version': version
       },
       ignoreResponseBody: true
-    });
+    })
   },
 
-  publishAsset: function(asset, publishVersion) {
-    var spaceId = getId(this);
-    var id = getId(asset);
-    var version = publishVersion || getVersion(asset);
+  publishAsset: function (asset, publishVersion) {
+    var spaceId = getId(this)
+    var id = getId(asset)
+    var version = publishVersion || getVersion(asset)
     return this.client.request('/spaces/' + spaceId + '/assets/' + id + '/published', {
       method: 'PUT',
       headers: {
         'X-Contentful-Version': version
       }
-    }).then(_.partial(Asset.parse, this.client));
+    }).then(_.partial(Asset.parse, this.client))
   },
 
-  unpublishAsset: function(asset) {
-    var spaceId = getId(this);
-    var id = getId(asset);
+  unpublishAsset: function (asset) {
+    var spaceId = getId(this)
+    var id = getId(asset)
     return this.client.request('/spaces/' + spaceId + '/assets/' + id + '/published', {
       method: 'DELETE'
-    }).then(_.partial(Asset.parse, this.client));
+    }).then(_.partial(Asset.parse, this.client))
   },
 
-  deleteAsset: function(identifiable) {
-    var spaceId = getId(this);
-    var id = getId(identifiable);
+  deleteAsset: function (identifiable) {
+    var spaceId = getId(this)
+    var id = getId(identifiable)
     return this.client.request('/spaces/' + spaceId + '/assets/' + id, {
       method: 'DELETE',
       ignoreResponseBody: true
-    });
+    })
   },
 
-  archiveAsset: function(asset) {
-    var spaceId = getId(this);
-    var id = getId(asset);
+  archiveAsset: function (asset) {
+    var spaceId = getId(this)
+    var id = getId(asset)
     return this.client.request('/spaces/' + spaceId + '/assets/' + id + '/archived', {
       method: 'PUT'
-    }).then(_.partial(Asset.parse, this.client));
+    }).then(_.partial(Asset.parse, this.client))
   },
 
-  unarchiveAsset: function(asset) {
-    var spaceId = getId(this);
-    var id = getId(asset);
+  unarchiveAsset: function (asset) {
+    var spaceId = getId(this)
+    var id = getId(asset)
     return this.client.request('/spaces/' + spaceId + '/assets/' + id + '/archived', {
       method: 'DELETE'
-    }).then(_.partial(Entry.parse, this.client));
+    }).then(_.partial(Entry.parse, this.client))
   },
 
-  getLocales: function() {
+  getLocales: function () {
     return this.client.request('/spaces/' + this.sys.id + '/locales')
-      .then(_.partial(SearchResult.parse, this.client));
+      .then(_.partial(SearchResult.parse, this.client))
   },
 
-  createLocale: function(locale) {
+  createLocale: function (locale) {
     return this.client.request('/spaces/' + this.sys.id + '/locales', {
       method: 'POST',
       data: JSON.stringify(locale)
-    }).then(_.partial(Locale.parse, this.client));
+    }).then(_.partial(Locale.parse, this.client))
   },
 
-  updateLocale: function(locale) {
-    var id = getId(locale);
-    var version = getVersion(locale);
+  updateLocale: function (locale) {
+    var id = getId(locale)
+    var version = getVersion(locale)
     return this.client.request('/spaces/' + this.sys.id + '/locales/' + id, {
       method: 'PUT',
       headers: {
         'X-Contentful-Version': version
       },
       data: JSON.stringify(locale)
-    }).then(_.partial(Locale.parse, this.client));
+    }).then(_.partial(Locale.parse, this.client))
   },
 
-  deleteLocale: function(identifiable) {
-    var id = getId(identifiable);
+  deleteLocale: function (identifiable) {
+    var id = getId(identifiable)
     return this.client.request('/spaces/' + this.sys.id + '/locales/' + id, {
       method: 'DELETE'
-    });
+    })
   }
-});
+})
 
 var Asset = redefine.Class({
-  constructor: function Asset() {},
+  constructor: function Asset () {},
 
   statics: {
-    parse: function(client, object) {
+    parse: function (client, object) {
       return redefine(_.extend(new Asset(), {
         sys: Sys.parse(object.sys),
         fields: object.fields
       }), {
         client: client
-      });
+      })
     }
   }
-});
+})
 
 var Entry = redefine.Class({
-  constructor: function Entry() {},
+  constructor: function Entry () {},
 
   statics: {
-    parse: function(client, object) {
+    parse: function (client, object) {
       return redefine(_.extend(new Entry(), {
         sys: Sys.parse(object.sys),
         fields: object.fields
       }), {
         client: client
-      });
+      })
     }
   }
-});
+})
 
 var Locale = redefine.Class({
-  constructor: function Locale() {},
+  constructor: function Locale () {},
 
   statics: {
-    parse: function(client, object) {
+    parse: function (client, object) {
       return redefine(_.extend(new Locale(), {
         sys: Sys.parse(object.sys),
         code: object.code,
@@ -544,72 +541,72 @@ var Locale = redefine.Class({
         contentManagementApi: object.contentManagementApi
       }), {
         client: client
-      });
+      })
     }
   }
-});
+})
 
 var ContentType = redefine.Class({
-  constructor: function ContentType() {},
+  constructor: function ContentType () {},
 
   statics: {
-    parse: function(client, object) {
+    parse: function (client, object) {
       return redefine(_.extend(new ContentType(), {
         sys: Sys.parse(object.sys),
         fields: _.map(object.fields, Field.parse),
       }, _.pick(object, 'name', 'description', 'displayField')), {
         client: client
-      });
+      })
     }
   }
-});
+})
 
 var Field = redefine.Class({
-  constructor: function Field() {},
+  constructor: function Field () {},
 
   statics: {
-    parse: function(object) {
-      return _.extend(new Field(), object);
+    parse: function (object) {
+      return _.extend(new Field(), object)
     }
   }
-});
+})
 
 var SearchResult = redefine.Class({
-  constructor: function SearchResult() {},
+  constructor: function SearchResult () {},
 
   statics: {
-    parse: function(client, object) {
-      walkMutate(object, isParseableResource, _.partial(parseResource, client));
+    parse: function (client, object) {
+      walkMutate(object, isParseableResource, _.partial(parseResource, client))
       return redefine(
         object.items, {
           limit: object.limit,
           skip: object.skip,
           total: object.total
         }
-      );
+      )
     }
   }
-});
+})
 
 var Query = redefine.Class({
-  constructor: function Query() {},
+  constructor: function Query () {},
 
-  toQueryString: function() {
-    return querystring.stringify(this);
+  toQueryString: function () {
+    return querystring.stringify(this)
   },
 
   statics: {
-    parse: function(object) {
-      return _.extend(new Query(), stringifyArrayValues(object));
+    parse: function (object) {
+      return _.extend(new Query(), stringifyArrayValues(object))
     },
   }
-});
+})
 
 var Sys = redefine.Class({
-  constructor: function Sys() {},
+  constructor: function Sys () {},
 
   statics: {
-    parse: function(object) {
+    parse: function (object) {
       return _.extend(
         new Sys(),
         _.pick(object, 'id', 'version', 'type', 'locale', 'archivedVersion', 'publishedVersion', 'revision'),
@@ -626,89 +623,89 @@ var Sys = redefine.Class({
           updatedBy: object.updatedBy && Link.parse(object.updatedBy),
           space: object.space && Link.parse(object.space)
         })
-      );
+      )
     }
   }
-});
+})
 
 var Link = redefine.Class({
-  constructor: function Link() {},
+  constructor: function Link () {},
 
   statics: {
-    parse: function(object) {
+    parse: function (object) {
       return _.extend(new Link(), {
         sys: Sys.parse(object.sys)
-      });
+      })
     }
   }
-});
+})
 
-exports.createClient = _.fnull(function(options) {
-  return new Client(options);
-}, {});
+exports.createClient = _.fnull(function (options) {
+  return new Client(options)
+}, {})
 
-exports.APIError = APIError;
+exports.APIError = APIError
 
-function compacto(object) {
-  return _.reduce(object, function(compacted, value, key) {
-    if (_.truthy(value)) compacted[key] = value;
-    return compacted;
-  }, {});
+function compacto (object) {
+  return _.reduce(object, function (compacted, value, key) {
+    if (_.truthy(value)) compacted[key] = value
+    return compacted
+  }, {})
 }
 
-function enforcep(object, property) {
+function enforcep (object, property) {
   if (!_.exists(object[property]))
-    throw new PropError('Expected property ' + property, object);
+    throw new PropError('Expected property ' + property, object)
 }
 
-var parseableResourceTypes =  {
+var parseableResourceTypes = {
   Asset: Asset,
   ContentType: ContentType,
   Entry: Entry,
   Space: Space,
   Locale: Locale
-};
-
-function isParseableResource(object) {
-  return _.getPath(object, ['sys', 'type']) in parseableResourceTypes;
 }
 
-function parseResource(client) {
-  var resource, Type;
+function isParseableResource (object) {
+  return _.getPath(object, ['sys', 'type']) in parseableResourceTypes
+}
+
+function parseResource (client) {
+  var resource, Type
   if (arguments.length === 2) {
-    resource = arguments[1];
-    Type = parseableResourceTypes[resource.sys.type];
-    return Type.parse(client, resource);
+    resource = arguments[1]
+    Type = parseableResourceTypes[resource.sys.type]
+    return Type.parse(client, resource)
   } else if (arguments.length === 3) {
-    var space = arguments[1];
-    resource = arguments[2];
-    Type = parseableResourceTypes[resource.sys.type];
-    return Type.parse(client, space, resource);
+    var space = arguments[1]
+    resource = arguments[2]
+    Type = parseableResourceTypes[resource.sys.type]
+    return Type.parse(client, space, resource)
   }
 }
 
-function stringifyArrayValues(object) {
-  return _.reduce(object, function(object, value, key) {
-    object[key] = _.isArray(value) ? value.join(',') : value;
-    return object;
-  }, {});
+function stringifyArrayValues (object) {
+  return _.reduce(object, function (object, value, key) {
+    object[key] = _.isArray(value) ? value.join(',') : value
+    return object
+  }, {})
 }
 
-function walkMutate(input, pred, mutator) {
+function walkMutate (input, pred, mutator) {
   if (pred(input))
-    return mutator(input);
+    return mutator(input)
 
   if (_.isArray(input) || _.isObject(input)) {
-    _.each(input, function(item, key) {
-      input[key] = walkMutate(item, pred, mutator);
-    });
-    return input;
+    _.each(input, function (item, key) {
+      input[key] = walkMutate(item, pred, mutator)
+    })
+    return input
   }
 
-  return input;
+  return input
 }
 
-function extractData(response) {
-  if (!response.data) return;
-  return response.data;
+function extractData (response) {
+  if (!response.data) return
+  return response.data
 }
