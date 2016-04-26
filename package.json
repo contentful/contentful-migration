@@ -59,7 +59,7 @@
     "blue-tape": "^0.2.0",
     "contentful-sdk-jsdoc": "^1.1.0",
     "coveralls": "^2.11.9",
-    "cz-conventional-changelog": "^1.1.5",
+    "cz-conventional-changelog": "^1.1.6",
     "in-publish": "^2.0.0",
     "istanbul": "^0.4.3",
     "jsdoc": "^3.4.0",
