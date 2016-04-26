@@ -1,2 +1,11 @@
 node_modules
-.idea
+*.log
+coverage
+.lock-wscript
+dist
+browser-dist
+out
+gh-pages
+oldlib
+oldtest
+oldindex.js
