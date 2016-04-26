@@ -15,7 +15,7 @@ test('Passes along HTTP client parameters', (t) => {
   createClient.__Rewire__('version', 'version')
   const createHttpClientStub = sinon.stub()
   createClient.__Rewire__('createHttpClient', createHttpClientStub)
-  createClient(axios, {accessToken: 'accesstoken', space: 'spaceid'})
+  createClient(axios, {accessToken: 'accesstoken'})
   t.ok(createHttpClientStub.args[0][1].headers['Content-Type'])
   t.equals(createHttpClientStub.args[0][1].headers['X-Contentful-User-Agent'], 'contentful-management.js/version')
   createClient.__ResetDependency__('createHttpClient')
@@ -23,7 +23,7 @@ test('Passes along HTTP client parameters', (t) => {
 })
 
 test('Returns a client instance', (t) => {
-  const client = createClient(axios, {accessToken: 'accesstoken', space: 'spaceid'})
+  const client = createClient(axios, {accessToken: 'accesstoken'})
   t.ok(client.getSpace, 'getSpace')
   t.ok(client.getEntry, 'getEntry')
   t.ok(client.getEntries, 'getEntries')
