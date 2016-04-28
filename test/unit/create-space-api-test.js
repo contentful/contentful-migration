@@ -1,16 +1,13 @@
 import test from 'blue-tape'
 import sinon from 'sinon'
 
-import createSpaceApi from '../../lib/create-contentful-api'
+import createSpaceApi, {__RewireAPI__ as createSpaceApiRewireApi} from '../../lib/create-space-api'
 import {contentTypeMock, assetMock, entryMock} from './mocks'
 
 let entitiesMock
 
-function setupWithData ({promise, shouldLinksResolve = sinon.stub().returns(true)}) {
+function setupWithData ({promise}) {
   entitiesMock = {
-    space: {
-      wrapSpace: sinon.stub()
-    },
     contentType: {
       wrapContentType: sinon.stub(),
       wrapContentTypeCollection: sinon.stub()
@@ -24,55 +21,19 @@ function setupWithData ({promise, shouldLinksResolve = sinon.stub().returns(true
       wrapAssetCollection: sinon.stub()
     }
   }
+  createSpaceApiRewireApi.__Rewire__('entities', entitiesMock)
   const getStub = sinon.stub()
   const api = createSpaceApi({
     http: {
       get: getStub.returns(promise)
-    },
-    entities: entitiesMock,
-    shouldLinksResolve: shouldLinksResolve
+    }
   })
   return {api, getStub}
 }
 
-test('API call getSpace', (t) => {
-  t.plan(1)
-  const data = {
-    sys: {
-      id: 'id',
-      type: 'Space'
-    },
-    name: 'name',
-    locales: [ 'en-US' ]
-  }
-  const {api} = setupWithData({
-    promise: Promise.resolve({ data: data })
-  })
-  entitiesMock.space.wrapSpace.returns(data)
-
-  return api.getSpace('spaceid')
-  .then((r) => {
-    t.looseEqual(r, data)
-  })
-})
-
-test('API call getSpace fails', (t) => {
-  t.plan(1)
-  const data = {
-    sys: {
-      id: 'id'
-    }
-  }
-  const {api} = setupWithData({
-    promise: Promise.reject({ data: data })
-  })
-  entitiesMock.space.wrapSpace.returns(data)
-
-  return api.getSpace('spaceid')
-  .then(() => {}, (r) => {
-    t.looseEqual(r, data)
-  })
-})
+function teardown () {
+  createSpaceApiRewireApi.__ResetDependency__('entities')
+}
 
 test('API call getContentType', (t) => {
   t.plan(1)
@@ -84,24 +45,21 @@ test('API call getContentType', (t) => {
   return api.getContentType('ctid')
   .then((r) => {
     t.looseEqual(r, contentTypeMock)
+    teardown()
   })
 })
 
 test('API call getContentType fails', (t) => {
   t.plan(1)
-  const data = {
-    sys: {
-      id: 'id'
-    }
-  }
+  const data = 'error'
   const {api} = setupWithData({
-    promise: Promise.reject({ data: data })
+    promise: Promise.reject(data)
   })
-  entitiesMock.contentType.wrapContentType.returns(data)
 
   return api.getContentType('ctid')
   .then(() => {}, (r) => {
     t.looseEqual(r, data)
+    teardown()
   })
 })
 
@@ -121,24 +79,21 @@ test('API call getContentTypes', (t) => {
   return api.getContentTypes()
   .then((r) => {
     t.looseEqual(r, data)
+    teardown()
   })
 })
 
 test('API call getContentTypes fails', (t) => {
   t.plan(1)
-  const data = {
-    sys: {
-      id: 'id'
-    }
-  }
+  const data = 'error'
   const {api} = setupWithData({
-    promise: Promise.reject({ data: data })
+    promise: Promise.reject(data)
   })
-  entitiesMock.contentType.wrapContentTypeCollection.returns(data)
 
   return api.getContentTypes()
   .then(() => {}, (r) => {
     t.looseEqual(r, data)
+    teardown()
   })
 })
 
@@ -152,29 +107,26 @@ test('API call getEntry', (t) => {
   return api.getEntry('eid')
   .then((r) => {
     t.looseEqual(r, entryMock)
+    teardown()
   })
 })
 
 test('API call getEntry fails', (t) => {
   t.plan(1)
-  const data = {
-    sys: {
-      id: 'id'
-    }
-  }
+  const data = 'data'
   const {api} = setupWithData({
-    promise: Promise.reject({ data: data })
+    promise: Promise.reject(data)
   })
-  entitiesMock.entry.wrapEntry.returns(data)
 
   return api.getEntry('eid')
   .then(() => {}, (r) => {
     t.looseEqual(r, data)
+    teardown()
   })
 })
 
 test('API call getEntries', (t) => {
-  t.plan(2)
+  t.plan(1)
 
   const data = {
     total: 100,
@@ -190,44 +142,22 @@ test('API call getEntries', (t) => {
 
   return api.getEntries()
   .then((r) => {
-    t.ok(entitiesMock.entry.wrapEntryCollection.args[0][1], 'resolveLinks turned on by default')
     t.looseEqual(r, data, 'returns expected data')
-  })
-})
-
-test('API call getEntries with global resolve links turned off', (t) => {
-  t.plan(2)
-
-  const data = {sys: {id: 'id'}}
-
-  const {api} = setupWithData({
-    promise: Promise.resolve({ data: data }),
-    shouldLinksResolve: sinon.stub().returns(false)
-  })
-  entitiesMock.entry.wrapEntryCollection.returns(data)
-
-  return api.getEntries()
-  .then((r) => {
-    t.notOk(entitiesMock.entry.wrapEntryCollection.args[0][1], 'resolveLinks turned off globally')
-    t.looseEqual(r, data, 'returns expected data')
+    teardown()
   })
 })
 
 test('API call getEntries fails', (t) => {
   t.plan(1)
-  const data = {
-    sys: {
-      id: 'id'
-    }
-  }
+  const data = 'data'
   const {api} = setupWithData({
-    promise: Promise.reject({ data: data })
+    promise: Promise.reject(data)
   })
-  entitiesMock.entry.wrapEntryCollection.returns(data)
 
   return api.getEntries()
   .then(() => {}, (r) => {
     t.looseEqual(r, data)
+    teardown()
   })
 })
 
@@ -241,24 +171,22 @@ test('API call getAsset', (t) => {
   return api.getAsset('aid')
   .then((r) => {
     t.looseEqual(r, assetMock)
+    teardown()
   })
 })
 
 test('API call getAsset fails', (t) => {
   t.plan(1)
-  const data = {
-    sys: {
-      id: 'id'
-    }
-  }
+  const data = 'data'
   const {api} = setupWithData({
-    promise: Promise.reject({ data: data })
+    promise: Promise.reject(data)
   })
   entitiesMock.asset.wrapAsset.returns(data)
 
   return api.getAsset('aid')
   .then(() => {}, (r) => {
     t.looseEqual(r, data)
+    teardown()
   })
 })
 
@@ -278,23 +206,20 @@ test('API call getAssets', (t) => {
   return api.getAssets()
   .then((r) => {
     t.looseEqual(r, data)
+    teardown()
   })
 })
 
 test('API call getAssets fails', (t) => {
   t.plan(1)
-  const data = {
-    sys: {
-      id: 'id'
-    }
-  }
+  const data = 'data'
   const {api} = setupWithData({
-    promise: Promise.reject({ data: data })
+    promise: Promise.reject(data)
   })
-  entitiesMock.asset.wrapAssetCollection.returns(data)
 
   return api.getAssets()
   .then(() => {}, (r) => {
     t.looseEqual(r, data)
+    teardown()
   })
 })
