@@ -3,6 +3,7 @@ import sinon from 'sinon'
 
 import createSpaceApi, {__RewireAPI__ as createSpaceApiRewireApi} from '../../lib/create-space-api'
 import {contentTypeMock, assetMock, entryMock} from './mocks'
+import {cloneMock} from './mocks'
 
 let entitiesMock
 
@@ -51,14 +52,14 @@ test('API call getContentType', (t) => {
 
 test('API call getContentType fails', (t) => {
   t.plan(1)
-  const data = 'error'
+  const error = cloneMock('error')
   const {api} = setupWithData({
-    promise: Promise.reject(data)
+    promise: Promise.reject(error)
   })
 
   return api.getContentType('ctid')
   .then(() => {}, (r) => {
-    t.looseEqual(r, data)
+    t.looseEqual(r.name, '404 Not Found')
     teardown()
   })
 })
@@ -85,14 +86,14 @@ test('API call getContentTypes', (t) => {
 
 test('API call getContentTypes fails', (t) => {
   t.plan(1)
-  const data = 'error'
+  const error = cloneMock('error')
   const {api} = setupWithData({
-    promise: Promise.reject(data)
+    promise: Promise.reject(error)
   })
 
   return api.getContentTypes()
   .then(() => {}, (r) => {
-    t.looseEqual(r, data)
+    t.looseEqual(r.name, '404 Not Found')
     teardown()
   })
 })
@@ -113,14 +114,14 @@ test('API call getEntry', (t) => {
 
 test('API call getEntry fails', (t) => {
   t.plan(1)
-  const data = 'data'
+  const error = cloneMock('error')
   const {api} = setupWithData({
-    promise: Promise.reject(data)
+    promise: Promise.reject(error)
   })
 
   return api.getEntry('eid')
   .then(() => {}, (r) => {
-    t.looseEqual(r, data)
+    t.looseEqual(r.name, '404 Not Found')
     teardown()
   })
 })
@@ -149,14 +150,14 @@ test('API call getEntries', (t) => {
 
 test('API call getEntries fails', (t) => {
   t.plan(1)
-  const data = 'data'
+  const error = cloneMock('error')
   const {api} = setupWithData({
-    promise: Promise.reject(data)
+    promise: Promise.reject(error)
   })
 
   return api.getEntries()
   .then(() => {}, (r) => {
-    t.looseEqual(r, data)
+    t.looseEqual(r.name, '404 Not Found')
     teardown()
   })
 })
@@ -177,15 +178,14 @@ test('API call getAsset', (t) => {
 
 test('API call getAsset fails', (t) => {
   t.plan(1)
-  const data = 'data'
+  const error = cloneMock('error')
   const {api} = setupWithData({
-    promise: Promise.reject(data)
+    promise: Promise.reject(error)
   })
-  entitiesMock.asset.wrapAsset.returns(data)
 
   return api.getAsset('aid')
   .then(() => {}, (r) => {
-    t.looseEqual(r, data)
+    t.looseEqual(r.name, '404 Not Found')
     teardown()
   })
 })
@@ -212,14 +212,14 @@ test('API call getAssets', (t) => {
 
 test('API call getAssets fails', (t) => {
   t.plan(1)
-  const data = 'data'
+  const error = cloneMock('error')
   const {api} = setupWithData({
-    promise: Promise.reject(data)
+    promise: Promise.reject(error)
   })
 
   return api.getAssets()
   .then(() => {}, (r) => {
-    t.looseEqual(r, data)
+    t.looseEqual(r.name, '404 Not Found')
     teardown()
   })
 })

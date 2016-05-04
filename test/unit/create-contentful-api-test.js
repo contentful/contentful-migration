@@ -1,6 +1,7 @@
 import test from 'blue-tape'
 import sinon from 'sinon'
 
+import {cloneMock} from './mocks'
 import createContentfulApi, {__RewireAPI__ as createContentfulApiRewireApi} from '../../lib/create-contentful-api'
 
 let entitiesMock
@@ -49,14 +50,14 @@ test('API call getSpace', (t) => {
 
 test('API call getSpace fails', (t) => {
   t.plan(1)
-  const data = 'error'
+  const error = cloneMock('error')
   const {api} = setupWithData({
-    promise: Promise.reject(data)
+    promise: Promise.reject(error)
   })
 
   return api.getSpace('spaceid')
   .then(() => {}, (r) => {
-    t.looseEqual(r, data)
+    t.looseEqual(r.name, '404 Not Found')
     teardown()
   })
 })

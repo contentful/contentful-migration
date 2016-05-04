@@ -58,7 +58,7 @@ test('Call gets backed off first time but then succeeds', (t) => {
   })
 })
 
-test.only('Call gets backed off until maxRetries is reached', (t) => {
+test('Call gets backed off until maxRetries is reached', (t) => {
   const httpMock = createHttpMock()
   httpMock.get.returns(Promise.reject({status: 429}))
   const http = wrapHttpClient(httpMock, {

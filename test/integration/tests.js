@@ -24,6 +24,16 @@ test('Gets space', (t) => {
   })
 })
 
+test('Fails to get space', (t) => {
+  t.plan(2)
+  return client.getSpace('weirdrandomid' + Math.ceil(Math.random() * 1e8))
+  .then(() => {}, (error) => {
+    t.equals(error.name, 'NotFound', 'error name')
+    const errorData = JSON.parse(error.message)
+    t.equals(errorData.status, 404, 'http status code from parsed error data')
+  })
+})
+
 test('Gets space with entities', (t) => {
   return client.getSpace('cfexampleapi')
   .then((space) => {

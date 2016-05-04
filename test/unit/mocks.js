@@ -55,10 +55,35 @@ const assetMock = {
   }
 }
 
+const errorMock = {
+  config: {
+    url: 'requesturl',
+    headers: {}
+  },
+  data: {},
+  status: 404,
+  statusText: 'Not Found'
+}
+
+const mocks = {
+  link: linkMock,
+  sys: sysMock,
+  contentType: contentTypeMock,
+  entry: entryMock,
+  asset: assetMock,
+  error: errorMock
+}
+
+function cloneMock (name) {
+  return cloneDeep(mocks[name])
+}
+
 export {
   linkMock,
   sysMock,
   contentTypeMock,
   entryMock,
-  assetMock
+  assetMock,
+  errorMock,
+  cloneMock
 }
