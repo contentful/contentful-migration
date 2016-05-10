@@ -24,9 +24,15 @@ function setupWithData ({promise}) {
   }
   createSpaceApiRewireApi.__Rewire__('entities', entitiesMock)
   const getStub = sinon.stub()
+  const postStub = sinon.stub()
+  const putStub = sinon.stub()
+  const deleteStub = sinon.stub()
   const api = createSpaceApi({
     http: {
-      get: getStub.returns(promise)
+      get: getStub.returns(promise),
+      post: postStub.returns(promise),
+      put: putStub.returns(promise),
+      delete: deleteStub.returns(promise)
     }
   })
   return {api, getStub}
@@ -35,6 +41,33 @@ function setupWithData ({promise}) {
 function teardown () {
   createSpaceApiRewireApi.__ResetDependency__('entities')
 }
+
+test('API call space delete', (t) => {
+  t.plan(1)
+  const {api} = setupWithData({
+    promise: Promise.resolve({})
+  })
+
+  return api.delete()
+  .then((r) => {
+    t.pass('space was deleted')
+    teardown()
+  })
+})
+
+test('API call space delete fails', (t) => {
+  t.plan(1)
+  const error = cloneMock('error')
+  const {api} = setupWithData({
+    promise: Promise.reject(error)
+  })
+
+  return api.delete()
+  .catch((r) => {
+    t.equals(r.name, '404 Not Found')
+    teardown()
+  })
+})
 
 test('API call getContentType', (t) => {
   t.plan(1)
@@ -59,7 +92,7 @@ test('API call getContentType fails', (t) => {
 
   return api.getContentType('ctid')
   .then(() => {}, (r) => {
-    t.looseEqual(r.name, '404 Not Found')
+    t.equals(r.name, '404 Not Found')
     teardown()
   })
 })
@@ -93,7 +126,7 @@ test('API call getContentTypes fails', (t) => {
 
   return api.getContentTypes()
   .then(() => {}, (r) => {
-    t.looseEqual(r.name, '404 Not Found')
+    t.equals(r.name, '404 Not Found')
     teardown()
   })
 })
@@ -121,7 +154,7 @@ test('API call getEntry fails', (t) => {
 
   return api.getEntry('eid')
   .then(() => {}, (r) => {
-    t.looseEqual(r.name, '404 Not Found')
+    t.equals(r.name, '404 Not Found')
     teardown()
   })
 })
@@ -157,7 +190,7 @@ test('API call getEntries fails', (t) => {
 
   return api.getEntries()
   .then(() => {}, (r) => {
-    t.looseEqual(r.name, '404 Not Found')
+    t.equals(r.name, '404 Not Found')
     teardown()
   })
 })
@@ -185,7 +218,7 @@ test('API call getAsset fails', (t) => {
 
   return api.getAsset('aid')
   .then(() => {}, (r) => {
-    t.looseEqual(r.name, '404 Not Found')
+    t.equals(r.name, '404 Not Found')
     teardown()
   })
 })
@@ -219,7 +252,7 @@ test('API call getAssets fails', (t) => {
 
   return api.getAssets()
   .then(() => {}, (r) => {
-    t.looseEqual(r.name, '404 Not Found')
+    t.equals(r.name, '404 Not Found')
     teardown()
   })
 })

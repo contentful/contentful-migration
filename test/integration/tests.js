@@ -8,12 +8,23 @@ const params = {
   accessToken: process.env.CONTENTFUL_ACCESS_TOKEN
 }
 
+const organization = process.env.CONTENTFUL_ORGANIZATION
+
 if (process.env.API_INTEGRATION_TESTS) {
   params.host = '127.0.0.1:5000'
   params.insecure = true
 }
 
 const client = contentfulManagement.createClient(params)
+
+test('Gets spaces', (t) => {
+  t.plan(2)
+  return client.getSpaces()
+  .then((response) => {
+    t.ok(response.items, 'items')
+    t.ok(response.total > 0, 'items have spaces')
+  })
+})
 
 test('Gets space', (t) => {
   t.plan(2)
@@ -40,5 +51,21 @@ test('Gets space with entities', (t) => {
     contentTypeTests(t, space)
     entryTests(t, space)
     assetTests(t, space)
+  })
+})
+
+test('Creates, updates and deletes a space', (t) => {
+  t.plan(1)
+  return client.createSpace({
+    name: 'spacename'
+  }, organization)
+  .then((space) => {
+    t.equals(space.name, 'spacename')
+    space.name = 'updatedspacename'
+    space.update()
+    .then((space) => {
+      t.equals(space.name, 'updatedspacename')
+      return space.delete()
+    })
   })
 })
