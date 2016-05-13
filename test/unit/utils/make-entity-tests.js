@@ -39,3 +39,33 @@ export function makeEntityMethodFailingTest (t, setup, teardown, {methodToTest})
     teardown()
   })
 }
+
+export function makeCreateEntityTest (t, setup, teardown, {entityType, mockToReturn, methodToTest}) {
+  t.plan(2)
+  const {api, httpMock, entitiesMock} = setup(Promise.resolve({}))
+  entitiesMock[entityType][`wrap${upperFirst(entityType)}`]
+  .returns(mockToReturn)
+
+  return api[methodToTest](mockToReturn)
+  .then((r) => {
+    t.looseEqual(r, mockToReturn)
+    t.looseEqual(httpMock.post.args[0][1], mockToReturn, 'data is sent')
+    teardown()
+  })
+}
+
+export function makeCreateEntityWithIdTest (t, setup, teardown, {entityType, entityPath, mockToReturn, methodToTest}) {
+  t.plan(3)
+  const id = 'entityId'
+  const {api, httpMock, entitiesMock} = setup(Promise.resolve({}))
+  entitiesMock[entityType][`wrap${upperFirst(entityType)}`]
+  .returns(mockToReturn)
+
+  return api[methodToTest](id, mockToReturn)
+  .then((r) => {
+    t.looseEqual(r, mockToReturn)
+    t.equals(httpMock.put.args[0][0], entityPath + '/' + id, 'specified id is sent')
+    t.looseEqual(httpMock.put.args[0][1], mockToReturn, 'data is sent')
+    teardown()
+  })
+}
