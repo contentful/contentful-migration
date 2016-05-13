@@ -1,5 +1,5 @@
 import test from 'tape'
-import {assetMock} from '../utils/mocks'
+import {assetMock, mockCollection} from '../utils/mocks'
 import {wrapAsset, wrapAssetCollection} from '../../../lib/entities/asset'
 
 test('Asset is wrapped', (t) => {
@@ -9,14 +9,7 @@ test('Asset is wrapped', (t) => {
 })
 
 test('Asset collection is wrapped', (t) => {
-  const assetCollection = {
-    total: 1,
-    skip: 0,
-    limit: 100,
-    items: [
-      assetMock
-    ]
-  }
+  const assetCollection = mockCollection(assetMock)
   const wrappedAsset = wrapAssetCollection(assetCollection)
   t.looseEqual(wrappedAsset.toPlainObject(), assetCollection)
   t.end()

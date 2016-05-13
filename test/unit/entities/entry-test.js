@@ -1,6 +1,5 @@
 import test from 'tape'
-
-import {entryMock} from '../utils/mocks'
+import {entryMock, mockCollection} from '../utils/mocks'
 import {cloneDeep} from 'lodash/lang'
 import {wrapEntry, wrapEntryCollection} from '../../../lib/entities/entry'
 
@@ -24,14 +23,7 @@ test('Localized entry is wrapped', (t) => {
 })
 
 test('Entry collection is wrapped', (t) => {
-  const entryCollection = {
-    total: 1,
-    skip: 0,
-    limit: 100,
-    items: [
-      entryMock
-    ]
-  }
+  const entryCollection = mockCollection(entryMock)
   const wrappedEntry = wrapEntryCollection(entryCollection, true)
   t.looseEqual(wrappedEntry.toPlainObject(), entryCollection)
   t.end()

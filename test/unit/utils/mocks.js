@@ -98,6 +98,15 @@ function cloneMock (name) {
   return cloneDeep(mocks[name])
 }
 
+function mockCollection (entityMock) {
+  return {
+    total: 1,
+    skip: 0,
+    limit: 100,
+    items: [entityMock]
+  }
+}
+
 export {
   linkMock,
   sysMock,
@@ -107,5 +116,6 @@ export {
   assetMock,
   localeMock,
   errorMock,
-  cloneMock
+  cloneMock,
+  mockCollection
 }

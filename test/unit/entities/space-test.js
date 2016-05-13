@@ -1,21 +1,11 @@
 import test from 'tape'
 import sinon from 'sinon'
-import {assign} from 'lodash/object'
-import {cloneDeep} from 'lodash/lang'
-import {sysMock} from '../utils/mocks'
-
+import {spaceMock, mockCollection} from '../utils/mocks'
 import {wrapSpace, wrapSpaceCollection, __RewireAPI__ as spaceRewireApi} from '../../../lib/entities/space'
 
 const httpMock = {
   httpClientParams: {},
   cloneWithNewParams: sinon.stub()
-}
-
-const space = {
-  sys: assign(cloneDeep(sysMock), {
-    type: 'Space'
-  }),
-  name: 'space'
 }
 
 function setup () {
@@ -28,22 +18,15 @@ function teardown () {
 
 test('Space is wrapped', (t) => {
   setup()
-  const wrappedSpace = wrapSpace(httpMock, space)
-  t.looseEqual(wrappedSpace.toPlainObject(), space)
+  const wrappedSpace = wrapSpace(httpMock, spaceMock)
+  t.looseEqual(wrappedSpace.toPlainObject(), spaceMock)
   teardown()
   t.end()
 })
 
 test('Space collection is wrapped', (t) => {
   setup()
-  const spaceCollection = {
-    total: 1,
-    skip: 0,
-    limit: 100,
-    items: [
-      space
-    ]
-  }
+  const spaceCollection = mockCollection(spaceMock)
   const wrappedSpace = wrapSpaceCollection(httpMock, spaceCollection)
   t.looseEqual(wrappedSpace.toPlainObject(), spaceCollection)
   teardown()
