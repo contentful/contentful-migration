@@ -4,7 +4,7 @@ import createSpaceApi, {__RewireAPI__ as createSpaceApiRewireApi} from '../../li
 import {contentTypeMock, assetMock, entryMock} from './utils/mocks'
 import setupHttpEntitiesMocks from './utils/setup-http-entities-mocks'
 import {cloneMock} from './utils/mocks'
-import {makeGetEntityTest, makeGetCollectionTest, makeGetEntityFailingTest} from './utils/make-entity-getter-tests'
+import {makeGetEntityTest, makeGetCollectionTest, makeEntityMethodFailingTest} from './utils/make-entity-tests'
 
 function setup (promise) {
   const {httpMock, entitiesMock} = setupHttpEntitiesMocks(
@@ -54,7 +54,7 @@ test('API call getContentType', (t) => {
 })
 
 test('API call getContentType fails', (t) => {
-  makeGetEntityFailingTest(t, setup, teardown, {
+  makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'getContentType'
   })
 })
@@ -68,27 +68,48 @@ test('API call getContentTypes', (t) => {
 })
 
 test('API call getContentTypes fails', (t) => {
-  makeGetEntityFailingTest(t, setup, teardown, {
+  makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'getContentTypes'
   })
 })
 
-test.skip('API call createContentType', (t) => {
-  t.plan(1)
-  const {api, httpMock, entitiesMock} = setup(Promise.resolve({ data: contentTypeMock }))
+test('API call createContentType', (t) => {
+  t.plan(2)
+  const {api, httpMock, entitiesMock} = setup(Promise.resolve({}))
   entitiesMock.contentType.wrapContentType.returns(contentTypeMock)
 
-  return api.createContentType()
+  return api.createContentType(contentTypeMock)
   .then((r) => {
     t.looseEqual(r, contentTypeMock)
-    t.looseEqual(httpMock.post.args[0][1], contentTypeMock, 'data is posted')
+    t.looseEqual(httpMock.post.args[0][1], contentTypeMock, 'data is sent')
     teardown()
   })
 })
 
 test('API call createContentType fails', (t) => {
-  makeGetEntityFailingTest(t, setup, teardown, {
+  makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'createContentType'
+  })
+})
+
+test('API call createContentTypeWithId', (t) => {
+  t.plan(3)
+  const id = 'post'
+  const {api, httpMock, entitiesMock} = setup(Promise.resolve({}))
+  entitiesMock.contentType.wrapContentType.returns(contentTypeMock)
+
+  return api.createContentTypeWithId(id, contentTypeMock)
+  .then((r) => {
+    t.looseEqual(r, contentTypeMock)
+    t.equals(httpMock.put.args[0][0], 'content_types/' + id, 'specified id is sent')
+    t.looseEqual(httpMock.put.args[0][1], contentTypeMock, 'data is sent')
+    teardown()
+  })
+})
+
+test('API call createContentTypeWithId fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'createContentTypeWithId'
   })
 })
 
@@ -101,7 +122,7 @@ test('API call getEntry', (t) => {
 })
 
 test('API call getEntry fails', (t) => {
-  makeGetEntityFailingTest(t, setup, teardown, {
+  makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'getEntry'
   })
 })
@@ -115,7 +136,7 @@ test('API call getEntries', (t) => {
 })
 
 test('API call getEntries fails', (t) => {
-  makeGetEntityFailingTest(t, setup, teardown, {
+  makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'getEntries'
   })
 })
@@ -129,7 +150,7 @@ test('API call getAsset', (t) => {
 })
 
 test('API call getAsset fails', (t) => {
-  makeGetEntityFailingTest(t, setup, teardown, {
+  makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'getAsset'
   })
 })
@@ -143,7 +164,7 @@ test('API call getAssets', (t) => {
 })
 
 test('API call getAssets fails', (t) => {
-  makeGetEntityFailingTest(t, setup, teardown, {
+  makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'getAssets'
   })
 })

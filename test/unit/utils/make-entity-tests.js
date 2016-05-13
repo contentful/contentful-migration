@@ -28,7 +28,7 @@ export function makeGetCollectionTest (t, setup, teardown, {entityType, mockToRe
   })
 }
 
-export function makeGetEntityFailingTest (t, setup, teardown, {methodToTest}) {
+export function makeEntityMethodFailingTest (t, setup, teardown, {methodToTest}) {
   t.plan(1)
   const error = cloneMock('error')
   const {api} = setup(Promise.reject(error))

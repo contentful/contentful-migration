@@ -3,7 +3,7 @@ import test from 'blue-tape'
 import {spaceMock, cloneMock} from './utils/mocks'
 import setupHttpEntitiesMocks from './utils/setup-http-entities-mocks'
 import createContentfulApi, {__RewireAPI__ as createContentfulApiRewireApi} from '../../lib/create-contentful-api'
-import {makeGetEntityTest, makeGetCollectionTest, makeGetEntityFailingTest} from './utils/make-entity-getter-tests'
+import {makeGetEntityTest, makeGetCollectionTest, makeEntityMethodFailingTest} from './utils/make-entity-tests'
 
 function setup (promise) {
   const {httpMock, entitiesMock} = setupHttpEntitiesMocks(
@@ -30,7 +30,7 @@ test('API call getSpaces', (t) => {
 })
 
 test('API call getSpaces fails', (t) => {
-  makeGetEntityFailingTest(t, setup, teardown, {
+  makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'getSpaces'
   })
 })
@@ -44,7 +44,7 @@ test('API call getSpace', (t) => {
 })
 
 test('API call getSpace fails', (t) => {
-  makeGetEntityFailingTest(t, setup, teardown, {
+  makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'getSpace'
   })
 })
@@ -61,20 +61,14 @@ test('API call createSpace', (t) => {
   return api.createSpace({name: 'name'}, 'orgid')
   .then((r) => {
     t.looseEqual(r, data, 'space is wrapped')
-    t.looseEqual(httpMock.post.args[0][1], {name: 'name'}, 'data is posted')
+    t.looseEqual(httpMock.post.args[0][1], {name: 'name'}, 'data is sent')
     t.equals(httpMock.post.args[0][2].headers['X-Contentful-Organization'], 'orgid', 'orgid is specified in headers')
     teardown()
   })
 })
 
 test('API call createSpace fails', (t) => {
-  t.plan(1)
-  const error = cloneMock('error')
-  const {api} = setup(Promise.reject(error))
-
-  return api.createSpace({})
-  .then(() => {}, (r) => {
-    t.equals(r.name, '404 Not Found')
-    teardown()
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'createSpace'
   })
 })
