@@ -1,7 +1,7 @@
 import test from 'blue-tape'
 
 import createSpaceApi, {__RewireAPI__ as createSpaceApiRewireApi} from '../../lib/create-space-api'
-import {contentTypeMock, assetMock, entryMock} from './utils/mocks'
+import {contentTypeMock, assetMock, entryMock, localeMock} from './utils/mocks'
 import setupHttpEntitiesMocks from './utils/setup-http-entities-mocks'
 import {cloneMock} from './utils/mocks'
 import {
@@ -219,5 +219,47 @@ test('API call createAssetWithId', (t) => {
 test('API call createAssetWithId fails', (t) => {
   makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'createAssetWithId'
+  })
+})
+
+test('API call getLocale', (t) => {
+  makeGetEntityTest(t, setup, teardown, {
+    entityType: 'locale',
+    mockToReturn: localeMock,
+    methodToTest: 'getLocale'
+  })
+})
+
+test('API call getLocale fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getLocale'
+  })
+})
+
+test('API call getLocales', (t) => {
+  makeGetCollectionTest(t, setup, teardown, {
+    entityType: 'locale',
+    mockToReturn: localeMock,
+    methodToTest: 'getLocales'
+  })
+})
+
+test('API call getLocales fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getLocales'
+  })
+})
+
+test('API call createLocale', (t) => {
+  makeCreateEntityTest(t, setup, teardown, {
+    entityType: 'locale',
+    mockToReturn: localeMock,
+    methodToTest: 'createLocale'
+  })
+})
+
+test('API call createLocale fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'createLocale'
   })
 })

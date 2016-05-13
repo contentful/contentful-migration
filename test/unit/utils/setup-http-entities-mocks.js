@@ -17,6 +17,10 @@ export default function setupHttpEntitiesMocks (rewiredModuleApi, promise) {
     asset: {
       wrapAsset: sinon.stub(),
       wrapAssetCollection: sinon.stub()
+    },
+    locale: {
+      wrapLocale: sinon.stub(),
+      wrapLocaleCollection: sinon.stub()
     }
   }
   rewiredModuleApi.__Rewire__('entities', entitiesMock)

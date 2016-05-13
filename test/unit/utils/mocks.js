@@ -63,6 +63,17 @@ const assetMock = {
   }
 }
 
+const localeMock = {
+  sys: assign(cloneDeep(sysMock), {
+    type: 'Locale'
+  }),
+  name: 'English',
+  code: 'en',
+  contentDeliveryApi: true,
+  contentManagementApi: true,
+  default: true
+}
+
 const errorMock = {
   config: {
     url: 'requesturl',
@@ -79,6 +90,7 @@ const mocks = {
   contentType: contentTypeMock,
   entry: entryMock,
   asset: assetMock,
+  locale: localeMock,
   error: errorMock
 }
 
@@ -93,6 +105,7 @@ export {
   contentTypeMock,
   entryMock,
   assetMock,
+  localeMock,
   errorMock,
   cloneMock
 }
