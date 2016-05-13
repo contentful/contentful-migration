@@ -1,7 +1,7 @@
 import test from 'tape'
 import {assign} from 'lodash/object'
 import {cloneDeep} from 'lodash/lang'
-import {sysMock} from '../mocks'
+import {sysMock} from '../utils/mocks'
 
 import {wrapContentType, wrapContentTypeCollection} from '../../../lib/entities/content-type'
 

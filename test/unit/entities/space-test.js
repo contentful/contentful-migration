@@ -2,7 +2,7 @@ import test from 'tape'
 import sinon from 'sinon'
 import {assign} from 'lodash/object'
 import {cloneDeep} from 'lodash/lang'
-import {sysMock} from '../mocks'
+import {sysMock} from '../utils/mocks'
 
 import {wrapSpace, wrapSpaceCollection, __RewireAPI__ as spaceRewireApi} from '../../../lib/entities/space'
 

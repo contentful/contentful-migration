@@ -1,5 +1,5 @@
 import test from 'tape'
-import {assetMock} from '../mocks'
+import {assetMock} from '../utils/mocks'
 import {wrapAsset, wrapAssetCollection} from '../../../lib/entities/asset'
 
 test('Asset is wrapped', (t) => {

@@ -1,6 +1,6 @@
 import test from 'tape'
 
-import {entryMock} from '../mocks'
+import {entryMock} from '../utils/mocks'
 import {cloneDeep} from 'lodash/lang'
 import {wrapEntry, wrapEntryCollection} from '../../../lib/entities/entry'
 

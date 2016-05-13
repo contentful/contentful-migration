@@ -1,28 +1,20 @@
 import test from 'blue-tape'
-import sinon from 'sinon'
 
-import {cloneMock} from './mocks'
+import {spaceMock, cloneMock} from './utils/mocks'
+import setupHttpEntitiesMocks from './utils/setup-http-entities-mocks'
 import createContentfulApi, {__RewireAPI__ as createContentfulApiRewireApi} from '../../lib/create-contentful-api'
+import {makeGetEntityTest, makeGetCollectionTest, makeGetEntityFailingTest} from './utils/make-entity-getter-tests'
 
-let entitiesMock
-
-function setupWithData ({promise}) {
-  entitiesMock = {
-    space: {
-      wrapSpace: sinon.stub(),
-      wrapSpaceCollection: sinon.stub()
-    }
+function setup (promise) {
+  const {httpMock, entitiesMock} = setupHttpEntitiesMocks(
+    createContentfulApiRewireApi, promise
+  )
+  const api = createContentfulApi({ http: httpMock })
+  return {
+    api,
+    httpMock,
+    entitiesMock
   }
-  createContentfulApiRewireApi.__Rewire__('entities', entitiesMock)
-  const getStub = sinon.stub()
-  const postStub = sinon.stub()
-  const api = createContentfulApi({
-    http: {
-      get: getStub.returns(promise),
-      post: postStub.returns(promise)
-    }
-  })
-  return {api, getStub, postStub}
 }
 
 function teardown () {
@@ -30,76 +22,30 @@ function teardown () {
 }
 
 test('API call getSpaces', (t) => {
-  t.plan(1)
-  const data = {
-    items: {
-      sys: {
-        id: 'id',
-        type: 'Space'
-      },
-      name: 'name',
-      locales: [ 'en-US' ]
-    }
-  }
-  const {api} = setupWithData({
-    promise: Promise.resolve({ data: data })
-  })
-  entitiesMock.space.wrapSpaceCollection.returns(data)
-
-  return api.getSpaces()
-  .then((r) => {
-    t.looseEqual(r, data)
-    teardown()
+  makeGetCollectionTest(t, setup, teardown, {
+    entityType: 'space',
+    mockToReturn: spaceMock,
+    methodToTest: 'getSpaces'
   })
 })
 
 test('API call getSpaces fails', (t) => {
-  t.plan(1)
-  const error = cloneMock('error')
-  const {api} = setupWithData({
-    promise: Promise.reject(error)
-  })
-
-  return api.getSpaces()
-  .then(() => {}, (r) => {
-    t.equals(r.name, '404 Not Found')
-    teardown()
+  makeGetEntityFailingTest(t, setup, teardown, {
+    methodToTest: 'getSpaces'
   })
 })
 
 test('API call getSpace', (t) => {
-  t.plan(1)
-  const data = {
-    sys: {
-      id: 'id',
-      type: 'Space'
-    },
-    name: 'name',
-    locales: [ 'en-US' ]
-  }
-  const {api} = setupWithData({
-    promise: Promise.resolve({ data: data })
-  })
-  entitiesMock.space.wrapSpace.returns(data)
-
-  return api.getSpace('spaceid')
-  .then((r) => {
-    t.looseEqual(r, data)
-    teardown()
+  makeGetEntityTest(t, setup, teardown, {
+    entityType: 'space',
+    mockToReturn: spaceMock,
+    methodToTest: 'getSpace'
   })
 })
 
 test('API call getSpace fails', (t) => {
-  t.plan(1)
-  const error = cloneMock('error')
-  const {api} = setupWithData({
-    promise: Promise.reject(error)
-  })
-
-  return api.getSpace('spaceid')
-  .then(() => {}, (r) => {
-    t.equals(r.name, '404 Not Found')
-    teardown()
+  makeGetEntityFailingTest(t, setup, teardown, {
+    methodToTest: 'getSpace'
   })
 })
 
@@ -109,16 +55,14 @@ test('API call createSpace', (t) => {
     sys: { id: 'id', type: 'Space' },
     name: 'name'
   }
-  const {api, postStub} = setupWithData({
-    promise: Promise.resolve({ data: data })
-  })
+  const {api, httpMock, entitiesMock} = setup(Promise.resolve({ data: data }))
   entitiesMock.space.wrapSpace.returns(data)
 
   return api.createSpace({name: 'name'}, 'orgid')
   .then((r) => {
     t.looseEqual(r, data, 'space is wrapped')
-    t.looseEqual(postStub.args[0][1], {name: 'name'}, 'data is posted')
-    t.equals(postStub.args[0][2].headers['X-Contentful-Organization'], 'orgid', 'orgid is specified in headers')
+    t.looseEqual(httpMock.post.args[0][1], {name: 'name'}, 'data is posted')
+    t.equals(httpMock.post.args[0][2].headers['X-Contentful-Organization'], 'orgid', 'orgid is specified in headers')
     teardown()
   })
 })
@@ -126,9 +70,7 @@ test('API call createSpace', (t) => {
 test('API call createSpace fails', (t) => {
   t.plan(1)
   const error = cloneMock('error')
-  const {api} = setupWithData({
-    promise: Promise.reject(error)
-  })
+  const {api} = setup(Promise.reject(error))
 
   return api.createSpace({})
   .then(() => {}, (r) => {

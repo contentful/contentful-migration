@@ -16,6 +16,14 @@ const sysMock = {
   revision: 1
 }
 
+const spaceMock = {
+  sys: assign(cloneDeep(sysMock), {
+    type: 'Space'
+  }),
+  name: 'name',
+  locales: [ 'en-US' ]
+}
+
 const contentTypeMock = {
   sys: assign(cloneDeep(sysMock), {
     type: 'ContentType'
@@ -81,6 +89,7 @@ function cloneMock (name) {
 export {
   linkMock,
   sysMock,
+  spaceMock,
   contentTypeMock,
   entryMock,
   assetMock,
