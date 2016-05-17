@@ -1,6 +1,6 @@
 import sinon from 'sinon'
 
-export default function setupHttpEntitiesMocks (rewiredModuleApi, promise) {
+export default function setupEntitiesMock (rewiredModuleApi) {
   const entitiesMock = {
     space: {
       wrapSpace: sinon.stub(),
@@ -25,14 +25,5 @@ export default function setupHttpEntitiesMocks (rewiredModuleApi, promise) {
   }
   rewiredModuleApi.__Rewire__('entities', entitiesMock)
 
-  const httpMock = {
-    get: sinon.stub().returns(promise),
-    post: sinon.stub().returns(promise),
-    put: sinon.stub().returns(promise),
-    delete: sinon.stub().returns(promise)
-  }
-  return {
-    entitiesMock,
-    httpMock
-  }
+  return entitiesMock
 }

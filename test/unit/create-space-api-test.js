@@ -3,7 +3,8 @@ import test from 'blue-tape'
 import mixinToPlainObject from 'contentful-sdk-core/mixins/to-plain-object'
 import createSpaceApi, {__RewireAPI__ as createSpaceApiRewireApi} from '../../lib/create-space-api'
 import {contentTypeMock, assetMock, entryMock, localeMock} from './utils/mocks'
-import setupHttpEntitiesMocks from './utils/setup-http-entities-mocks'
+import setupEntitiesMock from './utils/entities-mock'
+import setupHttpMock from './utils/http-mock'
 import {cloneMock} from './utils/mocks'
 import {
   makeGetEntityTest,
@@ -14,9 +15,8 @@ import {
 } from './utils/make-entity-tests'
 
 function setup (promise) {
-  const {httpMock, entitiesMock} = setupHttpEntitiesMocks(
-    createSpaceApiRewireApi, promise
-  )
+  const entitiesMock = setupEntitiesMock(createSpaceApiRewireApi)
+  const httpMock = setupHttpMock(promise)
   const api = createSpaceApi({ http: httpMock })
   return {
     api,
