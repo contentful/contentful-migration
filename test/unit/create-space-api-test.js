@@ -1,5 +1,6 @@
 import test from 'blue-tape'
 
+import mixinToPlainObject from 'contentful-sdk-core/mixins/to-plain-object'
 import createSpaceApi, {__RewireAPI__ as createSpaceApiRewireApi} from '../../lib/create-space-api'
 import {contentTypeMock, assetMock, entryMock, localeMock} from './utils/mocks'
 import setupHttpEntitiesMocks from './utils/setup-http-entities-mocks'
@@ -45,6 +46,45 @@ test('API call space delete fails', (t) => {
   const {api} = setup(Promise.reject(error))
 
   return api.delete()
+  .catch((r) => {
+    t.equals(r.name, '404 Not Found')
+    teardown()
+  })
+})
+
+test('API call space update', (t) => {
+  t.plan(3)
+  const responseData = {
+    sys: { id: 'id', type: 'Space' },
+    name: 'updatedname'
+  }
+  let {api, httpMock, entitiesMock} = setup(Promise.resolve({data: responseData}))
+  entitiesMock.space.wrapSpace.returns(responseData)
+
+  // mocks data that would exist in a space object already retrieved from the server
+  api.sys = { id: 'id', type: 'Space', version: 2 }
+  api = mixinToPlainObject(api)
+
+  api.name = 'updatedname'
+  return api.update()
+  .then((r) => {
+    t.looseEqual(r, responseData, 'space is wrapped')
+    t.equals(httpMock.put.args[0][1].name, 'updatedname', 'data is sent')
+    t.equals(httpMock.put.args[0][2].headers['X-Contentful-Version'], 2, 'version header is sent')
+    teardown()
+  })
+})
+
+test('API call space update fails', (t) => {
+  t.plan(1)
+  const error = cloneMock('error')
+  let {api} = setup(Promise.reject(error))
+
+  // mocks data that would exist in a space object already retrieved from the server
+  api.sys = { id: 'id', type: 'Space', version: 2 }
+  api = mixinToPlainObject(api)
+
+  return api.update()
   .catch((r) => {
     t.equals(r.name, '404 Not Found')
     teardown()

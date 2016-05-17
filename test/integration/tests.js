@@ -55,17 +55,17 @@ test('Gets space with entities', (t) => {
 })
 
 test('Creates, updates and deletes a space', (t) => {
-  t.plan(1)
+  t.plan(2)
   return client.createSpace({
     name: 'spacename'
   }, organization)
   .then((space) => {
     t.equals(space.name, 'spacename')
     space.name = 'updatedspacename'
-    space.update()
-    .then((space) => {
-      t.equals(space.name, 'updatedspacename')
-      return space.delete()
+    return space.update()
+    .then((updatedSpace) => {
+      t.equals(updatedSpace.name, 'updatedspacename')
+      return updatedSpace.delete()
     })
   })
 })
