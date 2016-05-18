@@ -1,7 +1,7 @@
 import test from 'tape'
 import {cloneDeep} from 'lodash/lang'
 import errorHandler from '../../lib/error-handler'
-import {cloneMock} from './utils/mocks'
+import {cloneMock} from './mocks/entities'
 
 // Best case scenario where an error is a known and expected situation and the
 // server returns an error with a JSON payload with all the information possible

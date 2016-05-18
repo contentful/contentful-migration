@@ -1,6 +1,6 @@
 import test from 'tape'
-import {contentTypeMock, mockCollection} from '../utils/mocks'
-import setupHttpMock from '../utils/http-mock'
+import {cloneMock, mockCollection} from '../mocks/entities'
+import setupHttpMock from '../mocks/http'
 import {wrapContentType, wrapContentTypeCollection} from '../../../lib/entities/content-type'
 
 function setup () {

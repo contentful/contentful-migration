@@ -1,6 +1,6 @@
 import test from 'tape'
-import {assetMock, mockCollection} from '../utils/mocks'
-import setupHttpMock from '../utils/http-mock'
+import {assetMock, mockCollection} from '../mocks/entities'
+import setupHttpMock from '../mocks/http'
 import {wrapAsset, wrapAssetCollection} from '../../../lib/entities/asset'
 
 function setup () {

@@ -1,6 +1,6 @@
 import test from 'tape'
-import {localeMock, mockCollection} from '../utils/mocks'
-import setupHttpMock from '../utils/http-mock'
+import {localeMock, mockCollection} from '../mocks/entities'
+import setupHttpMock from '../mocks/http'
 import {wrapLocale, wrapLocaleCollection} from '../../../lib/entities/locale'
 
 function setup () {

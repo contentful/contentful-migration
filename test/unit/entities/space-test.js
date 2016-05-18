@@ -1,6 +1,6 @@
 import test from 'tape'
 import sinon from 'sinon'
-import {spaceMock, mockCollection} from '../utils/mocks'
+import {spaceMock, mockCollection} from '../mocks/entities'
 import {wrapSpace, wrapSpaceCollection, __RewireAPI__ as spaceRewireApi} from '../../../lib/entities/space'
 
 const httpMock = {

@@ -1,10 +1,10 @@
 import test from 'blue-tape'
 
-import {spaceMock} from './utils/mocks'
-import setupEntitiesMock from './utils/entities-mock'
-import setupHttpMock from './utils/http-mock'
+import {spaceMock} from './mocks/entities'
+import {setupEntitiesMock} from './mocks/entities'
+import setupHttpMock from './mocks/http'
 import createContentfulApi, {__RewireAPI__ as createContentfulApiRewireApi} from '../../lib/create-contentful-api'
-import {makeGetEntityTest, makeGetCollectionTest, makeEntityMethodFailingTest} from './utils/make-entity-tests'
+import {makeGetEntityTest, makeGetCollectionTest, makeEntityMethodFailingTest} from './test-creators/static-entity-methods'
 
 function setup (promise) {
   const entitiesMock = setupEntitiesMock(createContentfulApiRewireApi)

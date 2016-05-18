@@ -1,6 +1,6 @@
 import test from 'tape'
-import {entryMock, mockCollection} from '../utils/mocks'
-import setupHttpMock from '../utils/http-mock'
+import {entryMock, mockCollection} from '../mocks/entities'
+import setupHttpMock from '../mocks/http'
 import {cloneDeep} from 'lodash/lang'
 import {wrapEntry, wrapEntryCollection} from '../../../lib/entities/entry'
 

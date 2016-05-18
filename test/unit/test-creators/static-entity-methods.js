@@ -1,5 +1,5 @@
 import {upperFirst} from 'lodash/string'
-import {cloneMock} from './mocks'
+import {cloneMock} from '../mocks/entities'
 
 export function makeGetEntityTest (t, setup, teardown, {entityType, mockToReturn, methodToTest, wrapperSuffix = ''}) {
   t.plan(1)

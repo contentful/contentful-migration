@@ -1,3 +1,4 @@
+import sinon from 'sinon'
 import {assign} from 'lodash/object'
 import {cloneDeep} from 'lodash/lang'
 
@@ -107,6 +108,34 @@ function mockCollection (entityMock) {
   }
 }
 
+function setupEntitiesMock (rewiredModuleApi) {
+  const entitiesMock = {
+    space: {
+      wrapSpace: sinon.stub(),
+      wrapSpaceCollection: sinon.stub()
+    },
+    contentType: {
+      wrapContentType: sinon.stub(),
+      wrapContentTypeCollection: sinon.stub()
+    },
+    entry: {
+      wrapEntry: sinon.stub(),
+      wrapEntryCollection: sinon.stub()
+    },
+    asset: {
+      wrapAsset: sinon.stub(),
+      wrapAssetCollection: sinon.stub()
+    },
+    locale: {
+      wrapLocale: sinon.stub(),
+      wrapLocaleCollection: sinon.stub()
+    }
+  }
+  rewiredModuleApi.__Rewire__('entities', entitiesMock)
+
+  return entitiesMock
+}
+
 export {
   linkMock,
   sysMock,
@@ -117,5 +146,6 @@ export {
   localeMock,
   errorMock,
   cloneMock,
-  mockCollection
+  mockCollection,
+  setupEntitiesMock
 }
