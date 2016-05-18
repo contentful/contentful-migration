@@ -1,25 +1,85 @@
 import test from 'tape'
-import {cloneMock, mockCollection} from '../mocks/entities'
+import {cloneMock} from '../mocks/entities'
 import setupHttpMock from '../mocks/http'
 import {wrapContentType, wrapContentTypeCollection} from '../../../lib/entities/content-type'
+import {
+  entityWrappedTest,
+  entityCollectionWrappedTest,
+  entityUpdateTest,
+  entityDeleteTest,
+  entityPublishTest,
+  entityUnpublishTest,
+  failingActionTest,
+  failingVersionActionTest
+} from '../test-creators/instance-entity-methods'
 
-function setup () {
+function setup (promise) {
   return {
-    httpMock: setupHttpMock()
+    httpMock: setupHttpMock(promise),
+    entityMock: cloneMock('contentType')
   }
 }
 
 test('ContentType is wrapped', (t) => {
-  const {httpMock} = setup()
-  const wrappedContentType = wrapContentType(httpMock, contentTypeMock)
-  t.looseEqual(wrappedContentType.toPlainObject(), contentTypeMock)
-  t.end()
+  return entityWrappedTest(t, setup, {
+    wrapperMethod: wrapContentType
+  })
 })
 
 test('ContentType collection is wrapped', (t) => {
-  const {httpMock} = setup()
-  const contentTypeCollection = mockCollection(contentTypeMock)
-  const wrappedContentType = wrapContentTypeCollection(httpMock, contentTypeCollection)
-  t.looseEqual(wrappedContentType.toPlainObject(), contentTypeCollection)
-  t.end()
+  return entityCollectionWrappedTest(t, setup, {
+    wrapperMethod: wrapContentTypeCollection
+  })
+})
+
+test('ContentType update', (t) => {
+  return entityUpdateTest(t, setup, {
+    wrapperMethod: wrapContentType
+  })
+})
+
+test('ContentType update fails', (t) => {
+  return failingVersionActionTest(t, setup, {
+    wrapperMethod: wrapContentType,
+    actionMethod: 'update'
+  })
+})
+
+test('ContentType delete', (t) => {
+  return entityDeleteTest(t, setup, {
+    wrapperMethod: wrapContentType
+  })
+})
+
+test('ContentType delete fails', (t) => {
+  return failingActionTest(t, setup, {
+    wrapperMethod: wrapContentType,
+    actionMethod: 'delete'
+  })
+})
+
+test('ContentType publish', (t) => {
+  return entityPublishTest(t, setup, {
+    wrapperMethod: wrapContentType
+  })
+})
+
+test('ContentType publish fails', (t) => {
+  return failingVersionActionTest(t, setup, {
+    wrapperMethod: wrapContentType,
+    actionMethod: 'publish'
+  })
+})
+
+test('ContentType unpublish', (t) => {
+  return entityUnpublishTest(t, setup, {
+    wrapperMethod: wrapContentType
+  })
+})
+
+test('ContentType unpublish fails', (t) => {
+  return failingActionTest(t, setup, {
+    wrapperMethod: wrapContentType,
+    actionMethod: 'unpublish'
+  })
 })

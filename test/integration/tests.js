@@ -45,15 +45,6 @@ test('Fails to get space', (t) => {
   })
 })
 
-test('Gets space with entities', (t) => {
-  return client.getSpace('cfexampleapi')
-  .then((space) => {
-    contentTypeTests(t, space)
-    entryTests(t, space)
-    assetTests(t, space)
-  })
-})
-
 test('Creates, updates and deletes a space', (t) => {
   t.plan(2)
   return client.createSpace({
@@ -67,5 +58,23 @@ test('Creates, updates and deletes a space', (t) => {
       t.equals(updatedSpace.name, 'updatedspacename')
       return updatedSpace.delete()
     })
+  })
+})
+
+test.only('Gets space with entities', (t) => {
+  return client.createSpace({
+    name: 'CMA JS SDK tests'
+  }, organization)
+  // When running these tests locally, create a specific space, uncomment and
+  // use the line below to avoid running into the 10 space per hour creation limit.
+  // Also comment the test.onFinish line below to avoid removing the space.
+  // The below line also uses double quotes on purpose so it breaks the linter
+  // in case someone forgets to comment this line again.
+  // client.getSpace("aas0civtqvvc")
+  .then((space) => {
+    contentTypeTests(t, space)
+    entryTests(t, space)
+    assetTests(t, space)
+    test.onFinish(() => space.delete())
   })
 })
