@@ -638,7 +638,7 @@ space.getEntries({ 'sys.updatedAt[gte]': '2013-01-01T00:00:00Z' })
 Retrieve a specific set of entries by their `sys.id`:
 
 ```js
-space.getEntries({ 'sys.id[in]': [ 'finn', 'jake' ] })
+space.getEntries({ 'sys.id[in]': 'finn,jake' })
 ```
 
 Search for `cat` entries that have less than three lives left:
