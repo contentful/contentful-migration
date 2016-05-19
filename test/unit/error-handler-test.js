@@ -1,5 +1,4 @@
 import test from 'tape'
-import {cloneDeep} from 'lodash/lang'
 import errorHandler from '../../lib/error-handler'
 import {cloneMock} from './mocks/entities'
 

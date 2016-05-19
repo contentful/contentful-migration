@@ -32,7 +32,7 @@
     "browser-coverage": "npm run test:cover && opener coverage/lcov-report/index.html",
     "prepublish": "in-publish && npm run build || not-in-publish",
     "postpublish": "npm run docs:publish && npm run clean",
-    "pretest": "standard lib/*.js && standard lib/**/*.js",
+    "pretest": "standard lib/*.js && standard lib/**/*.js && standard test/**/*.js",
     "test": "npm run test:cover && npm run test:integration && npm run test:browser-local",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
