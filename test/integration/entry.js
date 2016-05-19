@@ -254,4 +254,54 @@ export default function entryTests (t, space) {
       t.ok(response.items[4].sys.id < response.items[5].sys.id, 'the entries with the same version are ordered by id')
     })
   })
+
+  function prepareContentTypeForEntryTest () {
+    return space.createContentTypeWithId('testcontenttype', {name: 'testCT', fields: [
+      {id: 'title', name: 'Title', type: 'Text'}
+    ]})
+    .then((contentType) => contentType.publish(), (err) => console.log(err))
+  }
+
+  function teardownContentTypeForEntryTest (contentType) {
+    return new Promise((resolve, reject) => setTimeout(() => {
+      contentType.unpublish()
+      .then((unpublishedContentType) => unpublishedContentType.delete())
+      .then(resolve, reject)
+    }, 2000))
+  }
+
+  t.test('Create, update, publish, unpublish, archive, unarchive and delete entry', (t) => {
+    t.plan(6)
+
+    return prepareContentTypeForEntryTest()
+    .then((contentType) => {
+      return space.createEntry('testcontenttype', {fields: {title: {'en-US': 'this is the title'}}})
+      .then((entry) => {
+        t.equals(entry.fields.title['en-US'], 'this is the title', 'original title')
+        entry.fields.title['en-US'] = 'title has changed'
+        return entry.update()
+        .then((updatedEntry) => {
+          t.equals(entry.fields.title['en-US'], 'title has changed', 'updated title')
+          return updatedEntry.publish()
+          .then((publishedEntry) => {
+            t.ok(publishedEntry.sys.publishedVersion, 'has published version')
+            return publishedEntry.unpublish()
+            .then((unpublishedEntry) => {
+              t.notOk(unpublishedEntry.sys.publishedVersion, 'published version is gone')
+              return unpublishedEntry.archive()
+              .then((archivedEntry) => {
+                t.ok(archivedEntry.sys.archivedVersion, 'has archived version')
+                return archivedEntry.unarchive()
+                .then((unarchivedEntry) => {
+                  t.notOk(unarchivedEntry.sys.archivedVersion, 'archived version is gone')
+                  return unarchivedEntry.delete()
+                  .then(teardownContentTypeForEntryTest(contentType))
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  })
 }

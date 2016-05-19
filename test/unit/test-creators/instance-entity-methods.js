@@ -29,6 +29,16 @@ export function entityUpdateTest (t, setup, {wrapperMethod}) {
   })
 }
 
+export function entityActionTest (t, setup, {wrapperMethod, actionMethod}) {
+  t.plan(1)
+  const {httpMock, entityMock} = setup()
+  const entity = wrapperMethod(httpMock, entityMock)
+  return entity[actionMethod]()
+  .then((response) => {
+    t.ok(response.toPlainObject, 'response is wrapped')
+  })
+}
+
 export function entityDeleteTest (t, setup, {wrapperMethod}) {
   t.plan(1)
   const {httpMock, entityMock} = setup()
@@ -48,16 +58,6 @@ export function entityPublishTest (t, setup, {wrapperMethod}) {
   .then((response) => {
     t.ok(response.toPlainObject, 'response is wrapped')
     t.equals(httpMock.put.args[0][2].headers['X-Contentful-Version'], 2, 'version header is sent')
-  })
-}
-
-export function entityUnpublishTest (t, setup, {wrapperMethod}) {
-  t.plan(1)
-  const {httpMock, entityMock} = setup()
-  const entity = wrapperMethod(httpMock, entityMock)
-  return entity.unpublish()
-  .then((response) => {
-    t.ok(response.toPlainObject, 'response is wrapped')
   })
 }
 

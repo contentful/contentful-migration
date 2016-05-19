@@ -177,10 +177,17 @@ test('API call getEntries fails', (t) => {
 })
 
 test('API call createEntry', (t) => {
-  makeCreateEntityTest(t, setup, teardown, {
-    entityType: 'entry',
-    mockToReturn: entryMock,
-    methodToTest: 'createEntry'
+  t.plan(3)
+  const {api, httpMock, entitiesMock} = setup(Promise.resolve({}))
+  entitiesMock.entry.wrapEntry
+  .returns(entryMock)
+
+  return api.createEntry('contentTypeId', entryMock)
+  .then((r) => {
+    t.looseEqual(r, entryMock)
+    t.looseEqual(httpMock.post.args[0][1], entryMock, 'data is sent')
+    t.looseEqual(httpMock.post.args[0][2].headers['X-Contentful-Content-Type'], 'contentTypeId', 'content type is specified')
+    teardown()
   })
 })
 
@@ -191,11 +198,18 @@ test('API call createEntry fails', (t) => {
 })
 
 test('API call createEntryWithId', (t) => {
-  makeCreateEntityWithIdTest(t, setup, teardown, {
-    entityType: 'entry',
-    mockToReturn: entryMock,
-    methodToTest: 'createEntryWithId',
-    entityPath: 'entries'
+  t.plan(4)
+  const {api, httpMock, entitiesMock} = setup(Promise.resolve({}))
+  entitiesMock.entry.wrapEntry
+  .returns(entryMock)
+
+  return api.createEntryWithId('entryId', 'contentTypeId', entryMock)
+  .then((r) => {
+    t.looseEqual(r, entryMock)
+    t.looseEqual(httpMock.put.args[0][0], 'entries/entryId', 'entry id is sent')
+    t.looseEqual(httpMock.put.args[0][1], entryMock, 'data is sent')
+    t.looseEqual(httpMock.put.args[0][2].headers['X-Contentful-Content-Type'], 'contentTypeId', 'content type is specified')
+    teardown()
   })
 })
 

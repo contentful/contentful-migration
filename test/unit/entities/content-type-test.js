@@ -8,7 +8,7 @@ import {
   entityUpdateTest,
   entityDeleteTest,
   entityPublishTest,
-  entityUnpublishTest,
+  entityActionTest,
   failingActionTest,
   failingVersionActionTest
 } from '../test-creators/instance-entity-methods'
@@ -72,8 +72,9 @@ test('ContentType publish fails', (t) => {
 })
 
 test('ContentType unpublish', (t) => {
-  return entityUnpublishTest(t, setup, {
-    wrapperMethod: wrapContentType
+  return entityActionTest(t, setup, {
+    wrapperMethod: wrapContentType,
+    actionMethod: 'unpublish'
   })
 })
 
