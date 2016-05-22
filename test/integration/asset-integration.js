@@ -26,6 +26,7 @@ export default function assetTests (t, space) {
     })
   })
 
+  // TODO upload file to github repo to use as fixture
   t.test('Create, process, update, publish, unpublish, archive, unarchive and delete asset', (t) => {
     t.plan(7)
 

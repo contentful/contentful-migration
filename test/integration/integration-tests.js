@@ -1,8 +1,8 @@
 import test from 'blue-tape'
-import localeTests from './locale'
-import contentTypeTests from './content-type'
-import entryTests from './entry'
-import assetTests from './asset'
+import localeTests from './locale-integration'
+import contentTypeTests from './content-type-integration'
+import entryTests from './entry-integration'
+import assetTests from './asset-integration'
 import contentfulManagement from '../../'
 
 const params = {
