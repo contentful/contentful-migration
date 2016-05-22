@@ -70,7 +70,7 @@ test.only('Gets space with entities', (t) => {
   // Also comment the test.onFinish line below to avoid removing the space.
   // The below line also uses double quotes on purpose so it breaks the linter
   // in case someone forgets to comment this line again.
-  // client.getSpace("aas0civtqvvc")
+  // client.getSpace("wolk5fnyla9z")
   .then((space) => {
     contentTypeTests(t, space)
     entryTests(t, space)

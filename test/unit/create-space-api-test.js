@@ -203,7 +203,7 @@ test('API call createEntryWithId', (t) => {
   entitiesMock.entry.wrapEntry
   .returns(entryMock)
 
-  return api.createEntryWithId('entryId', 'contentTypeId', entryMock)
+  return api.createEntryWithId('contentTypeId', 'entryId', entryMock)
   .then((r) => {
     t.looseEqual(r, entryMock)
     t.looseEqual(httpMock.put.args[0][0], 'entries/entryId', 'entry id is sent')

@@ -304,4 +304,19 @@ export default function entryTests (t, space) {
       })
     })
   })
+
+  t.test('Create with id and delete entry', (t) => {
+    t.plan(1)
+
+    return prepareContentTypeForEntryTest()
+    .then((contentType) => {
+      return space.createEntryWithId('testcontenttype', 'entryid', {fields: {title: {'en-US': 'this is the title'}}})
+      .then((entry) => {
+        t.equals(entry.fields.title['en-US'], 'this is the title', 'original title')
+        return entry.delete()
+        .then(teardownContentTypeForEntryTest(contentType))
+      })
+    })
+  })
+
 }
