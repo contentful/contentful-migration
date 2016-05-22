@@ -1,4 +1,5 @@
 import test from 'blue-tape'
+import localeTests from './locale'
 import contentTypeTests from './content-type'
 import entryTests from './entry'
 import assetTests from './asset'
@@ -72,6 +73,7 @@ test.only('Gets space with entities', (t) => {
   // in case someone forgets to comment this line again.
   // client.getSpace("wolk5fnyla9z")
   .then((space) => {
+    localeTests(t, space)
     contentTypeTests(t, space)
     entryTests(t, space)
     assetTests(t, space)

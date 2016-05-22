@@ -1,25 +1,57 @@
 import test from 'tape'
-import {localeMock, mockCollection} from '../mocks/entities'
+import {cloneMock} from '../mocks/entities'
 import setupHttpMock from '../mocks/http'
 import {wrapLocale, wrapLocaleCollection} from '../../../lib/entities/locale'
+import {
+  entityWrappedTest,
+  entityCollectionWrappedTest,
+  entityUpdateTest,
+  entityDeleteTest,
+  failingActionTest,
+  failingVersionActionTest
+} from '../test-creators/instance-entity-methods'
 
-function setup () {
+function setup (promise) {
   return {
-    httpMock: setupHttpMock()
+    httpMock: setupHttpMock(promise),
+    entityMock: cloneMock('locale')
   }
 }
 
 test('Locale is wrapped', (t) => {
-  const {httpMock} = setup()
-  const wrappedLocale = wrapLocale(httpMock, localeMock)
-  t.looseEqual(wrappedLocale.toPlainObject(), localeMock)
-  t.end()
+  entityWrappedTest(t, setup, {
+    wrapperMethod: wrapLocale
+  })
 })
 
 test('Locale collection is wrapped', (t) => {
-  const {httpMock} = setup()
-  const localeCollection = mockCollection(localeMock)
-  const wrappedLocale = wrapLocaleCollection(httpMock, localeCollection)
-  t.looseEqual(wrappedLocale.toPlainObject(), localeCollection)
-  t.end()
+  return entityCollectionWrappedTest(t, setup, {
+    wrapperMethod: wrapLocaleCollection
+  })
+})
+
+test('Locale update', (t) => {
+  return entityUpdateTest(t, setup, {
+    wrapperMethod: wrapLocale
+  })
+})
+
+test('Locale update fails', (t) => {
+  return failingVersionActionTest(t, setup, {
+    wrapperMethod: wrapLocale,
+    actionMethod: 'update'
+  })
+})
+
+test('Locale delete', (t) => {
+  return entityDeleteTest(t, setup, {
+    wrapperMethod: wrapLocale
+  })
+})
+
+test('Locale delete fails', (t) => {
+  return failingActionTest(t, setup, {
+    wrapperMethod: wrapLocale,
+    actionMethod: 'delete'
+  })
 })
