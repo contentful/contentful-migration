@@ -1,3 +1,5 @@
+const TEST_IMAGE_SOURCE_URL = 'https://raw.githubusercontent.com/contentful/contentful-management.js/next/test/integration/fixtures/shiba-stuck-bush.jpg'
+
 export function assetReadOnlyTests (t, space) {
   t.test('Gets assets with only images', (t) => {
     t.plan(1)
@@ -28,7 +30,6 @@ export function assetReadOnlyTests (t, space) {
 }
 
 export function assetWriteTests (t, space) {
-  // TODO upload file to github repo to use as fixture
   t.test('Create, process, update, publish, unpublish, archive, unarchive and delete asset', (t) => {
     t.plan(7)
 
@@ -37,7 +38,7 @@ export function assetWriteTests (t, space) {
       file: {'en-US': {
         contentType: 'image/jpeg',
         fileName: 'shiba-stuck.jpg',
-        upload: 'http://shiba.fr/wp-content/uploads/shiba-stuck-bush.jpg'
+        upload: TEST_IMAGE_SOURCE_URL
       }}
     }})
     .then((asset) => {
@@ -80,12 +81,12 @@ export function assetWriteTests (t, space) {
         'en-US': {
           contentType: 'image/jpeg',
           fileName: 'shiba-stuck.jpg',
-          upload: 'http://shiba.fr/wp-content/uploads/shiba-stuck-bush.jpg'
+          upload: TEST_IMAGE_SOURCE_URL
         },
         'de-DE': {
           contentType: 'image/jpeg',
           fileName: 'shiba-stuck.jpg',
-          upload: 'http://shiba.fr/wp-content/uploads/shiba-stuck-bush.jpg'
+          upload: TEST_IMAGE_SOURCE_URL
         }
       }
     }})
