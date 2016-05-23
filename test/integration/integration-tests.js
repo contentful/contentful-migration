@@ -3,6 +3,7 @@ import localeTests from './locale-integration'
 import contentTypeTests from './content-type-integration'
 import entryTests from './entry-integration'
 import assetTests from './asset-integration'
+import generateRandomId from './generate-random-id'
 import contentfulManagement from '../../'
 
 const params = {
@@ -38,7 +39,7 @@ test('Gets space', (t) => {
 
 test('Fails to get space', (t) => {
   t.plan(2)
-  return client.getSpace('weirdrandomid' + Math.ceil(Math.random() * 1e8))
+  return client.getSpace(generateRandomId('weirdrandomid'))
   .then(() => {}, (error) => {
     t.equals(error.name, 'NotFound', 'error name')
     const errorData = JSON.parse(error.message)
