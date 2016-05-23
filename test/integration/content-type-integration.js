@@ -1,4 +1,6 @@
-export default function contentTypeTests (t, space) {
+import generateRandomId from './generate-random-id'
+
+export function contentTypeReadOnlyTests (t, space) {
   t.test('Gets content type', (t) => {
     t.plan(3)
     // TODO fix this test and all other integration tests dependent on the cfexampleapi space
@@ -17,7 +19,9 @@ export default function contentTypeTests (t, space) {
       t.ok(response.items, 'items')
     })
   })
+}
 
+export function contentTypeWriteTests (t, space) {
   t.test('Create, update, publish, unpublish and delete content type', (t) => {
     t.plan(5)
     return space.createContentType({name: 'testentity'})
@@ -45,12 +49,12 @@ export default function contentTypeTests (t, space) {
 
   t.test('Create with id and delete content type', (t) => {
     t.plan(3)
-    const id = 'weirdrandomid' + Math.ceil(Math.random() * 1e8)
-    return space.createContentTypeWithId(id, {name: 'testentity'})
+    const id = generateRandomId('testCT')
+    return space.createContentTypeWithId(id, {name: 'testentitywithid'})
     .then((contentType) => {
       t.equals(contentType.sys.id, id, 'specified id')
       t.equals(contentType.sys.type, 'ContentType', 'type')
-      t.equals(contentType.name, 'testentity', 'name')
+      t.equals(contentType.name, 'testentitywithid', 'name')
       return contentType.delete()
     })
   })

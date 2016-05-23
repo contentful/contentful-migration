@@ -1,8 +1,8 @@
 import test from 'blue-tape'
-import localeTests from './locale-integration'
-import contentTypeTests from './content-type-integration'
-import entryTests from './entry-integration'
-import assetTests from './asset-integration'
+import {localeReadOnlyTests, localeWriteTests} from './locale-integration'
+import {contentTypeReadOnlyTests, contentTypeWriteTests} from './content-type-integration'
+import {entryReadOnlyTests, entryWriteTests} from './entry-integration'
+import {assetReadOnlyTests, assetWriteTests} from './asset-integration'
 import generateRandomId from './generate-random-id'
 import contentfulManagement from '../../'
 
@@ -63,7 +63,17 @@ test('Creates, updates and deletes a space', (t) => {
   })
 })
 
-test.only('Gets space with entities', (t) => {
+test('Gets space for read only tests', (t) => {
+  client.getSpace('cfexampleapi')
+  .then((space) => {
+    localeReadOnlyTests(t, space)
+    contentTypeReadOnlyTests(t, space)
+    entryReadOnlyTests(t, space)
+    assetReadOnlyTests(t, space)
+  })
+})
+
+test('Create space for tests which create, change and delete data', (t) => {
   return client.createSpace({
     name: 'CMA JS SDK tests'
   }, organization)
@@ -72,12 +82,21 @@ test.only('Gets space with entities', (t) => {
   // Also comment the test.onFinish line below to avoid removing the space.
   // The below line also uses double quotes on purpose so it breaks the linter
   // in case someone forgets to comment this line again.
-  // client.getSpace("wolk5fnyla9z")
+  // client.getSpace("2v67bq9z41qv")
   .then((space) => {
-    localeTests(t, space)
-    contentTypeTests(t, space)
-    entryTests(t, space)
-    assetTests(t, space)
+    return space.createLocale({
+      name: 'German (Germany)',
+      code: 'de-DE'
+    })
+    .then(() => {
+      return space
+    })
+  })
+  .then((space) => {
+    localeWriteTests(t, space)
+    contentTypeWriteTests(t, space)
+    entryWriteTests(t, space)
+    assetWriteTests(t, space)
     test.onFinish(() => space.delete())
   })
 })

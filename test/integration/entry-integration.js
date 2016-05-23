@@ -1,6 +1,7 @@
 import {filter, map} from 'lodash/collection'
+import generateRandomId from './generate-random-id'
 
-export default function entryTests (t, space) {
+export function entryReadOnlyTests (t, space) {
   t.test('Gets entry', (t) => {
     t.plan(2)
     return space.getEntry('5ETMRzkl9KM4omyMwKAOki')
@@ -254,9 +255,11 @@ export default function entryTests (t, space) {
       t.ok(response.items[4].sys.id < response.items[5].sys.id, 'the entries with the same version are ordered by id')
     })
   })
+}
 
+export function entryWriteTests (t, space) {
   function prepareContentTypeForEntryTest () {
-    return space.createContentTypeWithId('testcontenttype', {name: 'testCT', fields: [
+    return space.createContentTypeWithId(generateRandomId('testcontenttype'), {name: 'testCT', fields: [
       {id: 'title', name: 'Title', type: 'Text'}
     ]})
     .then((contentType) => contentType.publish(), (err) => console.log(err))
@@ -275,7 +278,7 @@ export default function entryTests (t, space) {
 
     return prepareContentTypeForEntryTest()
     .then((contentType) => {
-      return space.createEntry('testcontenttype', {fields: {title: {'en-US': 'this is the title'}}})
+      return space.createEntry(contentType.sys.id, {fields: {title: {'en-US': 'this is the title'}}})
       .then((entry) => {
         t.equals(entry.fields.title['en-US'], 'this is the title', 'original title')
         entry.fields.title['en-US'] = 'title has changed'
@@ -310,7 +313,7 @@ export default function entryTests (t, space) {
 
     return prepareContentTypeForEntryTest()
     .then((contentType) => {
-      return space.createEntryWithId('testcontenttype', 'entryid', {fields: {title: {'en-US': 'this is the title'}}})
+      return space.createEntryWithId(contentType.sys.id, 'entryid', {fields: {title: {'en-US': 'this is the title'}}})
       .then((entry) => {
         t.equals(entry.fields.title['en-US'], 'this is the title', 'original title')
         return entry.delete()
@@ -318,5 +321,4 @@ export default function entryTests (t, space) {
       })
     })
   })
-
 }

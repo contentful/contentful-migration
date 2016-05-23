@@ -1,4 +1,4 @@
-export default function assetTests (t, space) {
+export function assetReadOnlyTests (t, space) {
   t.test('Gets assets with only images', (t) => {
     t.plan(1)
     return space.getAssets({
@@ -25,7 +25,9 @@ export default function assetTests (t, space) {
       t.ok(response.items, 'items')
     })
   })
+}
 
+export function assetWriteTests (t, space) {
   // TODO upload file to github repo to use as fixture
   t.test('Create, process, update, publish, unpublish, archive, unarchive and delete asset', (t) => {
     t.plan(7)
@@ -69,7 +71,6 @@ export default function assetTests (t, space) {
     })
   })
 
-  // TODO make sure locale is created beforehand
   t.test('Create and process asset with multiple locales', (t) => {
     t.plan(2)
 
