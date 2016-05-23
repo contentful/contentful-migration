@@ -31,7 +31,7 @@ export function assetReadOnlyTests (t, space) {
 
 export function assetWriteTests (t, space) {
   t.test('Create, process, update, publish, unpublish, archive, unarchive and delete asset', (t) => {
-    t.plan(7)
+    t.plan(10)
 
     return space.createAsset({fields: {
       title: {'en-US': 'this is the title'},
@@ -43,25 +43,28 @@ export function assetWriteTests (t, space) {
     }})
     .then((asset) => {
       t.equals(asset.fields.title['en-US'], 'this is the title', 'original title')
-      return asset.processForLocale('en-US')
+      return asset.processForLocale('en-US', {processingCheckWait: 1000})
       .then((processedAsset) => {
+        t.ok(asset.isDraft(), 'asset is in draft')
         t.ok(processedAsset.fields.file['en-US'].url, 'file was uploaded')
-        processedAsset.fields.title['en-US'] = 'title has changed'
-        return processedAsset.update()
-        .then((updatedAsset) => {
-          t.equals(updatedAsset.fields.title['en-US'], 'title has changed', 'updated title')
-          return updatedAsset.publish()
-          .then((publishedAsset) => {
-            t.ok(publishedAsset.sys.publishedVersion, 'has published version')
-            return publishedAsset.unpublish()
+        return processedAsset.publish()
+        .then((publishedAsset) => {
+          t.ok(publishedAsset.isPublished(), 'asset is published')
+          publishedAsset.fields.title['en-US'] = 'title has changed'
+          return publishedAsset.update()
+          .then((updatedAsset) => {
+            t.ok(updatedAsset.isUpdated(), 'asset is updated')
+            t.equals(updatedAsset.fields.title['en-US'], 'title has changed', 'updated title')
+            return updatedAsset.unpublish()
             .then((unpublishedAsset) => {
-              t.notOk(unpublishedAsset.sys.publishedVersion, 'published version is gone')
+              t.ok(unpublishedAsset.isDraft(), 'asset is back in draft')
               return unpublishedAsset.archive()
               .then((archivedAsset) => {
-                t.ok(archivedAsset.sys.archivedVersion, 'has archived version')
+                t.ok(archivedAsset.isArchived(), 'asset is archived')
                 return archivedAsset.unarchive()
                 .then((unarchivedAsset) => {
-                  t.notOk(unarchivedAsset.sys.archivedVersion, 'archived version is gone')
+                  t.notOk(unarchivedAsset.isArchived(), 'asset is not archived anymore')
+                  t.ok(unarchivedAsset.isDraft(), 'asset is back in draft')
                   return unarchivedAsset.delete()
                 })
               })
@@ -91,7 +94,7 @@ export function assetWriteTests (t, space) {
       }
     }})
     .then((asset) => {
-      return asset.processForAllLocales()
+      return asset.processForAllLocales({processingCheckWait: 1000})
       .then((processedAsset) => {
         t.ok(processedAsset.fields.file['en-US'].url, 'file en-US was uploaded')
         t.ok(processedAsset.fields.file['de-DE'].url, 'file de-DE was uploaded')

@@ -13,8 +13,7 @@ const sysMock = {
   id: 'id',
   space: cloneDeep(linkMock),
   createdAt: 'createdatdate',
-  updatedAt: 'updatedatdate',
-  revision: 1
+  updatedAt: 'updatedatdate'
 }
 
 const spaceMock = {

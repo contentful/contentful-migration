@@ -10,7 +10,10 @@ import {
   entityPublishTest,
   entityActionTest,
   failingActionTest,
-  failingVersionActionTest
+  failingVersionActionTest,
+  isPublishedTest,
+  isUpdatedTest,
+  isDraftTest
 } from '../test-creators/instance-entity-methods'
 
 function setup (promise) {
@@ -83,4 +86,16 @@ test('ContentType unpublish fails', (t) => {
     wrapperMethod: wrapContentType,
     actionMethod: 'unpublish'
   })
+})
+
+test('ContentType isPublished', (t) => {
+  isPublishedTest(t, setup, {wrapperMethod: wrapContentType})
+})
+
+test('ContentType isUpdated', (t) => {
+  isUpdatedTest(t, setup, {wrapperMethod: wrapContentType})
+})
+
+test('ContentType isDraft', (t) => {
+  isDraftTest(t, setup, {wrapperMethod: wrapContentType})
 })

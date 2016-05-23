@@ -84,3 +84,48 @@ export function failingVersionActionTest (t, setup, {wrapperMethod, actionMethod
     t.equals(r.name, '404 Not Found')
   })
 }
+
+export function isPublishedTest (t, setup, {wrapperMethod}) {
+  t.plan(2)
+  const {httpMock, entityMock} = setup()
+  const unpublishedEntity = wrapperMethod(httpMock, entityMock)
+  t.notOk(unpublishedEntity.isPublished(), 'entity initially unpublished')
+  entityMock.sys.publishedVersion = 2
+  const publishedEntity = wrapperMethod(httpMock, entityMock)
+  t.ok(publishedEntity.isPublished(), 'entity is now published')
+}
+
+export function isUpdatedTest (t, setup, {wrapperMethod}) {
+  t.plan(3)
+  const {httpMock, entityMock} = setup()
+  const unpublishedEntity = wrapperMethod(httpMock, entityMock)
+  t.notOk(unpublishedEntity.isUpdated(), 'entity not published')
+  entityMock.sys.publishedVersion = 2
+  entityMock.sys.version = 3
+  const unchangedEntity = wrapperMethod(httpMock, entityMock)
+  t.notOk(unchangedEntity.isUpdated(), 'entity initially unchanged')
+  entityMock.sys.version = 5
+  const changedEntity = wrapperMethod(httpMock, entityMock)
+  t.ok(changedEntity.isUpdated(), 'entity is now updated')
+}
+
+export function isDraftTest (t, setup, {wrapperMethod}) {
+  t.plan(2)
+  const {httpMock, entityMock} = setup()
+  const unpublishedEntity = wrapperMethod(httpMock, entityMock)
+  t.ok(unpublishedEntity.isDraft(), 'entity is in draft mode')
+  entityMock.sys.publishedVersion = 2
+  entityMock.sys.version = 3
+  const unchangedEntity = wrapperMethod(httpMock, entityMock)
+  t.notOk(unchangedEntity.isDraft(), 'entity is now published')
+}
+
+export function isArchivedTest (t, setup, {wrapperMethod}) {
+  t.plan(2)
+  const {httpMock, entityMock} = setup()
+  const unarchivedEntity = wrapperMethod(httpMock, entityMock)
+  t.notOk(unarchivedEntity.isArchived(), 'entity initially unarchived')
+  entityMock.sys.archivedVersion = 2
+  const archivedEntity = wrapperMethod(httpMock, entityMock)
+  t.ok(archivedEntity.isArchived(), 'entity is now archived')
+}

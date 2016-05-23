@@ -274,29 +274,32 @@ export function entryWriteTests (t, space) {
   }
 
   t.test('Create, update, publish, unpublish, archive, unarchive and delete entry', (t) => {
-    t.plan(6)
+    t.plan(9)
 
     return prepareContentTypeForEntryTest()
     .then((contentType) => {
       return space.createEntry(contentType.sys.id, {fields: {title: {'en-US': 'this is the title'}}})
       .then((entry) => {
+        t.ok(entry.isDraft(), 'entry is in draft')
         t.equals(entry.fields.title['en-US'], 'this is the title', 'original title')
-        entry.fields.title['en-US'] = 'title has changed'
-        return entry.update()
-        .then((updatedEntry) => {
-          t.equals(entry.fields.title['en-US'], 'title has changed', 'updated title')
-          return updatedEntry.publish()
-          .then((publishedEntry) => {
-            t.ok(publishedEntry.sys.publishedVersion, 'has published version')
-            return publishedEntry.unpublish()
+        return entry.publish()
+        .then((publishedEntry) => {
+          t.ok(publishedEntry.isPublished(), 'entry is published')
+          publishedEntry.fields.title['en-US'] = 'title has changed'
+          return publishedEntry.update()
+          .then((updatedEntry) => {
+            t.ok(updatedEntry.isUpdated(), 'entry is updated')
+            t.equals(updatedEntry.fields.title['en-US'], 'title has changed', 'updated title')
+            return updatedEntry.unpublish()
             .then((unpublishedEntry) => {
-              t.notOk(unpublishedEntry.sys.publishedVersion, 'published version is gone')
+              t.ok(unpublishedEntry.isDraft(), 'entry is back in draft')
               return unpublishedEntry.archive()
               .then((archivedEntry) => {
-                t.ok(archivedEntry.sys.archivedVersion, 'has archived version')
+                t.ok(archivedEntry.isArchived(), 'entry is archived')
                 return archivedEntry.unarchive()
                 .then((unarchivedEntry) => {
-                  t.notOk(unarchivedEntry.sys.archivedVersion, 'archived version is gone')
+                  t.notOk(unarchivedEntry.isArchived(), 'entry is not archived anymore')
+                  t.ok(unarchivedEntry.isDraft(), 'entry is back in draft')
                   return unarchivedEntry.delete()
                   .then(teardownContentTypeForEntryTest(contentType))
                 })

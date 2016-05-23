@@ -10,7 +10,11 @@ import {
   entityPublishTest,
   entityActionTest,
   failingActionTest,
-  failingVersionActionTest
+  failingVersionActionTest,
+  isPublishedTest,
+  isUpdatedTest,
+  isDraftTest,
+  isArchivedTest
 } from '../test-creators/instance-entity-methods'
 
 function setup (promise) {
@@ -111,6 +115,22 @@ test('Asset unarchive fails', (t) => {
     wrapperMethod: wrapAsset,
     actionMethod: 'unarchive'
   })
+})
+
+test('Asset isPublished', (t) => {
+  isPublishedTest(t, setup, {wrapperMethod: wrapAsset})
+})
+
+test('Asset isUpdated', (t) => {
+  isUpdatedTest(t, setup, {wrapperMethod: wrapAsset})
+})
+
+test('Asset isDraft', (t) => {
+  isDraftTest(t, setup, {wrapperMethod: wrapAsset})
+})
+
+test('Asset isArchived', (t) => {
+  isArchivedTest(t, setup, {wrapperMethod: wrapAsset})
 })
 
 test('Asset processing for one locale succeeds', (t) => {

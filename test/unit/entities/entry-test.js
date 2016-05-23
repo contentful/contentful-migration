@@ -10,7 +10,11 @@ import {
   entityPublishTest,
   entityActionTest,
   failingActionTest,
-  failingVersionActionTest
+  failingVersionActionTest,
+  isPublishedTest,
+  isUpdatedTest,
+  isDraftTest,
+  isArchivedTest
 } from '../test-creators/instance-entity-methods'
 
 function setup (promise) {
@@ -111,4 +115,20 @@ test('Entry unarchive fails', (t) => {
     wrapperMethod: wrapEntry,
     actionMethod: 'unarchive'
   })
+})
+
+test('Entry isPublished', (t) => {
+  isPublishedTest(t, setup, {wrapperMethod: wrapEntry})
+})
+
+test('Entry isUpdated', (t) => {
+  isUpdatedTest(t, setup, {wrapperMethod: wrapEntry})
+})
+
+test('Entry isDraft', (t) => {
+  isDraftTest(t, setup, {wrapperMethod: wrapEntry})
+})
+
+test('Entry isArchived', (t) => {
+  isArchivedTest(t, setup, {wrapperMethod: wrapEntry})
 })

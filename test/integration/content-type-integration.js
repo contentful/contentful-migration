@@ -23,23 +23,25 @@ export function contentTypeReadOnlyTests (t, space) {
 
 export function contentTypeWriteTests (t, space) {
   t.test('Create, update, publish, unpublish and delete content type', (t) => {
-    t.plan(5)
+    t.plan(7)
     return space.createContentType({name: 'testentity'})
     .then((contentType) => {
+      t.ok(contentType.isDraft(), 'contentType is in draft')
       t.equals(contentType.sys.type, 'ContentType', 'type')
       t.equals(contentType.name, 'testentity', 'name')
-      contentType.fields = [
-        {id: 'field', name: 'field', type: 'Text'}
-      ]
-      return contentType.update()
-      .then((updatedContentType) => {
-        t.equals(updatedContentType.fields[0].id, 'field', 'field id')
-        return updatedContentType.publish()
-        .then((publishedContentType) => {
-          t.ok(publishedContentType.sys.publishedVersion, 'has published version')
-          return publishedContentType.unpublish()
+      return contentType.publish()
+      .then((publishedContentType) => {
+        t.ok(publishedContentType.isPublished(), 'contentType is published')
+        publishedContentType.fields = [
+          {id: 'field', name: 'field', type: 'Text'}
+        ]
+        return publishedContentType.update()
+        .then((updatedContentType) => {
+          t.ok(updatedContentType.isUpdated(), 'contentType is updated')
+          t.equals(updatedContentType.fields[0].id, 'field', 'field id')
+          return updatedContentType.unpublish()
           .then((unpublishedContentType) => {
-            t.notOk(unpublishedContentType.sys.publishedVersion, 'published version is gone')
+            t.ok(unpublishedContentType.isDraft(), 'contentType is back in draft')
             return unpublishedContentType.delete()
           })
         })
