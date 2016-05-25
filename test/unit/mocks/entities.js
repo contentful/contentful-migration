@@ -74,6 +74,30 @@ const localeMock = {
   default: true
 }
 
+const webhookMock = {
+  sys: assign(cloneDeep(sysMock), {
+    type: 'WebhookDefinition'
+  })
+}
+
+const spaceMembershipMock = {
+  sys: assign(cloneDeep(sysMock), {
+    type: 'SpaceMembership'
+  })
+}
+
+const roleMock = {
+  sys: assign(cloneDeep(sysMock), {
+    type: 'Role'
+  })
+}
+
+const apiKeyMock = {
+  sys: assign(cloneDeep(sysMock), {
+    type: 'ApiKey'
+  })
+}
+
 const errorMock = {
   config: {
     url: 'requesturl',
@@ -91,6 +115,10 @@ const mocks = {
   entry: entryMock,
   asset: assetMock,
   locale: localeMock,
+  webhook: webhookMock,
+  spaceMembership: spaceMembershipMock,
+  role: roleMock,
+  apiKey: apiKeyMock,
   error: errorMock
 }
 
@@ -128,6 +156,22 @@ function setupEntitiesMock (rewiredModuleApi) {
     locale: {
       wrapLocale: sinon.stub(),
       wrapLocaleCollection: sinon.stub()
+    },
+    webhook: {
+      wrapWebhook: sinon.stub(),
+      wrapWebhookCollection: sinon.stub()
+    },
+    spaceMembership: {
+      wrapSpaceMembership: sinon.stub(),
+      wrapSpaceMembershipCollection: sinon.stub()
+    },
+    role: {
+      wrapRole: sinon.stub(),
+      wrapRoleCollection: sinon.stub()
+    },
+    apiKey: {
+      wrapApiKey: sinon.stub(),
+      wrapApiKeyCollection: sinon.stub()
     }
   }
   rewiredModuleApi.__Rewire__('entities', entitiesMock)
@@ -143,6 +187,10 @@ export {
   entryMock,
   assetMock,
   localeMock,
+  webhookMock,
+  spaceMembershipMock,
+  roleMock,
+  apiKeyMock,
   errorMock,
   cloneMock,
   mockCollection,

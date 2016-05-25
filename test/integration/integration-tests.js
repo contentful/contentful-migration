@@ -3,6 +3,10 @@ import {localeReadOnlyTests, localeWriteTests} from './locale-integration'
 import {contentTypeReadOnlyTests, contentTypeWriteTests} from './content-type-integration'
 import {entryReadOnlyTests, entryWriteTests} from './entry-integration'
 import {assetReadOnlyTests, assetWriteTests} from './asset-integration'
+import webhookTests from './webhook-integration'
+import spaceMembershipTests from './space-membership-integration'
+import roleTests from './role-integration'
+import apiKeyTests from './api-key-integration'
 import generateRandomId from './generate-random-id'
 import contentfulManagement from '../../'
 
@@ -82,7 +86,7 @@ test('Create space for tests which create, change and delete data', (t) => {
   // Also comment the test.onFinish line below to avoid removing the space.
   // The below line also uses double quotes on purpose so it breaks the linter
   // in case someone forgets to comment this line again.
-  // client.getSpace("g8uibgoutlhb")
+  // client.getSpace("")
   .then((space) => {
     return space.createLocale({
       name: 'German (Germany)',
@@ -97,6 +101,10 @@ test('Create space for tests which create, change and delete data', (t) => {
     contentTypeWriteTests(t, space)
     entryWriteTests(t, space)
     assetWriteTests(t, space)
+    webhookTests(t, space)
+    spaceMembershipTests(t, space)
+    roleTests(t, space)
+    apiKeyTests(t, space)
     test.onFinish(() => space.delete())
   })
 })
