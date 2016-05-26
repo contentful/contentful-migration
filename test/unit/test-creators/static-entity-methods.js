@@ -1,4 +1,4 @@
-import {upperFirst} from 'lodash/string'
+import upperFirst from 'lodash/upperFirst'
 import {cloneMock} from '../mocks/entities'
 
 export function makeGetEntityTest (t, setup, teardown, {entityType, mockToReturn, methodToTest, wrapperSuffix = ''}) {

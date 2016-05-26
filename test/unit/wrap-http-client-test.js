@@ -1,6 +1,6 @@
 import test from 'tape'
 import sinon from 'sinon'
-import {reduce} from 'lodash/collection'
+import reduce from 'lodash/reduce'
 import wrapHttpClient from '../../lib/wrap-http-client'
 
 function createHttpMock () {

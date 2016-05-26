@@ -1,6 +1,6 @@
 import sinon from 'sinon'
-import {assign} from 'lodash/object'
-import {cloneDeep} from 'lodash/lang'
+import assign from 'lodash/assign'
+import cloneDeep from 'lodash/cloneDeep'
 
 const linkMock = {
   id: 'linkid',

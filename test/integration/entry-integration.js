@@ -1,4 +1,5 @@
-import {filter, map} from 'lodash/collection'
+import filter from 'lodash/filter'
+import map from 'lodash/map'
 import generateRandomId from './generate-random-id'
 
 export function entryReadOnlyTests (t, space) {
