@@ -6,7 +6,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'browser-dist'),
     filename: 'contentful-management.js',
-    library: 'contentful-management'
+    library: 'contentfulManagement'
   },
   module: {
     loaders: [
