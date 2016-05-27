@@ -43,6 +43,7 @@ export default function spaceMembershipTests (t, space) {
       .then((spaceMembership) => {
         t.ok(spaceMembership.user, 'user')
         t.notOk(spaceMembership.admin, 'admin')
+        delete spaceMembership.user
         spaceMembership.admin = true
         spaceMembership.update()
         .then((updatedSpaceMembership) => {
