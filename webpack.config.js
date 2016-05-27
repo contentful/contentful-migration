@@ -22,6 +22,10 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.NormalModuleReplacementPlugin(/\.\/vendor-node\/axios/g, './vendor-browser/axios.js')
+    new webpack.NormalModuleReplacementPlugin(/\.\/vendor-node\/axios/g, './vendor-browser/axios.js'),
+    new webpack.EnvironmentPlugin([
+      'CONTENTFUL_ACCESS_TOKEN',
+      'CONTENTFUL_ORGANIZATION'
+    ])
   ]
 }
