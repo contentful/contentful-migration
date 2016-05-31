@@ -1,5 +1,5 @@
 import test from 'blue-tape'
-import {localeReadOnlyTests, localeWriteTests} from './locale-integration'
+import {localeTests} from './locale-integration'
 import {contentTypeReadOnlyTests, contentTypeWriteTests} from './content-type-integration'
 import {entryReadOnlyTests, entryWriteTests} from './entry-integration'
 import {assetReadOnlyTests, assetWriteTests} from './asset-integration'
@@ -70,7 +70,6 @@ test('Creates, updates and deletes a space', (t) => {
 test('Gets space for read only tests', (t) => {
   client.getSpace('cfexampleapi')
   .then((space) => {
-    localeReadOnlyTests(t, space)
     contentTypeReadOnlyTests(t, space)
     entryReadOnlyTests(t, space)
     assetReadOnlyTests(t, space)
@@ -97,7 +96,7 @@ test('Create space for tests which create, change and delete data', (t) => {
     })
   })
   .then((space) => {
-    localeWriteTests(t, space)
+    localeTests(t, space)
     contentTypeWriteTests(t, space)
     entryWriteTests(t, space)
     assetWriteTests(t, space)

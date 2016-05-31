@@ -1,4 +1,4 @@
-export function localeReadOnlyTests (t, space) {
+export function localeTests (t, space) {
   t.test('Gets locales', (t) => {
     t.plan(2)
     return space.getLocales()
@@ -7,9 +7,7 @@ export function localeReadOnlyTests (t, space) {
       t.ok(response.items[0].code, 'en-US')
     })
   })
-}
 
-export function localeWriteTests (t, space) {
   t.test('Creates, gets, updates and deletes a locale', (t) => {
     t.plan(3)
     return space.createLocale({
