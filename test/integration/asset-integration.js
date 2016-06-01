@@ -43,7 +43,7 @@ export function assetWriteTests (t, space) {
     }})
     .then((asset) => {
       t.equals(asset.fields.title['en-US'], 'this is the title', 'original title')
-      return asset.processForLocale('en-US', {processingCheckWait: 1000})
+      return asset.processForLocale('en-US', {processingCheckWait: 2000})
       .then((processedAsset) => {
         t.ok(asset.isDraft(), 'asset is in draft')
         t.ok(processedAsset.fields.file['en-US'].url, 'file was uploaded')
@@ -94,7 +94,7 @@ export function assetWriteTests (t, space) {
       }
     }})
     .then((asset) => {
-      return asset.processForAllLocales({processingCheckWait: 1000})
+      return asset.processForAllLocales({processingCheckWait: 2000})
       .then((processedAsset) => {
         t.ok(processedAsset.fields.file['en-US'].url, 'file en-US was uploaded')
         t.ok(processedAsset.fields.file['de-DE'].url, 'file de-DE was uploaded')

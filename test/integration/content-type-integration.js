@@ -3,7 +3,6 @@ import generateRandomId from './generate-random-id'
 export function contentTypeReadOnlyTests (t, space) {
   t.test('Gets content type', (t) => {
     t.plan(3)
-    // TODO fix this test and all other integration tests dependent on the cfexampleapi space
     return space.getContentType('1t9IbcfdCk6m04uISSsaIK')
     .then((response) => {
       t.ok(response.sys, 'sys')

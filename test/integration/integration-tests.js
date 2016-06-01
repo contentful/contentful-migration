@@ -68,7 +68,7 @@ test('Creates, updates and deletes a space', (t) => {
 })
 
 test('Gets space for read only tests', (t) => {
-  client.getSpace('cfexampleapi')
+  return client.getSpace('cfexampleapi')
   .then((space) => {
     contentTypeReadOnlyTests(t, space)
     entryReadOnlyTests(t, space)
