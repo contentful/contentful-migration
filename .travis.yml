@@ -5,8 +5,6 @@ before_install:
 language: node_js
 node_js:
   - "5.7"
-  - "4.3"
-  - "3.3"
   - "0.10"
 script: npm run test:ci
 after_success:
