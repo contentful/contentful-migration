@@ -1,0 +1,14 @@
+{
+  "presets": [
+    "es2015"
+  ],
+  "plugins": [
+    "transform-runtime"
+  ],
+  "env": {
+    "test": {
+      "sourceMaps": "inline",
+      "plugins": ["babel-plugin-rewire"]
+    }
+  }
+}

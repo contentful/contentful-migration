@@ -1,0 +1,26 @@
+dist: trusty
+before_install:
+  - npm install -g npm@latest
+  - npm set progress=false
+language: node_js
+# IMPORTANT NOTE:
+# Not all browser builds are activated, due to the tests that create spaces.
+# There's a rate limit that doesn't allow an organization to create more than
+# 10 spaces per hour.
+# Each test run creates 2 spaces, and we're currently running the tests on
+# 2 node versions (also check karma.conf.saucelabs) and 2 browser versions, which
+# creates 8 spaces per run.
+node_js:
+  - "5.7"
+script: npm run test:ci
+after_success:
+  - curl -Lo travis_after_all.py https://raw.githubusercontent.com/contentful/travis_after_all/master/travis_after_all.py
+  - python travis_after_all.py
+  - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
+  - export $(cat .to_export_back) &> /dev/null
+  - npm run semantic-release
+addons:
+  sauce_connect: true
+branches:
+  except:
+    - "/^v\\d+\\.\\d+\\.\\d+$/"
