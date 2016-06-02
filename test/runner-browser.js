@@ -16,4 +16,11 @@ require('./unit/entities/role-test.js')
 require('./unit/entities/space-membership-test.js')
 require('./unit/entities/space-test.js')
 require('./unit/entities/webhook-test.js')
-require('./integration/integration-tests.js')
+/**
+ * Temporarily disabled integration tests
+ * (check TP ticket #10533 and #10534)
+ * Even if issue #10534 is fixed and the space per hour rate limit is increased
+ * running many integration tests very quickly can still be an issue due to
+ * #10533, so be careful if/when reenabling this
+ */
+// require('./integration/integration-tests.js')

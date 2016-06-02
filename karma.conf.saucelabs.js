@@ -1,22 +1,12 @@
 var karmaBaseConf = require('./karma.base.conf')
 
-/**
- * IMPORTANT NOTE:
- * Not all browser builds are activated, due to the tests that create spaces.
- * There's a rate limit that doesn't allow an organization to create more than
- * 10 spaces per hour.
- * Each test run creates 2 spaces, and we're currently running the tests on
- * 2 node versions (also check .travis.yml) and 2 browser versions, which
- * creates 8 spaces per run.
- */
-
 var browsers = {
   sl_chrome: {
     base: 'SauceLabs',
     browserName: 'chrome',
     platform: 'Windows 10',
     version: '50.0'
-  }/*,
+  },
   sl_firefox: {
     base: 'SauceLabs',
     browserName: 'firefox',
@@ -35,7 +25,6 @@ var browsers = {
     platform: 'Windows 10',
     version: '13.10586'
   }
-  */
 }
 
 module.exports = function (config) {
