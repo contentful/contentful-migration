@@ -46,7 +46,7 @@
     "tonic-example.js"
   ],
   "dependencies": {
-    "contentful-sdk-core": "^2.2.3"
+    "contentful-sdk-core": "^2.2.4"
   },
   "devDependencies": {
     "babel-cli": "^6.7.5",
