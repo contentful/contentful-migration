@@ -1,4 +1,5 @@
 {
+  "version": "1.0.2",
   "name": "contentful-management",
   "description": "Client for Contentful's Content Management API",
   "homepage": "https://www.contentful.com/developers/documentation/content-management-api/",
@@ -20,7 +21,7 @@
     "docs:build": "jsdoc -r -c ./jsdoc.json dist",
     "docs:dev": "npm run build && npm run docs:build",
     "docs:watch": "watchy -w lib npm run docs:dev",
-    "docs:publish": "npm run docs:build && ./node_modules/contentful-sdk-jsdoc/bin/publish-docs.sh contentful-management.js contentfulManagement",
+    "docs:publish": "npm run docs:build && ./node_modules/contentful-sdk-jsdoc/bin/publish-docs.sh contentful-management.js contentful-management",
     "test:ci": "SKIP_INTEGRATION_TESTS=true ./node_modules/contentful-sdk-core/bin/test-ci.sh",
     "test:cover": "BABEL_ENV=test babel-node ./node_modules/istanbul/lib/cli.js cover test/runner",
     "test:only": "BABEL_ENV=test babel-node ./test/runner",
@@ -46,6 +47,7 @@
     "tonic-example.js"
   ],
   "dependencies": {
+    "babel-runtime": "^6.9.2",
     "contentful-sdk-core": "^2.2.4"
   },
   "devDependencies": {
