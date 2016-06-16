@@ -60,7 +60,7 @@ const editorInterfaceMock = {
   }),
   controls: [
     {
-      'fieldId': 'fieldid',
+      'fieldId': 'fieldId',
       'widgetId': 'singleLine'
     }
   ]
