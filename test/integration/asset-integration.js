@@ -1,4 +1,4 @@
-const TEST_IMAGE_SOURCE_URL = 'https://raw.githubusercontent.com/contentful/contentful-management.js/next/test/integration/fixtures/shiba-stuck-bush.jpg'
+const TEST_IMAGE_SOURCE_URL = 'https://raw.githubusercontent.com/contentful/contentful-management.js/master/test/integration/fixtures/shiba-stuck-bush.jpg'
 
 export function assetReadOnlyTests (t, space) {
   t.test('Gets assets with only images', (t) => {
