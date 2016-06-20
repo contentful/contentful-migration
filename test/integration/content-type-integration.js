@@ -39,14 +39,20 @@ export function contentTypeWriteTests (t, space) {
           t.ok(updatedContentType.isUpdated(), 'contentType is updated')
           t.equals(updatedContentType.fields[0].id, 'field', 'field id')
           t.ok(updatedContentType.getEditorInterface, 'updatedContentType.getEditorInterface')
-          return updatedContentType.getEditorInterface()
-          .then((response) => {
-            t.ok(response.controls, 'editor interface controls')
-            t.ok(response.sys, 'editor interface sys')
-            return updatedContentType.unpublish()
-            .then((unpublishedContentType) => {
-              t.ok(unpublishedContentType.isDraft(), 'contentType is back in draft')
-              return unpublishedContentType.delete()
+          return updatedContentType.publish()
+          .then((publishedContentType) => {
+            return publishedContentType.getEditorInterface()
+            .then((editorInterface) => {
+              t.ok(editorInterface.controls, 'editor interface controls')
+              t.ok(editorInterface.sys, 'editor interface sys')
+              return editorInterface.update()
+              .then((editorInterface) => {
+                return updatedContentType.unpublish()
+                .then((unpublishedContentType) => {
+                  t.ok(unpublishedContentType.isDraft(), 'contentType is back in draft')
+                  return unpublishedContentType.delete()
+                })
+              })
             })
           })
         })
