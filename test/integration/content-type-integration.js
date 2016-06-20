@@ -21,8 +21,8 @@ export function contentTypeReadOnlyTests (t, space) {
 }
 
 export function contentTypeWriteTests (t, space) {
-  t.test('Create, update, publish, unpublish and delete content type', (t) => {
-    t.plan(7)
+  t.test('Create, update, publish, getEditorInterface, unpublish and delete content type', (t) => {
+    t.plan(10)
     return space.createContentType({name: 'testentity'})
     .then((contentType) => {
       t.ok(contentType.isDraft(), 'contentType is in draft')
@@ -38,10 +38,16 @@ export function contentTypeWriteTests (t, space) {
         .then((updatedContentType) => {
           t.ok(updatedContentType.isUpdated(), 'contentType is updated')
           t.equals(updatedContentType.fields[0].id, 'field', 'field id')
-          return updatedContentType.unpublish()
-          .then((unpublishedContentType) => {
-            t.ok(unpublishedContentType.isDraft(), 'contentType is back in draft')
-            return unpublishedContentType.delete()
+          t.ok(updatedContentType.getEditorInterface, 'updatedContentType.getEditorInterface')
+          return updatedContentType.getEditorInterface()
+          .then((response) => {
+            t.ok(response.controls, 'editor interface controls')
+            t.ok(response.sys, 'editor interface sys')
+            return updatedContentType.unpublish()
+            .then((unpublishedContentType) => {
+              t.ok(unpublishedContentType.isDraft(), 'contentType is back in draft')
+              return unpublishedContentType.delete()
+            })
           })
         })
       })
