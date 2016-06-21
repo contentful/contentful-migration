@@ -52,7 +52,19 @@ const entryMock = {
     field1: 'str'
   }
 }
-
+const editorInterfaceMock = {
+  sys: assign(cloneDeep(sysMock), {
+    type: 'EditorInterface',
+    contentType: {sys: assign(cloneDeep(linkMock), {linkType: 'ContentType'})},
+    space: assign(cloneDeep(linkMock), {linkType: 'Space'})
+  }),
+  controls: [
+    {
+      'fieldId': 'fieldId',
+      'widgetId': 'singleLine'
+    }
+  ]
+}
 const assetMock = {
   sys: assign(cloneDeep(sysMock), {
     type: 'Asset',
@@ -112,6 +124,7 @@ const mocks = {
   link: linkMock,
   sys: sysMock,
   contentType: contentTypeMock,
+  editorInterface: editorInterfaceMock,
   entry: entryMock,
   asset: assetMock,
   locale: localeMock,
@@ -172,6 +185,9 @@ function setupEntitiesMock (rewiredModuleApi) {
     apiKey: {
       wrapApiKey: sinon.stub(),
       wrapApiKeyCollection: sinon.stub()
+    },
+    editorInterface: {
+      wrapEditorInterface: sinon.stub()
     }
   }
   rewiredModuleApi.__Rewire__('entities', entitiesMock)
@@ -184,6 +200,7 @@ export {
   sysMock,
   spaceMock,
   contentTypeMock,
+  editorInterfaceMock,
   entryMock,
   assetMock,
   localeMock,

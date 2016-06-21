@@ -85,7 +85,7 @@ test('Create space for tests which create, change and delete data', (t) => {
   // Also comment the test.onFinish line below to avoid removing the space.
   // The below line also uses double quotes on purpose so it breaks the linter
   // in case someone forgets to comment this line again.
-  // client.getSpace("")
+  // client.getSpace('a3f19zbn5ldg')
   .then((space) => {
     return space.createLocale({
       name: 'German (Germany)',

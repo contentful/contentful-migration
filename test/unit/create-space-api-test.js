@@ -4,6 +4,7 @@ import mixinToPlainObject from 'contentful-sdk-core/mixins/to-plain-object'
 import createSpaceApi, {__RewireAPI__ as createSpaceApiRewireApi} from '../../lib/create-space-api'
 import {
   contentTypeMock,
+  editorInterfaceMock,
   assetMock,
   entryMock,
   localeMock,
@@ -154,6 +155,20 @@ test('API call createContentTypeWithId', (t) => {
 test('API call createContentTypeWithId fails', (t) => {
   makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'createContentTypeWithId'
+  })
+})
+
+test('API call getEditorInterfaceForContentType', (t) => {
+  makeGetEntityTest(t, setup, teardown, {
+    entityType: 'editorInterface',
+    mockToReturn: editorInterfaceMock,
+    methodToTest: 'getEditorInterfaceForContentType'
+  })
+})
+
+test('API call getEditorInterfaceForContentType fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getEditorInterfaceForContentType'
   })
 })
 

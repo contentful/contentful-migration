@@ -88,6 +88,20 @@ test('ContentType unpublish fails', (t) => {
   })
 })
 
+test('ContentType getEditorInterface', (t) => {
+  return entityActionTest(t, setup, {
+    wrapperMethod: wrapContentType,
+    actionMethod: 'getEditorInterface'
+  })
+})
+
+test('ContentType getEditorInterface fails', (t) => {
+  return failingActionTest(t, setup, {
+    wrapperMethod: wrapContentType,
+    actionMethod: 'getEditorInterface'
+  })
+})
+
 test('ContentType isPublished', (t) => {
   isPublishedTest(t, setup, {wrapperMethod: wrapContentType})
 })
