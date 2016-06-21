@@ -75,6 +75,7 @@ var client = contentful.createClient({
   // This is the access token for this space. Normally you get both ID and the token in the Contentful web app
   accessToken: 'YOUR_ACCESS_TOKEN'
 })
+
 // This API call will request a space with the specified ID
 client.getSpace('spaceId')
 .then((space) => {
@@ -82,6 +83,17 @@ client.getSpace('spaceId')
   space.getEntries()
   .then((entries) => {
     console.log(entries.items)
+  })
+
+  // let's get a content type
+  space.getContentType('product')
+  .then((contentType) => {
+    // and now let's update its name
+    contentType.name = 'New Product'
+    contentType.update()
+    .then((updatedContentType) => {
+      console.log('Update was successful')
+    })
   })
 })
 ```
@@ -98,7 +110,13 @@ The [Contentful's JS SDK reference](https://contentful.github.io/contentful-mana
 
 Most methods also have examples which show you how to use them.
 
-You can start by looking at the top level [`contentfulManagement`](./contentfulManagement.html) namespace.
+You can start by looking at the top level `contentfulManagement` namespace.
+
+The `ContentfulClientAPI` namespace defines the methods at the Client level which allow you to create and get spaces.
+
+The `ContentfulSpaceAPI` namespace defines the methods at the Space level which allow you to create and get entries, assets, content types and other possible entities.
+
+The `Entry`, `Asset` and `ContentType` namespaces show you the instance methods you can use on each of these entities, once you retrieve them from the server.
 
     From version 1.0.0 onwards, you can access documentation for a specific version by visiting `https://contentful.github.io/contentful-management.js/contentful/<VERSION>`
 

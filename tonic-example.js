@@ -7,3 +7,15 @@ var client = contentful.createClient({
 var space = await client.getSpace('spaceId')
 // Now that we have a space, we can get entries from that space
 await space.getEntries()
+
+// let's get a content type
+await space.getContentType('product')
+.then((contentType) => {
+  // and now let's update its name
+  contentType.name = 'New Product'
+  return contentType.update()
+  .then((updatedContentType) => {
+    console.log('Update was successful')
+    return updatedContentType
+  })
+})
