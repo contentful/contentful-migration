@@ -55,7 +55,7 @@ const entryMock = {
 const editorInterfaceMock = {
   sys: assign(cloneDeep(sysMock), {
     type: 'EditorInterface',
-    contentType: assign(cloneDeep(linkMock), {linkType: 'ContentType'}),
+    contentType: {sys: assign(cloneDeep(linkMock), {linkType: 'ContentType'})},
     space: assign(cloneDeep(linkMock), {linkType: 'Space'})
   }),
   controls: [

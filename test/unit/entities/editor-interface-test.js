@@ -20,7 +20,7 @@ test('Editor Interface is wrapped', (t) => {
   })
 })
 
-test('ContentType update', (t) => {
+test('EditorInterface update', (t) => {
   return entityUpdateTest(t, setup, {
     wrapperMethod: wrapEditorInterface
   })
