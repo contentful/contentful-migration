@@ -118,7 +118,7 @@ The `ContentfulSpaceAPI` namespace defines the methods at the Space level which 
 
 The `Entry`, `Asset` and `ContentType` namespaces show you the instance methods you can use on each of these entities, once you retrieve them from the server.
 
-    From version 1.0.0 onwards, you can access documentation for a specific version by visiting `https://contentful.github.io/contentful-management.js/contentful/<VERSION>`
+    From version 1.0.0 onwards, you can access documentation for a specific version by visiting `https://contentful.github.io/contentful-management.js/contentful-management/<VERSION>`
 
 ### Contentful JavaScript resources
 
