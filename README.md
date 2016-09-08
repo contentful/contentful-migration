@@ -31,9 +31,9 @@ Browsers and Node.js:
 
 Other browsers should also work, but at the moment we're only running automated tests on the browsers and Node.js versions specified above.
 
-# Getting started
+## Getting started
 
-In order to get started with the Contentful Management JS SDK you'll need not only to install it, but also to get credentials which will allow you to have access to your content in Contentful.
+To get started with the Contentful Management JS SDK you'll need to install it, and then get credentials which will allow you to access your content in Contentful.
 
 ## Installation
 
@@ -43,12 +43,12 @@ In node, using [npm](http://npmjs.org):
 npm install contentful-management
 ```
 
-Or, if you'd like to use a standalone built file you can use the following script tag or just download it from [unpkg](https://unpkg.com), under the `browser-dist` directory:
+Or, if you'd like to use a standalone built file you can use the following script tag or download it from [unpkg](https://unpkg.com), under the `browser-dist` directory:
 
 ``` html
 <script src="https://unpkg.com/contentful-management@latest/browser-dist/contentful-management.min.js"></script>
 ```
-**It is not recommended to use the above URL for production.**
+**It's not recommended to use the above URL for production.**
 
 Using `contentful@latest` will always get you the latest version, but you can also specify a specific version number:
 
@@ -60,7 +60,7 @@ Check the [releases](https://github.com/contentful/contentful-management.js/rele
 
 ## Authentication
 
-To get content from Contentful, an app should authenticate with an with an OAuth bearer token.
+To get content from Contentful, an app should authenticate with an OAuth bearer token.
 
 If you want to use this SDK for a simple tool or a local app that you won't redistribute or make available to other users, you can get an API key for the Management API at our [Authentication page](https://www.contentful.com/developers/docs/references/authentication/).
 
@@ -68,7 +68,7 @@ If you'd like to create an app which would make use of this SDK but that would b
 
 ## Your first request
 
-The following code snippet is the most basic one you can use to get some content from Contentful with this SDK:
+The following code snippet is the most basic one you can use to get content from Contentful with this SDK:
 
 ```js
 var contentful = require('contentful-management')
@@ -123,7 +123,7 @@ The `Entry`, `Asset` and `ContentType` namespaces show you the instance methods 
 
 ### Contentful JavaScript resources
 
-Check the [Contentful for JavaScript](https://www.contentful.com/developers/docs/javascript/) page for Tutorials, Demo Apps, and more information on other ways of using JavaScript with Contentful
+Read the [Contentful for JavaScript](https://www.contentful.com/developers/docs/javascript/) page for Tutorials, Demo Apps, and more information on other ways of using JavaScript with Contentful
 
 ### REST API reference
 
