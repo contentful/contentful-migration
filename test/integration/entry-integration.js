@@ -260,9 +260,10 @@ export function entryReadOnlyTests (t, space) {
 
 export function entryWriteTests (t, space) {
   function prepareContentTypeForEntryTest () {
-    return space.createContentTypeWithId(generateRandomId('testcontenttype'), {name: 'testCT', fields: [
-      {id: 'title', name: 'Title', type: 'Text'}
-    ]})
+    return space.createContentTypeWithId(generateRandomId('testcontenttype'), {name: 'testCT',
+      fields: [
+        {id: 'title', name: 'Title', type: 'Text'}
+      ]})
     .then((contentType) => contentType.publish(), (err) => console.log(err))
   }
 
