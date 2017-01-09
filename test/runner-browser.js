@@ -1,12 +1,9 @@
 // This file is required due to an issue with karma-tap
 // https://github.com/tmcw-up-for-adoption/karma-tap/issues/10
 require('./unit/contentful-management-test.js')
-require('./unit/create-backoff-test.js')
 require('./unit/create-contentful-api-test.js')
 require('./unit/create-space-api-test.js')
 require('./unit/error-handler-test.js')
-require('./unit/rate-limit-test.js')
-require('./unit/wrap-http-client-test.js')
 require('./unit/entities/asset-test.js')
 require('./unit/entities/content-type-test.js')
 require('./unit/entities/entry-test.js')

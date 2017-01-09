@@ -12,7 +12,6 @@ try {
     process.exit(1)
   }
 }
-
 module.exports = {
   createClient: function (params) {
     return contentfulManagement(axios, params)
