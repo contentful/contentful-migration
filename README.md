@@ -37,13 +37,23 @@ To get started with the Contentful Management JS SDK you'll need to install it, 
 
 ## Installation
 
-In node, using [npm](http://npmjs.org):
+### Node:
+
+Using [npm](http://npmjs.org):
 
 ``` sh
 npm install contentful-management
 ```
 
-Or, if you'd like to use a standalone built file you can use the following script tag or download it from [unpkg](https://unpkg.com), under the `browser-dist` directory:
+Using [yarn](https://yarnpkg.com/lang/en/):
+
+``` sh
+yarn add contentful-management
+```
+
+### Browser:
+
+If you'd like to use a standalone built file you can use the following script tag or download it from [unpkg](https://unpkg.com), under the `browser-dist` directory:
 
 ``` html
 <script src="https://unpkg.com/contentful-management@latest/browser-dist/contentful-management.min.js"></script>
@@ -55,6 +65,8 @@ Using `contentful@latest` will always get you the latest version, but you can al
 ``` html
 <script src="https://unpkg.com/contentful-management@1.0.0/browser-dist/contentful-management.min.js"></script>
 ```
+
+The Contentful Management SDK will be accessible via the `contentfulManagement` global variable.
 
 Check the [releases](https://github.com/contentful/contentful-management.js/releases) page to know which versions are available.
 
