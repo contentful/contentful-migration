@@ -17,6 +17,7 @@
     "build": "npm run clean && npm run build:ci",
     "build:dist": "babel lib --out-dir dist",
     "build:standalone": "webpack && webpack -p --output-filename contentful-management.min.js",
+    "build:standalone:log": "npm run build && webpack -p --json --output-filename contentful-management.min.js > webpack-build-log.json",
     "docs:build": "esdoc -c esdoc.json",
     "docs:dev": "npm run build && npm run docs:build",
     "docs:watch": "watchy -w lib npm run docs:dev",
