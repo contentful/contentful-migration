@@ -11,11 +11,11 @@ import {
   webhookMock,
   spaceMembershipMock,
   roleMock,
-  apiKeyMock
+  apiKeyMock,
+  setupEntitiesMock,
+  cloneMock
 } from './mocks/entities'
-import {setupEntitiesMock} from './mocks/entities'
 import setupHttpMock from './mocks/http'
-import {cloneMock} from './mocks/entities'
 import {
   makeGetEntityTest,
   makeGetCollectionTest,

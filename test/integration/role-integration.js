@@ -4,7 +4,7 @@ const roleDefinition = {
   name: 'Content Editor',
   description: 'Can only edit content',
   policies:
-   [ { effect: 'allow', actions: 'all', constraint: { and: [ { equals: [ { doc: 'sys.type' }, 'Asset' ] } ] } },
+  [ { effect: 'allow', actions: 'all', constraint: { and: [ { equals: [ { doc: 'sys.type' }, 'Asset' ] } ] } },
      { effect: 'allow', actions: 'all', constraint: { and: [ { equals: [ { doc: 'sys.type' }, 'Entry' ] } ] } } ],
   permissions: { ContentModel: [ 'read' ], Settings: [], ContentDelivery: [] }
 }
