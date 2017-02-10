@@ -9,15 +9,11 @@ module.exports = {
     library: 'contentfulManagement'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js?$/,
         exclude: /(node_modules|bower_components|dist)/,
-        loader: 'babel'
-      },
-      {
-        test: /\.json?$/,
-        loader: 'json'
+        use: 'babel-loader'
       }
     ]
   },
