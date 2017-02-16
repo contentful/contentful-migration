@@ -1,5 +1,5 @@
 // To understand why axios is vendored, check SETUP.md
-var axios = require('contentful-sdk-core/vendor-node/axios')
+var axios = require('axios')
 var contentfulManagement
 try {
   contentfulManagement = require('./dist/contentful-management').default
