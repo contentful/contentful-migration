@@ -22,6 +22,11 @@ module.exports = {
     new webpack.EnvironmentPlugin([
       'CONTENTFUL_ACCESS_TOKEN',
       'CONTENTFUL_ORGANIZATION'
-    ])
+    ]),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+      }
+    })
   ]
 }
