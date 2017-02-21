@@ -1,1 +1,1 @@
-module.exports = '1.0.2'
+module.exports = '1.0.0-determined-by-semantic-release'
