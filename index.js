@@ -1,4 +1,3 @@
-// To understand why axios is vendored, check SETUP.md
 var axios = require('axios')
 var contentfulManagement
 try {
