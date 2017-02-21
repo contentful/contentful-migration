@@ -42,7 +42,7 @@
     "devdep:install": "npm run devdep:build && rm -rf node_modules/contentful-sdk-core && npm install ../contentful-sdk-core && npm run devdep:clean",
     "devdep:uninstall": "npm run devdep:clean && rimraf node_modules/contentful-sdk-core",
     "precommit": "npm run lint",
-    "prepush": "npm run lint"
+    "prepush": "npm run test:only"
   },
   "browser": "./browser.js",
   "files": [
@@ -98,9 +98,6 @@
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
-    },
-    "ghooks": {
-      "pre-commit": "npm run test:only"
     }
   }
 }
