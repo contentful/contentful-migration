@@ -1,6 +1,6 @@
 import test from 'blue-tape'
 
-import mixinToPlainObject from 'contentful-sdk-core/mixins/to-plain-object'
+import { toPlainObject } from 'contentful-sdk-core'
 import createSpaceApi, {__RewireAPI__ as createSpaceApiRewireApi} from '../../lib/create-space-api'
 import {
   contentTypeMock,
@@ -73,7 +73,7 @@ test('API call space update', (t) => {
 
   // mocks data that would exist in a space object already retrieved from the server
   api.sys = { id: 'id', type: 'Space', version: 2 }
-  api = mixinToPlainObject(api)
+  api = toPlainObject(api)
 
   api.name = 'updatedname'
   return api.update()
@@ -92,7 +92,7 @@ test('API call space update fails', (t) => {
 
   // mocks data that would exist in a space object already retrieved from the server
   api.sys = { id: 'id', type: 'Space', version: 2 }
-  api = mixinToPlainObject(api)
+  api = toPlainObject(api)
 
   return api.update()
   .catch((r) => {

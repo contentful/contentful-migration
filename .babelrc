@@ -1,11 +1,16 @@
 {
   "presets": [
-    "es2015"
+    ["es2015", {
+      "modules": false
+    }]
   ],
   "env": {
     "test": {
+      "presets": [
+        "es2015"
+      ],
+      "plugins": ["rewire"],
       "sourceMaps": "inline",
-      "plugins": ["rewire"]
     }
   }
 }
