@@ -4,16 +4,16 @@ var path = require('path')
 var LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
 var plugins = [
   new LodashModuleReplacementPlugin({
-    'shorthands': true,
+    // 'shorthands': true,
     'cloning': true,
-    'currying': true,
-    'caching': true,
-    'collections': true,
-    'exotics': true,
-    'guards': true,
-    'unicode': true,
-    'paths': true,
-    'placeholders': true
+    // 'currying': true,
+    'caching': true
+    // 'collections': true,
+    // 'exotics': true,
+    // 'guards': true,
+    // 'unicode': true,
+    // 'paths': true,
+    // 'placeholders': true
   }),
   new webpack.optimize.OccurrenceOrderPlugin(),
   new webpack.DefinePlugin({
@@ -28,6 +28,12 @@ if (process.env.NODE_ENV === 'production') {
         screw_ie8: true,
         warnings: false
       }
+    })
+  )
+  plugins.push(
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false
     })
   )
 }
