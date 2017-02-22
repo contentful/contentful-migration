@@ -1,10 +1,20 @@
 {
-  "presets": [
-    ["es2015", {
-      "modules": false
-    }]
-  ],
   "env": {
+    "es5": {
+      "presets": [
+        "es2015"
+      ],
+      "plugins": [
+        "add-module-exports"
+      ]
+    },
+    "webpack": {
+      "presets": [
+        ["es2015", {
+          "modules": false
+        }]
+      ]
+    },
     "test": {
       "presets": [
         "es2015"
