@@ -40,8 +40,8 @@ test('Throws unknown error received from server', (t) => {
     },
     requestId: 'requestid'
   }
-  error.status = 500
-  error.statusText = 'Internal'
+  error.response.status = 500
+  error.response.statusText = 'Internal'
 
   try {
     errorHandler(error)
@@ -57,8 +57,8 @@ test('Throws unknown error received from server', (t) => {
 // Wurst case scenario, where we have no JSON payload and only HTTP status information
 test('Throws error without additional detail', (t) => {
   const error = cloneMock('error')
-  error.status = 500
-  error.statusText = 'Everything is on fire'
+  error.response.status = 500
+  error.response.statusText = 'Everything is on fire'
 
   try {
     errorHandler(error)

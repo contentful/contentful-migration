@@ -116,8 +116,10 @@ const errorMock = {
     headers: {}
   },
   data: {},
-  status: 404,
-  statusText: 'Not Found'
+  response: {
+    status: 404,
+    statusText: 'Not Found'
+  }
 }
 
 const mocks = {
