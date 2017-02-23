@@ -1,4 +1,5 @@
 import test from 'blue-tape'
+import { Promise } from 'es6-promise'
 
 import {spaceMock, setupEntitiesMock} from './mocks/entities'
 import setupHttpMock from './mocks/http'

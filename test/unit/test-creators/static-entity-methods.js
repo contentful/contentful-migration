@@ -1,5 +1,6 @@
 import upperFirst from 'lodash/upperFirst'
 import {cloneMock} from '../mocks/entities'
+import { Promise } from 'es6-promise'
 
 export function makeGetEntityTest (t, setup, teardown, {entityType, mockToReturn, methodToTest, wrapperSuffix = ''}) {
   t.plan(1)
