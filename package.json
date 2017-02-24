@@ -54,7 +54,7 @@
   ],
   "dependencies": {
     "axios": "~0.15.3",
-    "contentful-sdk-core": "^3.5.7",
+    "contentful-sdk-core": "^3.5.9",
     "es6-promise": "^4.0.5",
     "lodash": "^4.17.4"
   },
