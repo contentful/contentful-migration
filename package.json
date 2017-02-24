@@ -24,7 +24,7 @@
     "lint": "eslint lib test",
     "pretest": "npm run lint",
     "test": "npm run test:cover && npm run test:integration && npm run test:browser-local",
-    "test:ci": "SKIP_INTEGRATION_TESTS=true ./node_modules/contentful-sdk-core/bin/test-ci.sh",
+    "test:ci": "./node_modules/contentful-sdk-core/bin/test-ci.sh",
     "test:cover": "BABEL_ENV=test babel-node ./node_modules/istanbul/lib/cli.js cover test/runner",
     "test:only": "BABEL_ENV=test babel-node ./test/runner",
     "test:debug": "BABEL_ENV=test babel-node debug ./test/runner",
