@@ -27,7 +27,7 @@ Browsers and Node.js:
 - Firefox
 - IE11 / Edge
 - Safari
-- node.js (0.10, iojs-3.x, 4.x, 5.x)
+- node.js (4.x, 6.x)
 
 Other browsers should also work, but at the moment we're only running automated tests on the browsers and Node.js versions specified above.
 
@@ -53,17 +53,17 @@ yarn add contentful-management
 
 ### Browser:
 
-If you'd like to use a standalone built file you can use the following script tag or download it from [unpkg](https://unpkg.com), under the `browser-dist` directory:
+If you'd like to use a standalone built file you can use the following script tag or download it from [unpkg](https://unpkg.com), under the `dist` directory:
 
 ``` html
-<script src="https://unpkg.com/contentful-management@latest/browser-dist/contentful-management.min.js"></script>
+<script src="https://unpkg.com/contentful-management@latest/dist/contentful-management.min.js"></script>
 ```
 **It's not recommended to use the above URL for production.**
 
 Using `contentful@latest` will always get you the latest version, but you can also specify a specific version number:
 
 ``` html
-<script src="https://unpkg.com/contentful-management@1.0.0/browser-dist/contentful-management.min.js"></script>
+<script src="https://unpkg.com/contentful-management@1.0.0/dist/contentful-management.min.js"></script>
 ```
 
 The Contentful Management SDK will be accessible via the `contentfulManagement` global variable.
