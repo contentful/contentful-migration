@@ -6,7 +6,7 @@ import {cloneMock} from './mocks/entities'
 // server returns an error with a JSON payload with all the information possible
 test('Throws well formed error with details from server', (t) => {
   const error = cloneMock('error')
-  error.data = {
+  error.response.data = {
     sys: {
       id: 'SpecificError',
       type: 'Error'
@@ -33,7 +33,7 @@ test('Throws well formed error with details from server', (t) => {
 // but only with an Unknown error type and no additional details
 test('Throws unknown error received from server', (t) => {
   const error = cloneMock('error')
-  error.data = {
+  error.response.data = {
     sys: {
       id: 'Unknown',
       type: 'Error'
