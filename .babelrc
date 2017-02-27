@@ -1,10 +1,4 @@
 {
-  "plugins": [
-    ["transform-runtime", {
-      "polyfill": false,
-      "regenerator": true
-    }]
-  ],
   "env": {
     "webpack": {
       "presets": [

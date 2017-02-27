@@ -101,4 +101,33 @@ export function assetWriteTests (t, space) {
       })
     })
   })
+
+  t.test('Upload and process asset with multiple locales', (t) => {
+    t.plan(2)
+
+    return space.createAssetFromFiles({
+      fields: {
+        title: {'en-US': 'SVG upload test'},
+        file: {
+          'en-US': {
+            contentType: 'image/svg+xml',
+            fileName: 'blue-square.svg',
+            file: '<svg xmlns="http://www.w3.org/2000/svg"><path fill="blue" d="M50 50h150v50H50z"/></svg>'
+          },
+          'de-DE': {
+            contentType: 'image/svg+xml',
+            fileName: 'red-square.svg',
+            file: '<svg xmlns="http://www.w3.org/2000/svg"><path fill="red" d="M50 50h150v50H50z"/></svg>'
+          }
+        }
+      }
+    })
+    .then((asset) => {
+      return asset.processForAllLocales({processingCheckWait: 2000})
+      .then((processedAsset) => {
+        t.ok(processedAsset.fields.file['en-US'].url, 'file en-US was uploaded')
+        t.ok(processedAsset.fields.file['de-DE'].url, 'file de-DE was uploaded')
+      })
+    })
+  })
 }

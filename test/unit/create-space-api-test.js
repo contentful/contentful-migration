@@ -7,6 +7,8 @@ import {
   contentTypeMock,
   editorInterfaceMock,
   assetMock,
+  assetWithFilesMock,
+  uploadMock,
   entryMock,
   localeMock,
   webhookMock,
@@ -28,10 +30,12 @@ import {
 function setup (promise) {
   const entitiesMock = setupEntitiesMock(createSpaceApiRewireApi)
   const httpMock = setupHttpMock(promise)
-  const api = createSpaceApi({ http: httpMock })
+  const httpUploadMock = setupHttpMock(promise)
+  const api = createSpaceApi({ http: httpMock, httpUpload: httpUploadMock })
   return {
     api,
     httpMock,
+    httpUploadMock,
     entitiesMock
   }
 }
@@ -299,6 +303,91 @@ test('API call createAssetWithId fails', (t) => {
   makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'createAssetWithId'
   })
+})
+
+test('API call createAssetFromFiles', (t) => {
+  const { api, httpMock, httpUploadMock, entitiesMock } = setup(Promise.resolve({}))
+
+  entitiesMock.upload.wrapUpload.returns(Promise.resolve(uploadMock))
+  httpUploadMock.post.returns(Promise.resolve({
+    data: {
+      sys: {
+        id: 'some_random_id'
+      }
+    }
+  }))
+  httpMock.post.returns(Promise.resolve({
+    data: assetWithFilesMock
+  }))
+
+  return api.createAssetFromFiles({
+    fields: {
+      file: {
+        locale: {
+          contentType: 'image/svg+xml',
+          fileName: 'filename.svg',
+          file: '<svg xmlns="http://www.w3.org/2000/svg"><path fill="red" d="M50 50h150v50H50z"/></svg>'
+        },
+        locale2: {
+          contentType: 'image/svg+xml',
+          fileName: 'filename.svg',
+          file: '<svg xmlns="http://www.w3.org/2000/svg"><path fill="blue" d="M50 50h150v50H50z"/></svg>'
+        }
+      }
+    }
+  })
+  .then(() => {
+    t.equals(httpUploadMock.post.args[0][1], '<svg xmlns="http://www.w3.org/2000/svg"><path fill="red" d="M50 50h150v50H50z"/></svg>', 'uploads file #1 to upload endpoint')
+    t.equals(httpUploadMock.post.args[1][1], '<svg xmlns="http://www.w3.org/2000/svg"><path fill="blue" d="M50 50h150v50H50z"/></svg>', 'uploads file #2 to upload endpoint')
+    t.deepEqual(entitiesMock.asset.wrapAsset.args[0][1], assetWithFilesMock, 'wrapAsset was called with proper asset')
+  })
+})
+
+test('API call getUpload', (t) => {
+  makeGetEntityTest(t, setup, teardown, {
+    entityType: 'upload',
+    mockToReturn: uploadMock,
+    methodToTest: 'getUpload'
+  })
+})
+
+test('API call getUpload fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getUpload'
+  })
+})
+
+test('API call createUpload', (t) => {
+  const { api, httpUploadMock, entitiesMock } = setup(Promise.resolve({}))
+  const mockedUpload = {
+    sys: {
+      id: 'some_random_id'
+    }
+  }
+  httpUploadMock.post.returns(Promise.resolve({
+    data: mockedUpload
+  }))
+
+  return api.createUpload({
+    contentType: 'image/svg',
+    fileName: 'filename.svg',
+    file: '<svg><path fill="red" d="M50 50h150v50H50z"/></svg>'
+  })
+  .then(() => {
+    t.equals(httpUploadMock.post.args[0][1], '<svg><path fill="red" d="M50 50h150v50H50z"/></svg>', 'uploads file to upload endpoint')
+    t.deepEqual(entitiesMock.upload.wrapUpload.args[0][1], mockedUpload, 'wrapUpload was called with correct raw upload object')
+  })
+})
+
+test('API call createAssetFromFiles with invalid data', (t) => {
+  const { api } = setup(Promise.resolve({}))
+  return t.shouldFail(api.createAssetFromFiles({
+    fields: {
+      file: {
+        locale: {}
+      }
+    }
+  }), new Error('Unable to locate a file to upload.'))
 })
 
 test('API call getLocale', (t) => {

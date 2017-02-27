@@ -75,6 +75,46 @@ const assetMock = {
   }
 }
 
+const assetWithFilesMock = {
+  sys: assign(cloneDeep(sysMock), {
+    type: 'Asset',
+    locale: 'locale'
+  }),
+  fields: {
+    files: {
+      locale: {
+        contentType: 'image/svg',
+        fileName: 'filename.svg',
+        uploadFrom: {
+          sys: {
+            type: 'Link',
+            linkType: 'Upload',
+            id: 'some_random_id'
+          }
+        }
+      },
+      locale2: {
+        contentType: 'image/svg',
+        fileName: 'filename.svg',
+        uploadFrom: {
+          sys: {
+            type: 'Link',
+            linkType: 'Upload',
+            id: 'some_random_id'
+          }
+        }
+      }
+    }
+  }
+}
+
+const uploadMock = {
+  sys: assign(cloneDeep(sysMock), {
+    type: 'Upload',
+    id: 'some_random_id'
+  })
+}
+
 const localeMock = {
   sys: assign(cloneDeep(sysMock), {
     type: 'Locale'
@@ -134,7 +174,8 @@ const mocks = {
   spaceMembership: spaceMembershipMock,
   role: roleMock,
   apiKey: apiKeyMock,
-  error: errorMock
+  error: errorMock,
+  upload: uploadMock
 }
 
 function cloneMock (name) {
@@ -190,6 +231,9 @@ function setupEntitiesMock (rewiredModuleApi) {
     },
     editorInterface: {
       wrapEditorInterface: sinon.stub()
+    },
+    upload: {
+      wrapUpload: sinon.stub()
     }
   }
   rewiredModuleApi.__Rewire__('entities', entitiesMock)
@@ -205,6 +249,7 @@ export {
   editorInterfaceMock,
   entryMock,
   assetMock,
+  assetWithFilesMock,
   localeMock,
   webhookMock,
   spaceMembershipMock,
@@ -213,5 +258,6 @@ export {
   errorMock,
   cloneMock,
   mockCollection,
-  setupEntitiesMock
+  setupEntitiesMock,
+  uploadMock
 }
