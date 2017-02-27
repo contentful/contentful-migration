@@ -76,6 +76,7 @@
     "contentful-sdk-jsdoc": "^1.2.2",
     "coveralls": "^2.11.9",
     "cz-conventional-changelog": "^1.1.6",
+    "esdoc": "^0.5.2",
     "eslint": "^3.16.0",
     "eslint-config-standard": "^6.2.1",
     "eslint-plugin-promise": "^3.4.2",
