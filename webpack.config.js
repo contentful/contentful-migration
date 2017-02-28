@@ -4,16 +4,8 @@ var path = require('path')
 var LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
 var plugins = [
   new LodashModuleReplacementPlugin({
-    // 'shorthands': true,
     'cloning': true,
-    // 'currying': true,
     'caching': true
-    // 'collections': true,
-    // 'exotics': true,
-    // 'guards': true,
-    // 'unicode': true,
-    // 'paths': true,
-    // 'placeholders': true
   }),
   new webpack.optimize.OccurrenceOrderPlugin(),
   new webpack.DefinePlugin({
