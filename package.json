@@ -74,7 +74,7 @@
     "blue-tape": "^1.0.0",
     "contentful-sdk-jsdoc": "^1.2.2",
     "coveralls": "^2.11.9",
-    "cz-conventional-changelog": "^1.1.6",
+    "cz-conventional-changelog": "^2.0.0",
     "esdoc": "^0.5.2",
     "eslint": "^3.16.0",
     "eslint-config-standard": "^6.2.1",
