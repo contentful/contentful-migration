@@ -6,7 +6,6 @@ install:
   - npm install
 language: node_js
 node_js:
-  - "7.5"
   - "6.9"
   - "4.7"
 script: npm run test:ci
