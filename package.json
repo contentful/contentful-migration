@@ -35,7 +35,7 @@
     "vendor:version": "echo \"module.exports = '`cat package.json|json version`'\" > version.js",
     "browser-coverage": "npm run test:cover && opener coverage/lcov-report/index.html",
     "prepublish": "in-publish && npm run build:ci || not-in-publish",
-    "postpublish": "npm run docs:build && npm run clean",
+    "postpublish": "npm run docs:publish && npm run clean",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "devdep:build": "pushd ../contentful-sdk-core && npm run build && popd",
     "devdep:clean": "pushd ../contentful-sdk-core && npm run clean && popd",
