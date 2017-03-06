@@ -1,8 +1,18 @@
 dist
 gh-pages
+
+# Esdoc dirs
+out
+gh-pages
+
+# Docker
+*.dockerfile
+*.dockerignore
+
+# NPM config
 .npmrc
 
-# Created by https://www.gitignore.io/api/node,windows,osx,linux
+# Created by https://www.gitignore.io/api/node,windows,osx,linux,vim
 
 ### Linux ###
 *~
@@ -108,6 +118,19 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+### Vim ###
+# swap
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-v][a-z]
+[._]sw[a-p]
+# session
+Session.vim
+# temporary
+.netrwhist
+# auto-generated tag files
+tags
+
 ### Windows ###
 # Windows thumbnail cache files
 Thumbs.db
@@ -129,8 +152,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.gitignore.io/api/node,windows,osx,linux
-*.swp
-*.swo
-esdoc
-out
+# End of https://www.gitignore.io/api/node,windows,osx,linux,vim
