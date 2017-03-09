@@ -1,9 +1,12 @@
 {
   "name": "contentful-management",
-  "version": "2.1.1",
+  "version": "0.0.0-placeholder",
   "description": "Client for Contentful's Content Management API",
   "homepage": "https://www.contentful.com/developers/documentation/content-management-api/",
   "main": "index.js",
+  "engines": {
+    "node": ">=4.7"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/contentful/contentful-management.js.git"
@@ -44,7 +47,6 @@
     "precommit": "npm run lint",
     "prepush": "npm run test:only"
   },
-  "browser": "./browser.js",
   "files": [
     "browser.js",
     "index.js",
