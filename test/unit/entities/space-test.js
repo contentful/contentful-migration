@@ -9,11 +9,11 @@ const httpMock = {
 }
 
 function setup () {
-  spaceRewireApi.__Rewire__('wrapHttpClient', sinon.stub())
+  spaceRewireApi.__Rewire__('rateLimit', sinon.stub())
 }
 
 function teardown () {
-  spaceRewireApi.__ResetDependency__('wrapHttpClient', sinon.stub())
+  spaceRewireApi.__ResetDependency__('rateLimit', sinon.stub())
 }
 
 test('Space is wrapped', (t) => {
