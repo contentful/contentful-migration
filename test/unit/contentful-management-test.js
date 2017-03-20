@@ -14,13 +14,10 @@ test('Throws if no accessToken is defined', (t) => {
 test('Passes along HTTP client parameters', (t) => {
   createClient.__Rewire__('version', 'version')
   const createHttpClientStub = sinon.stub()
-  const rateLimitStub = sinon.stub()
   createClient.__Rewire__('createHttpClient', createHttpClientStub)
-  createClient.__Rewire__('rateLimit', rateLimitStub)
   createClient.__Rewire__('createContentfulApi', sinon.stub().returns({}))
 
   const client = createClient(axios, {accessToken: 'accesstoken'})
-  t.ok(rateLimitStub.called, 'wraps http client')
   t.ok(createHttpClientStub.args[0][1].headers['Content-Type'], 'sets the content type')
   t.equals(createHttpClientStub.args[0][1].headers['X-Contentful-User-Agent'], 'contentful-management.js/version', 'sets the user agent header')
   t.ok(client, 'returns a client')
