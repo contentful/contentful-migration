@@ -34,6 +34,7 @@ module.exports = function (config) {
   karmaBaseConf.customLaunchers = browsers
   karmaBaseConf.captureTimeout = 200000
   karmaBaseConf.browserDisconnectTolerance = 3
+  karmaBaseConf.browserNoActivityTimeout = 20000
   karmaBaseConf.concurrency = 5
   karmaBaseConf.browsers = Object.keys(browsers)
   karmaBaseConf.sauceLabs = {
