@@ -3,7 +3,7 @@
   "version": "0.0.0-placeholder",
   "description": "Client for Contentful's Content Management API",
   "homepage": "https://www.contentful.com/developers/documentation/content-management-api/",
-  "main": "index.js",
+  "main": "./dist/contentful-management.js",
   "engines": {
     "node": ">=4.7"
   },
