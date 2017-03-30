@@ -37,7 +37,7 @@ module.exports = {
     path: path.join(__dirname, 'dist'),
     filename: 'contentful-management.js',
     libraryTarget: 'umd',
-    library: 'contentful-management'
+    library: 'contentfulManagement'
   },
   module: {
     loaders: [
