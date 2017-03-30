@@ -31,9 +31,15 @@ Browsers and Node.js:
 
 Other browsers should also work, but at the moment we're only running automated tests on the browsers and Node.js versions specified above.
 
-## Getting started
+# Getting started
 
 To get started with the Contentful Management JS SDK you'll need to install it, and then get credentials which will allow you to access your content in Contentful.
+
+- [Installation](#installation)
+- [Authentication](#authentication)
+- [Your first request](#your-first-request)
+- [Troubleshooting](#troubleshooting)
+- [Documentation/References](#documentationreferences)
 
 ## Installation
 
@@ -113,6 +119,21 @@ client.getSpace('spaceId')
 
 You can try and change the above example at [Tonic](https://tonicdev.com/npm/contentful-management).
 
+## Troubleshooting
+
+- **I can't Install the package via npm**
+	- Check your internet connection
+	- It is called `contentful-management` and not `contenful-management` ¯\_(ツ)_/¯
+- **Can I use it with typescript?**
+	- Yes, type definition file coming soon 
+- **I am not sure what payload to send when creating and entity (Asset/Entity/ContentType etc...)**
+	- Check the Content Management API [docs](https://www.contentful.com/developers/docs/references/content-management-api/) or the examples in the reference [docs](https://contentful.github.io/contentful-management.js)
+	- Feel free to open an issue if you didn't find what you need in the above links
+- 😱 **something is wrong what should I do** 
+	- If it is a bug related to the code create a Github issue and make sure to remove any credential for your code before sharing it.
+	- If you need to share your credentials, for example you have an issue with your space, please create a support ticket.
+	- Please **do not** share your management token in a Github issue	
+	
 ## Documentation/References
 
 To help you get the most out of this SDK, we've prepared reference documentation, tutorials and other examples that will help you learn and understand how to use this library.
