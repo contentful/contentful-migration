@@ -93,17 +93,17 @@ You can use the es6 import with the SDK as follow
 import {createClient} from 'contentful-management'
 var client = createClient({
   // This is the access token for this space. Normally you get the token in the Contentful web app
-  accessToken: '<management-token>'
+  accessToken: 'YOUR_ACCESS_TOKEN'
 })
 //....
 ```
 OR
 ```js
 // import everything from contentful
-import * as contentful from 'contentful'
+import * as contentfulManagement from 'contentful-management'
 var client = contentful.createClient({
   // This is the access token for this space. Normally you get the token in the Contentful web app
-  accessToken: '<management-token>'
+  accessToken: 'YOUR_ACCESS_TOKEN'
 })
 // ....
 ```
