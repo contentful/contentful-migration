@@ -37,6 +37,7 @@ To get started with the Contentful Management JS SDK you'll need to install it, 
 
 - [Installation](#installation)
 - [Authentication](#authentication)
+- [Using ES6 import](#using-es6-import)
 - [Your first request](#your-first-request)
 - [Troubleshooting](#troubleshooting)
 - [Documentation/References](#documentationreferences)
@@ -84,6 +85,29 @@ If you want to use this SDK for a simple tool or a local app that you won't redi
 
 If you'd like to create an app which would make use of this SDK but that would be available for other users, where they could authenticate with their own Contentful credentials, make sure to also check out the section about [Creating an OAuth Application](https://www.contentful.com/developers/docs/references/authentication/#creating-an-oauth-20-application)
 
+## Using ES6 import
+You can use the es6 import with the SDK as follow
+
+```js
+// import createClient directly
+import {createClient} from 'contentful-management'
+var client = createClient({
+  // This is the access token for this space. Normally you get the token in the Contentful web app
+  accessToken: '<management-token>'
+})
+//....
+```
+OR
+```js
+// import everything from contentful
+import * as contentful from 'contentful'
+var client = contentful.createClient({
+  // This is the access token for this space. Normally you get the token in the Contentful web app
+  accessToken: '<management-token>'
+})
+// ....
+```
+
 ## Your first request
 
 The following code snippet is the most basic one you can use to get content from Contentful with this SDK:
@@ -91,7 +115,7 @@ The following code snippet is the most basic one you can use to get content from
 ```js
 var contentful = require('contentful-management')
 var client = contentful.createClient({
-  // This is the access token for this space. Normally you get both ID and the token in the Contentful web app
+  // This is the access token for this space. Normally you get the token in the Contentful web app
   accessToken: 'YOUR_ACCESS_TOKEN'
 })
 
