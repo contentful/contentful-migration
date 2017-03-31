@@ -8,7 +8,7 @@ import spaceMembershipTests from './space-membership-integration'
 import roleTests from './role-integration'
 import apiKeyTests from './api-key-integration'
 import generateRandomId from './generate-random-id'
-import contentfulManagement from '../../'
+import { createClient } from '../../'
 
 const params = {
   accessToken: process.env.CONTENTFUL_ACCESS_TOKEN
@@ -21,7 +21,7 @@ if (process.env.API_INTEGRATION_TESTS) {
   params.insecure = true
 }
 
-const client = contentfulManagement.createClient(params)
+const client = createClient(params)
 
 test('Gets spaces', (t) => {
   t.plan(2)

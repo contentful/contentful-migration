@@ -4,7 +4,7 @@
 
 var _ = require('lodash')
 var webpack = require('webpack')
-var webpackConfig = _.cloneDeep(require('./webpack.config.js'))
+var webpackConfig = _.cloneDeep(require('./webpack.config.js')[0])
 delete webpackConfig.entry
 delete webpackConfig.output
 webpackConfig.devtool = 'inline-source-map'
@@ -34,6 +34,8 @@ module.exports = {
   },
 
   webpack: webpackConfig,
+  browserDisconnectTolerance: 3,
+  browserNoActivityTimeout: 30000,
 
   reporters: [ 'dots' ],
   port: 9876,

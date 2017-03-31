@@ -30,23 +30,42 @@ if (process.env.NODE_ENV === 'production') {
   )
 }
 
-module.exports = {
-  context: path.join(__dirname, 'lib'),
-  entry: './contentful-management.js',
-  output: {
-    path: path.join(__dirname, 'dist'),
-    filename: 'contentful-management.js',
-    libraryTarget: 'umd',
-    library: 'contentfulManagement'
+const loaders = [
+  {
+    test: /\.js?$/,
+    exclude: /(node_modules|bower_components|dist)/,
+    loader: 'babel-loader'
+  }
+]
+
+module.exports = [
+  {
+    context: path.join(__dirname, 'lib'),
+    entry: './contentful-management.js',
+    output: {
+      path: path.join(__dirname, 'dist'),
+      filename: `contentful-management${process.env.NODE_ENV === 'production' ? '.min' : ''}.js`,
+      libraryTarget: 'umd',
+      library: 'contentfulManagement'
+    },
+    module: {
+      loaders: loaders
+    },
+    plugins: plugins
   },
-  module: {
-    loaders: [
-      {
-        test: /\.js?$/,
-        exclude: /(node_modules|bower_components|dist)/,
-        loader: 'babel-loader'
-      }
-    ]
-  },
-  plugins: plugins
-}
+  {
+    context: path.join(__dirname, 'lib'),
+    entry: './contentful-management.js',
+    target: 'node',
+    output: {
+      path: path.join(__dirname, 'dist'),
+      filename: `contentful-management.node${process.env.NODE_ENV === 'production' ? '.min' : ''}.js`,
+      libraryTarget: 'commonjs2',
+      library: 'contentfulManagement'
+    },
+    module: {
+      loaders: loaders
+    },
+    plugins: plugins
+  }
+]

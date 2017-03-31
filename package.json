@@ -3,7 +3,8 @@
   "version": "0.0.0-placeholder",
   "description": "Client for Contentful's Content Management API",
   "homepage": "https://www.contentful.com/developers/documentation/content-management-api/",
-  "main": "./dist/contentful-management.js",
+  "main": "./dist/contentful-management.node.js",
+  "browser": "./dist/contentful-management.js",
   "engines": {
     "node": ">=4.7"
   },
@@ -18,8 +19,8 @@
     "clean": "rimraf dist && rimraf coverage",
     "build": "npm run clean && npm run build:ci",
     "build:ci": "npm run vendor:version && npm run build:standalone",
-    "build:standalone": "BABEL_ENV=webpack webpack && BABEL_ENV=webpack webpack -p --output-filename contentful-management.min.js",
-    "build:standalone:log": "BABEL_ENV=webpack npm run build && webpack -p --json --profile --output-filename contentful-management.min.js > webpack-build-log.json",
+    "build:standalone": "BABEL_ENV=webpack webpack && BABEL_ENV=webpack NODE_ENV=production webpack -p",
+    "build:standalone:log": "BABEL_ENV=webpack npm run build && BABEL_ENV=webpack NODE_ENV=production webpack -p --json --profile > webpack-build-log.json",
     "docs:build": "esdoc -c esdoc.json",
     "docs:dev": "npm run build && npm run docs:build",
     "docs:watch": "watchy -w lib npm run docs:dev",
@@ -48,8 +49,6 @@
     "prepush": "npm run test:only"
   },
   "files": [
-    "browser.js",
-    "index.js",
     "version.js",
     "dist",
     "tonic-example.js"
@@ -106,8 +105,5 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  },
-  "publishConfig": {
-    "tag": "beta"
   }
 }
