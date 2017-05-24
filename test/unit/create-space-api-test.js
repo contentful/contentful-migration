@@ -374,6 +374,29 @@ test('API call createUpload', (t) => {
     file: '<svg><path fill="red" d="M50 50h150v50H50z"/></svg>'
   })
   .then(() => {
+    t.equals(httpUploadMock.post.args[0][2].headers['Content-Type'], 'image/svg')
+    t.equals(httpUploadMock.post.args[0][1], '<svg><path fill="red" d="M50 50h150v50H50z"/></svg>', 'uploads file to upload endpoint')
+    t.deepEqual(entitiesMock.upload.wrapUpload.args[0][1], mockedUpload, 'wrapUpload was called with correct raw upload object')
+  })
+})
+
+test('API call createUpload defaults the content type to octet-stream', (t) => {
+  const { api, httpUploadMock, entitiesMock } = setup(Promise.resolve({}))
+  const mockedUpload = {
+    sys: {
+      id: 'some_random_id'
+    }
+  }
+  httpUploadMock.post.returns(Promise.resolve({
+    data: mockedUpload
+  }))
+
+  return api.createUpload({ // no contentType set here
+    fileName: 'filename.svg',
+    file: '<svg><path fill="red" d="M50 50h150v50H50z"/></svg>'
+  })
+  .then(() => {
+    t.equals(httpUploadMock.post.args[0][2].headers['Content-Type'], 'application/octet-stream')
     t.equals(httpUploadMock.post.args[0][1], '<svg><path fill="red" d="M50 50h150v50H50z"/></svg>', 'uploads file to upload endpoint')
     t.deepEqual(entitiesMock.upload.wrapUpload.args[0][1], mockedUpload, 'wrapUpload was called with correct raw upload object')
   })
