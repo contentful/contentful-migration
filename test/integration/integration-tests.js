@@ -32,6 +32,14 @@ test('Gets spaces', (t) => {
   })
 })
 
+test('Gets organizations', (t) => {
+  t.plan(1)
+  return client.getOrganizations()
+  .then((response) => {
+    t.ok(response.items.length >= 1, 'user must belong to at least one organization')
+  })
+})
+
 test('Gets space', (t) => {
   t.plan(2)
   return client.getSpace('cfexampleapi')

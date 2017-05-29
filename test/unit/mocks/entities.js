@@ -150,6 +150,12 @@ const apiKeyMock = {
   })
 }
 
+const organizationMock = {
+  sys: assign(cloneDeep(sysMock), {
+    type: 'Organization'
+  })
+}
+
 const errorMock = {
   config: {
     url: 'requesturl',
@@ -175,7 +181,8 @@ const mocks = {
   role: roleMock,
   apiKey: apiKeyMock,
   error: errorMock,
-  upload: uploadMock
+  upload: uploadMock,
+  organization: organizationMock
 }
 
 function cloneMock (name) {
@@ -234,6 +241,9 @@ function setupEntitiesMock (rewiredModuleApi) {
     },
     upload: {
       wrapUpload: sinon.stub()
+    },
+    organization: {
+      wrapOrganizationCollection: sinon.stub()
     }
   }
   rewiredModuleApi.__Rewire__('entities', entitiesMock)
@@ -259,5 +269,6 @@ export {
   cloneMock,
   mockCollection,
   setupEntitiesMock,
-  uploadMock
+  uploadMock,
+  organizationMock
 }

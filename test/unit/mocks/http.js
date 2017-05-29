@@ -6,6 +6,9 @@ export default function setupHttpMock (promise = Promise.resolve({data: {}})) {
     get: sinon.stub().returns(promise),
     post: sinon.stub().returns(promise),
     put: sinon.stub().returns(promise),
-    delete: sinon.stub().returns(promise)
+    delete: sinon.stub().returns(promise),
+    defaults: {
+      baseURL: 'https://api.contentful.com/spaces/'
+    }
   }
 }

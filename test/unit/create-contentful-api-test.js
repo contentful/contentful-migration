@@ -1,7 +1,7 @@
 import test from 'blue-tape'
 import { Promise } from 'es6-promise'
 
-import {spaceMock, setupEntitiesMock} from './mocks/entities'
+import {spaceMock, setupEntitiesMock, organizationMock} from './mocks/entities'
 import setupHttpMock from './mocks/http'
 import createContentfulApi, {__RewireAPI__ as createContentfulApiRewireApi} from '../../lib/create-contentful-api'
 import {makeGetEntityTest, makeGetCollectionTest, makeEntityMethodFailingTest} from './test-creators/static-entity-methods'
@@ -46,6 +46,20 @@ test('API call getSpace', (t) => {
 test('API call getSpace fails', (t) => {
   makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'getSpace'
+  })
+})
+
+test('API call getOrganizations', (t) => {
+  makeGetCollectionTest(t, setup, teardown, {
+    entityType: 'organization',
+    mockToReturn: organizationMock,
+    methodToTest: 'getOrganizations'
+  })
+})
+
+test('API call getOrganizations fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getOrganizations'
   })
 })
 
