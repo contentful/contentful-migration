@@ -1379,9 +1379,9 @@ content-type@~1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/content-type/-/content-type-1.0.2.tgz#b7d113aee7a8dd27bd21133c4dc2529df1721eed"
 
-contentful-sdk-core@^3.10.1:
-  version "3.10.1"
-  resolved "https://registry.yarnpkg.com/contentful-sdk-core/-/contentful-sdk-core-3.10.1.tgz#9a9149711fbe628a8deeae405681c64dc371fcaa"
+contentful-sdk-core@^3.11.0:
+  version "3.11.0"
+  resolved "https://registry.yarnpkg.com/contentful-sdk-core/-/contentful-sdk-core-3.11.0.tgz#79d8fd637fb512072ad7f412d25204340c6623ca"
   dependencies:
     axios "^0.15.3"
     es6-promise "^4.0.5"

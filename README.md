@@ -1,3 +1,7 @@
+# contentful-management.js
+
+> JavaScript SDK for [Contentful's](https://www.contentful.com) Content Management API.
+
 [![npm](https://img.shields.io/npm/v/contentful-management.svg)](https://www.npmjs.com/package/contentful-management)
 [![Build Status](https://travis-ci.org/contentful/contentful-management.js.svg?branch=master)](https://travis-ci.org/contentful/contentful-management.js)
 [![Coverage Status](https://coveralls.io/repos/github/contentful/contentful-management.js/badge.svg?branch=master)](https://coveralls.io/github/contentful/contentful-management.js?branch=master)
@@ -7,10 +11,6 @@
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 [![npm downloads](https://img.shields.io/npm/dm/contentful-management.svg)](http://npm-stat.com/charts.html?package=contentful-management)
-
-Javascript SDK for [Contentful's](https://www.contentful.com) Content Management API.
-
-# About
 
 [Contentful](https://www.contentful.com) is a content management platform for web applications, mobile apps and connected devices. It allows you to create, edit & manage content in the cloud and publish it anywhere via a powerful API. Contentful offers tools for managing editorial teams and enabling cooperation between organizations.
 
@@ -150,18 +150,56 @@ You can try and change the above example at [Tonic](https://tonicdev.com/npm/con
 	- Check your internet connection
 	- It is called `contentful-management` and not `contenful-management` ¯\_(ツ)_/¯
 - **Can I use it with typescript?**
-	- Yes, type definition file coming soon 
+	- Yes, type definition file coming soon
 - **I am not sure what payload to send when creating and entity (Asset/Entity/ContentType etc...)**
 	- Check the Content Management API [docs](https://www.contentful.com/developers/docs/references/content-management-api/) or the examples in the reference [docs](https://contentful.github.io/contentful-management.js)
 	- Feel free to open an issue if you didn't find what you need in the above links
-- 😱 **something is wrong what should I do** 
-	- If it is a bug related to the code create a Github issue and make sure to remove any credential for your code before sharing it.
+- 😱 **something is wrong what should I do**
+	- If it is a bug related to the code create a GitHub issue and make sure to remove any credential for your code before sharing it.
 	- If you need to share your credentials, for example you have an issue with your space, please create a support ticket.
-	- Please **do not** share your management token in a Github issue	
-	
+	- Please **do not** share your management token in a GitHub issue
+
 ## Documentation/References
 
 To help you get the most out of this SDK, we've prepared reference documentation, tutorials and other examples that will help you learn and understand how to use this library.
+
+### Configuration
+
+The `createClient` method supports several options you may set to achieve the expected behavior:
+
+```js
+contentful.createClient({
+  ... your config here ...
+})
+```
+
+#### accessToken (required)
+Your CMA access token.
+
+#### host (default: `'api.contentful.com'`)
+Set the host used to build the request URI's.
+
+#### hostUpload (default: `'upload.contentful.com'`)
+Set the host used to build the upload related request uri's.
+
+#### httpAgent (default: `undefined`)
+Custom agent to perform HTTP requests. Find further information in the [axios request config documentation](https://github.com/mzabriskie/axios#request-config).
+
+#### httpsAgent (default: `undefined`)
+Custom agent to perform HTTPS requests. Find further information in the [axios request config documentation](https://github.com/mzabriskie/axios#request-config).
+
+#### headers (default: `[]`)
+Additional headers to attach to the requests. We add/overwrite the following headers:
+
+* Content-Type: `application/vnd.contentful.management.v1+json`
+* X-Contentful-User-Agent: `sdk contentful-management.js/1.2.3; platform node.js/1.2.3; os macOS/1.2.3`
+ (Automatically generated)
+
+#### proxy (default: `undefined`)
+Axios proxy configuration. See the [axios request config documentation](https://github.com/mzabriskie/axios#request-config) for further information about the supported values.
+
+#### retryOnError (default: `true`)
+By default, this SDK is retrying requests which resulted in a 500 server error and 429 rate limit response. Set this to `false` to disable this behavior.
 
 ### Reference documentation
 
@@ -177,7 +215,7 @@ The `ContentfulSpaceAPI` namespace defines the methods at the Space level which 
 
 The `Entry`, `Asset` and `ContentType` namespaces show you the instance methods you can use on each of these entities, once you retrieve them from the server.
 
-    From version 1.0.0 onwards, you can access documentation for a specific version by visiting `https://contentful.github.io/contentful-management.js/contentful-management/<VERSION>`
+> From version 1.0.0 onwards, you can access documentation for a specific version by visiting `https://contentful.github.io/contentful-management.js/contentful-management/<VERSION>`
 
 ### Contentful JavaScript resources
 
@@ -207,7 +245,7 @@ See the [migration guide](MIGRATION.md) for more information.
 
 ## Support
 
-If you have a problem with this library, please file an [issue](https://github.com/contentful/contentful-management.js/issues/new) here on Github.
+If you have a problem with this library, please file an [issue](https://github.com/contentful/contentful-management.js/issues/new) here on GitHub.
 
 If you have other problems with Contentful not related to this library, you can contact [Customer Support](https://support.contentful.com).
 
