@@ -54,7 +54,7 @@
     "tonic-example.js"
   ],
   "dependencies": {
-    "axios": "~0.15.3",
+    "axios": "contentful/axios#fix/https-via-http-proxy",
     "contentful-sdk-core": "^3.11.0",
     "es6-promise": "^4.0.5",
     "lodash": "^4.17.4",
