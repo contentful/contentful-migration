@@ -201,6 +201,9 @@ Axios proxy configuration. See the [axios request config documentation](https://
 #### retryOnError (default: `true`)
 By default, this SDK is retrying requests which resulted in a 500 server error and 429 rate limit response. Set this to `false` to disable this behavior.
 
+#### logHandler (default: `function (level, data) {}`)
+Errors and warnings will be logged by default to the node or browser console. Pass your own log handler to intercept here and handle errors, warnings and info on your own.
+
 ### Reference documentation
 
 The [Contentful's JS SDK reference](https://contentful.github.io/contentful-management.js) documents what objects and methods are exposed by this library, what arguments they expect and what kind of data is returned.
