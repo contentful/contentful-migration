@@ -1,8 +1,12 @@
-'use strict'
-var webpack = require('webpack')
-var path = require('path')
-var LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
-var plugins = [
+const path = require('path')
+
+const webpack = require('webpack')
+const BabiliPlugin = require('babili-webpack-plugin')
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
+
+const PROD = process.env.NODE_ENV === 'production'
+
+const plugins = [
   new LodashModuleReplacementPlugin({
     'cloning': true,
     'caching': true
@@ -14,14 +18,9 @@ var plugins = [
   })
 ]
 
-if (process.env.NODE_ENV === 'production') {
+if (PROD) {
   plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        screw_ie8: true,
-        warnings: false
-      }
-    })
+    new BabiliPlugin()
   )
   plugins.push(
     new webpack.LoaderOptionsPlugin({
@@ -31,48 +30,62 @@ if (process.env.NODE_ENV === 'production') {
   )
 }
 
-const loaders = [
-  {
-    test: /\.js?$/,
-    include: [
-      path.resolve(__dirname, 'node_modules', 'contentful-sdk-core'),
-      path.resolve(__dirname, 'lib'),
-      path.resolve(__dirname, 'test')
-    ],
-    loader: 'babel-loader'
-  }
+const babelLoaderInclude = [
+  path.resolve(__dirname, 'node_modules', 'contentful-sdk-core'),
+  path.resolve(__dirname, 'lib'),
+  path.resolve(__dirname, 'test')
 ]
 
 module.exports = [
   {
+    // Browser
     context: path.join(__dirname, 'lib'),
     entry: './contentful-management.js',
     output: {
       path: path.join(__dirname, 'dist'),
-      filename: `contentful-management${process.env.NODE_ENV === 'production' ? '.min' : ''}.js`,
+      filename: `contentful-management${PROD ? '.min' : ''}.js`,
       libraryTarget: 'umd',
       library: 'contentfulManagement'
     },
     module: {
-      loaders: loaders
+      loaders: [
+        {
+          test: /\.js?$/,
+          include: babelLoaderInclude,
+          loader: 'babel-loader',
+          options: {
+            env: 'browser'
+          }
+        }
+      ]
     },
-    devtool: 'source-map',
+    devtool: PROD ? false : 'source-map',
     plugins: plugins
   },
   {
+    // Node
     context: path.join(__dirname, 'lib'),
     entry: './contentful-management.js',
     target: 'node',
     output: {
       path: path.join(__dirname, 'dist'),
-      filename: `contentful-management.node${process.env.NODE_ENV === 'production' ? '.min' : ''}.js`,
+      filename: `contentful-management.node${PROD ? '.min' : ''}.js`,
       libraryTarget: 'commonjs2',
       library: 'contentfulManagement'
     },
     module: {
-      loaders: loaders
+      loaders: [
+        {
+          test: /\.js?$/,
+          include: babelLoaderInclude,
+          loader: 'babel-loader',
+          options: {
+            env: 'node'
+          }
+        }
+      ]
     },
-    devtool: 'source-map',
+    devtool: PROD ? false : 'source-map',
     plugins: plugins
   }
 ]
