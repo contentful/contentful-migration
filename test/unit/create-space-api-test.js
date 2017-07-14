@@ -50,10 +50,10 @@ test('API call space delete', (t) => {
   const {api} = setup(Promise.resolve({}))
 
   return api.delete()
-  .then((r) => {
-    t.pass('space was deleted')
-    teardown()
-  })
+    .then((r) => {
+      t.pass('space was deleted')
+      teardown()
+    })
 })
 
 test('API call space delete fails', (t) => {
@@ -62,10 +62,10 @@ test('API call space delete fails', (t) => {
   const {api} = setup(Promise.reject(error))
 
   return api.delete()
-  .catch((r) => {
-    t.equals(r.name, '404 Not Found')
-    teardown()
-  })
+    .catch((r) => {
+      t.equals(r.name, '404 Not Found')
+      teardown()
+    })
 })
 
 test('API call space update', (t) => {
@@ -83,12 +83,12 @@ test('API call space update', (t) => {
 
   api.name = 'updatedname'
   return api.update()
-  .then((r) => {
-    t.looseEqual(r, responseData, 'space is wrapped')
-    t.equals(httpMock.put.args[0][1].name, 'updatedname', 'data is sent')
-    t.equals(httpMock.put.args[0][2].headers['X-Contentful-Version'], 2, 'version header is sent')
-    teardown()
-  })
+    .then((r) => {
+      t.looseEqual(r, responseData, 'space is wrapped')
+      t.equals(httpMock.put.args[0][1].name, 'updatedname', 'data is sent')
+      t.equals(httpMock.put.args[0][2].headers['X-Contentful-Version'], 2, 'version header is sent')
+      teardown()
+    })
 })
 
 test('API call space update fails', (t) => {
@@ -101,10 +101,10 @@ test('API call space update fails', (t) => {
   api = toPlainObject(api)
 
   return api.update()
-  .catch((r) => {
-    t.equals(r.name, '404 Not Found')
-    teardown()
-  })
+    .catch((r) => {
+      t.equals(r.name, '404 Not Found')
+      teardown()
+    })
 })
 
 test('API call getContentType', (t) => {
@@ -210,15 +210,15 @@ test('API call createEntry', (t) => {
   t.plan(3)
   const {api, httpMock, entitiesMock} = setup(Promise.resolve({}))
   entitiesMock.entry.wrapEntry
-  .returns(entryMock)
+    .returns(entryMock)
 
   return api.createEntry('contentTypeId', entryMock)
-  .then((r) => {
-    t.looseEqual(r, entryMock)
-    t.looseEqual(httpMock.post.args[0][1], entryMock, 'data is sent')
-    t.looseEqual(httpMock.post.args[0][2].headers['X-Contentful-Content-Type'], 'contentTypeId', 'content type is specified')
-    teardown()
-  })
+    .then((r) => {
+      t.looseEqual(r, entryMock)
+      t.looseEqual(httpMock.post.args[0][1], entryMock, 'data is sent')
+      t.looseEqual(httpMock.post.args[0][2].headers['X-Contentful-Content-Type'], 'contentTypeId', 'content type is specified')
+      teardown()
+    })
 })
 
 test('API call createEntry fails', (t) => {
@@ -231,16 +231,16 @@ test('API call createEntryWithId', (t) => {
   t.plan(4)
   const {api, httpMock, entitiesMock} = setup(Promise.resolve({}))
   entitiesMock.entry.wrapEntry
-  .returns(entryMock)
+    .returns(entryMock)
 
   return api.createEntryWithId('contentTypeId', 'entryId', entryMock)
-  .then((r) => {
-    t.looseEqual(r, entryMock)
-    t.equals(httpMock.put.args[0][0], 'entries/entryId', 'entry id is sent')
-    t.looseEqual(httpMock.put.args[0][1], entryMock, 'data is sent')
-    t.equals(httpMock.put.args[0][2].headers['X-Contentful-Content-Type'], 'contentTypeId', 'content type is specified')
-    teardown()
-  })
+    .then((r) => {
+      t.looseEqual(r, entryMock)
+      t.equals(httpMock.put.args[0][0], 'entries/entryId', 'entry id is sent')
+      t.looseEqual(httpMock.put.args[0][1], entryMock, 'data is sent')
+      t.equals(httpMock.put.args[0][2].headers['X-Contentful-Content-Type'], 'contentTypeId', 'content type is specified')
+      teardown()
+    })
 })
 
 test('API call createEntryWithId fails', (t) => {
@@ -337,11 +337,11 @@ test('API call createAssetFromFiles', (t) => {
       }
     }
   })
-  .then(() => {
-    t.equals(httpUploadMock.post.args[0][1], '<svg xmlns="http://www.w3.org/2000/svg"><path fill="red" d="M50 50h150v50H50z"/></svg>', 'uploads file #1 to upload endpoint')
-    t.equals(httpUploadMock.post.args[1][1], '<svg xmlns="http://www.w3.org/2000/svg"><path fill="blue" d="M50 50h150v50H50z"/></svg>', 'uploads file #2 to upload endpoint')
-    t.deepEqual(entitiesMock.asset.wrapAsset.args[0][1], assetWithFilesMock, 'wrapAsset was called with proper asset')
-  })
+    .then(() => {
+      t.equals(httpUploadMock.post.args[0][1], '<svg xmlns="http://www.w3.org/2000/svg"><path fill="red" d="M50 50h150v50H50z"/></svg>', 'uploads file #1 to upload endpoint')
+      t.equals(httpUploadMock.post.args[1][1], '<svg xmlns="http://www.w3.org/2000/svg"><path fill="blue" d="M50 50h150v50H50z"/></svg>', 'uploads file #2 to upload endpoint')
+      t.deepEqual(entitiesMock.asset.wrapAsset.args[0][1], assetWithFilesMock, 'wrapAsset was called with proper asset')
+    })
 })
 
 test('API call getUpload', (t) => {
@@ -374,11 +374,11 @@ test('API call createUpload', (t) => {
     fileName: 'filename.svg',
     file: '<svg><path fill="red" d="M50 50h150v50H50z"/></svg>'
   })
-  .then(() => {
-    t.equals(httpUploadMock.post.args[0][2].headers['Content-Type'], 'application/octet-stream')
-    t.equals(httpUploadMock.post.args[0][1], '<svg><path fill="red" d="M50 50h150v50H50z"/></svg>', 'uploads file to upload endpoint')
-    t.deepEqual(entitiesMock.upload.wrapUpload.args[0][1], mockedUpload, 'wrapUpload was called with correct raw upload object')
-  })
+    .then(() => {
+      t.equals(httpUploadMock.post.args[0][2].headers['Content-Type'], 'application/octet-stream')
+      t.equals(httpUploadMock.post.args[0][1], '<svg><path fill="red" d="M50 50h150v50H50z"/></svg>', 'uploads file to upload endpoint')
+      t.deepEqual(entitiesMock.upload.wrapUpload.args[0][1], mockedUpload, 'wrapUpload was called with correct raw upload object')
+    })
 })
 
 test('API call createUpload defaults the content type to octet-stream', (t) => {
@@ -396,11 +396,11 @@ test('API call createUpload defaults the content type to octet-stream', (t) => {
     fileName: 'filename.svg',
     file: '<svg><path fill="red" d="M50 50h150v50H50z"/></svg>'
   })
-  .then(() => {
-    t.equals(httpUploadMock.post.args[0][2].headers['Content-Type'], 'application/octet-stream')
-    t.equals(httpUploadMock.post.args[0][1], '<svg><path fill="red" d="M50 50h150v50H50z"/></svg>', 'uploads file to upload endpoint')
-    t.deepEqual(entitiesMock.upload.wrapUpload.args[0][1], mockedUpload, 'wrapUpload was called with correct raw upload object')
-  })
+    .then(() => {
+      t.equals(httpUploadMock.post.args[0][2].headers['Content-Type'], 'application/octet-stream')
+      t.equals(httpUploadMock.post.args[0][1], '<svg><path fill="red" d="M50 50h150v50H50z"/></svg>', 'uploads file to upload endpoint')
+      t.deepEqual(entitiesMock.upload.wrapUpload.args[0][1], mockedUpload, 'wrapUpload was called with correct raw upload object')
+    })
 })
 
 test('API call createAssetFromFiles with invalid data', (t) => {

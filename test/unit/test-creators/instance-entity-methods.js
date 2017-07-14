@@ -23,11 +23,11 @@ export function entityUpdateTest (t, setup, {wrapperMethod}) {
   const entity = wrapperMethod(httpMock, entityMock)
   entity.name = 'updatedname'
   return entity.update()
-  .then((response) => {
-    t.ok(response.toPlainObject, 'response is wrapped')
-    t.equals(httpMock.put.args[0][1].name, 'updatedname', 'data is sent')
-    t.equals(httpMock.put.args[0][2].headers['X-Contentful-Version'], 2, 'version header is sent')
-  })
+    .then((response) => {
+      t.ok(response.toPlainObject, 'response is wrapped')
+      t.equals(httpMock.put.args[0][1].name, 'updatedname', 'data is sent')
+      t.equals(httpMock.put.args[0][2].headers['X-Contentful-Version'], 2, 'version header is sent')
+    })
 }
 
 export function entityActionTest (t, setup, {wrapperMethod, actionMethod}) {
@@ -35,9 +35,9 @@ export function entityActionTest (t, setup, {wrapperMethod, actionMethod}) {
   const {httpMock, entityMock} = setup()
   const entity = wrapperMethod(httpMock, entityMock)
   return entity[actionMethod]()
-  .then((response) => {
-    t.ok(response.toPlainObject, 'response is wrapped')
-  })
+    .then((response) => {
+      t.ok(response.toPlainObject, 'response is wrapped')
+    })
 }
 
 export function entityDeleteTest (t, setup, {wrapperMethod}) {
@@ -45,9 +45,9 @@ export function entityDeleteTest (t, setup, {wrapperMethod}) {
   const {httpMock, entityMock} = setup()
   const entity = wrapperMethod(httpMock, entityMock)
   return entity.delete()
-  .then((response) => {
-    t.pass('entity was deleted')
-  })
+    .then((response) => {
+      t.pass('entity was deleted')
+    })
 }
 
 export function entityPublishTest (t, setup, {wrapperMethod}) {
@@ -56,10 +56,10 @@ export function entityPublishTest (t, setup, {wrapperMethod}) {
   entityMock.sys.version = 2
   const entity = wrapperMethod(httpMock, entityMock)
   return entity.publish()
-  .then((response) => {
-    t.ok(response.toPlainObject, 'response is wrapped')
-    t.equals(httpMock.put.args[0][2].headers['X-Contentful-Version'], 2, 'version header is sent')
-  })
+    .then((response) => {
+      t.ok(response.toPlainObject, 'response is wrapped')
+      t.equals(httpMock.put.args[0][2].headers['X-Contentful-Version'], 2, 'version header is sent')
+    })
 }
 
 export function failingActionTest (t, setup, {wrapperMethod, actionMethod}) {
@@ -69,9 +69,9 @@ export function failingActionTest (t, setup, {wrapperMethod, actionMethod}) {
   const entity = wrapperMethod(httpMock, entityMock)
 
   return entity[actionMethod]()
-  .catch((r) => {
-    t.equals(r.name, '404 Not Found')
-  })
+    .catch((r) => {
+      t.equals(r.name, '404 Not Found')
+    })
 }
 export function failingVersionActionTest (t, setup, {wrapperMethod, actionMethod}) {
   t.plan(1)
@@ -81,9 +81,9 @@ export function failingVersionActionTest (t, setup, {wrapperMethod, actionMethod
   const entity = wrapperMethod(httpMock, entityMock)
 
   return entity[actionMethod]()
-  .catch((r) => {
-    t.equals(r.name, '404 Not Found')
-  })
+    .catch((r) => {
+      t.equals(r.name, '404 Not Found')
+    })
 }
 
 export function isPublishedTest (t, setup, {wrapperMethod}) {

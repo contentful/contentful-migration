@@ -61,9 +61,9 @@ test('Webhook list of calls', (t) => {
   const {httpMock, entityMock} = setup()
   const entity = wrapWebhook(httpMock, entityMock)
   return entity.getCalls()
-  .then((response) => {
-    t.equals(httpMock.get.args[0][0], 'webhooks/id/calls', 'id is sent')
-  })
+    .then((response) => {
+      t.equals(httpMock.get.args[0][0], 'webhooks/id/calls', 'id is sent')
+    })
 })
 
 test('Webhook specific call', (t) => {
@@ -71,9 +71,9 @@ test('Webhook specific call', (t) => {
   const {httpMock, entityMock} = setup()
   const entity = wrapWebhook(httpMock, entityMock)
   return entity.getCall('callid')
-  .then((response) => {
-    t.equals(httpMock.get.args[0][0], 'webhooks/id/calls/callid', 'id is sent')
-  })
+    .then((response) => {
+      t.equals(httpMock.get.args[0][0], 'webhooks/id/calls/callid', 'id is sent')
+    })
 })
 
 test('Webhook health', (t) => {
@@ -81,7 +81,7 @@ test('Webhook health', (t) => {
   const {httpMock, entityMock} = setup()
   const entity = wrapWebhook(httpMock, entityMock)
   return entity.getHealth()
-  .then((response) => {
-    t.equals(httpMock.get.args[0][0], 'webhooks/id/health', 'id is sent')
-  })
+    .then((response) => {
+      t.equals(httpMock.get.args[0][0], 'webhooks/id/health', 'id is sent')
+    })
 })

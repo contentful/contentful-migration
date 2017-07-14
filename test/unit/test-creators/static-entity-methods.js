@@ -6,13 +6,13 @@ export function makeGetEntityTest (t, setup, teardown, {entityType, mockToReturn
   t.plan(1)
   const {api, entitiesMock} = setup(Promise.resolve({}))
   entitiesMock[entityType][`wrap${upperFirst(entityType)}${wrapperSuffix}`]
-  .returns(mockToReturn)
+    .returns(mockToReturn)
 
   return api[methodToTest]('eid')
-  .then((r) => {
-    t.looseEqual(r, mockToReturn)
-    teardown()
-  })
+    .then((r) => {
+      t.looseEqual(r, mockToReturn)
+      teardown()
+    })
 }
 
 export function makeGetCollectionTest (t, setup, teardown, {entityType, mockToReturn, methodToTest}) {
@@ -35,24 +35,24 @@ export function makeEntityMethodFailingTest (t, setup, teardown, {methodToTest})
   const {api} = setup(Promise.reject(error))
 
   return api[methodToTest]('eid')
-  .then(() => {}, (r) => {
-    t.equals(r.name, '404 Not Found')
-    teardown()
-  })
+    .then(() => {}, (r) => {
+      t.equals(r.name, '404 Not Found')
+      teardown()
+    })
 }
 
 export function makeCreateEntityTest (t, setup, teardown, {entityType, mockToReturn, methodToTest}) {
   t.plan(2)
   const {api, httpMock, entitiesMock} = setup(Promise.resolve({}))
   entitiesMock[entityType][`wrap${upperFirst(entityType)}`]
-  .returns(mockToReturn)
+    .returns(mockToReturn)
 
   return api[methodToTest](mockToReturn)
-  .then((r) => {
-    t.looseEqual(r, mockToReturn)
-    t.looseEqual(httpMock.post.args[0][1], mockToReturn, 'data is sent')
-    teardown()
-  })
+    .then((r) => {
+      t.looseEqual(r, mockToReturn)
+      t.looseEqual(httpMock.post.args[0][1], mockToReturn, 'data is sent')
+      teardown()
+    })
 }
 
 export function makeCreateEntityWithIdTest (t, setup, teardown, {entityType, entityPath, mockToReturn, methodToTest}) {
@@ -60,13 +60,13 @@ export function makeCreateEntityWithIdTest (t, setup, teardown, {entityType, ent
   const id = 'entityId'
   const {api, httpMock, entitiesMock} = setup(Promise.resolve({}))
   entitiesMock[entityType][`wrap${upperFirst(entityType)}`]
-  .returns(mockToReturn)
+    .returns(mockToReturn)
 
   return api[methodToTest](id, mockToReturn)
-  .then((r) => {
-    t.looseEqual(r, mockToReturn)
-    t.equals(httpMock.put.args[0][0], entityPath + '/' + id, 'specified id is sent')
-    t.looseEqual(httpMock.put.args[0][1], mockToReturn, 'data is sent')
-    teardown()
-  })
+    .then((r) => {
+      t.looseEqual(r, mockToReturn)
+      t.equals(httpMock.put.args[0][0], entityPath + '/' + id, 'specified id is sent')
+      t.looseEqual(httpMock.put.args[0][1], mockToReturn, 'data is sent')
+      teardown()
+    })
 }

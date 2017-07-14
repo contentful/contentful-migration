@@ -144,11 +144,11 @@ test('Asset processing for one locale succeeds', (t) => {
   entityMock.sys.version = 2
   const entity = wrapAsset(httpMock, entityMock)
   return entity.processForLocale('en-US')
-  .then((response) => {
-    t.equals(httpMock.put.args[0][0], 'assets/id/files/en-US/process', 'correct locale is sent')
-    t.equals(httpMock.put.args[0][2].headers['X-Contentful-Version'], 2, 'version header is sent')
-    t.equals(httpMock.get.args[0][0], 'assets/id', 'asset was checked after processing')
-  })
+    .then((response) => {
+      t.equals(httpMock.put.args[0][0], 'assets/id/files/en-US/process', 'correct locale is sent')
+      t.equals(httpMock.put.args[0][2].headers['X-Contentful-Version'], 2, 'version header is sent')
+      t.equals(httpMock.get.args[0][0], 'assets/id', 'asset was checked after processing')
+    })
 })
 
 test('Asset processing for one locale fails due to timeout', (t) => {
@@ -161,10 +161,10 @@ test('Asset processing for one locale fails due to timeout', (t) => {
   entityMock.sys.version = 2
   const entity = wrapAsset(httpMock, entityMock)
   return entity.processForLocale('en-US')
-  .catch((error) => {
-    t.ok(httpMock.get.callCount > 1, 'asset is checked multiple times')
-    t.equals(error.name, 'AssetProcessingTimeout', 'timeout is thrown')
-  })
+    .catch((error) => {
+      t.ok(httpMock.get.callCount > 1, 'asset is checked multiple times')
+      t.equals(error.name, 'AssetProcessingTimeout', 'timeout is thrown')
+    })
 })
 
 test('Asset processing for multiple locales succeeds', (t) => {
@@ -186,14 +186,14 @@ test('Asset processing for multiple locales succeeds', (t) => {
   entityMock.sys.version = 2
   const entity = wrapAsset(httpMock, entityMock)
   return entity.processForAllLocales()
-  .then((response) => {
-    t.equals(httpMock.put.args[0][0], 'assets/id/files/en-US/process', 'en-US locale is sent')
-    t.equals(httpMock.put.args[1][0], 'assets/id/files/de-DE/process', 'de-DE locale is sent')
-    t.equals(httpMock.put.args[0][2].headers['X-Contentful-Version'], 2, 'version header is sent for first locale')
-    t.equals(httpMock.put.args[1][2].headers['X-Contentful-Version'], 2, 'version header is sent for second locale')
-    t.equals(httpMock.get.args[0][0], 'assets/id', 'asset was checked after processing for first locale')
-    t.equals(httpMock.get.args[1][0], 'assets/id', 'asset was checked after processing for second locale')
-  })
+    .then((response) => {
+      t.equals(httpMock.put.args[0][0], 'assets/id/files/en-US/process', 'en-US locale is sent')
+      t.equals(httpMock.put.args[1][0], 'assets/id/files/de-DE/process', 'de-DE locale is sent')
+      t.equals(httpMock.put.args[0][2].headers['X-Contentful-Version'], 2, 'version header is sent for first locale')
+      t.equals(httpMock.put.args[1][2].headers['X-Contentful-Version'], 2, 'version header is sent for second locale')
+      t.equals(httpMock.get.args[0][0], 'assets/id', 'asset was checked after processing for first locale')
+      t.equals(httpMock.get.args[1][0], 'assets/id', 'asset was checked after processing for second locale')
+    })
 })
 
 test('Asset processing for multiple locales fails due to timeout', (t) => {
@@ -215,8 +215,8 @@ test('Asset processing for multiple locales fails due to timeout', (t) => {
   entityMock.sys.version = 2
   const entity = wrapAsset(httpMock, entityMock)
   return entity.processForAllLocales()
-  .catch((error) => {
-    t.ok(httpMock.get.callCount > 1, 'asset is checked multiple times')
-    t.equals(error.name, 'AssetProcessingTimeout', 'timeout is thrown')
-  })
+    .catch((error) => {
+      t.ok(httpMock.get.callCount > 1, 'asset is checked multiple times')
+      t.equals(error.name, 'AssetProcessingTimeout', 'timeout is thrown')
+    })
 })

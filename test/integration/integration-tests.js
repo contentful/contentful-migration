@@ -27,27 +27,27 @@ const client = createClient(params)
 test('Gets spaces', (t) => {
   t.plan(2)
   return client.getSpaces()
-  .then((response) => {
-    t.ok(response.items, 'items')
-    t.ok(response.total > 0, 'items have spaces')
-  })
+    .then((response) => {
+      t.ok(response.items, 'items')
+      t.ok(response.total > 0, 'items have spaces')
+    })
 })
 
 test('Gets organizations', (t) => {
   t.plan(1)
   return client.getOrganizations()
-  .then((response) => {
-    t.ok(response.items.length >= 1, 'user must belong to at least one organization')
-  })
+    .then((response) => {
+      t.ok(response.items.length >= 1, 'user must belong to at least one organization')
+    })
 })
 
 test('Gets space', (t) => {
   t.plan(2)
   return client.getSpace('cfexampleapi')
-  .then((response) => {
-    t.ok(response.sys, 'sys')
-    t.ok(response.name, 'name')
-  })
+    .then((response) => {
+      t.ok(response.sys, 'sys')
+      t.ok(response.name, 'name')
+    })
 })
 
 // @todo unskip test when api behaviour is fixed
@@ -55,11 +55,11 @@ test('Gets space', (t) => {
 test.skip('Fails to get space', (t) => {
   t.plan(2)
   return client.getSpace(generateRandomId('weirdrandomid'))
-  .then(() => {}, (error) => {
-    t.equals(error.name, 'NotFound', 'error name')
-    const errorData = JSON.parse(error.message)
-    t.equals(errorData.status, 404, 'http status code from parsed error data')
-  })
+    .then(() => {}, (error) => {
+      t.equals(error.name, 'NotFound', 'error name')
+      const errorData = JSON.parse(error.message)
+      t.equals(errorData.status, 404, 'http status code from parsed error data')
+    })
 })
 
 test('Creates, updates and deletes a space', (t) => {
@@ -67,24 +67,24 @@ test('Creates, updates and deletes a space', (t) => {
   return client.createSpace({
     name: 'spacename'
   }, organization)
-  .then((space) => {
-    t.equals(space.name, 'spacename')
-    space.name = 'updatedspacename'
-    return space.update()
-    .then((updatedSpace) => {
-      t.equals(updatedSpace.name, 'updatedspacename')
-      return updatedSpace.delete()
+    .then((space) => {
+      t.equals(space.name, 'spacename')
+      space.name = 'updatedspacename'
+      return space.update()
+        .then((updatedSpace) => {
+          t.equals(updatedSpace.name, 'updatedspacename')
+          return updatedSpace.delete()
+        })
     })
-  })
 })
 
 test('Gets space for read only tests', (t) => {
   return client.getSpace('cfexampleapi')
-  .then((space) => {
-    contentTypeReadOnlyTests(t, space)
-    entryReadOnlyTests(t, space)
-    assetReadOnlyTests(t, space)
-  })
+    .then((space) => {
+      contentTypeReadOnlyTests(t, space)
+      entryReadOnlyTests(t, space)
+      assetReadOnlyTests(t, space)
+    })
 })
 
 test('Create space for tests which create, change and delete data', (t) => {
@@ -97,25 +97,25 @@ test('Create space for tests which create, change and delete data', (t) => {
   // The below line also uses double quotes on purpose so it breaks the linter
   // in case someone forgets to comment this line again.
   // client.getSpace('a3f19zbn5ldg')
-  .then((space) => {
-    return space.createLocale({
-      name: 'German (Germany)',
-      code: 'de-DE'
+    .then((space) => {
+      return space.createLocale({
+        name: 'German (Germany)',
+        code: 'de-DE'
+      })
+        .then(() => {
+          return space
+        })
     })
-    .then(() => {
-      return space
+    .then((space) => {
+      localeTests(t, space)
+      contentTypeWriteTests(t, space)
+      entryWriteTests(t, space)
+      assetWriteTests(t, space)
+      webhookTests(t, space)
+      spaceMembershipTests(t, space)
+      roleTests(t, space)
+      apiKeyTests(t, space)
+      uiExtensionTests(t, space)
+      test.onFinish(() => space.delete())
     })
-  })
-  .then((space) => {
-    localeTests(t, space)
-    contentTypeWriteTests(t, space)
-    entryWriteTests(t, space)
-    assetWriteTests(t, space)
-    webhookTests(t, space)
-    spaceMembershipTests(t, space)
-    roleTests(t, space)
-    apiKeyTests(t, space)
-    uiExtensionTests(t, space)
-    test.onFinish(() => space.delete())
-  })
 })

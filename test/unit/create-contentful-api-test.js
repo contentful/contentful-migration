@@ -73,12 +73,12 @@ test('API call createSpace', (t) => {
   entitiesMock.space.wrapSpace.returns(data)
 
   return api.createSpace({name: 'name'}, 'orgid')
-  .then((r) => {
-    t.looseEqual(r, data, 'space is wrapped')
-    t.looseEqual(httpMock.post.args[0][1], {name: 'name'}, 'data is sent')
-    t.equals(httpMock.post.args[0][2].headers['X-Contentful-Organization'], 'orgid', 'orgid is specified in headers')
-    teardown()
-  })
+    .then((r) => {
+      t.looseEqual(r, data, 'space is wrapped')
+      t.looseEqual(httpMock.post.args[0][1], {name: 'name'}, 'data is sent')
+      t.equals(httpMock.post.args[0][2].headers['X-Contentful-Organization'], 'orgid', 'orgid is specified in headers')
+      teardown()
+    })
 })
 
 test('API call createSpace fails', (t) => {
