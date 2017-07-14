@@ -84,7 +84,7 @@
     "eslint-plugin-node": "^5.1.0",
     "eslint-plugin-promise": "^3.4.2",
     "eslint-plugin-standard": "^3.0.1",
-    "husky": "^0.13.1",
+    "husky": "^0.14.3",
     "in-publish": "^2.0.0",
     "istanbul": "^1.0.0-alpha.2",
     "jsdoc": "^3.4.0",
