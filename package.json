@@ -55,7 +55,7 @@
   ],
   "dependencies": {
     "axios": "contentful/axios#fix/https-via-http-proxy",
-    "contentful-sdk-core": "^3.13.0",
+    "contentful-sdk-core": "^3.13.1",
     "es6-promise": "^4.0.5",
     "lodash": "^4.17.4",
     "platform": "1.3.3"
