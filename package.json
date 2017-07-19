@@ -20,7 +20,7 @@
     "build": "npm run clean && npm run build:ci",
     "build:ci": "npm run vendor:version && npm run build:standalone",
     "build:standalone": "webpack && NODE_ENV=production webpack",
-    "build:standalone:log": "NODE_ENV=production webpack --json --profile > webpack-build-log.json",
+    "build:standalone:log": "NODE_ENV=production webpack --json --profile > webpack-build-log.json && webpack-bundle-analyzer webpack-build-log.json",
     "docs:build": "jsdoc -c jsdoc.json",
     "docs:dev": "npm run build && npm run docs:build",
     "docs:watch": "nodemon --exec npm run docs:dev -w lib",
@@ -106,7 +106,8 @@
     "semantic-release": "^6.3.2",
     "sinon": "^2.0.0-pre",
     "trevor": "^2.2.0",
-    "webpack": "^3.2.0"
+    "webpack": "^3.2.0",
+    "webpack-bundle-analyzer": "^2.8.3"
   },
   "config": {
     "commitizen": {
