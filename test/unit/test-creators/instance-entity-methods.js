@@ -30,6 +30,16 @@ export function entityUpdateTest (t, setup, {wrapperMethod}) {
     })
 }
 
+export function entityCollectionActionTest (t, setup, {wrapperMethod, actionMethod}) {
+  t.plan(1)
+  const {httpMock, entityMock} = setup(Promise.resolve({data: {items: []}}))
+  const entity = wrapperMethod(httpMock, entityMock)
+  return entity[actionMethod]()
+    .then((response) => {
+      t.ok(response.toPlainObject, 'response is wrapped')
+    })
+}
+
 export function entityActionTest (t, setup, {wrapperMethod, actionMethod}) {
   t.plan(1)
   const {httpMock, entityMock} = setup()

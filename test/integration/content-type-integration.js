@@ -11,6 +11,18 @@ export function contentTypeReadOnlyTests (t, space) {
       })
   })
 
+  t.test('Gets ContentType snapshots', (t) => {
+    t.plan(2)
+    return space.getContentType('1t9IbcfdCk6m04uISSsaIK')
+      .then((contentType) => {
+        return contentType.getSnapshots()
+          .then((response) => {
+            t.ok(response, 'contentType snapshots')
+            t.ok(response.items, 'contentType snapshots items')
+          })
+      })
+  })
+
   t.test('Gets content types', (t) => {
     t.plan(1)
     return space.getContentTypes()

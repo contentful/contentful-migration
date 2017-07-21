@@ -12,6 +12,18 @@ export function entryReadOnlyTests (t, space) {
       })
   })
 
+  t.test('Gets Entry snapshots', (t) => {
+    t.plan(2)
+    return space.getEntry('5ETMRzkl9KM4omyMwKAOki')
+      .then((entry) => {
+        return entry.getSnapshots()
+          .then((response) => {
+            t.ok(response, 'entry snapshots')
+            t.ok(response.items, 'entry snapshots items')
+          })
+      })
+  })
+
   t.test('Gets entries', (t) => {
     t.plan(1)
     return space.getEntries()

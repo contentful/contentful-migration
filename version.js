@@ -1,1 +1,1 @@
-module.exports = '0.0.0-placeholder'
+module.exports = '3.7.6'

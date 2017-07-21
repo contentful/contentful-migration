@@ -17,7 +17,8 @@ import {
   apiKeyMock,
   setupEntitiesMock,
   cloneMock,
-  uiExtensionMock
+  uiExtensionMock,
+  snapShotMock
 } from './mocks/entities'
 import setupHttpMock from './mocks/http'
 import {
@@ -652,6 +653,34 @@ test('API call getApiKeys', (t) => {
 test('API call getApiKeys fails', (t) => {
   makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'getApiKeys'
+  })
+})
+
+test('API call getEntrySnapshots snapshots', (t) => {
+  makeGetCollectionTest(t, setup, teardown, {
+    entityType: 'snapshot',
+    mockToReturn: snapShotMock,
+    methodToTest: 'getEntrySnapshots'
+  })
+})
+
+test('API call getEntrySnapshots fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getEntrySnapshots'
+  })
+})
+
+test('API call getContentTypeSnapshots snapshots', (t) => {
+  makeGetCollectionTest(t, setup, teardown, {
+    entityType: 'snapshot',
+    mockToReturn: snapShotMock,
+    methodToTest: 'getContentTypeSnapshots'
+  })
+})
+
+test('API call getContentTypeSnapshots fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getContentTypeSnapshots'
   })
 })
 
