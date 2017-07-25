@@ -28,7 +28,7 @@ Browsers and Node.js:
 - Chrome
 - Firefox
 - Edge
-- IE11 (with [es6-promise](https://github.com/stefanpenner/es6-promise) polyfill applied)
+- IE11 (with [legacy version](#legacy-browsers) of the library)
 - Safari
 - node.js (4.x, 6.x)
 
@@ -79,6 +79,12 @@ Using `contentful@latest` will always get you the latest version, but you can al
 The Contentful Management SDK will be accessible via the `contentfulManagement` global variable.
 
 Check the [releases](https://github.com/contentful/contentful-management.js/releases) page to know which versions are available.
+
+### Legacy browsers:
+
+This library also comes with a legacy version to support Internet Explorer 11 and other older browsers. It already contains a polyfill for Promises.
+
+To support legacy browsers in your application, use `contentful-management.legacy.min.js` instead of `contentful-management.min.js`
 
 ## Authentication
 

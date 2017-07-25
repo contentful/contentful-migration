@@ -4,7 +4,7 @@
 
 var _ = require('lodash')
 var webpack = require('webpack')
-var webpackConfig = _.cloneDeep(require('./webpack.config.js')[0])
+var webpackConfig = _.cloneDeep(require('./webpack.config.js')[1])
 delete webpackConfig.entry
 delete webpackConfig.output
 webpackConfig.devtool = 'inline-source-map'
@@ -15,6 +15,9 @@ webpackConfig.node = {
   fs: 'empty'
 }
 webpackConfig.plugins.push(new webpack.NormalModuleReplacementPlugin(/\.\/dist\/contentful-management/g, './lib/contentful-management'))
+
+console.log('Karma webpack config:')
+console.log(JSON.stringify(webpackConfig, null, 2))
 
 module.exports = {
   plugins: [

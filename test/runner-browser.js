@@ -1,3 +1,4 @@
+require('core-js/fn/promise') // Readd promise polyfill for legacy browsers since karma-webpack removes it
 // This file is required due to an issue with karma-tap
 // https://github.com/tmcw-up-for-adoption/karma-tap/issues/10
 require('./unit/contentful-management-test.js')
