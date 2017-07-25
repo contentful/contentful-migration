@@ -1,5 +1,5 @@
 import test from 'tape'
-import { Promise } from 'es6-promise'
+
 import {cloneMock} from '../mocks/entities'
 import setupHttpMock from '../mocks/http'
 import {wrapAsset, wrapAssetCollection} from '../../../lib/entities/asset'

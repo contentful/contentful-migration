@@ -1,5 +1,4 @@
 import test from 'blue-tape'
-import { Promise } from 'es6-promise'
 
 import { toPlainObject } from 'contentful-sdk-core'
 import createSpaceApi, {__RewireAPI__ as createSpaceApiRewireApi} from '../../lib/create-space-api'

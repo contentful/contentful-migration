@@ -1,5 +1,3 @@
-import filter from 'lodash/filter'
-import map from 'lodash/map'
 import generateRandomId from './generate-random-id'
 
 export function entryReadOnlyTests (t, space) {
@@ -59,7 +57,7 @@ export function entryReadOnlyTests (t, space) {
     return space.getEntries({content_type: 'cat'})
       .then((response) => {
         t.equal(response.total, 3)
-        t.looseEqual(map(response.items, 'sys.contentType.sys.id'), ['cat', 'cat', 'cat'])
+        t.looseEqual(response.items.map((item) => item.sys.contentType.sys.id), ['cat', 'cat', 'cat'])
       })
   })
 
@@ -77,7 +75,7 @@ export function entryReadOnlyTests (t, space) {
     return space.getEntries({'sys.id[ne]': 'nyancat'})
       .then((response) => {
         t.ok(response.total > 0)
-        t.equal(filter(response.items, ['sys.id', 'nyancat']).length, 0)
+        t.equal(response.items.filter((item) => item.sys.id === 'nyancat').length, 0)
       })
   })
 
@@ -89,7 +87,7 @@ export function entryReadOnlyTests (t, space) {
     })
       .then((response) => {
         t.equal(response.total, 1)
-        t.equal(filter(response.items[0].fields.likes['en-US'], (i) => i === 'lasagna').length, 1)
+        t.equal(response.items[0].fields.likes['en-US'].filter((i) => i === 'lasagna').length, 1)
       })
   })
 
@@ -101,7 +99,7 @@ export function entryReadOnlyTests (t, space) {
     })
       .then((response) => {
         t.ok(response.total > 0)
-        t.equal(filter(response.items[0].fields.likes['en-US'], (i) => i === 'lasagna').length, 0)
+        t.equal(response.items[0].fields.likes['en-US'].filter((i) => i === 'lasagna').length, 0)
       })
   })
 
@@ -110,8 +108,8 @@ export function entryReadOnlyTests (t, space) {
     return space.getEntries({'sys.id[in]': 'finn,jake'})
       .then((response) => {
         t.equal(response.total, 2)
-        t.equal(filter(response.items, ['sys.id', 'finn']).length, 1)
-        t.equal(filter(response.items, ['sys.id', 'jake']).length, 1)
+        t.equal(response.items.filter((item) => item.sys.id === 'finn').length, 1)
+        t.equal(response.items.filter((item) => item.sys.id === 'jake').length, 1)
       })
   })
 
@@ -123,8 +121,8 @@ export function entryReadOnlyTests (t, space) {
     })
       .then((response) => {
         t.ok(response.total > 0)
-        t.equal(filter(response.items[0].fields.likes['en-US'], (i) => i === 'lasagna').length, 0)
-        t.equal(filter(response.items[0].fields.likes['en-US'], (i) => i === 'rainbows').length, 0)
+        t.equal(response.items[0].fields.likes['en-US'].filter((i) => i === 'lasagna').length, 0)
+        t.equal(response.items[0].fields.likes['en-US'].filter((i) => i === 'rainbows').length, 0)
       })
   })
 
@@ -135,7 +133,7 @@ export function entryReadOnlyTests (t, space) {
       'fields.likes[exists]': 'true'
     })
       .then((response) => {
-        t.equal(map(response.items, 'fields.likes').length, response.total)
+        t.equal(response.items.map((item) => item.fields.likes).length, response.total)
       })
   })
 
@@ -146,7 +144,7 @@ export function entryReadOnlyTests (t, space) {
       'fields.likes[exists]': 'false'
     })
       .then((response) => {
-        t.equal(map(response.items, 'fields.likes').length, 0)
+        t.equal(response.items.map((item) => item.fields.likes).length, 0)
       })
   })
 

@@ -2,15 +2,10 @@ const path = require('path')
 
 const webpack = require('webpack')
 const BabiliPlugin = require('babili-webpack-plugin')
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
 
 const PROD = process.env.NODE_ENV === 'production'
 
 const plugins = [
-  new LodashModuleReplacementPlugin({
-    'cloning': true,
-    'caching': true
-  }),
   new webpack.optimize.OccurrenceOrderPlugin(),
   new webpack.IgnorePlugin(/vertx/),
   new webpack.DefinePlugin({
@@ -57,7 +52,10 @@ module.exports = [
             env: 'browser'
           }
         }
-      ]
+      ],
+      noParse: (content) => {
+        return /clone/.test(content)
+      }
     },
     devtool: PROD ? false : 'source-map',
     plugins: plugins
@@ -83,7 +81,10 @@ module.exports = [
             env: 'node'
           }
         }
-      ]
+      ],
+      noParse: (content) => {
+        return /clone/.test(content)
+      }
     },
     devtool: PROD ? false : 'source-map',
     plugins: plugins

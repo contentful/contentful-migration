@@ -1,6 +1,6 @@
 import sinon from 'sinon'
-import assign from 'lodash/assign'
-import cloneDeep from 'lodash/cloneDeep'
+
+import cloneDeep from 'clone'
 
 const linkMock = {
   id: 'linkid',
@@ -17,7 +17,7 @@ const sysMock = {
 }
 
 const spaceMock = {
-  sys: assign(cloneDeep(sysMock), {
+  sys: Object.assign(cloneDeep(sysMock), {
     type: 'Space'
   }),
   name: 'name',
@@ -25,7 +25,7 @@ const spaceMock = {
 }
 
 const contentTypeMock = {
-  sys: assign(cloneDeep(sysMock), {
+  sys: Object.assign(cloneDeep(sysMock), {
     type: 'ContentType'
   }),
   name: 'name',
@@ -42,7 +42,7 @@ const contentTypeMock = {
   ]
 }
 const snapShotMock = {
-  sys: assign(cloneDeep(sysMock), {
+  sys: Object.assign(cloneDeep(sysMock), {
     type: 'Snapshot'
   }),
   fields: {
@@ -50,9 +50,9 @@ const snapShotMock = {
   }
 }
 const entryMock = {
-  sys: assign(cloneDeep(sysMock), {
+  sys: Object.assign(cloneDeep(sysMock), {
     type: 'Entry',
-    contentType: assign(cloneDeep(linkMock), {linkType: 'ContentType'}),
+    contentType: Object.assign(cloneDeep(linkMock), {linkType: 'ContentType'}),
     locale: 'locale'
   }),
   fields: {
@@ -60,10 +60,10 @@ const entryMock = {
   }
 }
 const editorInterfaceMock = {
-  sys: assign(cloneDeep(sysMock), {
+  sys: Object.assign(cloneDeep(sysMock), {
     type: 'EditorInterface',
-    contentType: {sys: assign(cloneDeep(linkMock), {linkType: 'ContentType'})},
-    space: assign(cloneDeep(linkMock), {linkType: 'Space'})
+    contentType: {sys: Object.assign(cloneDeep(linkMock), {linkType: 'ContentType'})},
+    space: Object.assign(cloneDeep(linkMock), {linkType: 'Space'})
   }),
   controls: [
     {
@@ -73,7 +73,7 @@ const editorInterfaceMock = {
   ]
 }
 const assetMock = {
-  sys: assign(cloneDeep(sysMock), {
+  sys: Object.assign(cloneDeep(sysMock), {
     type: 'Asset',
     locale: 'locale'
   }),
@@ -83,7 +83,7 @@ const assetMock = {
 }
 
 const assetWithFilesMock = {
-  sys: assign(cloneDeep(sysMock), {
+  sys: Object.assign(cloneDeep(sysMock), {
     type: 'Asset',
     locale: 'locale'
   }),
@@ -116,14 +116,14 @@ const assetWithFilesMock = {
 }
 
 const uploadMock = {
-  sys: assign(cloneDeep(sysMock), {
+  sys: Object.assign(cloneDeep(sysMock), {
     type: 'Upload',
     id: 'some_random_id'
   })
 }
 
 const localeMock = {
-  sys: assign(cloneDeep(sysMock), {
+  sys: Object.assign(cloneDeep(sysMock), {
     type: 'Locale'
   }),
   name: 'English',
@@ -134,31 +134,31 @@ const localeMock = {
 }
 
 const webhookMock = {
-  sys: assign(cloneDeep(sysMock), {
+  sys: Object.assign(cloneDeep(sysMock), {
     type: 'WebhookDefinition'
   })
 }
 
 const spaceMembershipMock = {
-  sys: assign(cloneDeep(sysMock), {
+  sys: Object.assign(cloneDeep(sysMock), {
     type: 'SpaceMembership'
   })
 }
 
 const roleMock = {
-  sys: assign(cloneDeep(sysMock), {
+  sys: Object.assign(cloneDeep(sysMock), {
     type: 'Role'
   })
 }
 
 const apiKeyMock = {
-  sys: assign(cloneDeep(sysMock), {
+  sys: Object.assign(cloneDeep(sysMock), {
     type: 'ApiKey'
   })
 }
 
 const organizationMock = {
-  sys: assign(cloneDeep(sysMock), {
+  sys: Object.assign(cloneDeep(sysMock), {
     type: 'Organization'
   })
 }

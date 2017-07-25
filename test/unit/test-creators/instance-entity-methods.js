@@ -1,5 +1,4 @@
 import {cloneMock, mockCollection} from '../mocks/entities'
-import { Promise } from 'es6-promise'
 
 export function entityWrappedTest (t, setup, {wrapperMethod}) {
   const {httpMock, entityMock} = setup()

@@ -1,6 +1,8 @@
-import upperFirst from 'lodash/upperFirst'
 import {cloneMock} from '../mocks/entities'
-import { Promise } from 'es6-promise'
+
+function upperFirst (string) {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
 
 export function makeGetEntityTest (t, setup, teardown, {entityType, mockToReturn, methodToTest, wrapperSuffix = ''}) {
   t.plan(1)
