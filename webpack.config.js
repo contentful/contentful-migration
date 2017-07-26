@@ -26,11 +26,6 @@ if (PROD) {
 }
 
 const baseFileName = `contentful-management`
-const include = [
-  path.resolve(__dirname, 'lib'),
-  path.resolve(__dirname, 'test'),
-  path.resolve(__dirname, 'node_modules', 'contentful-sdk-core')
-]
 
 const baseBundleConfig = {
   context: path.join(__dirname, 'lib'),
@@ -47,52 +42,84 @@ const baseBundleConfig = {
     }
   },
   devtool: PROD ? false : 'source-map',
-  plugins
+  plugins,
+  // Show minimal information, but all errors and warnings
+  stats: {
+    assets: true,
+    cached: false,
+    children: false,
+    chunks: true,
+    chunkModules: true,
+    colors: true,
+    errors: true,
+    errorDetails: true,
+    exclude: [],
+    hash: false,
+    maxModules: 0,
+    modules: false,
+    moduleTrace: false,
+    performance: true,
+    providedExports: true,
+    publicPath: false,
+    reasons: false,
+    source: false,
+    timings: true,
+    usedExports: false,
+    version: true,
+    warnings: true
+  }
+}
+
+const defaultBabelLoader = {
+  test: /\.js?$/,
+  include: [
+    path.resolve(__dirname, 'lib'),
+    path.resolve(__dirname, 'test'),
+    // Inject dependencies which need to be passed to babel since they are not fully ES5 compatible
+    path.resolve(__dirname, 'node_modules', 'follow-redirects'), // follow-redirects uses Object.assign
+    path.resolve(__dirname, 'node_modules', 'contentful-sdk-core')
+  ],
+  loader: 'babel-loader',
+  options: {
+    cacheDirectory: true
+  }
 }
 
 // Browsers
 const browserBundle = clone(baseBundleConfig)
 browserBundle.module.loaders = [
-  {
-    test: /\.js?$/,
-    include,
-    loader: 'babel-loader',
-    options: {
-      env: 'browser'
-    }
-  }
+  Object.assign({}, defaultBabelLoader, {
+    options: Object.assign({}, defaultBabelLoader.options, {
+      forceEnv: 'browser'
+    })
+  })
 ]
 browserBundle.output.filename = `${baseFileName}${PROD ? '.min' : ''}.js`
 
 // Legacy browsers like IE11
-const legacyInclude = include.slice()
-legacyInclude.push(path.resolve(__dirname, 'node_modules', 'follow-redirects')) // follow-redirects uses Object.assign
-
 const legacyBundle = clone(baseBundleConfig)
 legacyBundle.module.loaders = [
-  {
-    test: /\.js?$/,
-    include: legacyInclude,
-    loader: 'babel-loader',
-    options: {
-      env: 'legacy'
-    }
-  }
+  Object.assign({}, defaultBabelLoader, {
+    options: Object.assign({}, defaultBabelLoader.options, {
+      forceEnv: 'legacy'
+    })
+  })
 ]
-legacyBundle.entry = ['core-js/fn/promise'].concat(legacyBundle.entry) // Promise polyfill
+// To be replaced with babel-polyfill with babel-preset-env 2.0:
+// https://github.com/babel/babel-preset-env#usebuiltins
+// https://github.com/babel/babel-preset-env/pull/241
+legacyBundle.entry = ['core-js/fn/promise'].concat(legacyBundle.entry)
+
 legacyBundle.output.filename = `${baseFileName}.legacy${PROD ? '.min' : ''}.js`
 
 // Node
 const nodeBundle = clone(baseBundleConfig)
 nodeBundle.module.loaders = [
-  {
-    test: /\.js?$/,
-    include,
-    loader: 'babel-loader',
-    options: {
-      env: 'node'
-    }
-  }
+  Object.assign({}, defaultBabelLoader, {
+    options: Object.assign({}, defaultBabelLoader.options, {
+      forceEnv: 'node'
+    })
+  })
 ]
 nodeBundle.target = 'node'
 nodeBundle.output.libraryTarget = 'commonjs2'
