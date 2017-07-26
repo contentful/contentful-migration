@@ -35,14 +35,25 @@ const nodeEnvConfig = Object.assign({}, defaultEnvConfig, {
 })
 
 // Combined for tests & es6 modules version
-const fullEnvConfig = Object.assign({}, defaultEnvConfig, {
+const modulesEnvConfig = Object.assign({}, defaultEnvConfig, {
   'targets': Object.assign(legacyEnvConfig.targets, nodeEnvConfig.targets)
 })
 
+const testEnvConfig = Object.assign({}, modulesEnvConfig, {
+  // Tests need to transform modules
+  'modules': 'commonjs'
+})
+
+const plugins = [
+  'transform-object-rest-spread',
+  ['inline-replace-variables', {
+    // Inject version number into code
+    '__VERSION__': require('./package.json').version
+  }]
+]
+
 module.exports = {
-  'plugins': [
-    'transform-object-rest-spread'
-  ],
+  plugins,
   'env': {
     'browser': {
       'presets': [
@@ -54,6 +65,11 @@ module.exports = {
         ['env', legacyEnvConfig]
       ]
     },
+    'modules': {
+      'presets': [
+        ['env', modulesEnvConfig]
+      ]
+    },
     'node': {
       'presets': [
         ['env', nodeEnvConfig]
@@ -61,11 +77,11 @@ module.exports = {
     },
     'test': {
       'presets': [
-        ['env', fullEnvConfig]
+        ['env', testEnvConfig]
       ],
-      'plugins': [
+      'plugins': plugins.concat([
         'rewire'
-      ]
+      ])
     }
   }
 }
