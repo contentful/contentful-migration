@@ -35,7 +35,7 @@ This project has unit and integration tests. Both of these run on both Node.js a
 Both of these test environments are setup to deal with Babel and code transpiling, so there's no need to worry about that
 
 - `npm test` runs all three kinds of tests and generates a coverage report
-- `npm run test:only` runs Node.js unit tests without coverage. `npm run test:cover` to run Node.js unit tests with coverage. `npm run test:debug` runs babel-node in debug mode (same as running `node debug`).
+- `npm run test:unit` runs Node.js unit tests without coverage. `npm run test:cover` to run Node.js unit tests with coverage. `npm run test:debug` runs babel-node in debug mode (same as running `node debug`).
 - `npm run test:integration` runs the integration tests against the Contentful CDA API
 - `npm run test:browser-local` runs both the unit and integration tests using Karma against local browsers.
 - `npm run test:ci` runs tests in CI

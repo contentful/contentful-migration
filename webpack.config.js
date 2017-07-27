@@ -106,7 +106,10 @@ legacyBundle.module.loaders = [
 // To be replaced with babel-polyfill with babel-preset-env 2.0:
 // https://github.com/babel/babel-preset-env#usebuiltins
 // https://github.com/babel/babel-preset-env/pull/241
-legacyBundle.entry = ['core-js/fn/promise'].concat(legacyBundle.entry)
+legacyBundle.entry = [
+  'core-js/fn/promise',
+  'core-js/fn/object/assign'
+].concat(legacyBundle.entry)
 
 legacyBundle.output.filename = `${baseFileName}.legacy${PROD ? '.min' : ''}.js`
 

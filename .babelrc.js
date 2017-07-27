@@ -2,15 +2,15 @@
 // Babel 7 introduces .babelrc.js files. The .babelrc file can me removed when Babel 7 is released. (https://github.com/babel/babel/pull/4892)
 
 // Babel 7 will also remove the 'env' option --> https://github.com/babel/babel/issues/4539#issuecomment-284870486
-const env = process.env.BABEL_ENV || process.env.NODE_ENV
+var env = process.env.BABEL_ENV || process.env.NODE_ENV
 
-const defaultBabelPresetEnvConfig = {
+var defaultBabelPresetEnvConfig = {
   // No module transformation, webpack will take care of this if necessary.
   'modules': false
 }
 
 // Latest browsers
-const browserBabelPresetEnvConfig = Object.assign({}, defaultBabelPresetEnvConfig, {
+var browserBabelPresetEnvConfig = Object.assign({}, defaultBabelPresetEnvConfig, {
   'targets': {
     'browsers': [
       'last 2 versions',
@@ -21,7 +21,7 @@ const browserBabelPresetEnvConfig = Object.assign({}, defaultBabelPresetEnvConfi
 })
 
 // Legacy browsers
-const legacyBabelPresetEnvConfig = Object.assign({}, defaultBabelPresetEnvConfig, {
+var legacyBabelPresetEnvConfig = Object.assign({}, defaultBabelPresetEnvConfig, {
   'targets': {
     'browsers': [
       'last 5 versions',
@@ -31,23 +31,23 @@ const legacyBabelPresetEnvConfig = Object.assign({}, defaultBabelPresetEnvConfig
 })
 
 // Node
-const nodeBabelPresetEnvConfig = Object.assign({}, defaultBabelPresetEnvConfig, {
+var nodeBabelPresetEnvConfig = Object.assign({}, defaultBabelPresetEnvConfig, {
   'targets': {
     'node': '4.7'
   }
 })
 
 // Combined node and browser environment for es6 modules version and tests
-const modulesBabelPresetEnvConfig = Object.assign({}, defaultBabelPresetEnvConfig, {
+var modulesBabelPresetEnvConfig = Object.assign({}, defaultBabelPresetEnvConfig, {
   'targets': Object.assign(legacyBabelPresetEnvConfig.targets, nodeBabelPresetEnvConfig.targets)
 })
 
-const testBabelPresetEnvConfig = Object.assign({}, modulesBabelPresetEnvConfig, {
+var testBabelPresetEnvConfig = Object.assign({}, modulesBabelPresetEnvConfig, {
   // Tests need to transform modules
   'modules': 'commonjs'
 })
 
-const plugins = [
+var plugins = [
   'transform-object-rest-spread',
   ['inline-replace-variables', {
     // Inject version number into code
@@ -55,7 +55,7 @@ const plugins = [
   }]
 ]
 
-let babelConfig = {
+var babelConfig = {
   plugins
 }
 
