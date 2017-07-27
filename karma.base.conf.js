@@ -2,9 +2,9 @@
 // Use karma.conf.local.js for local tests
 // Use karma.conf.saucelabs.js for saucelabs tests
 
-var _ = require('lodash')
-var webpack = require('webpack')
-var webpackConfig = _.cloneDeep(require('./webpack.config.js')[1])
+const cloneDeep = require('clone')
+const webpack = require('webpack')
+const webpackConfig = cloneDeep(require('./webpack.config.js')[1])
 delete webpackConfig.entry
 delete webpackConfig.output
 webpackConfig.devtool = 'inline-source-map'
@@ -15,6 +15,13 @@ webpackConfig.node = {
   fs: 'empty'
 }
 webpackConfig.plugins.push(new webpack.NormalModuleReplacementPlugin(/\.\/dist\/contentful-management/g, './lib/contentful-management'))
+
+webpackConfig.module.loaders = webpackConfig.module.loaders.map((loader) => {
+  if (loader.loader === 'babel-loader') {
+    loader.options.forceEnv = 'test'
+  }
+  return loader
+})
 
 console.log('Karma webpack config:')
 console.log(JSON.stringify(webpackConfig, null, 2))

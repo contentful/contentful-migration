@@ -80,9 +80,7 @@ const defaultBabelLoader = {
     path.resolve(__dirname, 'node_modules', 'contentful-sdk-core')
   ],
   loader: 'babel-loader',
-  options: {
-    cacheDirectory: true
-  }
+  options: {}
 }
 
 // Browsers

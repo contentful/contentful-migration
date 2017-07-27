@@ -1,13 +1,16 @@
 // About this file:
 // Babel 7 introduces .babelrc.js files. The .babelrc file can me removed when Babel 7 is released. (https://github.com/babel/babel/pull/4892)
 
-const defaultEnvConfig = {
+// Babel 7 will also remove the 'env' option --> https://github.com/babel/babel/issues/4539#issuecomment-284870486
+const env = process.env.BABEL_ENV || process.env.NODE_ENV
+
+const defaultBabelPresetEnvConfig = {
   // No module transformation, webpack will take care of this if necessary.
   'modules': false
 }
 
 // Latest browsers
-const browserEnvConfig = Object.assign({}, defaultEnvConfig, {
+const browserBabelPresetEnvConfig = Object.assign({}, defaultBabelPresetEnvConfig, {
   'targets': {
     'browsers': [
       'last 2 versions',
@@ -18,7 +21,7 @@ const browserEnvConfig = Object.assign({}, defaultEnvConfig, {
 })
 
 // Legacy browsers
-const legacyEnvConfig = Object.assign({}, defaultEnvConfig, {
+const legacyBabelPresetEnvConfig = Object.assign({}, defaultBabelPresetEnvConfig, {
   'targets': {
     'browsers': [
       'last 5 versions',
@@ -28,18 +31,18 @@ const legacyEnvConfig = Object.assign({}, defaultEnvConfig, {
 })
 
 // Node
-const nodeEnvConfig = Object.assign({}, defaultEnvConfig, {
+const nodeBabelPresetEnvConfig = Object.assign({}, defaultBabelPresetEnvConfig, {
   'targets': {
     'node': '4.7'
   }
 })
 
-// Combined for tests & es6 modules version
-const modulesEnvConfig = Object.assign({}, defaultEnvConfig, {
-  'targets': Object.assign(legacyEnvConfig.targets, nodeEnvConfig.targets)
+// Combined node and browser environment for es6 modules version and tests
+const modulesBabelPresetEnvConfig = Object.assign({}, defaultBabelPresetEnvConfig, {
+  'targets': Object.assign(legacyBabelPresetEnvConfig.targets, nodeBabelPresetEnvConfig.targets)
 })
 
-const testEnvConfig = Object.assign({}, modulesEnvConfig, {
+const testBabelPresetEnvConfig = Object.assign({}, modulesBabelPresetEnvConfig, {
   // Tests need to transform modules
   'modules': 'commonjs'
 })
@@ -52,36 +55,51 @@ const plugins = [
   }]
 ]
 
-module.exports = {
-  plugins,
-  'env': {
-    'browser': {
-      'presets': [
-        ['env', browserEnvConfig]
-      ]
-    },
-    'legacy': {
-      'presets': [
-        ['env', legacyEnvConfig]
-      ]
-    },
-    'modules': {
-      'presets': [
-        ['env', modulesEnvConfig]
-      ]
-    },
-    'node': {
-      'presets': [
-        ['env', nodeEnvConfig]
-      ]
-    },
-    'test': {
-      'presets': [
-        ['env', testEnvConfig]
-      ],
-      'plugins': plugins.concat([
-        'rewire'
-      ])
-    }
-  }
+let babelConfig = {
+  plugins
 }
+
+if (env === 'browser') {
+  babelConfig = Object.assign(babelConfig, {
+    'presets': [
+      ['env', browserBabelPresetEnvConfig]
+    ]
+  })
+}
+
+if (env === 'legacy') {
+  babelConfig = Object.assign(babelConfig, {
+    'presets': [
+      ['env', legacyBabelPresetEnvConfig]
+    ]
+  })
+}
+
+if (env === 'modules') {
+  babelConfig = Object.assign(babelConfig, {
+    'presets': [
+      ['env', modulesBabelPresetEnvConfig]
+    ]
+  })
+}
+
+if (env === 'node') {
+  babelConfig = Object.assign(babelConfig, {
+    'presets': [
+      ['env', nodeBabelPresetEnvConfig]
+    ]
+  })
+}
+
+if (env === 'test') {
+  babelConfig = Object.assign(babelConfig, {
+    'presets': [
+      ['env', testBabelPresetEnvConfig]
+    ],
+    'plugins': babelConfig.plugins.concat([
+      'rewire'
+    ])
+  })
+}
+
+module.exports = babelConfig
