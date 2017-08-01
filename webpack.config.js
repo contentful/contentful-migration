@@ -2,7 +2,8 @@ const path = require('path')
 
 const webpack = require('webpack')
 const BabiliPlugin = require('babili-webpack-plugin')
-const clone = require('clone')
+const clone = require('lodash/cloneDeep')
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
 
 const PROD = process.env.NODE_ENV === 'production'
 
@@ -10,7 +11,8 @@ const plugins = [
   new webpack.optimize.OccurrenceOrderPlugin(),
   new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-  })
+  }),
+  new LodashModuleReplacementPlugin()
 ]
 
 if (PROD) {
@@ -36,15 +38,13 @@ const baseBundleConfig = {
     library: 'contentfulManagement'
   },
   module: {
-    loaders: [],
-    noParse: (content) => {
-      return /clone/.test(content)
-    }
+    loaders: []
   },
   devtool: PROD ? false : 'source-map',
   plugins,
   // Show minimal information, but all errors and warnings
-  stats: {
+  // Except for log generation which have to contain all information
+  stats: process.env.WEBPACK_MODE === 'log' ? 'detailed' : {
     assets: true,
     cached: false,
     children: false,
@@ -74,10 +74,7 @@ const defaultBabelLoader = {
   test: /\.js?$/,
   include: [
     path.resolve(__dirname, 'lib'),
-    path.resolve(__dirname, 'test'),
-    // Inject dependencies which need to be passed to babel since they are not fully ES5 compatible
-    path.resolve(__dirname, 'node_modules', 'follow-redirects'), // follow-redirects uses Object.assign
-    path.resolve(__dirname, 'node_modules', 'contentful-sdk-core')
+    path.resolve(__dirname, 'test')
   ],
   loader: 'babel-loader',
   options: {}

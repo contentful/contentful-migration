@@ -2,7 +2,7 @@
 // Use karma.conf.local.js for local tests
 // Use karma.conf.saucelabs.js for saucelabs tests
 
-const cloneDeep = require('clone')
+const cloneDeep = require('lodash/cloneDeep')
 const webpack = require('webpack')
 const webpackConfig = cloneDeep(require('./webpack.config.js')[1])
 delete webpackConfig.entry
