@@ -4,7 +4,6 @@
   "description": "Client for Contentful's Content Management API",
   "homepage": "https://www.contentful.com/developers/documentation/content-management-api/",
   "main": "./dist/contentful-management.node.js",
-  "browser": "./dist/contentful-management.js",
   "module": "./dist/es-modules/contentful-management.js",
   "engines": {
     "node": ">=4.7"
@@ -116,11 +115,11 @@
   },
   "bundlesize": [
     {
-      "path": "./dist/contentful-management.js",
+      "path": "./dist/contentful-management.browser.js",
       "maxSize": "50Kb"
     },
     {
-      "path": "./dist/contentful-management.min.js",
+      "path": "./dist/contentful-management.browser.min.js",
       "maxSize": "19Kb"
     },
     {

@@ -12,7 +12,7 @@
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 [![npm downloads](https://img.shields.io/npm/dm/contentful-management.svg)](http://npm-stat.com/charts.html?package=contentful-management)
 [![gzip bundle size](http://img.badgesize.io/https://unpkg.com/contentful-management/dist/contentful-management.min.js?compression=gzip
-)](https://unpkg.com/contentful-management/dist/contentful-management.min.js)
+)](https://unpkg.com/contentful-management/dist/contentful-management.browser.min.js)
 
 [Contentful](https://www.contentful.com) is a content management platform for web applications, mobile apps and connected devices. It allows you to create, edit & manage content in the cloud and publish it anywhere via a powerful API. Contentful offers tools for managing editorial teams and enabling cooperation between organizations.
 
@@ -66,14 +66,14 @@ yarn add contentful-management
 If you'd like to use a standalone built file you can use the following script tag or download it from [unpkg](https://unpkg.com), under the `dist` directory:
 
 ``` html
-<script src="https://unpkg.com/contentful-management@latest/dist/contentful-management.min.js"></script>
+<script src="https://unpkg.com/contentful-management@latest/dist/contentful-management.browser.min.js"></script>
 ```
 **It's not recommended to use the above URL for production.**
 
 Using `contentful@latest` will always get you the latest version, but you can also specify a specific version number:
 
 ``` html
-<script src="https://unpkg.com/contentful-management@1.0.0/dist/contentful-management.min.js"></script>
+<script src="https://unpkg.com/contentful-management@4.0.0/dist/contentful-management.browser.min.js"></script>
 ```
 
 The Contentful Management SDK will be accessible via the `contentfulManagement` global variable.
@@ -84,7 +84,7 @@ Check the [releases](https://github.com/contentful/contentful-management.js/rele
 
 This library also comes with a legacy version to support Internet Explorer 11 and other older browsers. It already contains a polyfill for Promises.
 
-To support legacy browsers in your application, use `contentful-management.legacy.min.js` instead of `contentful-management.min.js`
+To support legacy browsers in your application, use `contentful-management.legacy.min.js` instead of `contentful-management.browser.min.js`
 
 ## Authentication
 

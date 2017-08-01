@@ -89,7 +89,7 @@ browserBundle.module.loaders = [
     })
   })
 ]
-browserBundle.output.filename = `${baseFileName}${PROD ? '.min' : ''}.js`
+browserBundle.output.filename = `${baseFileName}.browser${PROD ? '.min' : ''}.js`
 
 // Legacy browsers like IE11
 const legacyBundle = clone(baseBundleConfig)
