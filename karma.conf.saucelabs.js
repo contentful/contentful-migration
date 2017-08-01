@@ -24,6 +24,14 @@ var browsers = {
     browserName: 'MicrosoftEdge',
     platform: 'Windows 10',
     version: '13.10586'
+  },
+  sl_android: {
+    base: 'SauceLabs',
+    browserName: 'Browser',
+    platform: 'Android',
+    version: '4.4',
+    deviceName: 'Samsung Galaxy S3 Emulator',
+    deviceOrientation: 'portrait'
   }
 }
 
