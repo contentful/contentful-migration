@@ -54,7 +54,7 @@
   ],
   "dependencies": {
     "axios": "contentful/axios#fix/https-via-http-proxy",
-    "contentful-sdk-core": "4.0.0-rc3",
+    "contentful-sdk-core": "4.0.0-rc4",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
