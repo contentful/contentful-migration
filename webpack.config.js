@@ -42,6 +42,9 @@ const baseBundleConfig = {
   },
   devtool: PROD ? false : 'source-map',
   plugins,
+  node: {
+    os: 'empty'
+  },
   // Show minimal information, but all errors and warnings
   // Except for log generation which have to contain all information
   stats: process.env.WEBPACK_MODE === 'log' ? 'detailed' : {
@@ -122,6 +125,7 @@ nodeBundle.module.loaders = [
 nodeBundle.target = 'node'
 nodeBundle.output.libraryTarget = 'commonjs2'
 nodeBundle.output.filename = `${baseFileName}.node${PROD ? '.min' : ''}.js`
+delete nodeBundle.node
 
 module.exports = [
   browserBundle,
