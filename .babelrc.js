@@ -1,5 +1,5 @@
 // About this file:
-// Babel 7 introduces .babelrc.js files. The .babelrc file can me removed when Babel 7 is released. (https://github.com/babel/babel/pull/4892)
+// Babel 7 introduces .babelrc.js files. The .babelrc file can be removed when Babel 7 is released. (https://github.com/babel/babel/pull/4892)
 
 // Babel 7 will also remove the 'env' option --> https://github.com/babel/babel/issues/4539#issuecomment-284870486
 var env = process.env.BABEL_ENV || process.env.NODE_ENV

@@ -3,7 +3,6 @@
 // Use karma.conf.saucelabs.js for saucelabs tests
 
 const cloneDeep = require('lodash/cloneDeep')
-const webpack = require('webpack')
 const webpackConfig = cloneDeep(require('./webpack.config.js')[1])
 delete webpackConfig.entry
 delete webpackConfig.output
@@ -14,7 +13,6 @@ webpackConfig.devtool = 'inline-source-map'
 webpackConfig.node = {
   fs: 'empty'
 }
-webpackConfig.plugins.push(new webpack.NormalModuleReplacementPlugin(/\.\/dist\/contentful-management/g, './lib/contentful-management'))
 
 webpackConfig.module.loaders = webpackConfig.module.loaders.map((loader) => {
   if (loader.loader === 'babel-loader') {
@@ -44,9 +42,10 @@ module.exports = {
   },
 
   webpack: webpackConfig,
-  browserDisconnectTolerance: 3,
-  browserNoActivityTimeout: 30000,
-
+  browserDisconnectTolerance: 5,
+  browserNoActivityTimeout: 4 * 60 * 1000,
+  browserDisconnectTimeout: 10000,
+  captureTimeout: 4 * 60 * 1000,
   reporters: [ 'dots' ],
   port: 9876,
   colors: true,
