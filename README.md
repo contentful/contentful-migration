@@ -31,7 +31,6 @@ Browsers and Node.js:
 - Safari
 - node.js (4.x, 6.x)
 - IE11 (with [legacy version](#legacy-browsers) of the library)
-- Android 4.4 Browser (with [legacy version](#legacy-browsers) of the library)
 
 Other browsers should also work, but at the moment we're only running automated tests on the browsers and Node.js versions specified above.
 
@@ -117,56 +116,6 @@ var client = contentful.createClient({
 })
 // ....
 ```
-
-## Webpack bundle size optimization
-
-We are constantly working on smaller bundle sizes for our customers to allow them to build faster and less bandwidth consuming apps. Since version 4 the contentful-management SDK is exported as modules version, also. This version is automatically picked by webpack to enable tree-shaking.
-
-For further optimization of your app size, we recommend the following:
-
-### Step 1: Transform generic lodash requires to cherry-picked ones:
-
-This can be achieved via [babel-plugin-lodash](https://github.com/lodash/babel-plugin-lodash) and can already help to reduce the bundle size.
-
-### Step 2: Remove unnecessary lodash functionality:
-
-This can be achieved via [lodash-webpack-plugin](https://github.com/lodash/lodash-webpack-plugin) which works great in combination with the `babel-plugin-lodash`.
-
-Currently, this library does not need any of the optional feature sets. Keep in mind that your other dependencies still might need some of them.
-
-### Step 3: Avoid lodash duplication
-Lodash is currently available as `lodash`, `lodash-es`, `lodash-amd` and about [286 module variants](https://www.npmjs.com/search?q=maintainer:jdalton%20lodash%20method&page=1&ranking=optimal) which only contain one method of lodash.
-
-This can end up in a lot of code duplication, since any of your dependencies might use another export of lodash.
-
-First, identify all the lodash variants in your production dependencies:
-
-```sh
-npm list --prod | grep "lodash\(\.\|-es\|-amd\)"
-```
-
-Now generate [webpack resolve aliases](https://webpack.js.org/configuration/resolve/#resolve-alias) for every package in your dependency tree. Just alias them to the cherry-picked version of the basic lodash package.
-
-Here is an example how your webpack config could look like:
-
-```js
-const webpackConfig = {
-  resolve: {
-    alias: {
-      'lodash-es': 'lodash',
-      'lodash.reduce': 'lodash/reduce',
-      'lodash.merge': 'lodash/merge',
-      'lodash.set': 'lodash/set',
-      'lodash.unset': 'lodash/unset',
-      'lodash.get': 'lodash/get',
-      'lodash.isfunction': 'lodash/isFunction',
-      'lodash.isobject': 'lodash/isObject'
-    }
-  }
-}
-```
-
-All these 3 optimizations reduced our example preact/redux app by about 20% :smile:
 
 ## Your first request
 
