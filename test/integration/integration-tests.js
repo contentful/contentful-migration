@@ -7,6 +7,7 @@ import webhookTests from './webhook-integration'
 import spaceMembershipTests from './space-membership-integration'
 import roleTests from './role-integration'
 import apiKeyTests from './api-key-integration'
+import uiExtensionTests from './ui-extension-integration'
 import generateRandomId from './generate-random-id'
 import { createClient } from '../../'
 
@@ -114,6 +115,7 @@ test('Create space for tests which create, change and delete data', (t) => {
     spaceMembershipTests(t, space)
     roleTests(t, space)
     apiKeyTests(t, space)
+    uiExtensionTests(t, space)
     test.onFinish(() => space.delete())
   })
 })

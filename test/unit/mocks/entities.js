@@ -156,6 +156,12 @@ const organizationMock = {
   })
 }
 
+const uiExtensionMock = {
+  sys: assign(cloneDeep(sysMock), {
+    type: 'Extension'
+  })
+}
+
 const errorMock = {
   config: {
     url: 'requesturl',
@@ -182,7 +188,8 @@ const mocks = {
   apiKey: apiKeyMock,
   error: errorMock,
   upload: uploadMock,
-  organization: organizationMock
+  organization: organizationMock,
+  uiExtension: uiExtensionMock
 }
 
 function cloneMock (name) {
@@ -244,6 +251,10 @@ function setupEntitiesMock (rewiredModuleApi) {
     },
     organization: {
       wrapOrganizationCollection: sinon.stub()
+    },
+    uiExtension: {
+      wrapLocale: sinon.stub(),
+      wrapLocaleCollection: sinon.stub()
     }
   }
   rewiredModuleApi.__Rewire__('entities', entitiesMock)
@@ -270,5 +281,6 @@ export {
   mockCollection,
   setupEntitiesMock,
   uploadMock,
-  organizationMock
+  organizationMock,
+  uiExtensionMock
 }
