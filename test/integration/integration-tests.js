@@ -50,9 +50,7 @@ test('Gets space', (t) => {
     })
 })
 
-// @todo unskip test when api behaviour is fixed
-// - https://github.com/contentful/contentful-management.js/issues/82
-test.skip('Fails to get space', (t) => {
+test('Fails to get space', (t) => {
   t.plan(2)
   return client.getSpace(generateRandomId('weirdrandomid'))
     .then(() => {}, (error) => {
