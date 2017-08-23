@@ -28,7 +28,7 @@
     "lint": "eslint lib test",
     "pretest": "rimraf coverage && npm run lint",
     "test": "npm run test:cover && npm run test:integration && npm run test:browser-local && npm run test:size",
-    "test:ci": "SKIP_INTEGRATION_TESTS=true ./node_modules/contentful-sdk-core/bin/test-ci.sh",
+    "test:ci": "./node_modules/contentful-sdk-core/bin/test-ci.sh",
     "test:cover": "BABEL_ENV=test babel-node ./node_modules/istanbul/lib/cli.js cover ./test/runner | tap-spec",
     "test:unit": "BABEL_ENV=test babel-node ./test/runner | tap-spec",
     "test:debug": "BABEL_ENV=test babel-node debug ./test/runner",
@@ -54,7 +54,7 @@
   ],
   "dependencies": {
     "axios": "contentful/axios#fix/https-via-http-proxy",
-    "contentful-sdk-core": "4.0.0-rc4",
+    "contentful-sdk-core": "4.0.0-rc5",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
