@@ -35,6 +35,7 @@
     "test:integration": "BABEL_ENV=test babel-node ./test/integration/integration-tests.js",
     "test:browser-local": "BABEL_ENV=test karma start karma.conf.local.js",
     "test:browser-remote": "BABEL_ENV=test karma start karma.conf.saucelabs.js",
+    "test:e2e": "node test/e2e/index.js",
     "test:simulate-ci": "trevor",
     "test:size": "bundlesize",
     "browser-coverage": "npm run test:cover && opener coverage/lcov-report/index.html",
@@ -54,7 +55,7 @@
   ],
   "dependencies": {
     "axios": "contentful/axios#fix/https-via-http-proxy",
-    "contentful-sdk-core": "4.0.0-rc5",
+    "contentful-sdk-core": "4.0.0-rc6",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
@@ -99,6 +100,7 @@
     "mkdirp": "^0.5.1",
     "require-all": "^2.2.0",
     "rimraf": "^2.6.0",
+    "selenium-webdriver": "^3.5.0",
     "semantic-release": "^6.3.2",
     "sinon": "^2.0.0-pre",
     "tap-spec": "^4.1.1",
