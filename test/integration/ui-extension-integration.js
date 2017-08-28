@@ -51,4 +51,21 @@ export default function uiExtensionTests (t, space) {
       return uiExtension.delete()
     })
   })
+
+  t.test('Create UI extension with ID', () => {
+    return space.createUiExtensionWithId('awesome-extension', {
+      extension: {
+        name: 'Awesome extension!',
+        src: 'https://awesome.extension',
+        fieldTypes: [
+          { type: 'Symbol' }
+        ]
+      }
+    })
+    .then((uiExtension) => {
+      t.equals(uiExtension.sys.id, 'awesome-extension', 'id')
+      t.equals(uiExtension.extension.name, 'Awesome extension!', 'name')
+      t.equals(uiExtension.extension.src, 'https://awesome.extension', 'src')
+    })
+  })
 }

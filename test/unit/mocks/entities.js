@@ -253,8 +253,8 @@ function setupEntitiesMock (rewiredModuleApi) {
       wrapOrganizationCollection: sinon.stub()
     },
     uiExtension: {
-      wrapLocale: sinon.stub(),
-      wrapLocaleCollection: sinon.stub()
+      wrapUiExtension: sinon.stub(),
+      wrapUiExtensionCollection: sinon.stub()
     }
   }
   rewiredModuleApi.__Rewire__('entities', entitiesMock)

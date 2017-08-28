@@ -16,7 +16,8 @@ import {
   roleMock,
   apiKeyMock,
   setupEntitiesMock,
-  cloneMock
+  cloneMock,
+  uiExtensionMock
 } from './mocks/entities'
 import setupHttpMock from './mocks/http'
 import {
@@ -680,5 +681,62 @@ test('API call createApiKeyWithId', (t) => {
 test('API call createApiKeyWithId fails', (t) => {
   makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'createApiKeyWithId'
+  })
+})
+
+test('API call getUiExtension', (t) => {
+  makeGetEntityTest(t, setup, teardown, {
+    entityType: 'uiExtension',
+    mockToReturn: uiExtensionMock,
+    methodToTest: 'getUiExtension'
+  })
+})
+
+test('API call getUiExtension fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getUiExtension'
+  })
+})
+
+test('API call getUiExtensions', (t) => {
+  makeGetCollectionTest(t, setup, teardown, {
+    entityType: 'uiExtension',
+    mockToReturn: uiExtensionMock,
+    methodToTest: 'getUiExtensions'
+  })
+})
+
+test('API call getUiExtensions fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getUiExtensions'
+  })
+})
+
+test('API call createUiExtension', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    entityType: 'uiExtension',
+    mockToReturn: uiExtensionMock,
+    methodToTest: 'createUiExtension'
+  })
+})
+
+test('API call createUiExtension fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'createUiExtension'
+  })
+})
+
+test('API call createUiExtensionWithId', (t) => {
+  makeCreateEntityWithIdTest(t, setup, teardown, {
+    entityType: 'uiExtension',
+    mockToReturn: uiExtensionMock,
+    methodToTest: 'createUiExtensionWithId',
+    entityPath: 'extensions'
+  })
+})
+
+test('API call createUiExtensionWithId fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'createUiExtensionWithId'
   })
 })
