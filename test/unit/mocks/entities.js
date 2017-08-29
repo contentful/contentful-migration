@@ -164,7 +164,7 @@ const organizationMock = {
 }
 
 const uiExtensionMock = {
-  sys: assign(cloneDeep(sysMock), {
+  sys: Object.assign(cloneDeep(sysMock), {
     type: 'Extension'
   })
 }

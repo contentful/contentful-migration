@@ -2,6 +2,8 @@ import test from 'tape'
 import sinon from 'sinon'
 import {createClient, __RewireAPI__ as createClientRewireApi} from '../../lib/contentful-management'
 
+import { version } from '../../package.json'
+
 test('Throws if no accessToken is defined', (t) => {
   t.throws(() => {
     createClient({space: 'spaceid'})
@@ -36,7 +38,7 @@ test('Generate the correct User Agent Header', (t) => {
   t.equal(headerParts.length, 5)
   t.equal(headerParts[0], 'app myApplication/1.1.1')
   t.equal(headerParts[1], 'integration myIntegration/1.0.0')
-  t.equal(headerParts[2], `sdk contentful-management.js/__VERSION__`)
+  t.equal(headerParts[2], `sdk contentful-management.js/${version}`)
 
   createClientRewireApi.__ResetDependency__('createHttpClient')
   createClientRewireApi.__ResetDependency__('wrapHttpClient')
