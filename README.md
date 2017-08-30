@@ -190,6 +190,9 @@ Set the host used to build the request URI's.
 #### hostUpload (default: `'upload.contentful.com'`)
 Set the host used to build the upload related request uri's.
 
+#### basePath (default: ``)
+This path gets appended to the host to allow request urls like `https://gateway.example.com/contentful/` for custom gateways/proxies.
+
 #### httpAgent (default: `undefined`)
 Custom agent to perform HTTP requests. Find further information in the [axios request config documentation](https://github.com/mzabriskie/axios#request-config).
 
@@ -247,6 +250,12 @@ This project strictly follows [Semantic Versioning](http://semver.org/) by use o
 This means that new versions are released automatically as fixes, features or breaking changes are released.
 
 You can check the changelog on the [releases](https://github.com/contentful/contentful-management.js/releases) page.
+
+## Migration from contentful-management.js 3.x
+
+The bundle for browsers is now called `contentful-management.browser.min.js` to mark it clearly as browser only bundle. If you need to support IE 11 or other old browsers, you may use the `contentful-management.legacy.min.js`. Node will automatically use the `contentful-management.node.min.js` while bundlers like Webpack will resolve to the new ES-modules version of the library.
+
+No changes to the API of the library were made.
 
 ## Migration from contentful-management.js 1.x and older
 
