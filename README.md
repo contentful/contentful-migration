@@ -13,20 +13,11 @@ This CLI is currently available in **Beta**.
 npm install -g contentful-migration-cli
 ```
 
-## Setup
-
-You need to export the following environment variables for the CLI to work:
-- `CONTENTFUL_MANAGEMENT_ACCESS_TOKEN` – The [personal access token](https://www.contentful.com/developers/docs/references/content-management-api/#/reference/personal-access-tokens/personal-access-token) for accessing the CMA.
-- `HTTP_PROXY` or `http_proxy` _(optional)_ – The settings for the HTTP proxy in the shape of `http://[user:password@]<host>[:port]`.
-- `HTTPS_PROXY` or `https_proxy` _(optional)_ – The settings for the HTTPS proxy in the shape of `https://[user:password@]<host>[:port]`.
-
-If you are using the [Contentful CLI](https://github.com/contentful/contentful-cli) these will be automatically picked up from your `~/.contentfulrc.json` configuration file.
-
-Please note that the environment variables will take precedence over the `~/.contentfulrc.json` configuration.
-
 ## Usage
 
-```js
+![Usage demo](examples/demo.gif)
+
+```sh
 contentful-migration --space-id <space id to use> <path to migration description file>
 ```
 
@@ -39,6 +30,18 @@ module.exports = function (migration) {
   name.type('Symbol').required(true);
 };
 ```
+
+## Setup
+
+You need to export the following environment variables for the CLI to work:
+- `CONTENTFUL_MANAGEMENT_ACCESS_TOKEN` – The [personal access token](https://www.contentful.com/developers/docs/references/content-management-api/#/reference/personal-access-tokens/personal-access-token) for accessing the CMA.
+- `HTTP_PROXY` or `http_proxy` _(optional)_ – The settings for the HTTP proxy in the shape of `http://[user:password@]<host>[:port]`.
+- `HTTPS_PROXY` or `https_proxy` _(optional)_ – The settings for the HTTPS proxy in the shape of `https://[user:password@]<host>[:port]`.
+
+If you are using the [Contentful CLI](https://github.com/contentful/contentful-cli) these will be automatically picked up from your `~/.contentfulrc.json` configuration file.
+
+Please note that the environment variables will take precedence over the `~/.contentfulrc.json` configuration.
+
 ## Chaining vs Object notation
 
 All methods described below can be used in two flavors:
