@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - 6
+  - 8
+
+sudo: false
+
+env:
+  - NODE_ENV=test
+
+script:
+  - npm run lint
+  - npm run coverage
