@@ -27,6 +27,39 @@ Whenever setting a value to a property which is not matching the expected type.
 field.name(true)
 ```
 
+## INVALID_MOVEMENT_TYPE
+Whenever trying to move a field with the wrong type for the field id.
+
+ Example:
+```javascript
+contentType.moveField(3).toTheTop()
+```
+
+## INVALID_MOVEMENT_WITH_SELF
+Whenever trying to move a field relative to itself.
+
+ Example:
+```javascript
+contentType.moveField('name').afterField('name')
+```
+
+## INVALID_MOVEMENT_NAME
+Whenever trying to move a field relative to another with an invalid movement.
+
+ Example:
+```javascript
+contentType.moveField('name').xyz('surname')
+```
+
+## INVALID_MOVEMENT_NAME_WITH_SUGGESTION
+Whenever trying to move a field relative to another with an invalid movement but we can provide a suggestion.
+
+ Example:
+```javascript
+contentType.moveField('name').after('surname')
+```
+
+
 While evaluating your migration script we validate that the actions you want to perform on content types and fields aren't wrong in any sense.
 These validations are bound to the entity type and action on which they ocurred. Therefore the error keys are scoped to it
 and have a layout of `{entity}.{action}.{validation name}`.
@@ -59,6 +92,48 @@ Whenever trying to edit a field which doesn't exist.
 contentType.createField('name')
 // ...
 contentType.editField('nmae')
+```
+
+## field.move.FIELD_DELETED
+Whenever trying to move a field which was already deleted.
+
+ Example:
+```javascript
+contentType.deleteField('name')
+// ...
+contentType.moveField('name').toTheTop()
+```
+
+## field.move.FIELD_DOES_NOT_EXIST
+Whenever trying to move a field which doesn't exists.
+
+# field.move.FIELD_ALREADY_MOVED
+Whenever trying to move a field which was already moved.
+
+ Example:
+```javascript
+contentType.moveField('name').toTheTop()
+contentType.moveField('name').toTheBottom()
+```
+
+## field.move.CONTENT_TYPE_DOES_NOT_EXIST
+Whenever you try to move a field on a non existing content type.
+
+## field.move.PIVOT_FIELD_DOES_NOT_EXIST
+Whenever you try to move field relative to another one which doesn't exist.
+
+ Example:
+```javascript
+contentType.moveField('name').afterField('somefield-that-doesnt-exist')
+```
+
+## field.move.PIVOT_FIELD_DELETED
+Whenever you try to move a field relative to another one which has been already deleted.
+
+ Example:
+```javascript
+contentType.deleteField('surname')
+contentType.moveField('name').afterField('surname')
 ```
 
 ## contentType.create.CONTENT_TYPE_ALREADY_CREATED

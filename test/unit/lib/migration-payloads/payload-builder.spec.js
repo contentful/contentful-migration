@@ -200,4 +200,112 @@ describe('Payload builder', function () {
       expect(payloads).to.eql([firstPayload, secondPayload, thirdPayload]);
     }));
   });
+
+  describe('when reordering a field', function () {
+    it('returns the expected payload', Bluebird.coroutine(function * () {
+      const contentType = {
+        name: 'Very dangerous dog',
+        description: 'Woof woof',
+        fields: [
+          {
+            id: 'kills',
+            type: 'Number',
+            name: 'kills',
+            required: true
+          },
+          {
+            id: 'teeth',
+            type: 'Number',
+            name: 'teeth'
+          },
+          {
+            id: 'age',
+            type: 'Number',
+            name: 'age'
+          },
+          {
+            id: 'legs',
+            type: 'Number',
+            name: 'legs'
+          },
+          {
+            id: 'favoriteFood',
+            type: 'Symbol',
+            name: 'food',
+            required: true
+          }
+        ],
+        sys: {
+          version: 2,
+          id: 'dog'
+        }
+      };
+
+      const steps = yield migrationSteps(function up (migration) {
+        const dog = migration.editContentType('dog');
+
+        dog.moveField('favoriteFood').toTheTop();
+        dog.moveField('kills').toTheBottom();
+        dog.moveField('legs').beforeField('kills');
+        dog.moveField('age').afterField('legs');
+      });
+
+      const chunks = migrationChunks(steps);
+      const plan = migrationPlan(chunks);
+      const payloads = builder(plan, [contentType]);
+
+      const basePayload = {
+        meta: {
+          contentTypeId: 'dog',
+          version: 2,
+          parentVersion: 1
+        },
+        payload: _.omit(contentType, ['sys'])
+      };
+
+      const firstPayload = {
+        meta: {
+          contentTypeId: 'dog',
+          version: 3,
+          parentVersion: 2,
+          parent: basePayload
+        },
+        payload: {
+          name: 'Very dangerous dog',
+          description: 'Woof woof',
+          fields: [
+            {
+              id: 'favoriteFood',
+              type: 'Symbol',
+              name: 'food',
+              required: true
+            },
+            {
+              id: 'teeth',
+              type: 'Number',
+              name: 'teeth'
+            },
+            {
+              id: 'legs',
+              type: 'Number',
+              name: 'legs'
+            },
+            {
+              id: 'age',
+              type: 'Number',
+              name: 'age'
+            },
+            {
+              id: 'kills',
+              type: 'Number',
+              name: 'kills',
+              required: true
+            }
+          ]
+        }
+      };
+
+      expect(payloads).to.eql([firstPayload]);
+    }));
+  });
 });
