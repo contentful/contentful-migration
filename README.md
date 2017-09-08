@@ -38,7 +38,7 @@ You need to export the following environment variables for the CLI to work:
 - `HTTP_PROXY` or `http_proxy` _(optional)_ – The settings for the HTTP proxy in the shape of `http://[user:password@]<host>[:port]`.
 - `HTTPS_PROXY` or `https_proxy` _(optional)_ – The settings for the HTTPS proxy in the shape of `https://[user:password@]<host>[:port]`.
 
-If you are using the [Contentful CLI](https://github.com/contentful/contentful-cli) these will be automatically picked up from your `~/.contentfulrc.json` configuration file.
+If you are using the [Contentful CLI](https://www.npmjs.com/package/contentful-cli) these will be automatically picked up from your `~/.contentfulrc.json` configuration file.
 
 Please note that the environment variables will take precedence over the `~/.contentfulrc.json` configuration.
 
@@ -71,6 +71,7 @@ The main interface for creating and editing content types.
 Creates a content type with provided `id` and returns a reference to the newly created content type.
 
 **`id : string`** – The ID of the content type.
+
 **`opts : Object`** – Content type definition, with the following options:
 - **`name : string`** – Name of the content type.
 - **`description : string`** – Description of the content type.
@@ -102,7 +103,7 @@ Creates a field with provided `id`.
   - `Location`
   - `Array` (requires `items`)
   - `Link` (requires `linkType`)
-- **items : Object** _(required for type 'Array')_ – Defines the items of an Array field.
+- **`items : Object`** _(required for type 'Array')_ – Defines the items of an Array field.
   Example:
   ```javascript
   items: {
@@ -115,8 +116,8 @@ Creates a field with provided `id`.
   ```
 - **`linkType : string`** _(required for type 'Link')_ – Type of the referenced entry.
   Can take the same values as the ones listed for `type` above.
-- **required : boolean** – Sets the field as required.
-- **validations : Array** – Validations for the field.
+- **`required : boolean`** – Sets the field as required.
+- **`validations : Array`** – Validations for the field.
   Example:
   ```javascript
   validations: [
@@ -124,10 +125,10 @@ Creates a field with provided `id`.
   ]
   ```
   _See [The CMA documentation](https://www.contentful.com/developers/docs/references/content-management-api/#/reference/content-types/content-type) for the list of available validations._
-- **localized : boolean** – Sets the field as localized.
-- **disabled : boolean** – Sets the field as disabled, hence not editable by authors.
-- **omitted : boolean** – Sets the field as omitted, hence not sent in response.
-- **deleted : boolean** – Sets the field as deleted. Requires to have been `omitted` first.
+- **`localized : boolean`** – Sets the field as localized.
+- **`disabled : boolean`** – Sets the field as disabled, hence not editable by authors.
+- **`omitted : boolean`** – Sets the field as omitted, hence not sent in response.
+- **`deleted : boolean`** – Sets the field as deleted. Requires to have been `omitted` first.
   _You may prefer using the `deleteField` method._
 
 #### `editField(id[, opts])` : [Field](#field)
