@@ -81,7 +81,7 @@ Whenever trying to edit a content type which doesn't exist.
 
 **Example:**
 ```javascript
-// While `author` already exists in the target space
+// While no `inexistent` content type exists in the target space
 migration.editContentType('inexistent')
 ```
 
