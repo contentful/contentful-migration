@@ -5,6 +5,14 @@
   "author": "Contentful GmbH",
   "license": "MIT",
   "main": "index.js",
+  "keywords": [
+    "contentful",
+    "content model",
+    "content type",
+    "migration",
+    "migrations",
+    "migrate"
+  ],
   "directories": {
     "test": "test",
     "lib": "lib"
