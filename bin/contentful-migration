@@ -10,6 +10,7 @@ const Listr = require('listr');
 const _ = require('lodash');
 const { createManagementClient } = require('./lib/contentful-client');
 const { version } = require('../package.json');
+const uuid = require('uuid/v4');
 
 let migrationFunction;
 
@@ -64,7 +65,10 @@ const run = Bluebird.coroutine(function * () {
   };
 
   const clientConfig = Object.assign({
-    application: `contentful.migration-cli/${version}`
+    application: `contentful.migration-cli/${version}`,
+    headers: {
+      'X-Contentful-Migration-Id': uuid()
+    }
   }, config);
 
   const client = createManagementClient(clientConfig);
