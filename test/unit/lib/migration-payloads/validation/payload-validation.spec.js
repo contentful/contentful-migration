@@ -67,4 +67,64 @@ describe('payload validation', function () {
       ]);
     }));
   });
+
+  describe('when using a valid type', function () {
+    it('returns no error', Bluebird.coroutine(function * () {
+      // Link and Array are excluded
+      // since they need extra properties
+      // and are tested explicitly in another test
+      const types = [
+        'Symbol',
+        'Text',
+        'Integer',
+        'Number',
+        'Date',
+        'Boolean',
+        'Object',
+        'Location'
+      ];
+
+      for (const type of types) {
+        const steps = yield migrationSteps(function (migration) {
+          const lunch = migration.createContentType('lunch');
+          lunch.name('A lunch');
+
+          lunch.createField(type)
+            .type(type)
+            .name(type);
+        });
+        const chunks = migrationChunks(steps);
+        const plan = migrationPlan(chunks);
+        const payloads = migrationPayloads(plan);
+        const errors = validatePayloads(payloads);
+        expect(errors).to.eql([[]]);
+      }
+    }));
+  });
+
+  describe('when using an invalid type', function () {
+    it('returns the errors', Bluebird.coroutine(function * () {
+      const steps = yield migrationSteps(function (migration) {
+        const lunch = migration.createContentType('lunch');
+        lunch.name('A lunch');
+
+        lunch.createField('invalid')
+          .type('Invalid')
+          .name('invalid');
+      });
+      const chunks = migrationChunks(steps);
+      const plan = migrationPlan(chunks);
+      const payloads = migrationPayloads(plan);
+      const errors = validatePayloads(payloads);
+      const valid = `["Symbol", "Text", "Integer", "Number", "Date", "Boolean", "Object", "Link", "Array", "Location"]`;
+      expect(errors).to.eql([
+        [
+          {
+            type: 'InvalidPayload',
+            message: `The property "type" on the field "invalid" must be one of ${valid}.`
+          }
+        ]
+      ]);
+    }));
+  });
 });
