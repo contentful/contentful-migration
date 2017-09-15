@@ -8,6 +8,7 @@ const longExample = require('../../examples/03-long-example');
 const invalidScript = require('../../examples/05-plan-errors');
 const idChange = require('../../examples/change-field-id');
 const deleteContentType = require('../../examples/delete-content-type');
+const fieldValidation = require('../../examples/09-validate-validations');
 
 const createMigrationParser = require('../../lib/migration-parser');
 const executor = require('../../lib/executor');
@@ -217,6 +218,46 @@ describe('the migration', function () {
     expect(result).to.be.undefined();
   }));
 
+  it('allows valid field validation', co(function * () {
+    yield migrator(fieldValidation);
+
+    const resultAfterModify = yield request({
+      method: 'GET',
+      url: '/content_types/dieatary-food',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1
+      }
+    });
+
+    expect(resultAfterModify.fields).to.eql([
+      {
+        id: 'name',
+        name: 'name of the food',
+        type: 'Symbol',
+        required: false,
+        disabled: false,
+        localized: false,
+        omitted: false,
+        validations: [{
+          unique: true
+        }]
+      },
+      {
+        id: 'calories',
+        name: 'amount of calories the food contains',
+        type: 'Number',
+        required: false,
+        disabled: false,
+        localized: false,
+        omitted: false,
+        validations: [{
+          range: {
+            max: 500
+          }
+        }]
+      }
+    ]);
+  }));
 
   it('works when creating and modifying lots of things', co(function * () {
     yield migrator(longExample);
