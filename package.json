@@ -24,7 +24,7 @@
   "scripts": {
     "test": "npm run test-unit && npm run test-integration",
     "test-watch": "npm run test-unit -- --watch",
-    "test-integration": "NODE_ENV=test mocha 'test/integration/**/*.spec.js'",
+    "test-integration": "NODE_ENV=test mocha --require test/integration/setup.js 'test/integration/**/*.spec.js'",
     "test-unit": "NODE_ENV=test mocha 'test/unit/**/*.spec.js'",
     "lint": "eslint index.js bin/contentful-migration 'examples/**/*.js' 'test/**/*.js' 'lib/**/*.js' 'bin/**/*.js'",
     "cover": "istanbul cover _mocha 'test/unit/**/*.spec.js' 'test/integration/**/*.spec.js'",
