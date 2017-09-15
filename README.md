@@ -146,6 +146,13 @@ This implies that associated content for the field will be lost.
 
 `id : string` – The ID of the field to delete.
 
+#### `changeFieldId (currentId, newId)` : void
+
+Changes the field's ID.
+
+`currentId : string` – The current ID of the field.
+`newId : string` – The new ID for the field.
+
 ### Field
 
 The field object has the same methods as the properties listed in the [`ContentType.createField`](#createfieldid--string-opts--object--field) method.

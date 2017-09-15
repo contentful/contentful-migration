@@ -200,6 +200,99 @@ describe('Payload builder', function () {
       expect(payloads).to.eql([firstPayload, secondPayload, thirdPayload]);
     }));
   });
+  describe('when referring to a field by its new id in the same migration', function () {
+    it('builds the correct payloads', Bluebird.coroutine(function * () {
+      const migration = function (migration) {
+        const book = migration.editContentType('book');
+        book.editField('title').type('Text');
+        book.changeFieldId('title', 'newTitle');
+        book.editField('newTitle').name('new Title');
+      };
+
+      const existingCts = [
+        {
+          sys: {
+            version: 1,
+            id: 'book'
+          },
+          name: 'Book',
+          fields: [{
+            id: 'title',
+            name: 'Title',
+            type: 'Symbol'
+          }]
+        }
+      ];
+
+      const steps = yield migrationSteps(migration);
+      const chunks = migrationChunks(steps);
+      const plan = migrationPlan(chunks);
+      const payloads = builder(plan, existingCts);
+
+      const basePayload = {
+        meta: {
+          contentTypeId: 'book',
+          version: 1,
+          parentVersion: 0
+        },
+        payload: _.omit(existingCts[0], ['sys'])
+      };
+
+      const firstPayload = {
+        meta: {
+          contentTypeId: 'book',
+          version: 2,
+          parentVersion: 1,
+          parent: basePayload
+        },
+        payload: {
+          name: 'Book',
+          fields: [{
+            id: 'title',
+            name: 'Title',
+            type: 'Text'
+          }]
+        }
+      };
+
+      const secondPayload = {
+        meta: {
+          contentTypeId: 'book',
+          version: 4,
+          parentVersion: 3,
+          parent: firstPayload
+        },
+        payload: {
+          name: 'Book',
+          fields: [{
+            id: 'title',
+            newId: 'newTitle',
+            name: 'Title',
+            type: 'Text'
+          }]
+        }
+      };
+
+      const thirdPayload = {
+        meta: {
+          contentTypeId: 'book',
+          version: 6,
+          parentVersion: 5,
+          parent: secondPayload
+        },
+        payload: {
+          name: 'Book',
+          fields: [{
+            id: 'newTitle',
+            name: 'new Title',
+            type: 'Text'
+          }]
+        }
+      };
+
+      expect(payloads).to.eql([firstPayload, secondPayload, thirdPayload]);
+    }));
+  });
 
   describe('when reordering a field', function () {
     it('returns the expected payload', Bluebird.coroutine(function * () {
