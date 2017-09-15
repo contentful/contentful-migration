@@ -9,5 +9,5 @@ module.exports = function (migration) {
     .type('Symbol')
     .name('what it tastes like');
 
-  food.displayField('amount');
+  food.displayField('taste');
 };
