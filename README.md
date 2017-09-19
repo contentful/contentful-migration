@@ -82,6 +82,10 @@ Creates a content type with provided `id` and returns a reference to the newly c
 Edits an existing content type of provided `id` and returns a reference to the content type.
 Uses the same options as [`createContentType`](#createcontenttypeid--string-opts--object--contenttype).
 
+#### `deleteContentType(id)`
+
+Deletes the content type with the provided id and returns `undefined`. Note that the content type must not have any entries.
+
 ### `ContentType`
 
 #### `createField(id[, opts])` : [Field](#field)
