@@ -390,7 +390,7 @@ describe('migration-steps', function () {
     }));
   });
 
-  describe('when deleting a field', function () {
+  describe('when deleting a content type', function () {
     it('includes it in the steps', Bluebird.coroutine(function * () {
       const plan = yield migration(function up (migration) {
         migration.deleteContentType('recipe');

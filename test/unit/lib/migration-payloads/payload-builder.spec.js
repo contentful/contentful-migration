@@ -401,4 +401,60 @@ describe('Payload builder', function () {
       expect(payloads).to.eql([firstPayload]);
     }));
   });
+
+  describe('when deleting a content type', function () {
+    it('returns the expected payload', Bluebird.coroutine(function * () {
+      const contentType = {
+        name: 'Very dangerous dog',
+        description: 'Woof woof',
+        fields: [
+          {
+            id: 'kills',
+            type: 'Number',
+            name: 'kills',
+            required: true
+          },
+          {
+            id: 'favoriteFood',
+            type: 'Symbol',
+            name: 'food',
+            required: true
+          }
+        ],
+        sys: {
+          version: 2,
+          id: 'dog'
+        }
+      };
+
+      const steps = yield migrationSteps(function up (migration) {
+        migration.deleteContentType('dog');
+      });
+
+      const chunks = migrationChunks(steps);
+      const plan = migrationPlan(chunks);
+      const payloads = builder(plan, [contentType]);
+
+      const basePayload = {
+        meta: {
+          contentTypeId: 'dog',
+          version: 2,
+          parentVersion: 1
+        },
+        payload: _.omit(contentType, ['sys'])
+      };
+
+      const deletePayload = {
+        meta: {
+          contentTypeId: 'dog',
+          version: 3,
+          parentVersion: 2,
+          parent: basePayload
+        },
+        isDelete: true
+      };
+
+      expect(payloads).to.eql([deletePayload]);
+    }));
+  });
 });
