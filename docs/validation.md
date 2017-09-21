@@ -27,7 +27,11 @@ Whenever setting a value to a property which is not matching the expected type.
 field.name(true)
 ```
 
-## FIELD_ALREADY_CREATED
+While evaluating your migration script we validate that the actions you want to perform on content types and fields aren't wrong in any sense.
+These validations are bound to the entity type and action on which they ocurred. Therefore the error keys are scoped to it
+and have a layout of `{entity}.{action}.{validation name}`.
+
+## field.create.FIELD_ALREADY_CREATED
 Whenever trying to create twice the same field.
 
 **Example:**
@@ -37,7 +41,7 @@ contentType.createField('name').name('First name')
 contentType.createField('name').name('Last name')
 ```
 
-## FIELD_ALREADY_DELETED
+## field.delete.FIELD_ALREADY_DELETED
 Whenever trying to delete a field twice.
 
 **Example:**
@@ -47,7 +51,7 @@ contentType.deleteField('name')
 contentType.deleteField('name')
 ```
 
-## FIELD_DOES_NOT_EXIST
+## field.update.FIELD_DOES_NOT_EXIST
 Whenever trying to edit a field which doesn't exist.
 
 **Example:**
@@ -57,7 +61,7 @@ contentType.createField('name')
 contentType.editField('nmae')
 ```
 
-## CONTENT_TYPE_ALREADY_CREATED
+## contentType.create.CONTENT_TYPE_ALREADY_CREATED
 Whenever trying to create a content type twice.
 
 **Example:**
@@ -67,7 +71,7 @@ migration.createContentType('author').name('Author')
 migration.createContentType('author').name('Editor')
 ```
 
-## CONTENT_TYPE_ALREADY_EXISTS
+## contentType.create.CONTENT_TYPE_ALREADY_EXISTS
 Whenever trying to create a content type which already exists in the target space.
 
 **Example:**
@@ -76,7 +80,7 @@ Whenever trying to create a content type which already exists in the target spac
 migration.createContentType('author').name('Author')
 ```
 
-## CONTENT_TYPE_NOT_YET_CREATED
+## contentType.update.CONTENT_TYPE_NOT_YET_CREATED
 Whenever trying to edit a content type which doesn't exist.
 
 **Example:**
@@ -85,7 +89,7 @@ Whenever trying to edit a content type which doesn't exist.
 migration.editContentType('inexistent')
 ```
 
-## CONTENT_TYPE_DOES_NOT_EXIST
+## contentType.update.CONTENT_TYPE_DOES_NOT_EXIST
 Whenever trying to create or edit a field of a content type which hasn't yet been created.
 
 **Example:**
@@ -95,7 +99,11 @@ author.createField('fullName').name('Full name')
 const author = migration.createContentType('author').name('Author')
 ```
 
-## REQUIRED_PROPERTY
+Some other validation errors pop up when checking the payload generated after applying your migration. On this case
+the validation keys are scoped only by the entity on which the ocurred: `{entity}.{validation name}`
+
+
+## contentType.REQUIRED_PROPERTY
 Whenever a required property is missing in the definition, such as, for example, `name` for fields of content types.
 
 **Example:**
@@ -103,7 +111,7 @@ Whenever a required property is missing in the definition, such as, for example,
 const author = migration.createContentType('author')
 ```
 
-## TOO_MANY_FIELDS
+## contentType.TOO_MANY_FIELDS
 Whenever hitting the 50 fields limit on a content type, while trying to create a new field.
 
 **Example:**
@@ -118,7 +126,7 @@ for (let i = 0; i < 60; i++) {
 }
 ```
 
-## NON_EXISTENT_DISPLAY_FIELD
+## contentType.NON_EXISTENT_DISPLAY_FIELD
 Whenever setting the `displayField` of a content type to an ID of a field which doesn't exist.
 
 **Example:**
@@ -136,7 +144,7 @@ author.createField('lastName')
   .type('Symbol')
 ```
 
-## DELETE_DISPLAY_FIELD
+## contentType.DELETE_DISPLAY_FIELD
 Whenever trying to delete the field used as the `displayField` of the content type.
 
 **Example:**
@@ -152,7 +160,7 @@ author.createField('fullName')
 author.deleteField('fullName')
 ```
 
-## REQUIRED_DEPENDENT_PROPERTY
+## field.REQUIRED_DEPENDENT_PROPERTY
 Whenever editing an element, but forgetting to set a required property, such as `items` for fields of type `Array` or `linkType` for fields of type `Link`.
 
 **Example:**
@@ -167,7 +175,7 @@ author.createField('articles')
 // Missing the `items` property
 ```
 
-## FORBIDDEN_DEPENDENT_PROPERTY
+## field.FORBIDDEN_DEPENDENT_PROPERTY
 Whenever using a property which is not compatible with the type of the field.
 
 **Example:**
@@ -183,7 +191,7 @@ author.createField('fullName')
 // `items` is not compatible with field type `Symbol`.
 ```
 
-## PROPERTY_MUST_BE_ONE_OF
+## field.PROPERTY_MUST_BE_ONE_OF
 Whenever trying to set a field type with a value which is not allowed.
 
 **Example:**
@@ -195,7 +203,7 @@ author.createField('fullName')
 
 Allowed types are listed in the [`createField`](#createfieldid--string-opts--object--field) documentation.
 
-## NO_DELETE_WITHOUT_OMIT
+## field.NO_DELETE_WITHOUT_OMIT
 Whenever using `deleted(true)` on a field which hasn't been omitted first (using `omitted(true)`).
 
 **Example:**
@@ -212,7 +220,7 @@ author.editField('fullName')
 
 Note: you may use the [`deleteField`](#deletefieldid--string--void) shorthand method to do both operations at once.
 
-## NO_TYPE_CHANGE
+## field.NO_TYPE_CHANGE
 Whenever trying to edit the `type` of an existing field.
 
 **Example:**
