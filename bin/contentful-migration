@@ -30,6 +30,10 @@ const argv = yargs
     alias: 's',
     describe: 'ID of the space to run the migration script on'
   })
+  .option('access-token', {
+    alias: 'a',
+    describe: 'The access token to use\nThis takes precedence over environment variables or .contentfulrc'
+  })
   .demandOption(['space-id'], 'Please provide a space ID')
   .help('h')
   .alias('h', 'help')
@@ -57,10 +61,9 @@ const renderFailedValidation = function (errors, renderer) {
 
 const run = Bluebird.coroutine(function * () {
   const spaceId = argv.spaceId;
-  const key = process.env.API_KEY;
 
   const config = {
-    accessToken: key,
+    accessToken: argv.accessToken,
     spaceId
   };
 

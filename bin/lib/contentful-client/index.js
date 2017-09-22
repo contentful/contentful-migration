@@ -27,17 +27,22 @@ function createManagementClient (params) {
   const envToken = loadTokenFromEnv(process.env);
   const fileConfig = getFileConfig();
   const { httpsAgent } = agentFromProxy(proxyConfig);
-  const config = Object.assign({ httpsAgent }, fileConfig, params);
 
-  if (!config.accessToken && config.cmaToken) {
-    config.accessToken = config.cmaToken;
-    delete config.cmaToken;
+  const accessTokenConfig = {};
+
+  if (params.accessToken) {
+    accessTokenConfig.accessToken = params.accessToken;
+  } else {
+    if (fileConfig.cmaToken) {
+      accessTokenConfig.accessToken = fileConfig.cmaToken;
+      delete fileConfig.cmaToken;
+    }
+    if (envToken) {
+      accessTokenConfig.accessToken = envToken;
+    }
   }
 
-  // access token as environment variable *always* takes precedence
-  if (envToken) {
-    config.accessToken = envToken;
-  }
+  const config = Object.assign({ httpsAgent }, fileConfig, params, accessTokenConfig);
 
   if (!config.application) {
     throw new Error('Please specify the application name that uses this client instance');
