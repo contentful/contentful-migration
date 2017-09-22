@@ -24,11 +24,16 @@
   "scripts": {
     "test": "npm run test-unit && npm run test-integration",
     "test-watch": "npm run test-unit -- --watch",
-    "test-integration": "NODE_ENV=test mocha --require test/integration/setup.js 'test/integration/**/*.spec.js'",
     "test-unit": "NODE_ENV=test mocha 'test/unit/**/*.spec.js'",
-    "lint": "eslint index.js bin/contentful-migration 'examples/**/*.js' 'test/**/*.js' 'lib/**/*.js' 'bin/**/*.js'",
-    "cover": "istanbul cover _mocha 'test/unit/**/*.spec.js' 'test/integration/**/*.spec.js'",
-    "coverage": "npm run cover && codecov && rm -rf ./coverage"
+    "test-integration": "NODE_ENV=test mocha --require test/integration/setup.js 'test/integration/**/*.spec.js'",
+    "test-e2e": "NODE_ENV=test mocha 'test/end-to-end/**/*.spec.js'",
+    "cover-unit": "nyc npm run test-unit",
+    "cover-integration": "nyc npm run test-integration",
+    "cover-e2e": "nyc npm run test-e2e",
+    "cover": "nyc --no-clean -s npm run test-unit && nyc --no-clean -s npm run test-integration && nyc --no-clean -s npm run test-e2e && nyc report",
+    "coverage": "npm run cover && nyc report --reporter=text-lcov > coverage.lcov",
+    "coverage-report": "npm run coverage && codecov && rm -rf ./nyc_output && rm coverage.lcov",
+    "lint": "eslint index.js bin/contentful-migration 'examples/**/*.js' 'test/**/*.js' 'lib/**/*.js' 'bin/**/*.js'"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
@@ -57,11 +62,13 @@
     "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
-    "istanbul": "^0.4.5",
     "mocha": "^3.4.0",
+    "nixt": "^0.5.0",
+    "nyc": "^11.2.1",
     "rewire": "^2.5.2",
     "sinon": "^2.4.1",
-    "sinon-chai": "^2.13.0"
+    "sinon-chai": "^2.13.0",
+    "strip-ansi": "^4.0.0"
   },
   "bin": {
     "contentful-migration": "./bin/contentful-migration"
