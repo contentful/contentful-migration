@@ -35,6 +35,20 @@
     "coverage-report": "npm run coverage && codecov && rm -rf ./nyc_output && rm coverage.lcov",
     "lint": "eslint index.js bin/contentful-migration 'examples/**/*.js' 'test/**/*.js' 'lib/**/*.js' 'bin/**/*.js'"
   },
+  "nyc": {
+    "per-file": true,
+    "include": [
+      "lib/**/*.js",
+      "bin/**/*.js",
+      "bin/contentful-migration"
+    ],
+    "exclude": [
+      "test/**/*.spec.js",
+      "test/**/*.js",
+      "node_modules/**/*.js"
+    ],
+    "all": true
+  },
   "dependencies": {
     "bluebird": "^3.5.0",
     "callsites": "^2.0.0",
