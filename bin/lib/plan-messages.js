@@ -42,6 +42,7 @@ const renderChunk = (chunk, errors) => {
     if (firstChange.type === 'field/create') {
       message.push(chalk`\n  {bold Create field {yellow ${firstChange.payload.fieldId}}}`);
     }
+
     if (firstChange.type === 'field/update') {
       message.push(chalk`\n  {bold Update field {yellow ${firstChange.payload.fieldId}}}`);
     }
@@ -52,6 +53,29 @@ const renderChunk = (chunk, errors) => {
           const value = JSON.stringify(fieldChange.payload.props[key]);
           message.push(chalk`    - {italic ${key}:} ${value}`);
         }
+      }
+
+      if (fieldChange.type === 'field/move') {
+        const movement = fieldChange.payload.movement;
+        let humanizedMovement;
+
+        if (movement.direction === 'toTheTop') {
+          humanizedMovement = `to the first position`;
+        }
+
+        if (movement.direction === 'toTheBottom') {
+          humanizedMovement = `to the last position`;
+        }
+
+        if (movement.direction === 'afterField') {
+          humanizedMovement = chalk`after field {yellow ${movement.pivot}}`;
+        }
+
+        if (movement.direction === 'beforeField') {
+          humanizedMovement = chalk`before field {yellow ${movement.pivot}}`;
+        }
+
+        message.push(chalk`  {bold Move field {yellow ${fieldChange.payload.fieldId}} ${humanizedMovement}}`);
       }
     }
   }
