@@ -164,7 +164,7 @@ contentType.moveField('name').toTheTop()
 ## field.move.FIELD_DOES_NOT_EXIST
 Whenever trying to move a field which doesn't exists.
 
-# field.move.FIELD_ALREADY_MOVED
+## field.move.FIELD_ALREADY_MOVED
 Whenever trying to move a field which was already moved.
 
  Example:
