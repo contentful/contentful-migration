@@ -74,6 +74,15 @@ contentType.createField('name').name('First name')
 contentType.createField('name').name('Last name')
 ```
 
+## field.create.CONTENT_TYPE_DOES_NOT_EXIST
+Whenever trying to create a field on a non-existing content type.
+
+**Example:**
+```javascript
+// While no `inexistent` content type exists in the target space
+migration.editContentType('inexistent').createField('foo')
+```
+
 ## field.delete.FIELD_ALREADY_DELETED
 Whenever trying to delete a field twice.
 
@@ -84,6 +93,25 @@ contentType.deleteField('name')
 contentType.deleteField('name')
 ```
 
+## field.delete.FIELD_DOES_NOT_EXIST
+Whenever trying to delete a field which doesn't exist.
+
+**Example:**
+```javascript
+contentType.createField('name')
+// ...
+contentType.deleteField('nmae')
+```
+
+## field.delete.CONTENT_TYPE_DOES_NOT_EXIST
+Whenever trying to delete a field of a content type which doesn't exist.
+
+**Example:**
+```javascript
+// While no `inexistent` content type exists in the target space
+migration.editContentType('inexistent').deleteField('foo')
+```
+
 ## field.update.FIELD_DOES_NOT_EXIST
 Whenever trying to edit a field which doesn't exist.
 
@@ -92,6 +120,35 @@ Whenever trying to edit a field which doesn't exist.
 contentType.createField('name')
 // ...
 contentType.editField('nmae')
+```
+
+## field.update.FIELD_ALREADY_DELETED
+Whenever trying to update a field after it has been deleted.
+
+**Example:**
+```javascript
+contentType.deleteField('name')
+
+contentType.editField('name')
+```
+
+## field.update.CONTENT_TYPE_DOES_NOT_EXIST
+Whenever trying to update a field on a non-existing content type.
+
+**Example:**
+```javascript
+// While no `inexistent` content type exists in the target space
+migration.editContentType('inexistent').editField('foo')
+```
+
+## contentType.create.CONTENT_TYPE_ALREADY_CREATED
+Whenever trying to create a content type twice.
+
+**Example:**
+```javascript
+migration.createContentType('author').name('Author')
+// ...
+migration.createContentType('author').name('Editor')
 ```
 
 ## field.move.FIELD_DELETED
@@ -136,16 +193,6 @@ contentType.deleteField('surname')
 contentType.moveField('name').afterField('surname')
 ```
 
-## contentType.create.CONTENT_TYPE_ALREADY_CREATED
-Whenever trying to create a content type twice.
-
-**Example:**
-```javascript
-migration.createContentType('author').name('Author')
-// ...
-migration.createContentType('author').name('Editor')
-```
-
 ## contentType.create.CONTENT_TYPE_ALREADY_EXISTS
 Whenever trying to create a content type which already exists in the target space.
 
@@ -156,12 +203,13 @@ migration.createContentType('author').name('Author')
 ```
 
 ## contentType.update.CONTENT_TYPE_NOT_YET_CREATED
-Whenever trying to edit a content type which doesn't exist.
+Whenever trying to edit a content type which doesn't exist currently. (i.e. is created later in the migration)
 
 **Example:**
 ```javascript
 // While no `inexistent` content type exists in the target space
 migration.editContentType('inexistent')
+migration.createContentType('inexistent')
 ```
 
 ## contentType.update.CONTENT_TYPE_DOES_NOT_EXIST
@@ -233,6 +281,15 @@ author.createField('fullName')
   .type('Symbol')
 
 author.deleteField('fullName')
+```
+
+## field.REQUIRED_PROPERTY
+Whenever a required property is missing in the definition, such as, for example, the `type` property of a field.
+
+**Example:**
+```javascript
+contentType.createField('author').name('Author')
+// .type('Symbol') is missing
 ```
 
 ## field.REQUIRED_DEPENDENT_PROPERTY
