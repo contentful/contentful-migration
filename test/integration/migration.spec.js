@@ -6,6 +6,7 @@ const createDog = require('../../examples/01-angry-dog');
 const modifyDog = require('../../examples/02-friendly-dog');
 const longExample = require('../../examples/03-long-example');
 const invalidScript = require('../../examples/05-plan-errors');
+const idChange = require('../../examples/change-field-id');
 
 const createMigrationParser = require('../../lib/migration-parser');
 const executor = require('../../lib/executor');
@@ -102,7 +103,7 @@ describe('the migration', function () {
 
     const dogResult = yield request({
       method: 'GET',
-      url: `/content_types/dog`,
+      url: '/content_types/dog',
       headers: {
         'X-Contentful-Beta-Dev-Spaces': 1
       }
@@ -135,7 +136,7 @@ describe('the migration', function () {
 
     const dogResultAfterDelete = yield request({
       method: 'GET',
-      url: `/content_types/dog`,
+      url: '/content_types/dog',
       headers: {
         'X-Contentful-Beta-Dev-Spaces': 1
       }
@@ -149,7 +150,7 @@ describe('the migration', function () {
 
     const resultAfterModify = yield request({
       method: 'GET',
-      url: `/content_types/dog`,
+      url: '/content_types/dog',
       headers: {
         'X-Contentful-Beta-Dev-Spaces': 1
       }
@@ -171,19 +172,44 @@ describe('the migration', function () {
     ]);
   }));
 
+  it('changes field IDs', co(function * () {
+    yield migrator(idChange);
+
+    const resultAfterModify = yield request({
+      method: 'GET',
+      url: '/content_types/dog',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1
+      }
+    });
+
+    expect(resultAfterModify.fields).to.eql([
+      {
+        id: 'aDifferentId',
+        name: 'ID switching is fun!',
+        type: 'Number',
+        required: false,
+        disabled: false,
+        localized: false,
+        omitted: false,
+        validations: []
+      }
+    ]);
+  }));
+
   it('works when creating and modifying lots of things', co(function * () {
     yield migrator(longExample);
 
     const person = yield request({
       method: 'GET',
-      url: `/content_types/person`,
+      url: '/content_types/person',
       headers: {
         'X-Contentful-Beta-Dev-Spaces': 1
       }
     });
     const animal = yield request({
       method: 'GET',
-      url: `/content_types/animal`,
+      url: '/content_types/animal',
       headers: {
         'X-Contentful-Beta-Dev-Spaces': 1
       }

@@ -324,4 +324,62 @@ describe('migration-chunks', function () {
       ]);
     }));
   });
+
+  describe('when changing the id of a field', function () {
+    it('puts it in a separate chunk', Bluebird.coroutine(function * () {
+      const steps = yield migrationSteps(function up (migration) {
+        const book = migration.editContentType('book');
+        book.editField('pages').name('new pages title');
+        book.changeFieldId('title', 'newTitle');
+        book.editField('newTitle').name('new Title');
+      });
+
+      const plan = stripCallsites(migrationChunks(steps));
+
+      expect(plan).to.eql([
+        [{
+          type: 'field/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/book/0',
+            fieldInstanceId: 'fields/pages/0'
+          },
+          payload: {
+            contentTypeId: 'book',
+            fieldId: 'pages',
+            props: {
+              name: 'new pages title'
+            }
+          }
+        }],
+        [{
+          type: 'field/rename',
+          meta: {
+            contentTypeInstanceId: 'contentType/book/0',
+            fieldInstanceId: 'fields/title/0'
+          },
+          payload: {
+            contentTypeId: 'book',
+            fieldId: 'title',
+            props: {
+              newId: 'newTitle'
+            }
+          }
+        }],
+        [{
+          type: 'field/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/book/0',
+            fieldInstanceId: 'fields/newTitle/0'
+          },
+          payload: {
+            contentTypeId: 'book',
+            fieldId: 'newTitle',
+            props: {
+              name: 'new Title'
+            }
+          }
+        }]
+      ]);
+    }));
+  });
 });

@@ -283,6 +283,34 @@ author.createField('fullName')
 author.deleteField('fullName')
 ```
 
+## contentType.ID_MUST_BE_DIFFERENT
+When setting a new field ID to the value it already has.
+
+**Example:**
+```javascript
+author.changeFieldId('fullName', 'fullName')
+```
+
+## contentType.ID_MUST_BE_UNIQUE
+When giving a field an ID that another field on the same content type already has.
+
+**Example:**
+```javascript
+author.createField('fullName')
+  .name('Full name')
+  .type('Symbol')
+
+author.changeFieldId('firstName', 'fullName')
+```
+
+## contentType.ID_MUST_MATCH_SCHEMA
+When setting a new field ID that does not match the requirements.
+
+**Example:**
+```javascript
+author.changeFieldId('fullName', '!%#')
+```
+
 ## field.REQUIRED_PROPERTY
 Whenever a required property is missing in the definition, such as, for example, the `type` property of a field.
 
@@ -290,7 +318,6 @@ Whenever a required property is missing in the definition, such as, for example,
 ```javascript
 contentType.createField('author').name('Author')
 // .type('Symbol') is missing
-```
 
 ## field.REQUIRED_DEPENDENT_PROPERTY
 Whenever editing an element, but forgetting to set a required property, such as `items` for fields of type `Array` or `linkType` for fields of type `Link`.
