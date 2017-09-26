@@ -32,6 +32,9 @@ describe('Content Type fetcher', function () {
         name: 'Cat',
         description: 'The trump of the animal world'
       });
+
+      migration.deleteContentType('dog');
+      migration.deleteContentType('plant');
     });
 
     const request = sinon.stub();
@@ -58,6 +61,11 @@ describe('Content Type fetcher', function () {
           name: 'Cat',
           description: 'The trump of the animal world',
           fields: []
+        },
+        {
+          name: 'Plant',
+          description: 'A plant!',
+          fields: []
         }
       ]
     });
@@ -67,7 +75,7 @@ describe('Content Type fetcher', function () {
 
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: '/content_types?sys.id[in]=person,dog,cat'
+      url: '/content_types?sys.id[in]=person,dog,cat,plant'
     });
     expect(contentTypes).to.eql([
       {
@@ -89,6 +97,11 @@ describe('Content Type fetcher', function () {
       {
         name: 'Cat',
         description: 'The trump of the animal world',
+        fields: []
+      },
+      {
+        name: 'Plant',
+        description: 'A plant!',
         fields: []
       }
     ]);
