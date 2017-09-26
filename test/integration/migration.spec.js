@@ -198,6 +198,26 @@ describe('the migration', function () {
     ]);
   }));
 
+  it('deletes a contentType', co(function * () {
+    let result;
+    yield migrator(deleteContentType);
+
+    try {
+      yield request({
+        method: 'GET',
+        url: `/content_types/dog`,
+        headers: {
+          'X-Contentful-Beta-Dev-Spaces': 1
+        }
+      });
+    } catch (err) {
+      expect(err.name).to.eql('NotFound');
+    }
+
+    expect(result).to.be.undefined();
+  }));
+
+
   it('works when creating and modifying lots of things', co(function * () {
     yield migrator(longExample);
 
@@ -286,25 +306,6 @@ describe('the migration', function () {
         validations: []
       }
     ]);
-  }));
-
-  it('deletes a contentType', co(function * () {
-    let result;
-    yield migrator(deleteContentType);
-
-    try {
-      yield request({
-        method: 'GET',
-        url: `/content_types/dog`,
-        headers: {
-          'X-Contentful-Beta-Dev-Spaces': 1
-        }
-      });
-    } catch (err) {
-      expect(err.name).to.eql('NotFound');
-    }
-
-    expect(result).to.be.undefined();
   }));
 
   it('throws an error when the script is invalid', co(function * () {

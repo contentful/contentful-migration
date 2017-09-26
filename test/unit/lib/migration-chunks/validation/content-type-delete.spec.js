@@ -392,4 +392,59 @@ describe('content type delete validation', function () {
       ]);
     }));
   });
+
+  describe('when deleting a content type that still has entries', function () {
+    it('returns an error', Bluebird.coroutine(function * () {
+      const steps = yield migrationSteps(function up (migration) {
+        migration.deleteContentType('foo');
+        migration.deleteContentType('bar');
+      });
+
+      const contentTypes = [{
+        sys: { id: 'foo' },
+        hasEntries: true,
+        fields: []
+      }, {
+        sys: { id: 'bar' },
+        hasEntries: true,
+        fields: []
+      }];
+
+      const plan = stripCallsites(migrationPlan(steps));
+      const errors = validatePlan(plan, contentTypes);
+
+      expect(errors).to.eql([
+        {
+          type: 'InvalidAction',
+          message: 'Content type "foo" cannot be deleted because it has entries.',
+          details: {
+            step: {
+              type: 'contentType/delete',
+              meta: {
+                contentTypeInstanceId: 'contentType/foo/0'
+              },
+              payload: {
+                contentTypeId: 'foo'
+              }
+            }
+          }
+        },
+        {
+          type: 'InvalidAction',
+          message: 'Content type "bar" cannot be deleted because it has entries.',
+          details: {
+            step: {
+              type: 'contentType/delete',
+              meta: {
+                contentTypeInstanceId: 'contentType/bar/0'
+              },
+              payload: {
+                contentTypeId: 'bar'
+              }
+            }
+          }
+        }
+      ]);
+    }));
+  });
 });
