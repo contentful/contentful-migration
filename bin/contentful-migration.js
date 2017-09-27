@@ -61,7 +61,7 @@ const run = Bluebird.coroutine(function * () {
   try {
     migrationFunction = require(argv.filePath);
   } catch (e) {
-    console.log(`The ${argv.filePath} script could not be parsed, as it seems to contain syntax errors.\n`);
+    console.log(chalk`{red.bold The ${argv.filePath} script could not be parsed, as it seems to contain syntax errors.}\n`);
     console.log(e);
     return;
   }
