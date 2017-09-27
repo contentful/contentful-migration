@@ -182,7 +182,7 @@ describe('chunks validation when changing field ids', () => {
     ]);
   }));
 
-  it('when setting a new id but it is the same as the old', Bluebird.coroutine(function * () {
+  it('returns an error when setting a new id but it is the same as the old', Bluebird.coroutine(function * () {
     const steps = yield migrationSteps(function up (migration) {
       const book = migration.editContentType('book');
       book.changeFieldId('title', 'title');
@@ -219,7 +219,8 @@ describe('chunks validation when changing field ids', () => {
       }
     ]);
   }));
-  it('when changing the ID of a field more than once returns an error', Bluebird.coroutine(function * () {
+
+  it('returns an error when changing the ID of a field more than once', Bluebird.coroutine(function * () {
     const steps = yield migrationSteps(function up (migration) {
       const school = migration.editContentType('student');
       school.changeFieldId('school', 'primarySchool');
@@ -239,6 +240,45 @@ describe('chunks validation when changing field ids', () => {
       {
         type: 'InvalidAction',
         message: 'The ID of "primarySchool" was already changed in this migration. You cannot change the ID of a field more than once.',
+        details: {
+          step: {
+            'type': 'field/rename',
+            'meta': {
+              'contentTypeInstanceId': 'contentType/student/0',
+              'fieldInstanceId': 'fields/primarySchool/0'
+            },
+            'payload': {
+              'contentTypeId': 'student',
+              'fieldId': 'primarySchool',
+              'props': {
+                'newId': 'preSchool'
+              }
+            }
+          }
+        }
+      }
+    ]);
+  }));
+
+  it('when changing the ID of a field but that field does not exist', Bluebird.coroutine(function * () {
+    const steps = yield migrationSteps(function up (migration) {
+      const school = migration.editContentType('student');
+      school.changeFieldId('primarySchool', 'preSchool');
+    });
+    const plan = stripCallsites(migrationPlan(steps));
+    const contentTypes = [{
+      sys: { id: 'student' },
+      fields: [{
+        id: 'school'
+      }]
+    }];
+
+    const validationErrors = validatePlan(plan, contentTypes);
+
+    expect(validationErrors).to.eql([
+      {
+        type: 'InvalidAction',
+        message: 'You cannot edit field "primarySchool" because it does not exist.',
         details: {
           step: {
             'type': 'field/rename',
