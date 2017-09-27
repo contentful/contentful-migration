@@ -392,3 +392,44 @@ author.editField('fullName').type('Text')
 ```
 
 Field types can't be changed, you must disable and omit the field, and create a new field with the right type and a different ID instead.
+
+## field.validations.DUPLICATED_VALIDATION
+Whenever trying to add the same validation twice.
+
+**Example:**
+```javascript
+author.createField('fullName')
+  .name('Full name')
+  .type('Symbol')
+  .validations([
+    { unique: true },
+    { unique: true }
+  ])
+```
+
+## field.validations.INVALID_VALIDATION_PROPERTY
+Whenever trying to set a non existing validation.
+
+**Example:**
+```javascript
+author.createField('fullName')
+  .name('Full name')
+  .type('Symbol')
+  .validations([
+    { customValidation: { crazy: 'stuff' } },
+  ])
+```
+
+## field.validations.INVALID_VALIDATION_PARAMETER
+Whenever trying to set the wrong parameters for a validation.
+
+**Example:**
+```javascript
+author.createField('fullName')
+  .name('Full name')
+  .type('Symbol')
+  .validations([
+    { unique: 'yes' }, // needs to be Boolean
+    { size: 5 } // needs to be object { min, max }
+  ])
+```
