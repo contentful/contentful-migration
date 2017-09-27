@@ -456,4 +456,30 @@ describe('Executor', function () {
       ]);
     }));
   });
+
+  it('makes correct requests when deleting a content type', Bluebird.coroutine(function * () {
+    const steps = yield migrationSteps(function up (migration) {
+      migration.deleteContentType('recipe');
+    });
+
+    const chunks = migrationChunks(steps);
+    const plan = migrationPlan(chunks);
+    const payloads = migrationPayloads(plan);
+    const requests = builder(payloads);
+
+    expect(requests).to.eql([{
+      url: '/content_types/recipe/published',
+      method: 'DELETE',
+      headers: {
+        'X-Contentful-Version': 0
+      }
+    },
+    {
+      url: '/content_types/recipe',
+      method: 'DELETE',
+      headers: {
+        'X-Contentful-Version': 1
+      }
+    }]);
+  }));
 });

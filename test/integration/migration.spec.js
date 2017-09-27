@@ -7,6 +7,7 @@ const modifyDog = require('../../examples/02-friendly-dog');
 const longExample = require('../../examples/03-long-example');
 const invalidScript = require('../../examples/05-plan-errors');
 const idChange = require('../../examples/change-field-id');
+const deleteContentType = require('../../examples/delete-content-type');
 
 const createMigrationParser = require('../../lib/migration-parser');
 const executor = require('../../lib/executor');
@@ -196,6 +197,26 @@ describe('the migration', function () {
       }
     ]);
   }));
+
+  it('deletes a contentType', co(function * () {
+    let result;
+    yield migrator(deleteContentType);
+
+    try {
+      yield request({
+        method: 'GET',
+        url: `/content_types/dog`,
+        headers: {
+          'X-Contentful-Beta-Dev-Spaces': 1
+        }
+      });
+    } catch (err) {
+      expect(err.name).to.eql('NotFound');
+    }
+
+    expect(result).to.be.undefined();
+  }));
+
 
   it('works when creating and modifying lots of things', co(function * () {
     yield migrator(longExample);

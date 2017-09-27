@@ -7,6 +7,9 @@ const getMainAction = function (chunk) {
   if (chunk.find((step) => step.type === 'contentType/create')) {
     return 'contentType/create';
   }
+  if (chunk.find((step) => step.type === 'contentType/delete')) {
+    return 'contentType/delete';
+  }
   return 'contentType/update';
 };
 
@@ -19,6 +22,8 @@ const renderChunk = (chunk, errors) => {
     message.push(chalk`{bold.underline Create Content Type} {bold.yellow ${contentType}}`);
   } else if (mainAction === 'contentType/update') {
     message.push(chalk`{bold.underline Update Content Type} {bold.yellow ${contentType}}`);
+  } else if (mainAction === 'contentType/delete') {
+    message.push(chalk`{bold.underline Delete Content Type} {bold.yellow ${contentType}}`);
   }
 
   const contentTypeChanges = chunk.filter((step) => step.type.startsWith('contentType'));
@@ -87,7 +92,9 @@ const renderChunk = (chunk, errors) => {
     }
   }
 
-  message.push(chalk`\n{bold.underline Publish Content Type} {bold.yellow ${contentType}}`);
+  if (!mainAction === 'contentType/delete') {
+    message.push(chalk`\n{bold.underline Publish Content Type} {bold.yellow ${contentType}}`);
+  }
   return message.join('\n');
 };
 

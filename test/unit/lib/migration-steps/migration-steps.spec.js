@@ -390,6 +390,26 @@ describe('migration-steps', function () {
     }));
   });
 
+  describe('when deleting a content type', function () {
+    it('includes it in the steps', Bluebird.coroutine(function * () {
+      const plan = yield migration(function up (migration) {
+        migration.deleteContentType('recipe');
+      });
+
+      expect(stripCallsites(plan)).to.eql([
+        {
+          'type': 'contentType/delete',
+          'meta': {
+            'contentTypeInstanceId': 'contentType/recipe/0'
+          },
+          'payload': {
+            'contentTypeId': 'recipe'
+          }
+        }
+      ]);
+    }));
+  });
+
   describe('when defining the display field', function () {
     it('sets the display field', Bluebird.coroutine(function * () {
       const plan = yield migration(function up (migration) {

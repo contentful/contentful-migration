@@ -382,4 +382,43 @@ describe('migration-chunks', function () {
       ]);
     }));
   });
+  describe('when deleting a content type', function () {
+    it('includes it in the plan', Bluebird.coroutine(function * () {
+      const steps = yield migrationSteps(function up (migration) {
+        const person = migration.editContentType('person');
+        migration.deleteContentType('recipe');
+
+        person.editField('lastName', {
+          name: 'New Last Name'
+        });
+      });
+
+      const plan = stripCallsites(migrationChunks(steps));
+
+      expect(plan).to.eql([
+        [{
+          type: 'contentType/delete',
+          meta: {
+            contentTypeInstanceId: 'contentType/recipe/0'
+          },
+          payload: {
+            contentTypeId: 'recipe'
+          }
+        }], [{
+          type: 'field/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0',
+            fieldInstanceId: 'fields/lastName/0'
+          },
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'lastName',
+            props: {
+              name: 'New Last Name'
+            }
+          }
+        }]
+      ]);
+    }));
+  });
 });
