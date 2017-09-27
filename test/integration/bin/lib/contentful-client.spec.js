@@ -7,6 +7,9 @@ const rewire = require('rewire');
 const contentfulClient = rewire('../../../../bin/lib/contentful-client');
 const { createManagementClient } = contentfulClient;
 
+// Ensure that when both tokens are defined, we first take the integration one
+// This is mostly useful for local testing where both may be defined
+delete process.env['CONTENTFUL_MANAGEMENT_ACCESS_TOKEN'];
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 
 const fileConfig = {
@@ -38,7 +41,7 @@ describe('contentful-client', function () {
     createManagementClient({ application: 'contentful.migration-cli.integration-test/0.0.0' });
   });
 
-  it('prefers env access token', function () {
+  it('prefers env access token over contentfulrc', function () {
     process.env.CONTENTFUL_MANAGEMENT_ACCESS_TOKEN = 'foomybar';
 
     contentfulClient.__set__('createClient', (params) => {
@@ -46,6 +49,20 @@ describe('contentful-client', function () {
     });
 
     createManagementClient({ application: 'contentful.migration-cli.integration-test/0.0.0' });
+  });
+
+  it('prefers command line option access token over env', function () {
+    process.env.CONTENTFUL_MANAGEMENT_ACCESS_TOKEN = 'foomybar';
+    const expected = 'config-access-token';
+
+    contentfulClient.__set__('createClient', (params) => {
+      expect(params.accessToken).to.eql(expected);
+    });
+
+    createManagementClient({
+      application: 'contentful.migration-cli.integration-test/0.0.0',
+      accessToken: expected
+    });
   });
 
   it('requires application param to be set', function () {
