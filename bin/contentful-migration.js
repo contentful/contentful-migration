@@ -1,6 +1,7 @@
 'use-strict';
 
 const path = require('path');
+const fs = require('fs');
 const yargs = require('yargs');
 
 const Bluebird = require('bluebird');
@@ -11,19 +12,16 @@ const _ = require('lodash');
 const { createManagementClient } = require('./lib/contentful-client');
 const { version } = require('../package.json');
 
-let migrationFunction;
-
 const argv = yargs
   .usage('Parses and runs a migration script on a Contentful space.\n\nUsage: contentful-migration [args] <path-to-script-file>\n\nScript: path to a migration script.')
   .demandCommand(1, 'Please provide the file containing the migration script.')
   .check((args) => {
     const filePath = path.join(process.cwd(), args._[0]);
-    try {
-      migrationFunction = require(filePath);
-    } catch (e) {
-      throw new Error(`Cannot find file ${filePath}.`);
+    if (fs.existsSync(filePath)) {
+      args.filePath = filePath;
+      return true;
     }
-    return true;
+    throw new Error(`Cannot find file ${filePath}.`);
   })
   .option('space-id', {
     alias: 's',
@@ -59,6 +57,15 @@ const renderFailedValidation = function (errors, renderer) {
 };
 
 const run = Bluebird.coroutine(function * () {
+  let migrationFunction;
+  try {
+    migrationFunction = require(argv.filePath);
+  } catch (e) {
+    console.log(`The ${argv.filePath} script could not be parsed, as it seems to contain syntax errors.\n`);
+    console.log(e);
+    return;
+  }
+
   const spaceId = argv.spaceId;
 
   const config = {
