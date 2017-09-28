@@ -30,7 +30,7 @@ describe('field editing plan validation', function () {
       expect(errors).to.eql([
         {
           type: 'InvalidAction',
-          message: 'You cannot set a property on field with id "name" because it does not exist.',
+          message: 'You cannot edit field "name" because it does not exist.',
           details: {
             step: {
               'type': 'field/update',
@@ -50,7 +50,7 @@ describe('field editing plan validation', function () {
         },
         {
           type: 'InvalidAction',
-          message: 'You cannot set a property on field with id "name" because it does not exist.',
+          message: 'You cannot edit field "name" because it does not exist.',
           details: {
             step: {
               'type': 'field/update',
@@ -95,7 +95,7 @@ describe('field editing plan validation', function () {
       expect(errors).to.eql([
         {
           type: 'InvalidAction',
-          message: 'You cannot set a property on field with id "name" because it has already been deleted.',
+          message: 'You cannot edit field "name" because it has already been deleted.',
           details: {
             step: {
               'type': 'field/update',
@@ -133,7 +133,7 @@ describe('field editing plan validation', function () {
       expect(errors).to.eql([
         {
           type: 'InvalidAction',
-          message: 'You cannot set a property on field with id "name" on content type "person" because it does not exist.',
+          message: 'You cannot edit field "name" on content type "person" because it does not exist.',
           details: {
             step: {
               'type': 'field/update',
