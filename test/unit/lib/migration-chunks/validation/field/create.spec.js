@@ -63,6 +63,46 @@ describe('field creation plan validation', function () {
               }
             }
           }
+        },
+        {
+          type: 'InvalidAction',
+          message: 'You are setting the property "type" on field "name" more than once. Please set it only once.',
+          details: {
+            step: {
+              'type': 'field/update',
+              'meta': {
+                'contentTypeInstanceId': 'contentType/person/0',
+                'fieldInstanceId': 'fields/name/1'
+              },
+              'payload': {
+                'contentTypeId': 'person',
+                'fieldId': 'name',
+                'props': {
+                  'type': 'Decimal'
+                }
+              }
+            }
+          }
+        },
+        {
+          type: 'InvalidAction',
+          message: 'You are setting the property "type" on field "name" more than once. Please set it only once.',
+          details: {
+            step: {
+              'type': 'field/update',
+              'meta': {
+                'contentTypeInstanceId': 'contentType/person/0',
+                'fieldInstanceId': 'fields/name/2'
+              },
+              'payload': {
+                'contentTypeId': 'person',
+                'fieldId': 'name',
+                'props': {
+                  'type': 'Array'
+                }
+              }
+            }
+          }
         }
       ]);
     }));
@@ -120,6 +160,26 @@ describe('field creation plan validation', function () {
               'payload': {
                 'contentTypeId': 'person',
                 'fieldId': 'name'
+              }
+            }
+          }
+        },
+        {
+          type: 'InvalidAction',
+          message: 'You are setting the property "type" on field "name" more than once. Please set it only once.',
+          details: {
+            step: {
+              'type': 'field/update',
+              'meta': {
+                'contentTypeInstanceId': 'contentType/person/0',
+                'fieldInstanceId': 'fields/name/1'
+              },
+              'payload': {
+                'contentTypeId': 'person',
+                'fieldId': 'name',
+                'props': {
+                  'type': 'Decimal'
+                }
               }
             }
           }

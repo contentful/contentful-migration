@@ -154,4 +154,107 @@ describe('field editing plan validation', function () {
       ]);
     }));
   });
+
+  describe('when setting the same prop more than once in one chunk', function () {
+    it('returns an error', Bluebird.coroutine(function * () {
+      const steps = yield migrationSteps(function up (migration) {
+        const person = migration.createContentType('person');
+
+        person.createField('name').type('Symbol');
+        person.editField('name').required(false);
+        person.editField('name').localized(false);
+        person.editField('name').validations();
+        person.editField('name').required(true);
+        person.editField('name').type('Text');
+        person.editField('name').type('Number');
+      });
+
+      const contentTypes = [];
+
+      const plan = stripCallsites(migrationPlan(steps));
+      const errors = validatePlan(plan, contentTypes);
+
+      expect(errors).to.eql([
+        {
+          type: 'InvalidAction',
+          message: 'You are setting the property "required" on field "name" more than once. Please set it only once.',
+          details: {
+            step: {
+              'type': 'field/update',
+              'meta': {
+                'contentTypeInstanceId': 'contentType/person/0',
+                'fieldInstanceId': 'fields/name/4'
+              },
+              'payload': {
+                'contentTypeId': 'person',
+                'fieldId': 'name',
+                'props': {
+                  'required': true
+                }
+              }
+            }
+          }
+        },
+        {
+          type: 'InvalidAction',
+          message: 'You are setting the property "type" on field "name" more than once. Please set it only once.',
+          details: {
+            step: {
+              'type': 'field/update',
+              'meta': {
+                'contentTypeInstanceId': 'contentType/person/0',
+                'fieldInstanceId': 'fields/name/5'
+              },
+              'payload': {
+                'contentTypeId': 'person',
+                'fieldId': 'name',
+                'props': {
+                  'type': 'Text'
+                }
+              }
+            }
+          }
+        },
+        {
+          type: 'InvalidAction',
+          message: 'You are setting the property "type" on field "name" more than once. Please set it only once.',
+          details: {
+            step: {
+              'type': 'field/update',
+              'meta': {
+                'contentTypeInstanceId': 'contentType/person/0',
+                'fieldInstanceId': 'fields/name/6'
+              },
+              'payload': {
+                'contentTypeId': 'person',
+                'fieldId': 'name',
+                'props': {
+                  'type': 'Number'
+                }
+              }
+            }
+          }
+        }
+      ]);
+    }));
+  });
+
+  describe('when setting the same prop more than once but in separate chunks', function () {
+    it('does not return errors', Bluebird.coroutine(function * () {
+      const steps = yield migrationSteps(function up (migration) {
+        const person = migration.createContentType('person');
+
+        person.createField('name').type('Symbol');
+        migration.createContentType('chunkSeparator');
+        person.editField('name').type('Text');
+      });
+
+      const contentTypes = [];
+
+      const plan = stripCallsites(migrationPlan(steps));
+      const errors = validatePlan(plan, contentTypes);
+
+      expect(errors).to.eql([]);
+    }));
+  });
 });
