@@ -1,28 +1,32 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## v0.2.1 - 2017-09-29
+### Fixed
+- _[fields]_ Before id change, check if field exists
+
 ## v0.2.0 - 2017-09-27
 ### Added
-- _[config]_ allow overriding the access-token from a command line flag
-- _[deleteCt]_ Adjust plan renderer
-- _[deleteCt]_ Check if deleted content type has entries
-- _[deleteCt]_ Add check for edits after deletes
-- _[deleteCt]_ Check for non-existing and duplicate deletes
-- _[deleteCt]_ Build payload and requests
-- _[deleteCt]_ Add delete method
-- _[deleteCt]_ Add docs
-- _[fields]_ Add changeFieldId method
-- _[dsl]_ field reordering
-- _[bin]_ unique migration id per execution
+- *[config]* allow overriding the access-token from a command line flag
+- *[deleteCt]* Adjust plan renderer
+- *[deleteCt]* Check if deleted content type has entries
+- *[deleteCt]* Add check for edits after deletes
+- *[deleteCt]* Check for non-existing and duplicate deletes
+- *[deleteCt]* Build payload and requests
+- *[deleteCt]* Add delete method
+- *[deleteCt]* Add docs
+- *[fields]* Add changeFieldId method
+- *[dsl]* field reordering
+- *[bin]* unique migration id per execution
 
 ### Changed
-- _[e2e]_ add 10sec timeout
+- *[e2e]* add 10sec timeout
 - add simple e2e test and merge coverage reporting
-- _[chunks]_ Refactor chunks content type validation
+- *[chunks]* Refactor chunks content type validation
 - Remove content type id module. It did unnecessary stuff.
-- _[deleteCt]_ Add integration test
+- *[deleteCt]* Add integration test
 - Fix heading level
-- _[validations]_ add missing validations for field scope
+- *[validations]* add missing validations for field scope
 - prefix error keys with the type and action
 - don't require integration config in unit tests
 
@@ -30,7 +34,7 @@ All notable changes to this project will be documented in this file.
 - Format error message more clearly
 - Do not report syntax errors as "file not found"
 - ensure the main migration CLI code is covered too
-- _[examples]_ display field in example to an existing field
+- *[examples]* display field in example to an existing field
 
 ## v0.1.1 - 2017-09-08
 ### Changed
