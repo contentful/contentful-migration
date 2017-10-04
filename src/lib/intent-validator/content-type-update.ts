@@ -11,7 +11,7 @@ class ContentTypeUpdateStepValidator extends SchemaValidator {
   get schema () {
     return {
       name: Joi.string().required(),
-      description: Joi.string().required(),
+      description: Joi.string().required().allow(''),
       displayField: Joi.string().required()
     }
   }

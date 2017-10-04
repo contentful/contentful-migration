@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.org/contentful/migration-cli.svg?branch=master)](https://travis-ci.org/contentful/migration-cli) [![codecov](https://codecov.io/gh/contentful/migration-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/contentful/migration-cli)
 
-Describe and execute changes to your content model.
+Describe and execute changes to your content model and transform entry content.
 
 This CLI is currently available in **Beta**.
 
@@ -85,6 +85,18 @@ Uses the same options as [`createContentType`](#createcontenttypeid--string-opts
 #### `deleteContentType(id)`
 
 Deletes the content type with the provided id and returns `undefined`. Note that the content type must not have any entries.
+
+#### `transformEntries(config)`
+
+**`config : Object`** – Content transformation definition, with the following properties:
+- **`contentType : string`** _(required)_ – Content type ID.
+- **`from : array`** _(required)_ – Array of the source field IDs
+- **`to : array`** _(required)_ – Array of the target field IDs
+- **`transformEntryForLocale : function (fields, locale): object`** _(required)_ – Transformation function to be applied.
+- **`shouldPublish : boolean`** _(optional)_ – Publish entries after transform (default _true_)
+
+For the given content type, transforms all entries according to the user-provided `transformEntryForLocale` function. This function will be called for every entry and every locale with the `from` fields and the current locale. It is expected to return an object with the desired target field and the value OR undefined, in which case this entry locale will be skipped. If `transformEntryForLocale` does return a value, it will be written to the current locale.
+Please also refer to [this example](./examples/12-transform-content.js).
 
 ### `ContentType`
 

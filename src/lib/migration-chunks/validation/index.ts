@@ -5,6 +5,7 @@ import fieldValidations from './field'
 import checkForDuplicatePropsErrors from './duplicate-props'
 import { ContentType } from '../../entities/content-type'
 import { Intent } from '../../interfaces/intent'
+import entriesTransformationsValidations from './entry-transformation'
 
 // TODO: rename to validateIntents
 function validateChunks (intentList: IntentList, contentTypes: ContentType[]): void {
@@ -25,6 +26,13 @@ function validateChunks (intentList: IntentList, contentTypes: ContentType[]): v
 
   if (fieldErrors.length > 0) {
     throw new ErrorCollection(fieldErrors, {payloadValidationError: true})
+  }
+
+  const entriesTransformationIntents = intents.filter((intent) => intent.isContentTransform())
+  const entriesTransformationErrors = entriesTransformationsValidations(entriesTransformationIntents, allCTs)
+
+  if (entriesTransformationErrors.length > 0) {
+    throw new ErrorCollection(entriesTransformationErrors, {payloadValidatioNError: true})
   }
 }
 

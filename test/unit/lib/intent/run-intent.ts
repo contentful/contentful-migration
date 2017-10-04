@@ -4,6 +4,7 @@ import IntentList from '../../../../src/lib/intent-list'
 import { ContentType } from '../../../../src/lib/entities/content-type'
 import { OfflineAPI } from '../../../../src/lib/offline-api/index'
 import { Entry } from '../../../../src/lib/entities/entry'
+import ErrorCollector from '../../../../src/lib/errors/error-collector'
 
 const runIntent = async function (intent, contentTypes: APIContentType[], entries: APIEntry[]): Promise<OfflineAPI> {
   const list = new IntentList([intent])
@@ -21,9 +22,9 @@ const runIntent = async function (intent, contentTypes: APIContentType[], entrie
     existingEntries.push(new Entry(apiEntry))
   }
 
-  const api = new OfflineAPI(existingCTs, existingEntries)
+  const api = new OfflineAPI(existingCTs, existingEntries, [])
 
-  await list.compressed().applyTo(api)
+  await list.compressed().applyTo(api, new ErrorCollector())
 
   return api
 }

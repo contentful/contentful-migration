@@ -3,6 +3,7 @@ import IntentList from '../../../../src/lib/intent-list'
 import { ContentType } from '../../../../src/lib/entities/content-type'
 import { OfflineAPI } from '../../../../src/lib/offline-api/index'
 import { migration } from '../../../../src/lib/migration-steps'
+import ErrorCollector from '../../../../src/lib/errors/error-collector';
 
 const buildPayloads = async function (runMigration, contentTypes: APIContentType[]) {
   const intents = await migration(runMigration)
@@ -16,9 +17,9 @@ const buildPayloads = async function (runMigration, contentTypes: APIContentType
     existingCTs.set(contentType.id, contentType)
   }
 
-  const api = new OfflineAPI(existingCTs, [])
+  const api = new OfflineAPI(existingCTs, [], [])
 
-  await list.compressed().applyTo(api)
+  await list.compressed().applyTo(api, new ErrorCollector())
 
   const batches = await api.getRequestBatches()
 

@@ -108,4 +108,26 @@ describe('payload validation', function () {
       ])
     })
   })
+
+  describe('when setting a description', function () {
+    it('returns no error', async function () {
+      const errors = await validateBatches(function (migration) {
+        const lunch = migration.createContentType('lunch')
+        lunch.name('A lunch')
+        lunch.description('A description')
+      }, [])
+
+      expect(errors).to.eql([[]])
+    })
+
+    it('accepts empty string', async function () {
+      const errors = await validateBatches(function (migration) {
+        const lunch = migration.createContentType('lunch')
+        lunch.name('A lunch')
+        lunch.description('')
+      }, [])
+
+      expect(errors).to.eql([[]])
+    })
+  })
 })
