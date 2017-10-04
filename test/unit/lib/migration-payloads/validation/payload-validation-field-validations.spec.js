@@ -63,6 +63,32 @@ describe('payload validation', function () {
       ]);
     }));
 
+    it('errors with correct invalid key on unknown validations key', Bluebird.coroutine(function * () {
+      const steps = yield migrationSteps(function up (migration) {
+        const person = migration.createContentType('person')
+          .name('Person')
+          .description('A Person');
+
+        person.createField('fullName')
+          .name('Full Name')
+          .type('Symbol')
+          .validations([{ unique: true }, { size: { min: 5, max: 10 }, somethingUnknown: 'foo', message: 'error' }]);
+      });
+      const chunks = migrationChunks(steps);
+      const plan = migrationPlan(chunks);
+      const payloads = migrationPayloads(plan);
+      const errors = validatePayloads(payloads);
+
+      expect(errors).to.eql([
+        [
+          {
+            type: 'InvalidPayload',
+            message: `A field can't have the combination "size", "somethingUnknown" and "message" as a validation.`
+          }
+        ]
+      ]);
+    }));
+
     it('errors on wrong validation parameter (object)', Bluebird.coroutine(function * () {
       const steps = yield migrationSteps(function up (migration) {
         const person = migration.createContentType('person')
