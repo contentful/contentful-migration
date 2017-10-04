@@ -22,7 +22,7 @@
     "url": "git://github.com/contentful/migration-cli.git"
   },
   "scripts": {
-    "test": "npm run lint && npm run test-unit && npm run test-integration",
+    "test": "npm run test-unit && npm run test-integration && npm run lint",
     "test-watch": "npm run test-unit -- --watch",
     "test-unit": "NODE_ENV=test mocha 'test/unit/**/*.spec.js'",
     "test-integration": "NODE_ENV=test mocha --require test/integration/setup.js 'test/integration/**/*.spec.js'",
