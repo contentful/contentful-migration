@@ -31,6 +31,10 @@ abstract class SchemaValidator implements IntentValidator {
 
   abstract appliesTo (intent: Intent): boolean
 
+  get propertyNameToValidate () {
+    return 'props'
+  }
+
   get schema () {
     return {}
   }
@@ -42,7 +46,8 @@ abstract class SchemaValidator implements IntentValidator {
     const displayName = this.displayName
 
     const errors = []
-    const propNames = Object.keys(step.payload.props)
+    const propertyToValidate = step.payload[this.propertyNameToValidate]
+    const propNames = Object.keys(propertyToValidate)
     const validProps = Object.keys(validations)
 
     for (const propName of propNames) {
@@ -64,7 +69,7 @@ abstract class SchemaValidator implements IntentValidator {
         })
       } else {
         const schema = validations[propName]
-        const { value, error } = Joi.validate(step.payload.props[propName], schema)
+        const { value, error } = Joi.validate(propertyToValidate[propName], schema)
 
         if (error) {
           const expectedType = schema._type

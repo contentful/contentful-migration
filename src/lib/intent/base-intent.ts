@@ -80,7 +80,18 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
-  abstract groupsWith (other: IntentInterface): boolean
+  groupsWith (other: Intent): boolean {
+    // A content transform does not end the group,
+    // but still could share a content type ID
+    if (other.isContentTransform()) {
+      return false
+    }
+
+    if (other.getContentTypeId() === this.getContentTypeId()) {
+      return true
+    }
+    return false
+  }
 
   abstract endsGroup (): boolean
 

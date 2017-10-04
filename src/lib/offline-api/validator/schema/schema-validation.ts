@@ -28,7 +28,6 @@ interface SimplifiedValidationError {
 
 const validateContentType = function (contentType: ContentType): PayloadValidationError[] {
   const contentTypeId = contentType.id
-
   const { error } = Joi.validate(_.omit(contentType.toAPI(), ['sys']), contentTypeSchema, {
     abortEarly: false
   })

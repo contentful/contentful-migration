@@ -95,8 +95,9 @@ class OfflineAPI {
   private intent: Intent = null
   private requestBatches: RequestBatch[] = []
   private contentTypeValidators: ContentTypePayloadValidator[] = []
+  private locales: string[] = []
 
-  constructor (contentTypes: Map<String, ContentType> = new Map(), entries: Entry[] = []) {
+  constructor (contentTypes: Map<String, ContentType> = new Map(), entries: Entry[] = [], locales: string[]) {
     this.modifiedContentTypes = contentTypes
 
     // Initialize saved and published state
@@ -121,6 +122,7 @@ class OfflineAPI {
     this.contentTypeValidators.push(new TypeChangeValidator())
 
     this.entries = entries
+    this.locales = locales
   }
 
   async getContentType (id: string): Promise<ContentType> {
@@ -282,6 +284,10 @@ class OfflineAPI {
     const entries = this.entries.filter((entry) => entry.contentTypeId === ctId)
 
     return entries
+  }
+
+  async getLocalesForSpace () {
+    return this.locales
   }
 
   async startRecordingRequests (intent: Intent) {

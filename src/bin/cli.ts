@@ -15,6 +15,8 @@ import renderPlan from './lib/plan-messages'
 import renderStepsErrors from './lib/steps-errors'
 import { RequestBatch } from '../lib/offline-api/index'
 import { flatten } from 'lodash'
+import Fetcher from '../lib/fetcher'
+import ErrorCollector from '../lib/errors/error-collector'
 
 const argv = yargs
   .usage('Parses and runs a migration script on a Contentful space.\n\nUsage: contentful-migration [args] <path-to-script-file>\n\nScript: path to a migration script.')
@@ -77,12 +79,14 @@ const run = async function () {
     return client.rawRequest(requestConfig)
   }
 
-  const migrationParser = createMigrationParser(makeRequest)
+  const fetcher = new Fetcher(makeRequest)
+  const migrationParser = createMigrationParser(fetcher)
 
   let batches: RequestBatch[]
+  let errorCollector: ErrorCollector
 
   try {
-    batches = await migrationParser(migrationFunction)
+    ({ batches, errorCollector } = await migrationParser(migrationFunction))
   } catch (e) {
     let message = e.message
 

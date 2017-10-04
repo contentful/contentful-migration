@@ -30,6 +30,14 @@ class Entry {
     this._fields = fields
   }
 
+  setField (id: string, value: any) {
+    this._fields[id] = value
+  }
+
+  setFieldForLocale (id: string, locale: string, value) {
+    this._fields[id][locale] = value
+  }
+
   get version () {
     return this._version
   }

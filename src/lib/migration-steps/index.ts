@@ -138,12 +138,6 @@ class ContentType extends DispatchProxy {
       newId
     ))
   }
-
-  transformContent (transformation) {
-    const callsite = getFirstExternalCaller()
-
-    this.dispatch(actionCreators.contentType.transformContent(this.id, this.instanceId, transformation, callsite))
-  }
 }
 
 export async function migration (migrationCreator): Promise<Intent[]> {
@@ -174,6 +168,15 @@ export async function migration (migrationCreator): Promise<Intent[]> {
       const callsite = getFirstExternalCaller()
       const instanceId = instanceIdManager.getNew(id)
       dispatch(actionCreators.contentType.delete(id, instanceId, callsite))
+    },
+
+    transformEntries: function (transformation) {
+      const callsite = getFirstExternalCaller()
+      const id = transformation.contentType
+      delete transformation.contentType
+      const instanceId = instanceIdManager.getNew(id)
+
+      dispatch(actionCreators.contentType.transformEntries(id, instanceId, transformation, callsite))
     }
   }
 
