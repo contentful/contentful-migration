@@ -634,4 +634,38 @@ describe('migration-steps', function () {
         }]);
     }));
   });
+
+  describe('when transforming content', function () {
+    it('returns the right steps', Bluebird.coroutine(function * () {
+      const transformFunction = function (sourceFields) {
+        const [firstName, lastName] = sourceFields;
+        return firstName + ' ' + lastName;
+      };
+      const plan = yield migration(function (migration) {
+        const author = migration.editContentType('author');
+        author.transformContent({
+          from: ['firstName', 'lastName'],
+          to: ['fullName'],
+          transform: transformFunction
+        });
+      });
+
+      expect(stripCallsites(plan)).to.eql([
+        {
+          type: 'contentType/transformContent',
+          meta: {
+            contentTypeInstanceId: 'contentType/author/0'
+          },
+          payload: {
+            contentTypeId: 'author',
+            transformation: {
+              from: ['firstName', 'lastName'],
+              to: ['fullName'],
+              transform: transformFunction
+            }
+          }
+        }
+      ]);
+    }));
+  });
 });

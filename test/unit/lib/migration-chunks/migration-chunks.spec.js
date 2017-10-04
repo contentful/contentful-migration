@@ -421,4 +421,99 @@ describe('migration-chunks', function () {
       ]);
     }));
   });
+
+  describe('when transforming content', function () {
+    it('goes into a separate chunk', Bluebird.coroutine(function * () {
+      const transformFunction = function (sourceFields) {
+        const [firstName, lastName] = sourceFields;
+        return firstName + ' ' + lastName;
+      };
+      const steps = yield migrationSteps(function (migration) {
+        const person = migration.editContentType('person');
+        person.createField('fullName').name('Full name').type('Text');
+        person.transformContent({
+          from: ['firstName', 'lastName'],
+          to: ['fullName'],
+          transform: transformFunction
+        });
+        const animal = migration.editContentType('animal');
+        animal.transformContent({
+          from: ['firstName', 'lastName'],
+          to: ['fullName'],
+          transform: transformFunction
+        });
+      });
+
+      const plan = stripCallsites(migrationChunks(steps));
+      expect(plan).to.eql([
+        [{
+          'type': 'field/create',
+          'meta': {
+            'contentTypeInstanceId': 'contentType/person/0',
+            'fieldInstanceId': 'fields/fullName/0'
+          },
+          'payload': {
+            'contentTypeId': 'person',
+            'fieldId': 'fullName'
+          }
+        },
+        {
+          'type': 'field/update',
+          'meta': {
+            'contentTypeInstanceId': 'contentType/person/0',
+            'fieldInstanceId': 'fields/fullName/0'
+          },
+          'payload': {
+            'contentTypeId': 'person',
+            'fieldId': 'fullName',
+            'props': {
+              'name': 'Full name'
+            }
+          }
+        },
+        {
+          'type': 'field/update',
+          'meta': {
+            'contentTypeInstanceId': 'contentType/person/0',
+            'fieldInstanceId': 'fields/fullName/0'
+          },
+          'payload': {
+            'contentTypeId': 'person',
+            'fieldId': 'fullName',
+            'props': {
+              'type': 'Text'
+            }
+          }
+        }],
+        [{
+          type: 'contentType/transformContent',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0'
+          },
+          payload: {
+            transformation: {
+              from: ['firstName', 'lastName'],
+              to: ['fullName'],
+              transform: transformFunction
+            },
+            contentTypeId: 'person'
+          }
+        }],
+        [{
+          type: 'contentType/transformContent',
+          meta: {
+            contentTypeInstanceId: 'contentType/animal/0'
+          },
+          payload: {
+            transformation: {
+              from: ['firstName', 'lastName'],
+              to: ['fullName'],
+              transform: transformFunction
+            },
+            contentTypeId: 'animal'
+          }
+        }]
+      ]);
+    }));
+  });
 });
