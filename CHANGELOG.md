@@ -1,9 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## v0.3.0 - 2017-10-05
+### Changed
+- Run linter after tests
+- Include linter in npm test command
+
+### Fixed
+- _[steps]_ allow migration script to be async
+- Do not allow setting of same property multiple times
+
 ## v0.2.1 - 2017-09-29
 ### Fixed
-- _[fields]_ Before id change, check if field exists
+- *[fields]* Before id change, check if field exists
 
 ## v0.2.0 - 2017-09-27
 ### Added
