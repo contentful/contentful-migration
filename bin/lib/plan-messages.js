@@ -101,7 +101,8 @@ const renderChunk = (chunk, errors) => {
 module.exports = {
   withErrors: (planAndErrors) => {
     const messages = planAndErrors.map(([chunk, errors]) => {
-      return renderChunk(chunk, errors);
+      const { steps } = chunk;
+      return renderChunk(steps, errors);
     });
 
     const prefix = chalk`{bold.red The following migration has been planned but cannot be run because it contains errors}\n\n`;
@@ -111,7 +112,9 @@ module.exports = {
   },
   withoutErrors: (plan) => {
     const messages = plan.map((chunk) => {
-      return renderChunk(chunk);
+      const { steps } = chunk;
+
+      return renderChunk(steps);
     });
 
     return messages.join('\n\n');
