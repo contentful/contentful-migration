@@ -114,5 +114,26 @@ describe('payload validation', function () {
         ]
       ]);
     }));
+
+    it('allows custom error message key', Bluebird.coroutine(function * () {
+      const steps = yield migrationSteps(function up (migration) {
+        const person = migration.createContentType('person')
+          .name('Person')
+          .description('A Person');
+
+        person.createField('fullName')
+          .name('Full Name')
+          .type('Symbol')
+          .validations([{ unique: true, message: 'must be uniq' }, { size: { min: 5, max: 10 }, message: 'must fit' }]);
+      });
+      const chunks = migrationChunks(steps);
+      const plan = migrationPlan(chunks);
+      const payloads = migrationPayloads(plan);
+      const errors = validatePayloads(payloads);
+
+      expect(errors).to.eql([
+        []
+      ]);
+    }));
   });
 });
