@@ -72,7 +72,7 @@ describe('payload validation', function () {
         person.createField('fullName')
           .name('Full Name')
           .type('Symbol')
-          .validations([{ unique: true }, { size: { min: 5, max: 10 }, somethingUnknown: 'foo', message: 'error' }]);
+          .validations([{ unique: true }, { size: { min: 5, max: 10 }, somethingUnknown: 'foo', msg: 'error' }]);
       });
       const chunks = migrationChunks(steps);
       const plan = migrationPlan(chunks);
@@ -83,7 +83,7 @@ describe('payload validation', function () {
         [
           {
             type: 'InvalidPayload',
-            message: `A field can't have the combination "size", "somethingUnknown" and "message" as a validation.`
+            message: `A field can't have the combination "size", "somethingUnknown" and "msg" as a validation.`
           }
         ]
       ]);
