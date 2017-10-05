@@ -433,3 +433,28 @@ author.createField('fullName')
     { size: 5 } // needs to be object { min, max }
   ])
 ```
+
+## DUPLICATE_PROP
+When setting the same property on a content type or field multiple times.
+
+**Example:**
+```javascript
+author.createField('fullName')
+  .name('Full name')
+  .type('Symbol')
+  .name('Name')
+```
+
+Note that steps in the migration description are grouped into what will be requests to Contentful's API. If the property changes would not end up in the same request because they are done in a later, separate step, this will not produce an error.
+
+**Example:**
+```javascript
+author.createField('fullName')
+  .name('Full name')
+  .type('Symbol')
+
+migration.deleteContentType('reader');
+
+author.editField('fullName')
+  .name('Name')
+```

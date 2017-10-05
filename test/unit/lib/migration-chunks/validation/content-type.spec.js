@@ -347,4 +347,39 @@ describe('content type plan validation', function () {
       ]);
     }));
   });
+
+  describe('when setting the same prop more than once in one chunk', function () {
+    it('returns an error', Bluebird.coroutine(function * () {
+      const steps = yield migrationSteps(function up (migration) {
+        const person = migration.createContentType('person').name('Person');
+        person.name('Person McPersonface');
+      });
+
+      const contentTypes = [];
+
+      const plan = stripCallsites(migrationPlan(steps));
+      const errors = validatePlan(plan, contentTypes);
+
+      expect(errors).to.eql([
+        {
+          type: 'InvalidAction',
+          message: 'You are setting the property "name" on content type "person" more than once. Please set it only once.',
+          details: {
+            step: {
+              'type': 'contentType/update',
+              'meta': {
+                'contentTypeInstanceId': 'contentType/person/0'
+              },
+              'payload': {
+                'contentTypeId': 'person',
+                'props': {
+                  'name': 'Person McPersonface'
+                }
+              }
+            }
+          }
+        }
+      ]);
+    }));
+  });
 });
