@@ -634,4 +634,31 @@ describe('migration-steps', function () {
         }]);
     }));
   });
+
+  describe('when using Promises within migration scripts', function () {
+    it('returns the right steps', Bluebird.coroutine(function * () {
+      const plan = yield migration(function (migration) {
+        return Bluebird.delay(1).then(() => migration
+          .editContentType('book')
+          .changeFieldId('title', 'bookTitle')
+        );
+      });
+
+      expect(stripCallsites(plan)).to.eql([
+        {
+          type: 'field/rename',
+          meta: {
+            contentTypeInstanceId: 'contentType/book/0',
+            fieldInstanceId: 'fields/title/0'
+          },
+          payload: {
+            contentTypeId: 'book',
+            fieldId: 'title',
+            props: {
+              newId: 'bookTitle'
+            }
+          }
+        }]);
+    }));
+  });
 });
