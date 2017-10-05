@@ -140,7 +140,7 @@ const run = Bluebird.coroutine(function * () {
     name: 'applyMigration'
   }]);
 
-  if (answers.applyMigration) {
+  if (false) {
     try {
       const successfulMigration = yield (new Listr(tasks)).run();
       console.log(chalk`🎉  {bold.green Migration successful}`);
