@@ -1,19 +1,30 @@
 'use strict';
 
-const nixt = require('nixt');
 const assert = require('./assertions');
+const cli = require('./cli');
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
-const ACCESS_TOKEN = process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN;
 
 describe('04-steps-errors.js', function () {
   it('outputs the correct errors', function (done) {
-    this.timeout(10000);
-    nixt()
-      .env('CONTENTFUL_MANAGEMENT_ACCESS_TOKEN', ACCESS_TOKEN)
-      .run(`./bin/contentful-migration --space-id ${SOURCE_TEST_SPACE} ./examples/04-steps-errors.js`)
+    cli()
+      .run(`--space-id ${SOURCE_TEST_SPACE} ./examples/04-steps-errors.js`)
       .expect(assert.errors.contentType.invalidPropertyWithSuggestion('nmae', 'name'))
       .expect(assert.errors.field.invalidPropertyWithSuggestion('lodalised', 'localized'))
+      .expect(assert.errors.field.invalidPropertyWithSuggestion('reqired', 'required'))
+      .expect(assert.errors.field.invalidPropertyWithSuggestion('validashons', 'validations'))
+      .expect(assert.errors.field.invalidTypeForProperty('validations', 'null', 'array'))
+      .end(done);
+  });
+});
+
+describe('05-plan-errors.js', function () {
+  it('outputs the correct errors', function (done) {
+    cli()
+      .run(`--space-id ${SOURCE_TEST_SPACE} ./examples/05-plan-errors.js`)
+      .expect(assert.errors.contentType.duplicateCreate(13, 'person'))
+      .expect(assert.errors.contentType.duplicateCreate(17, 'person'))
+      .expect(assert.errors.contentType.invalidProperty(9, 'somethingElse'))
       .end(done);
   });
 });
