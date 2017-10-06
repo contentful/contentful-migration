@@ -1,11 +1,7 @@
 'use strict';
 
-const Bluebird = require('bluebird');
-const co = Bluebird.coroutine;
-
 const stripAnsi = require('strip-ansi');
 const { expect } = require('chai');
-const { getDevContentType } = require('./client');
 
 module.exports = {
   errors: {
