@@ -3,7 +3,7 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const migrationPayloads = require('../../../lib/migration-payloads');
+const migrationPayloads = require('../../../lib/migration-payloads/content-type');
 const migrationChunks = require('../../../lib/migration-chunks');
 const migrationPlan = require('../../../lib/migration-plan');
 const migrationSteps = require('../../../lib/migration-steps');
