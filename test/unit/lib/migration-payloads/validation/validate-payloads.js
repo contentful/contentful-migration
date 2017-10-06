@@ -1,5 +1,5 @@
 const Bluebird = require('bluebird');
-const migrationPayloads = require('../../../../../lib/migration-payloads');
+const migrationPayloads = require('../../../../../lib/migration-payloads/content-type');
 const migrationPlan = require('../../../../../lib/migration-plan');
 const migrationChunks = require('../../../../../lib/migration-chunks');
 const migrationSteps = require('../../../../../lib/migration-steps');

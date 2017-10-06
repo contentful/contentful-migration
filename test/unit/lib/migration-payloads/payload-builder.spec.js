@@ -7,7 +7,7 @@ const Bluebird = require('bluebird');
 const migrationPlan = require('../../../../lib/migration-plan');
 const migrationChunks = require('../../../../lib/migration-chunks');
 const migrationSteps = require('../../../../lib/migration-steps');
-const builder = require('../../../../lib/migration-payloads/index');
+const builder = require('../../../../lib/migration-payloads/content-type');
 
 describe('Payload builder', function () {
   describe('Without a Content Type payload', function () {
