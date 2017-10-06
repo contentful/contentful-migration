@@ -3,11 +3,12 @@
 const Bluebird = require('bluebird');
 
 const path = require('path');
+const packageVersion = require('../../package.json').version;
 const { createManagementClient } = require('../../bin/lib/contentful-client');
 
 const config = {
   accessToken: process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN,
-  application: 'contentful.migration-cli.e2e-test/0.0.0'
+  application: `contentful.migration-cli.e2e-test/${packageVersion}`
 };
 
 const client = createManagementClient(config);

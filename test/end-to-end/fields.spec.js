@@ -6,7 +6,7 @@ const co = Bluebird.coroutine;
 const { expect } = require('chai');
 const assert = require('./assertions');
 const cli = require('./cli');
-const { createDevSpace, deleteDevSpace, getDevContentType } = require('./client');
+const { createDevSpace, deleteDevSpace, getDevContentType } = require('../helpers/client');
 
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
