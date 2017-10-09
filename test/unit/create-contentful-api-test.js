@@ -1,6 +1,7 @@
 import test from 'blue-tape'
+import sinon from 'sinon'
 
-import {spaceMock, setupEntitiesMock, organizationMock} from './mocks/entities'
+import {spaceMock, setupEntitiesMock, organizationMock, userMock} from './mocks/entities'
 import setupHttpMock from './mocks/http'
 import createContentfulApi, {__RewireAPI__ as createContentfulApiRewireApi} from '../../lib/create-contentful-api'
 import {makeGetEntityTest, makeGetCollectionTest, makeEntityMethodFailingTest} from './test-creators/static-entity-methods'
@@ -84,4 +85,38 @@ test('API call createSpace fails', (t) => {
   makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'createSpace'
   })
+})
+
+test('API call getCurrentUser', (t) => {
+  makeGetEntityTest(t, setup, teardown, {
+    entityType: 'user',
+    mockToReturn: userMock,
+    methodToTest: 'getCurrentUser'
+  })
+})
+
+test('API call getCurrentUser fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getCurrentUser'
+  })
+})
+
+test('API call rawRequest', (t) => {
+  const httpMock = sinon.stub().resolves({
+    data: {
+      response: true
+    }
+  })
+
+  const api = createContentfulApi({ http: httpMock })
+
+  return api.rawRequest({ opts: true })
+    .then((response) => {
+      t.looseEqual(response, {
+        response: true
+      }, 'returns plain response')
+      t.looseEqual(httpMock.args[0][0], {
+        opts: true
+      }, 'passes opts to http client')
+    })
 })
