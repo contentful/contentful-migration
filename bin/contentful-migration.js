@@ -95,7 +95,7 @@ const run = Bluebird.coroutine(function * () {
   try {
     requests = yield migrationParser(migrationFunction);
   } catch (error) {
-    let message = error.message;
+    let message = [error.message, error.stack].join('\n');
     if (error instanceof StepsValidationError) {
       message = renderFailedValidation(error.details, renderStepsErrors);
     }
