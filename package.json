@@ -33,7 +33,7 @@
     "test:cover": "BABEL_ENV=test babel-node ./node_modules/istanbul/lib/cli.js cover ./test/runner | tap-spec",
     "test:unit": "BABEL_ENV=test babel-node ./test/runner | tap-spec",
     "test:debug": "BABEL_ENV=test babel-node debug ./test/runner",
-    "test:integration": "BABEL_ENV=test babel-node ./test/integration/integration-tests.js",
+    "test:integration": "BABEL_ENV=test babel-node ./test/integration/integration-tests.js | tap-spec",
     "test:browser-local": "BABEL_ENV=test karma start karma.conf.local.js",
     "test:browser-remote": "BABEL_ENV=test karma start karma.conf.saucelabs.js",
     "test:e2e": "node test/e2e/index.js",
