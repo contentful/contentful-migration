@@ -9,8 +9,8 @@ const PROD = process.env.NODE_ENV === 'production'
 
 const plugins = [
   new webpack.optimize.OccurrenceOrderPlugin(),
-  new webpack.DefinePlugin({
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+  new webpack.EnvironmentPlugin({
+    NODE_ENV: 'development'
   }),
   new LodashModuleReplacementPlugin({
     caching: true,
@@ -27,6 +27,9 @@ if (PROD) {
       minimize: true,
       debug: false
     })
+  )
+  plugins.push(
+    new webpack.optimize.ModuleConcatenationPlugin()
   )
 }
 
