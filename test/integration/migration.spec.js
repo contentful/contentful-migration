@@ -1,6 +1,5 @@
 const Bluebird = require('bluebird');
-const path = require('path');
-const { createManagementClient } = require('../../bin/lib/contentful-client');
+const { makeRequest, createDevSpace } = require('../helpers/client');
 const { expect } = require('chai');
 const createDog = require('../../examples/01-angry-dog');
 const modifyDog = require('../../examples/02-friendly-dog');
@@ -16,62 +15,6 @@ const co = Bluebird.coroutine;
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 
-const config = {
-  accessToken: process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN,
-  application: 'contentful.migration-cli.integration-test/0.0.0'
-};
-
-const client = createManagementClient(config);
-
-const makeRequest = function (spaceId, requestConfig) {
-  requestConfig.url = path.join(spaceId, requestConfig.url);
-  return client.rawRequest(requestConfig);
-};
-
-const waitForJobCompletion = co(function * (makeRequest, spaceId, jobId) {
-  while (true) {
-    const devSpaceJob = yield makeRequest(spaceId, {
-      method: 'GET',
-      url: `/dev_space_jobs/${jobId}`,
-      headers: {
-        'X-Contentful-Beta-Dev-Spaces': 1
-      }
-    });
-
-    const status = devSpaceJob.status.value;
-
-    if (status === 'failed') {
-      throw new Error('Could not create dev space');
-    }
-
-    if (status === 'done') {
-      return;
-    }
-
-    yield Bluebird.delay(1000);
-  }
-});
-
-// returns dev space ID
-const createDevSpace = co(function * (makeRequest, spaceId, name) {
-  const devSpaceJob = yield makeRequest(spaceId, {
-    method: 'POST',
-    url: '/dev_space_jobs',
-    headers: {
-      'X-Contentful-Beta-Dev-Spaces': 1
-    },
-    data: {
-      name
-    }
-  });
-
-  const jobId = devSpaceJob.sys.id;
-
-  yield waitForJobCompletion(makeRequest, spaceId, jobId);
-
-  return devSpaceJob.devSpace.sys.id;
-});
-
 describe('the migration', function () {
   this.timeout(30000);
   let migrationParser;
@@ -80,7 +23,7 @@ describe('the migration', function () {
 
   before(co(function * () {
     this.timeout(30000);
-    const devSpaceId = yield createDevSpace(makeRequest, SOURCE_TEST_SPACE, 'migration test dev space');
+    const devSpaceId = yield createDevSpace(SOURCE_TEST_SPACE, 'migration test dev space');
     request = makeRequest.bind(null, devSpaceId);
     migrationParser = createMigrationParser(request);
     migrator = co(function * (migration) {
