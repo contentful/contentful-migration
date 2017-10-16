@@ -22,7 +22,7 @@ export default function apiKeyTests (t, space) {
       })
   })
 
-  t.test('Create apiKey', (t) => {
+  t.test('Create and update apiKey', (t) => {
     const name = generateRandomId('name')
     return space.createApiKey({
       name: name,
@@ -32,7 +32,7 @@ export default function apiKeyTests (t, space) {
         t.equals(apiKey.name, name, 'name')
         const updatedname = generateRandomId('updatedname')
         apiKey.name = updatedname
-        apiKey.update()
+        return apiKey.update()
           .then((updatedApiKey) => {
             t.equals(updatedApiKey.name, updatedname, 'name')
             return updatedApiKey.delete()
