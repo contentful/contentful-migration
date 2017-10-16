@@ -44,7 +44,7 @@ export default function webhookTests (t, space) {
         t.equals(webhook.name, 'testname', 'name')
         t.ok(webhook.url, 'url')
         webhook.name = 'updatedname'
-        webhook.update()
+        return webhook.update()
           .then((updatedWebhook) => {
             t.equals(updatedWebhook.name, 'updatedname', 'name')
             return updatedWebhook.delete()

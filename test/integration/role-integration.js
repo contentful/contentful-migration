@@ -33,7 +33,7 @@ export default function roleTests (t, space) {
       .then((role) => {
         t.equals(role.name, 'Content Editor', 'name')
         role.name = 'updatedname'
-        role.update()
+        return role.update()
           .then((updatedRole) => {
             t.equals(updatedRole.name, 'updatedname', 'name')
             return updatedRole.delete()
