@@ -1,4 +1,4 @@
-import test from 'tape'
+import test from 'blue-tape'
 import sinon from 'sinon'
 import {spaceMock, mockCollection} from '../mocks/entities'
 import {wrapSpace, wrapSpaceCollection, __RewireAPI__ as spaceRewireApi} from '../../../lib/entities/space'

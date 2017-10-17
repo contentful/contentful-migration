@@ -1,4 +1,4 @@
-import test from 'tape'
+import test from 'blue-tape'
 import {cloneMock} from '../mocks/entities'
 import setupHttpMock from '../mocks/http'
 import {wrapLocale, wrapLocaleCollection} from '../../../lib/entities/locale'

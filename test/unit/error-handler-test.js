@@ -1,4 +1,4 @@
-import test from 'tape'
+import test from 'blue-tape'
 import errorHandler from '../../lib/error-handler'
 import {cloneMock} from './mocks/entities'
 
