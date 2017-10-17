@@ -4,9 +4,11 @@ const Bluebird = require('bluebird');
 const { expect } = require('chai');
 const sinon = require('sinon');
 
-const migrationPlan = require('../../../lib/migration-chunks');
-const migrationSteps = require('../../../lib/migration-steps');
-const contentTypesInPlan = require('../../../lib/content-types-in-plan');
+const migrationPlan = require('../../../src/lib/migration-chunks');
+const migrationSteps = require('../../../src/lib/migration-steps');
+const contentTypesInPlan = require('../../../src/lib/content-types-in-plan').default;
+
+console.log(contentTypesInPlan);
 
 const co = Bluebird.coroutine;
 

@@ -22,6 +22,7 @@
     "url": "git://github.com/contentful/migration-cli.git"
   },
   "scripts": {
+    "build": "tsc -p .",
     "test": "npm run test-unit && npm run test-integration && npm run lint",
     "test-watch": "npm run test-unit -- --watch",
     "test-unit": "NODE_ENV=test mocha 'test/unit/**/*.spec.js'",
@@ -33,7 +34,7 @@
     "cover": "nyc --no-clean -s npm run test-unit && nyc --no-clean -s npm run test-integration && nyc --no-clean -s npm run test-e2e && nyc report",
     "coverage": "npm run cover && nyc report --reporter=text-lcov > coverage.lcov",
     "coverage-report": "npm run coverage && codecov && rm -rf ./nyc_output && rm coverage.lcov",
-    "lint": "eslint index.js bin/contentful-migration 'examples/**/*.js' 'test/**/*.js' 'lib/**/*.js' 'bin/**/*.js'"
+    "lint": "eslint 'examples/**/*.js' 'test/**/*.js' 'test/**/*.ts' 'src/**/*.js' 'src/**/*.ts'"
   },
   "nyc": {
     "per-file": true,
@@ -68,6 +69,10 @@
   },
   "devDependencies": {
     "@contentful/eslint-config-backend": "^5.0.0",
+    "@types/bluebird": "^3.5.15",
+    "@types/chai": "^4.0.4",
+    "@types/lodash": "^4.14.77",
+    "@types/mocha": "^2.2.43",
     "chai": "^4.1.2",
     "codecov": "^2.3.0",
     "dirty-chai": "^2.0.1",
@@ -77,15 +82,19 @@
     "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
+    "eslint-plugin-typescript": "^0.8.0",
     "mocha": "^3.4.0",
     "nixt": "^0.5.0",
     "nyc": "^11.2.1",
     "rewire": "^2.5.2",
     "sinon": "^2.4.1",
     "sinon-chai": "^2.13.0",
-    "strip-ansi": "^4.0.0"
+    "strip-ansi": "^4.0.0",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.5.3",
+    "typescript-eslint-parser": "^8.0.0"
   },
   "bin": {
-    "contentful-migration": "./bin/contentful-migration"
+    "contentful-migration": "./built/bin/contentful-migration"
   }
 }
