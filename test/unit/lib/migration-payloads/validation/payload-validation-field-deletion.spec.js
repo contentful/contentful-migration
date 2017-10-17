@@ -97,4 +97,35 @@ describe('payload validation (deletion)', function () {
       ]);
     }));
   });
+
+  describe('when deleting and then recreating a field', function () {
+    it('does not return any error', Bluebird.coroutine(function * () {
+      const steps = yield migrationSteps(function up (migration) {
+        const dog = migration.editContentType('dog');
+
+        dog.deleteField('owner');
+
+        dog.createField('owner')
+          .type('Symbol')
+          .name('Owner name')
+          .required(false);
+      });
+
+      const existingCts = [{
+        sys: { id: 'dog', version: 3 },
+        name: 'dog',
+        fields: [
+          { id: 'owner', name: 'owner', type: 'Symbol' }
+        ]
+      }];
+
+      const chunks = migrationChunks(steps);
+      const plan = migrationPlan(chunks);
+      const payloads = migrationPayloads(plan, existingCts);
+      const errors = validatePayloads(payloads);
+      expect(errors).to.eql([
+        [], [], []
+      ]);
+    }));
+  });
 });
