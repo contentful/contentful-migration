@@ -4,7 +4,7 @@ const { expect } = require('chai');
 const Bluebird = require('bluebird');
 const path = require('path');
 
-const createSteps = require('../../../../lib/migration-steps');
+const createSteps = require('../../../../src/lib/migration-steps');
 
 const getFileName = (fullFileName) => {
   return path.parse(fullFileName).base;

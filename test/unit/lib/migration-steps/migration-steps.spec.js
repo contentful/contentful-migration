@@ -3,7 +3,7 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const migration = require('../../../../lib/migration-steps');
+const migration = require('../../../../src/lib/migration-steps');
 const stripCallsite = require('../../../helpers/strip-callsite');
 const stripCallsites = (steps) => steps.map(stripCallsite);
 

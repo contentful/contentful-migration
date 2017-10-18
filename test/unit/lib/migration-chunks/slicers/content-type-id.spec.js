@@ -3,7 +3,7 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const sliceById = require('../../../../../lib/migration-chunks/slicers/content-type-id');
+const sliceById = require('../../../../../src/lib/migration-chunks/slicers/content-type-id');
 
 describe('slice by contentTypeId', function () {
   describe('when slicing steps', function () {

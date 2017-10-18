@@ -3,11 +3,11 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const migrationPayloads = require('../../../../../lib/migration-payloads');
-const migrationPlan = require('../../../../../lib/migration-plan');
-const migrationChunks = require('../../../../../lib/migration-chunks');
-const migrationSteps = require('../../../../../lib/migration-steps');
-const validatePayloads = require('../../../../../lib/migration-payloads/validation');
+const migrationPayloads = require('../../../../../src/lib/migration-payloads');
+const migrationPlan = require('../../../../../src/lib/migration-plan');
+const migrationChunks = require('../../../../../src/lib/migration-chunks');
+const migrationSteps = require('../../../../../src/lib/migration-steps');
+const validatePayloads = require('../../../../../src/lib/migration-payloads/validation');
 
 describe('payload validation (dependencies)', function () {
   describe('when setting a field to Array but not specifying the items', function () {

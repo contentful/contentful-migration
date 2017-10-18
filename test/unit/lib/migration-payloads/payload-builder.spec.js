@@ -4,10 +4,10 @@ const { expect } = require('chai');
 const _ = require('lodash');
 const Bluebird = require('bluebird');
 
-const migrationPlan = require('../../../../lib/migration-plan');
-const migrationChunks = require('../../../../lib/migration-chunks');
-const migrationSteps = require('../../../../lib/migration-steps');
-const builder = require('../../../../lib/migration-payloads/index');
+const migrationPlan = require('../../../../src/lib/migration-plan');
+const migrationChunks = require('../../../../src/lib/migration-chunks');
+const migrationSteps = require('../../../../src/lib/migration-steps');
+const builder = require('../../../../src/lib/migration-payloads/index');
 
 describe('Payload builder', function () {
   describe('Without a Content Type payload', function () {

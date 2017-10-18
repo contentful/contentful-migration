@@ -2,7 +2,7 @@
 
 import * as _ from 'lodash';
 
-export default async function fetcher (plan, request) {
+export async function fetcher (plan: any, request: any) : Promise<any[]> {
   const ids: Array<string> = _.uniq(plan.map((chunk) => chunk[0].payload.contentTypeId));
 
   if (ids.length === 0) {

@@ -2,8 +2,8 @@
 
 const Bluebird = require('bluebird');
 
-const createSteps = require('../../../../lib/migration-steps');
-const StepList = require('../../../../lib/step-list');
+const createSteps = require('../../../../src/lib/migration-steps');
+const StepList = require('../../../../src/lib/step-list');
 
 const stripCallsite = require('../../../helpers/strip-callsite');
 const stripCallsites = (errors) => errors.map((error) => {

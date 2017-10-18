@@ -3,8 +3,8 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const FieldUpdateValidator = require('../../../../lib/step-validator/field-update');
-const ContentTypeUpdateValidator = require('../../../../lib/step-validator/content-type-update');
+const FieldUpdateValidator = require('../../../../src/lib/step-validator/field-update');
+const ContentTypeUpdateValidator = require('../../../../src/lib/step-validator/content-type-update');
 const validateSteps = require('./validate-steps').bind(null, [
   FieldUpdateValidator,
   ContentTypeUpdateValidator

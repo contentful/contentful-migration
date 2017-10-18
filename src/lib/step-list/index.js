@@ -1,6 +1,6 @@
 'use strict';
 
-const Step = require('../step');
+const Intent = require('../intent').default;
 
 class StepList {
   constructor (steps) {
@@ -27,7 +27,7 @@ class StepList {
   }
 
   static fromRaw (rawSteps) {
-    return new StepList(rawSteps.map((rawStep) => new Step(rawStep)));
+    return new StepList(rawSteps.map((rawStep) => new Intent(rawStep)));
   }
 }
 

@@ -1,8 +1,8 @@
-'use strict';
+import RawStep from '../interfaces/raw-step';
 
 const actionCreators = {
   contentType: {
-    create: (id, instanceId, callsite) => ({
+    create: (id, instanceId, callsite): RawStep => ({
       type: 'contentType/create',
       meta: {
         contentTypeInstanceId: `contentType/${id}/${instanceId}`,
@@ -13,7 +13,7 @@ const actionCreators = {
       },
       payload: { contentTypeId: id }
     }),
-    update: (id, instanceId, callsite, property, value) => ({
+    update: (id, instanceId, callsite, property, value): RawStep => ({
       type: 'contentType/update',
       meta: {
         contentTypeInstanceId: `contentType/${id}/${instanceId}`,
@@ -29,7 +29,7 @@ const actionCreators = {
         }
       }
     }),
-    delete: (id, instanceId, callsite) => ({
+    delete: (id, instanceId, callsite): RawStep => ({
       type: 'contentType/delete',
       meta: {
         contentTypeInstanceId: `contentType/${id}/${instanceId}`,
@@ -40,7 +40,7 @@ const actionCreators = {
       },
       payload: { contentTypeId: id }
     }),
-    transformContent: (id, instanceId, transformation, callsite) => ({
+    transformContent: (id, instanceId, transformation, callsite): RawStep => ({
       type: 'contentType/transformContent',
       meta: {
         contentTypeInstanceId: `contentType/${id}/${instanceId}`,
@@ -56,7 +56,7 @@ const actionCreators = {
     })
   },
   field: {
-    create: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite) => ({
+    create: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite): RawStep => ({
       type: 'field/create',
       meta: {
         contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
@@ -71,7 +71,7 @@ const actionCreators = {
         fieldId
       }
     }),
-    update: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, property, value) => ({
+    update: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, property, value): RawStep => ({
       type: 'field/update',
       meta: {
         contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
@@ -89,7 +89,7 @@ const actionCreators = {
         }
       }
     }),
-    move: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, movement) => ({
+    move: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, movement): RawStep => ({
       type: 'field/move',
       meta: {
         contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
@@ -105,7 +105,7 @@ const actionCreators = {
         movement
       }
     }),
-    rename: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, value) => ({
+    rename: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, value): RawStep => ({
       type: 'field/rename',
       meta: {
         contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
@@ -123,7 +123,7 @@ const actionCreators = {
         }
       }
     }),
-    delete: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite) => ({
+    delete: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite): RawStep => ({
       type: 'field/delete',
       meta: {
         contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
@@ -141,4 +141,4 @@ const actionCreators = {
   }
 };
 
-module.exports = actionCreators;
+export default actionCreators

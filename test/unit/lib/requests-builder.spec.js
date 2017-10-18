@@ -3,11 +3,11 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const migrationPayloads = require('../../../lib/migration-payloads');
-const migrationChunks = require('../../../lib/migration-chunks');
-const migrationPlan = require('../../../lib/migration-plan');
-const migrationSteps = require('../../../lib/migration-steps');
-const builder = require('../../../lib/requests-builder');
+const migrationPayloads = require('../../../src/lib/migration-payloads');
+const migrationChunks = require('../../../src/lib/migration-chunks');
+const migrationPlan = require('../../../src/lib/migration-plan');
+const migrationSteps = require('../../../src/lib/migration-steps');
+const builder = require('../../../src/lib/requests-builder');
 
 describe('Executor', function () {
   describe('With just one Content Type', function () {

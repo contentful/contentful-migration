@@ -1,16 +1,16 @@
 'use strict';
 
-const Bluebird = require('bluebird');
-const DispatchProxy = require('./dispatch-proxy');
-const actionCreators = require('./action-creators');
-
-const getFirstExternalCaller = require('./first-external-caller');
+import * as Bluebird from 'bluebird';
+import actionCreators from './action-creators';
+import * as getFirstExternalCaller from './first-external-caller';
+import RawStep from '../interfaces/raw-step'
+import DispatchProxy from './dispatch-proxy';
 
 const createInstanceIdManager = () => {
   const instanceCounts = {};
 
   return {
-    getNew: (id) => {
+    getNew: (id): number => {
       let instanceId;
 
       if ((typeof instanceCounts[id]) === 'undefined') {
@@ -29,6 +29,8 @@ const createInstanceIdManager = () => {
 class Movement extends DispatchProxy {}
 
 class Field extends DispatchProxy {
+  public id: string
+  
   constructor (id, props = {}, { dispatchUpdate }) {
     super({ dispatchUpdate });
     this.id = id;
@@ -41,6 +43,11 @@ class Field extends DispatchProxy {
 }
 
 class ContentType extends DispatchProxy {
+  public id: string
+  public instanceId: string
+  public dispatch? (step: RawStep): void
+  public fieldInstanceIds?
+
   constructor (id, instanceId, props = {}, dispatch) {
     const dispatchUpdate = (callsite, propertyName, propertyValue) => {
       dispatch(actionCreators.contentType.update(id, instanceId, callsite, propertyName, propertyValue));
@@ -139,11 +146,11 @@ class ContentType extends DispatchProxy {
   }
 }
 
-module.exports = Bluebird.coroutine(function * migration (migrationCreator) {
-  const actions = [];
+export async function migration (migrationCreator): Promise<RawStep[]> {
+  const actions: RawStep[] = [];
   const instanceIdManager = createInstanceIdManager();
 
-  const dispatch = (action) => actions.push(action);
+  const dispatch = (action: RawStep) => actions.push(action);
 
   const migration = {
     createContentType: function (id, init) {
@@ -171,9 +178,9 @@ module.exports = Bluebird.coroutine(function * migration (migrationCreator) {
   };
 
   // Create the migration
-  yield Bluebird.try(function () {
+  await Bluebird.try(function () {
     return migrationCreator(migration);
   });
 
   return actions;
-});
+}

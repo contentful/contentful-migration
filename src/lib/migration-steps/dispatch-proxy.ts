@@ -1,6 +1,6 @@
 'use strict';
 
-const getFirstExternalCaller = require('./first-external-caller');
+import * as getFirstExternalCaller from './first-external-caller'
 
 /*
   Base class that dynamically dispatches property update messages based on the function being called
@@ -11,15 +11,16 @@ const getFirstExternalCaller = require('./first-external-caller');
 */
 
 class DispatchProxy {
+
   constructor ({ dispatchUpdate }) {
     const dispatchProxy = new Proxy(this, {
-      get: function (target, propertyName) {
+      get: function (target, propertyName: string) {
         // Promises are determined by duck-typing
         // if `then` or `catch` are defined, it's treated as
         // thenable, which needs to be resolved first.
         // Since we return the proxy for every unknown value
         // this breaks asynchronous migration functions.
-        if (['then', 'catch'].includes(propertyName)) {
+        if (['then', 'catch'].indexOf(propertyName) !== -1) {
           return void 0;
         }
 
@@ -39,4 +40,4 @@ class DispatchProxy {
   }
 }
 
-module.exports = DispatchProxy;
+export default DispatchProxy
