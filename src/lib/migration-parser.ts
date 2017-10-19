@@ -11,6 +11,7 @@ import * as buildPayloads from './migration-payloads/index'
 import Intent from './intent/index'
 import RawStep from './interfaces/raw-step'
 import HttpRequest from './interfaces/request'
+import  ContentType from './classes/content-type'
 import { fetcher as getContentTypesInChunks } from './content-types-in-plan'
 import checkEntriesForDeletedCts from './deleted-ct-entries'
 import validatePayloads from './migration-payloads/validation/index'
@@ -55,12 +56,14 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
 
     const chunks = buildChunks(steps);
 
-    let contentTypes;
+    let APIContentTypes;
     try {
-      contentTypes = await getContentTypesInChunks(chunks, makeRequest);
+      APIContentTypes= await getContentTypesInChunks(chunks, makeRequest);
     } catch (error) {
       throw new errors.SpaceAccessError();
     }
+
+    const contentTypes = APIContentTypes.map((apiCt => new ContentType(apiCt)));
 
     const ctsWithEntryInfo = await checkEntriesForDeletedCts(chunks, contentTypes, makeRequest);
 

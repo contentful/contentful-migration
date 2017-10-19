@@ -1,6 +1,7 @@
 'use strict';
 
 import * as _ from 'lodash';
+import APIContentType from './interfaces/content-type'
 
 export async function fetcher (plan: any, request: any) : Promise<any[]> {
   const ids: Array<string> = _.uniq(plan.map((chunk) => chunk[0].payload.contentTypeId));
@@ -14,5 +15,6 @@ export async function fetcher (plan: any, request: any) : Promise<any[]> {
     url: `/content_types?sys.id[in]=${ids.join(',')}`
   });
 
-  return response.items;
+  let contentTypes : APIContentType[] = response.items;
+  return contentTypes;
 };

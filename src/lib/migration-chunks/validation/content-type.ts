@@ -1,5 +1,7 @@
-const _ = require('lodash');
-const { contentType: ctErrors } = require('./errors');
+import * as _ from 'lodash';
+import { contentType } from './errors';
+import ContentType from '../../classes/content-type'
+const ctErrors = contentType.ctErrors;
 
 const errorFormatter = function (messageFormatter) {
   return function (errors) {
@@ -151,7 +153,7 @@ const checks = {
   }
 };
 
-module.exports = function (chunks, contentTypes) {
+export default function (chunks, contentTypes : ContentType[]) {
   const steps = _.flatten(chunks);
   const errors = _.values(checks).map((check) => {
     const foundItems = check.validate(steps, contentTypes);
