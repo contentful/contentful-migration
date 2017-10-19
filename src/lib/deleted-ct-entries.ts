@@ -1,9 +1,7 @@
-'use strict';
+import * as Bluebird from 'bluebird'
 
-const Bluebird = require('bluebird');
-
-module.exports = Bluebird.coroutine(function * checkEntriesForDeletedCts (chunks, contentTypes, request) {
-  const deletedCtIds = new Set(chunks
+export default async function checkEntriesForDeletedCts (chunks, contentTypes, request): Promise<any> {
+  const deletedCtIds: Set<string> = new Set(chunks
     .filter((chunk) => chunk[0].type === 'contentType/delete')
     .map((chunk) => chunk[0].payload.contentTypeId)
   );
@@ -12,9 +10,9 @@ module.exports = Bluebird.coroutine(function * checkEntriesForDeletedCts (chunks
     return contentTypes;
   }
 
-  return Bluebird.map(contentTypes, Bluebird.coroutine(function * (ct) {
+  return Bluebird.map(contentTypes, async function (ct): Promise<any> {
     if (deletedCtIds.has(ct.sys.id)) {
-      const response = yield request({
+      const response = await request({
         method: 'GET',
         url: `/entries?sys.contentType.sys.id=${ct.sys.id}`
       });
@@ -24,6 +22,6 @@ module.exports = Bluebird.coroutine(function * checkEntriesForDeletedCts (chunks
       }
     }
 
-    return ct;
-  }));
-});
+    return ct
+  })
+}

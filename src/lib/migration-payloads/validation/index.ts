@@ -1,6 +1,7 @@
-const _ = require('lodash');
-const { validateContentType, validateFields } = require('./schema-validation');
-const errorMessages = require('./errors');
+import * as _ from 'lodash'
+import { validateContentType, validateFields } from './schema-validation'
+import * as errorMessages from './errors'
+import { PayloadValidationError, InvalidActionError } from '../../interfaces/errors'
 
 const isDisplayFieldAndHasBeenDeleted = function (field, displayField) {
   return field.id === displayField && field.deleted;
@@ -10,13 +11,13 @@ const fieldIsDisplayField = function (field, displayField) {
   return field.id === displayField;
 };
 
-const checkIfDisplayFieldsExist = function (payload) {
-  const errors = [];
+const checkIfDisplayFieldsExist = function (payload): InvalidActionError[] {
+  const errors: InvalidActionError[] = [];
   const displayField = payload.payload.displayField;
   const fields = payload.payload.fields;
   const ctId = payload.meta.contentTypeId;
   if (!displayField) {
-    return [];
+    return errors;
   }
   if (!fields.some((field) => fieldIsDisplayField(field, displayField))) {
     errors.push({
@@ -33,7 +34,7 @@ const checkIfDisplayFieldsExist = function (payload) {
   return errors;
 };
 
-const deletedFieldError = function (contentTypeId, fieldId) {
+const deletedFieldError = function (contentTypeId, fieldId): InvalidActionError {
   return {
     type: 'InvalidAction',
     message: errorMessages.field.NO_DELETE_WITHOUT_OMIT(fieldId, contentTypeId)
@@ -94,7 +95,7 @@ const checkIfTypeWasChanged = function (payload) {
   return errors;
 };
 
-module.exports = function (payloads) {
+export default function validatePayloads (payloads): (PayloadValidationError | InvalidActionError)[] {
   return payloads.map((payload) => {
     if (payload.isDelete) {
       return [];

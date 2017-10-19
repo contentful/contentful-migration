@@ -71,6 +71,8 @@
     "@contentful/eslint-config-backend": "^5.0.0",
     "@types/bluebird": "^3.5.15",
     "@types/chai": "^4.0.4",
+    "@types/hoek": "^4.1.3",
+    "@types/joi": "^10.4.4",
     "@types/lodash": "^4.14.77",
     "@types/mocha": "^2.2.43",
     "chai": "^4.1.2",

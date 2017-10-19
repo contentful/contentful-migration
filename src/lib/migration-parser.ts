@@ -9,11 +9,11 @@ import * as buildPlan from './migration-plan/index'
 import * as buildPayloads from './migration-payloads/index'
 import * as validatePayloads from './migration-payloads/validation/index'
 import * as buildRequests from './requests-builder'
-import * as getEntriesForDeletedCts from './deleted-ct-entries'
 
 import Intent from './intent/index'
 import RawStep from './interfaces/raw-step'
 import { fetcher as getContentTypesInChunks } from './content-types-in-plan'
+import checkEntriesForDeletedCts from './deleted-ct-entries'
 
 import * as ContentTypeUpdateStepValidator from './step-validator/content-type-update'
 import * as FieldUpdateStepValidator from './step-validator/field-update'
@@ -61,7 +61,7 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
       throw new errors.SpaceAccessError();
     }
 
-    const ctsWithEntryInfo = await getEntriesForDeletedCts(chunks, contentTypes, makeRequest);
+    const ctsWithEntryInfo = await checkEntriesForDeletedCts(chunks, contentTypes, makeRequest);
 
     const chunksValidationErrors = validateChunks(chunks, ctsWithEntryInfo);
 
