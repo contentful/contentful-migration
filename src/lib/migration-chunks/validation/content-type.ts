@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
-import { contentType } from './errors';
+import * as errors from './errors';
 import ContentType from '../../classes/content-type'
-const ctErrors = contentType.ctErrors;
+const ctErrors = errors.contentType;
 
 const errorFormatter = function (messageFormatter) {
   return function (errors) {
@@ -31,7 +31,7 @@ const checks = {
       const nonExistingCreates = filterStepsForExistingCTs(ctCreates, contentTypes);
 
       // Group the steps into an object by the content type ID
-      const createGroups = _.groupBy(nonExistingCreates, (item) => item.payload.contentTypeId);
+      const createGroups = _.groupBy(nonExistingCreates, (item: any) => item.payload.contentTypeId);
       // For every group, drop every first item
       // The remaining items are duplicate creates
       const potentialErrors = _.mapValues(createGroups, (createGroup) => _.tail(createGroup));
@@ -49,14 +49,14 @@ const checks = {
       // Find all create and edit steps
       const ctChanges = nonExistentCTs.filter((step) => ['contentType/create', 'contentType/update'].includes(step.type));
       // Group the steps into an object by the content type ID
-      const editGroups = _.groupBy(ctChanges, (item) => item.payload.contentTypeId);
+      const editGroups = _.groupBy(ctChanges, (item: any) => item.payload.contentTypeId);
       // Filter any group that has no create
       const createGroups = _.omitBy(editGroups, (group) => {
         return !group.find((step) => step.type === 'contentType/create');
       });
       // Any update happening before a create action is wrong, so take all until the first create
       const potentialErrors = _.mapValues(createGroups, (createGroup) => {
-        return _.takeWhile(createGroup, (step) => step.type !== 'contentType/create');
+        return _.takeWhile(createGroup, (step: any) => step.type !== 'contentType/create');
       });
 
       // Strip out all groups that are empty since they aren't error cases
@@ -73,7 +73,7 @@ const checks = {
       // Find all create and edit steps
       const ctChanges = nonExistentCTs.filter((step) => ['contentType/create', 'contentType/update'].includes(step.type));
       // Group the steps into an object by the content type ID
-      const changeGroups = _.groupBy(ctChanges, (item) => item.payload.contentTypeId);
+      const changeGroups = _.groupBy(ctChanges, (item: any) => item.payload.contentTypeId);
       // Filter any group that has a create. That one will be taken over by the editBeforeCreate validation
       const editGroups = _.omitBy(changeGroups, (group) => {
         return group.find((step) => step.type === 'contentType/create');
@@ -111,7 +111,7 @@ const checks = {
   duplicateDeletes: {
     validate: function (steps) {
       const ctDeletes = steps.filter((step) => step.type === 'contentType/delete');
-      const deletedCts = _.groupBy(ctDeletes, (item) => item.payload.contentTypeId);
+      const deletedCts = _.groupBy(ctDeletes, (item: any) => item.payload.contentTypeId);
       const duplicateDeletes = _.pickBy(deletedCts, (steps) => steps.length > 1);
       return _.flatten(_.map(_.values(duplicateDeletes), _.drop));
     },
