@@ -4,6 +4,7 @@ import RawStep from './raw-step'
 interface Intent {
   // toActions() : Action[]
   toRaw(): RawStep
+  getContentTypeId() : string
 
   isContentTypeUpdate () : boolean
   isContentTypeDelete() : boolean
@@ -14,6 +15,9 @@ interface Intent {
   isFieldRename () : boolean
   isFieldMove () : boolean
   isContentTransform () : boolean
+
+  groupsWith (other: Intent): boolean
+  endsGroup (): boolean
 }
 
 export {

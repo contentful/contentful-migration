@@ -15,6 +15,10 @@ export default abstract class Intent implements IntentInterface {
 
   // abstract toActions (): ActionInterface[]
 
+  getContentTypeId () {
+    return this.payload.contentTypeId;
+  }
+
   isContentTypeUpdate () {
     return false
   }
@@ -48,6 +52,23 @@ export default abstract class Intent implements IntentInterface {
   }
 
   isContentTransform () {
+    return false
+  }
+
+  groupsWith (other: Intent): boolean {
+    // A content transform does not end the group,
+    // but still could share a content type ID
+    if (other.isContentTransform()) {
+      return false
+    }
+    
+    if (other.getContentTypeId() === this.getContentTypeId()) {
+      return true;
+    }
+    return false;
+  }
+
+  endsGroup (): boolean {
     return false
   }
 

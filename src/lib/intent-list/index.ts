@@ -1,8 +1,9 @@
 import Intent from '../interfaces/intent'
 import IntentValidator from '../interfaces/intent-validator'
 import ValidationError from '../interfaces/errors'
+import RawStep from '../interfaces/raw-step'
 
-class StepList {
+class IntentList {
   private intents: Intent[]
   private validators: IntentValidator[]
 
@@ -28,6 +29,39 @@ class StepList {
 
     return errors;
   }
+
+  toRaw (): RawStep[] {
+    return this.intents.map((intent) => intent.toRaw())
+  }
+
+  slice (): IntentList[] {
+    const slices: IntentList[] = [];
+
+    let currentList: Intent[] = [];
+    let previousIntentInGroup: Intent | null = null;
+
+    for (const intent of this.intents) {
+      if (previousIntentInGroup === null || intent.groupsWith(previousIntentInGroup)) {
+        currentList.push(intent)
+      } else {
+        slices.push(new IntentList(currentList));
+        currentList = [
+          intent
+        ];
+      }
+      previousIntentInGroup = intent;
+
+      if (intent.endsGroup()) {
+        slices.push(new IntentList(currentList));
+        currentList = []
+        previousIntentInGroup = null
+      }
+    }
+    slices.push(new IntentList(currentList));
+
+
+    return slices
+  }
 }
 
-export default StepList
+export default IntentList

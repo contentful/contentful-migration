@@ -3,16 +3,27 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const migrationChunks = require('../../../../src/lib/migration-chunks');
 const migrationSteps = require('../../../../src/lib/migration-steps').migration;
+const IntentList = require('../../../../src/lib/intent-list').default;
 
 const stripCallsite = require('../../../helpers/strip-callsite');
 const stripCallsites = (plan) => plan.map((chunk) => chunk.map(stripCallsite));
 
+const getChunks = Bluebird.coroutine(function * (migration) {
+  const intents = yield migrationSteps(migration);
+  const list = new IntentList(intents);
+
+  const sliced = list.slice();
+
+  const raw = sliced.map((list) => list.toRaw());
+
+  return stripCallsites(raw);
+});
+
 describe('migration-chunks', function () {
   describe('when creating a field', function () {
     it('chunks', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const chunks = yield getChunks(function up (migration) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
           name: 'foo'
@@ -43,9 +54,6 @@ describe('migration-chunks', function () {
           type: 'Symbol'
         });
       });
-
-      const chunks = stripCallsites(migrationChunks(steps));
-
 
       expect(chunks).to.eql([
         [{
@@ -242,7 +250,7 @@ describe('migration-chunks', function () {
   });
   describe('when deleting a field', function () {
     it('includes it in the plan', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const chunks = yield getChunks(function up (migration) {
         const person = migration.editContentType('person');
         person.createField('fullName', {
           name: 'Full Name',
@@ -256,9 +264,7 @@ describe('migration-chunks', function () {
         });
       });
 
-      const plan = stripCallsites(migrationChunks(steps));
-
-      expect(plan).to.eql([
+      expect(chunks).to.eql([
         [{
           type: 'field/create',
           meta: {
@@ -327,16 +333,15 @@ describe('migration-chunks', function () {
 
   describe('when changing the id of a field', function () {
     it('puts it in a separate chunk', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const chunks = yield getChunks(function up (migration) {
         const book = migration.editContentType('book');
         book.editField('pages').name('new pages title');
         book.changeFieldId('title', 'newTitle');
         book.editField('newTitle').name('new Title');
       });
 
-      const plan = stripCallsites(migrationChunks(steps));
 
-      expect(plan).to.eql([
+      expect(chunks).to.eql([
         [{
           type: 'field/update',
           meta: {
@@ -382,9 +387,10 @@ describe('migration-chunks', function () {
       ]);
     }));
   });
+
   describe('when deleting a content type', function () {
     it('includes it in the plan', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const chunks = yield getChunks(function up (migration) {
         const person = migration.editContentType('person');
         migration.deleteContentType('recipe');
 
@@ -393,9 +399,7 @@ describe('migration-chunks', function () {
         });
       });
 
-      const plan = stripCallsites(migrationChunks(steps));
-
-      expect(plan).to.eql([
+      expect(chunks).to.eql([
         [{
           type: 'contentType/delete',
           meta: {
@@ -428,7 +432,7 @@ describe('migration-chunks', function () {
         const [firstName, lastName] = sourceFields;
         return firstName + ' ' + lastName;
       };
-      const steps = yield migrationSteps(function (migration) {
+      const chunks = yield getChunks(function (migration) {
         const person = migration.editContentType('person');
         person.createField('fullName').name('Full name').type('Text');
         person.transformContent({
@@ -444,8 +448,7 @@ describe('migration-chunks', function () {
         });
       });
 
-      const plan = stripCallsites(migrationChunks(steps));
-      expect(plan).to.eql([
+      expect(chunks).to.eql([
         [{
           'type': 'field/create',
           'meta': {
