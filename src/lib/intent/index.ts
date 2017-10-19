@@ -13,7 +13,7 @@ const FIELD_MOVE = 'field/move';
 const CONTENT_TYPE_UPDATE = 'contentType/update';
 const CONTENT_TYPE_CREATE = 'contentType/create';
 
-class Intent implements IntentInterface, ActionInterface {
+abstract class Intent implements IntentInterface {
   protected type: string
   protected meta: RawStepMeta
   protected payload: RawStepPayload
@@ -56,17 +56,7 @@ class Intent implements IntentInterface, ActionInterface {
     return this.type === CONTENT_TRANSFORM;
   }
 
-  get contentTypeId () {
-    return this.payload.contentTypeId;
-  }
-
-  toActions() {
-    return [this]
-  }
-
-  applyTo() {
-
-  }
+  abstract toActions (): void
 
   toRaw (): RawStep {
     return {

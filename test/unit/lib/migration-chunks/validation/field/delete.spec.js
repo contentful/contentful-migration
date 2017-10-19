@@ -4,7 +4,7 @@ const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
 const migrationPlan = require('../../../../../../src/lib/migration-chunks');
-const migrationSteps = require('../../../../../../src/lib/migration-steps');
+const migrationSteps = require('../../../../../../src/lib/migration-steps').migration;
 const validatePlan = require('../../../../../../src/lib/migration-chunks/validation');
 
 const stripCallsite = require('../../../../../helpers/strip-callsite');

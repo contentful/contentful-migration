@@ -66,7 +66,7 @@ const checkIfDeletionWasOmitted = function (payload): InvalidActionError[]{
 
 const checkIfTypeWasChanged = function (payload): InvalidActionError[] {
   const contentTypeId = payload.meta.contentTypeId;
-  const fieldsById = _.keyBy(payload.payload.fields, 'id');
+  const fieldsById: _.Dictionary<any> = _.keyBy(payload.payload.fields, 'id');
 
   if (!payload.meta.parent) {
     return [];
@@ -76,7 +76,7 @@ const checkIfTypeWasChanged = function (payload): InvalidActionError[] {
   const errors: InvalidActionError[] = [];
 
   for (const fieldId of Object.keys(fieldsById)) {
-    const parentField = parentFieldsById[fieldId];
+    const parentField: any = parentFieldsById[fieldId];
 
     // we don't care about a type change if the previous change was a deletion
     if (parentField && !parentField.deleted) {

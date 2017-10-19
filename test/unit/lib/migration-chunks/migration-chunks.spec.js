@@ -4,7 +4,7 @@ const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
 const migrationChunks = require('../../../../src/lib/migration-chunks');
-const migrationSteps = require('../../../../src/lib/migration-steps');
+const migrationSteps = require('../../../../src/lib/migration-steps').migration;
 
 const stripCallsite = require('../../../helpers/strip-callsite');
 const stripCallsites = (plan) => plan.map((chunk) => chunk.map(stripCallsite));

@@ -5,7 +5,7 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 
 const migrationPlan = require('../../../src/lib/migration-chunks');
-const migrationSteps = require('../../../src/lib/migration-steps');
+const migrationSteps = require('../../../src/lib/migration-steps').migration;
 const contentTypesInPlan = require('../../../src/lib/content-types-in-plan').fetcher;
 
 const co = Bluebird.coroutine;

@@ -5,8 +5,8 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 
 const migrationPlan = require('../../../src/lib/migration-chunks');
-const migrationSteps = require('../../../src/lib/migration-steps');
-const deletedCtEntries = require('../../../src/lib/deleted-ct-entries');
+const migrationSteps = require('../../../src/lib/migration-steps').migration;
+const deletedCtEntries = require('../../../src/lib/deleted-ct-entries').default;
 
 const co = Bluebird.coroutine;
 

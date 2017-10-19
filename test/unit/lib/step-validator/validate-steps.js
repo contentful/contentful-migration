@@ -2,7 +2,7 @@
 
 const Bluebird = require('bluebird');
 
-const createSteps = require('../../../../src/lib/migration-steps');
+const createSteps = require('../../../../src/lib/migration-steps').migration;
 const StepList = require('../../../../src/lib/step-list');
 
 const stripCallsite = require('../../../helpers/strip-callsite');
