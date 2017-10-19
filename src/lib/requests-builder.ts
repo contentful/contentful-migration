@@ -1,6 +1,6 @@
-'use strict';
+import HttpRequest from './interfaces/request'
 
-function makeCreateOrUpdateRequestsBuilder (requests) {
+function makeCreateOrUpdateRequestsBuilder (requests: HttpRequest[]) {
   return function (payload) {
     let parentVersion = payload.meta.parentVersion;
 
@@ -25,7 +25,7 @@ function makeCreateOrUpdateRequestsBuilder (requests) {
   };
 }
 
-function makeDeleteRequestsBuilder (requests) {
+function makeDeleteRequestsBuilder (requests: HttpRequest[]) {
   return function (payload) {
     let parentVersion = payload.meta.parentVersion;
 
@@ -49,8 +49,8 @@ function makeDeleteRequestsBuilder (requests) {
   };
 }
 
-module.exports = function requestsBuilder (ctPayloads) {
-  const requests = [];
+export default function requestsBuilder (ctPayloads): HttpRequest[] {
+  const requests: HttpRequest[] = [];
   const makeCreateOrUpdateRequests = makeCreateOrUpdateRequestsBuilder(requests);
   const makeDeleteRequests = makeDeleteRequestsBuilder(requests);
 

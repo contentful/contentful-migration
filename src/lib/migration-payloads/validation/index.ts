@@ -100,13 +100,17 @@ export default function validatePayloads (payloads): (PayloadValidationError | I
     if (payload.isDelete) {
       return [];
     }
+
+    const allErrors: (PayloadValidationError | InvalidActionError)[] = [];
+
     const displayFieldValidation = checkIfDisplayFieldsExist(payload);
     const ctErrors = validateContentType(payload);
     const fieldErrors = validateFields(payload);
     const deletionErrors = checkIfDeletionWasOmitted(payload);
     const typeChangeErrors = checkIfTypeWasChanged(payload);
 
-    return ctErrors.concat(fieldErrors)
+    return allErrors.concat(ctErrors)
+      .concat(fieldErrors)
       .concat(displayFieldValidation)
       .concat(deletionErrors)
       .concat(typeChangeErrors)
