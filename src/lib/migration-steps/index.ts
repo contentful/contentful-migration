@@ -3,7 +3,7 @@
 import * as Bluebird from 'bluebird';
 import actionCreators from './action-creators';
 import * as getFirstExternalCaller from './first-external-caller';
-import RawStep from '../interfaces/raw-step'
+import Intent from '../interfaces/intent'
 import DispatchProxy from './dispatch-proxy';
 
 const createInstanceIdManager = () => {
@@ -45,7 +45,7 @@ class Field extends DispatchProxy {
 class ContentType extends DispatchProxy {
   public id: string
   public instanceId: string
-  public dispatch? (step: RawStep): void
+  public dispatch? (step: Intent): void
   public fieldInstanceIds?
 
   constructor (id, instanceId, props = {}, dispatch) {
@@ -146,11 +146,11 @@ class ContentType extends DispatchProxy {
   }
 }
 
-export async function migration (migrationCreator): Promise<RawStep[]> {
-  const actions: RawStep[] = [];
+export async function migration (migrationCreator): Promise<Intent[]> {
+  const actions: Intent[] = [];
   const instanceIdManager = createInstanceIdManager();
 
-  const dispatch = (action: RawStep) => actions.push(action);
+  const dispatch = (action: Intent) => actions.push(action);
 
   const migration = {
     createContentType: function (id, init) {

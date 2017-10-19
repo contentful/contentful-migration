@@ -1,10 +1,11 @@
-'use strict';
 
-const Joi = require('joi');
-const didYouMean = require('didyoumean2');
-const kindOf = require('kind-of');
+import * as Joi from 'joi'
+import * as didYouMean from 'didyoumean2'
+import * as kindOf from 'kind-of'
 
-const StepValidator = require('./step-validator');
+import IntentValidator from '../interfaces/intent-validator'
+import ValidationError from '../interfaces/errors'
+import Intent from '../interfaces/intent'
 
 
 const validationErrors = {
@@ -23,21 +24,20 @@ const validationErrors = {
   Abstract Base Class for schema validation of steps
   Needs getters for `schema` and `displayName` implemented in subclasses
 */
-class SchemaValidator extends StepValidator {
+abstract class SchemaValidator implements IntentValidator {
   get validationErrors () {
     return validationErrors;
   }
+
+  abstract appliesTo (intent: Intent): boolean
+  protected abstract displayName: string
 
   get schema () {
     return {};
   }
 
-  get displayName () {
-    return '';
-  }
-
-  validate (step) {
-    step = step.toRaw();
+  validate (intent: Intent): ValidationError[] {
+    const step = intent.toRaw();
     const validations = this.schema;
     const validationErrors = this.validationErrors;
     const displayName = this.displayName;
@@ -85,4 +85,4 @@ class SchemaValidator extends StepValidator {
   }
 }
 
-module.exports = SchemaValidator;
+export default SchemaValidator

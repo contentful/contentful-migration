@@ -1,9 +1,9 @@
-'use strict';
-
-const SchemaValidator = require('./schema-validator');
-const Joi = require('joi');
+import SchemaValidator from './schema-validator'
+import * as Joi from 'joi'
 
 class ContentTypeUpdateStepValidator extends SchemaValidator {
+  protected displayName = 'content type'
+
   appliesTo (step) {
     return step.isContentTypeUpdate();
   }
@@ -15,10 +15,6 @@ class ContentTypeUpdateStepValidator extends SchemaValidator {
       displayField: Joi.string().required()
     };
   }
-
-  get displayName () {
-    return 'content type';
-  }
 }
 
-module.exports = ContentTypeUpdateStepValidator;
+export default ContentTypeUpdateStepValidator;

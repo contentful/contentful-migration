@@ -20,7 +20,12 @@ interface RawStepPayload {
   fieldId?: string
   props?: RawStepProps
   transformation?: string
-  movement?: string
+  movement?: Movement
+}
+
+interface Movement {
+  pivot?: string
+  direction?: string
 }
 
 interface RawStepProps {

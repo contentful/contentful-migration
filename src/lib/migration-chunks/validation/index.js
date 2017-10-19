@@ -1,6 +1,6 @@
 'use strict';
 
-const contentTypeValidations = require('./content-type');
+const contentTypeValidations = require('./content-type').default;
 const fieldValidations = require('./field');
 const checkForDuplicatePropsErrors = require('./duplicate-props');
 

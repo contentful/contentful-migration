@@ -2,7 +2,7 @@
 
 import * as _ from 'lodash'
 import * as Bluebird from 'bluebird'
-import { migration as buildSteps } from './migration-steps/index'
+import { migration as buildIntents } from './migration-steps/index'
 import * as validateChunks from './migration-chunks/validation/index'
 import * as buildChunks from './migration-chunks/index'
 import * as buildPlan from './migration-plan/index'
@@ -17,10 +17,10 @@ import checkEntriesForDeletedCts from './deleted-ct-entries'
 import validatePayloads from './migration-payloads/validation/index'
 import buildRequests from './requests-builder'
 
-import * as ContentTypeUpdateStepValidator from './step-validator/content-type-update'
-import * as FieldUpdateStepValidator from './step-validator/field-update'
-import * as FieldMovementValidator from './step-validator/field-movement'
-import * as StepList from './step-list/index'
+import ContentTypeUpdateIntentValidator from './intent-validator/content-type-update'
+import FieldUpdateIntentValidator from './intent-validator/field-update'
+import FieldMovementValidator from './intent-validator/field-movement'
+import IntentList from './intent-list/index'
 import * as errors from './errors/index'
 
 const createMigrationParser = function (makeRequest, hooks): (migrationCreator: () => any) => Promise<any[]> {
@@ -37,24 +37,23 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
   });
 
   return async function migration (migrationCreator) {
-    const rawSteps = await buildSteps(migrationCreator);
+    const intents = await buildIntents(migrationCreator);
 
-    const steps = rawSteps.map((step: RawStep) => new Intent(step));
-    const stepList = new StepList(steps);
+    const intentList = new IntentList(intents);
 
-    stepList.addValidator(new ContentTypeUpdateStepValidator());
-    stepList.addValidator(new FieldUpdateStepValidator());
-    stepList.addValidator(new FieldMovementValidator());
+    intentList.addValidator(new ContentTypeUpdateIntentValidator());
+    intentList.addValidator(new FieldUpdateIntentValidator());
+    intentList.addValidator(new FieldMovementValidator());
 
-    const stepsValidationErrors = stepList.validate();
+    const intentValidationErrors = intentList.validate();
 
-    if (stepsValidationErrors.length > 0) {
-      throw new errors.StepsValidationError(stepsValidationErrors);
+    if (intentValidationErrors.length > 0) {
+      throw new errors.StepsValidationError(intentValidationErrors);
     }
 
-    await hooks.onSteps(steps);
+    await hooks.onSteps(intents);
 
-    const chunks = buildChunks(steps);
+    const chunks = buildChunks(intents);
 
     let APIContentTypes;
     try {

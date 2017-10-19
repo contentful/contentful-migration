@@ -1,9 +1,9 @@
-'use strict';
-
-const SchemaValidator = require('./schema-validator');
-const Joi = require('joi');
+import SchemaValidator from './schema-validator'
+import * as Joi from 'joi'
 
 class FieldUpdateStepValidator extends SchemaValidator {
+  protected displayName = 'field'
+
   appliesTo (step) {
     return step.isFieldUpdate();
   }
@@ -24,10 +24,6 @@ class FieldUpdateStepValidator extends SchemaValidator {
       items: Joi.object().required()
     };
   }
-
-  get displayName () {
-    return 'field';
-  }
 }
 
-module.exports = FieldUpdateStepValidator;
+export default FieldUpdateStepValidator

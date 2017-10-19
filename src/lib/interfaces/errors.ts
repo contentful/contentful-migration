@@ -1,6 +1,11 @@
+import RawStep from './raw-step'
+
 interface ValidationError {
   type: string,
-  message: string
+  message: string,
+  details?: {
+    step: RawStep
+  }
 }
 
 interface PayloadValidationError extends ValidationError {
@@ -15,12 +20,18 @@ interface InvalidActionError extends ValidationError {
 
 interface InvalidTypeError extends ValidationError {
   type: 'InvalidType',
-  message: string
+  message: string,
+  details: {
+    step: RawStep
+  }
 }
 
 interface InvalidMovementError extends ValidationError {
   type: 'InvalidMovement',
-  message: string
+  message: string,
+  details: {
+    step: RawStep
+  }
 }
 
 interface InvalidPropertyError extends ValidationError {

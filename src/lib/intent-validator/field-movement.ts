@@ -1,9 +1,12 @@
 'use strict';
 
-const StepValidator = require('./step-validator');
-const Joi = require('joi');
-const kindOf = require('kind-of');
-const didYouMean = require('didyoumean2');
+import * as Joi from 'joi';
+import * as didYouMean from 'didyoumean2';
+import * as kindOf from 'kind-of';
+
+import IntentValidator from '../interfaces/intent-validator';
+import ValidationError from '../interfaces/errors';
+import Intent from '../interfaces/intent';
 
 const validationErrors = {
   INVALID_MOVEMENT_TYPE: (typeName) => {
@@ -25,7 +28,7 @@ const validationErrors = {
   it does have slightly different logic that I did not want to abstract
   into the SchemaValidator too. So for now there is a bit of duplication
 */
-class FieldMovementStepValidator extends StepValidator {
+class FieldMovementStepValidator implements IntentValidator {
   appliesTo (step) {
     return step.isFieldMove();
   }
@@ -43,8 +46,8 @@ class FieldMovementStepValidator extends StepValidator {
     };
   }
 
-  validate (step) {
-    step = step.toRaw();
+  validate (intent: Intent): ValidationError[] {
+    const step = intent.toRaw();
     const validationErrors = this.validationErrors;
     const fieldMovementValidations = this.schema;
     const validMoves = Object.keys(fieldMovementValidations);
@@ -98,4 +101,4 @@ class FieldMovementStepValidator extends StepValidator {
   }
 }
 
-module.exports = FieldMovementStepValidator;
+export default FieldMovementStepValidator

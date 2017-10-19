@@ -3,7 +3,7 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const FieldMovementValidator = require('../../../../src/lib/step-validator/field-movement');
+const FieldMovementValidator = require('../../../../src/lib/intent-validator/field-movement').default;
 const validateSteps = require('./validate-steps').bind(null, [FieldMovementValidator]);
 
 describe('field-movement validation', function () {

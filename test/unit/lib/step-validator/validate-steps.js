@@ -3,7 +3,7 @@
 const Bluebird = require('bluebird');
 
 const createSteps = require('../../../../src/lib/migration-steps').migration;
-const StepList = require('../../../../src/lib/step-list');
+const IntentList = require('../../../../src/lib/intent-list').default;
 
 const stripCallsite = require('../../../helpers/strip-callsite');
 const stripCallsites = (errors) => errors.map((error) => {
@@ -22,7 +22,7 @@ const stripCallsites = (errors) => errors.map((error) => {
 module.exports = Bluebird.coroutine(function * (validators, migration) {
   const steps = yield createSteps(migration);
 
-  const stepList = StepList.fromRaw(steps);
+  const stepList = new IntentList(steps);
 
   for (const Validator of validators) {
     stepList.addValidator(new Validator());
