@@ -1,5 +1,3 @@
-'use strict';
-
 const errors = {
   contentType: {
     REQUIRED_PROPERTY: (path) => {
@@ -43,6 +41,9 @@ const errors = {
     ID_MUST_MATCH_SCHEMA: (fieldId, newId) => {
       return `The new ID "${newId}" for the field "${fieldId}" does not match the requirements. IDs must be between 1 and 64 characters long, start with a letter, and contain only alphanumeric characters as well as underscores.`;
     },
+    ID_MUST_BE_DIFFERENT: (fieldId) => {
+      return `The new ID for the field "${fieldId}" contains the same value as the existing ID. The new ID must be different from the old.`;
+    },
     validations: {
       DUPLICATED_VALIDATION: (duplicatedValue) => {
         return `A field can't have duplicates in the validations array. Duplicate: "${JSON.stringify(duplicatedValue)}"`;
@@ -67,4 +68,4 @@ const errors = {
   }
 };
 
-module.exports = errors;
+export default errors

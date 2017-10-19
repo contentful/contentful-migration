@@ -7,13 +7,13 @@ import * as validateChunks from './migration-chunks/validation/index'
 import * as buildChunks from './migration-chunks/index'
 import * as buildPlan from './migration-plan/index'
 import * as buildPayloads from './migration-payloads/index'
-import * as validatePayloads from './migration-payloads/validation/index'
 import * as buildRequests from './requests-builder'
 
 import Intent from './intent/index'
 import RawStep from './interfaces/raw-step'
 import { fetcher as getContentTypesInChunks } from './content-types-in-plan'
 import checkEntriesForDeletedCts from './deleted-ct-entries'
+import validatePayloads from './migration-payloads/validation/index'
 
 import * as ContentTypeUpdateStepValidator from './step-validator/content-type-update'
 import * as FieldUpdateStepValidator from './step-validator/field-update'
@@ -76,7 +76,7 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
     await hooks.onPlan(plan);
 
     const payloads = buildPayloads(plan, contentTypes);
-    const payloadValidationErrors = validatePayloads(payloads, contentTypes);
+    const payloadValidationErrors = validatePayloads(payloads);
 
     const payloadValidationFailed = payloadValidationErrors.some(err => err.length > 0);
     if (payloadValidationFailed) {

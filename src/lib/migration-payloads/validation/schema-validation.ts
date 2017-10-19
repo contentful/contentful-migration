@@ -1,14 +1,35 @@
-const Joi = require('joi');
-const _ = require('lodash');
-const { reach } = require('hoek');
-const kindOf = require('kind-of');
 
-const fieldValidations = require('./field-validations');
-const errorMessages = require('./errors');
+declare function kindOf (object: any): string
+
+import * as Joi from 'joi'
+import * as _ from 'lodash'
+import { reach } from 'hoek'
+import * as kindOf from 'kind-of'
+import fieldValidations from './field-validations'
+import errorMessages from './errors'
+import { PayloadValidationError, InvalidActionError } from '../../interfaces/errors'
+
+interface SimplifiedValidationError {
+  message: string
+  path: string
+  type: string
+  context?: {
+    isRequiredDependency?: boolean
+    isForbiddenDependency?: boolean
+    dependsOn?: {
+      key: string,
+      value: any
+    }
+    dupeValue?: any
+    key?: any
+    keys?: any[],
+    valids?: any[]
+  }
+}
 
 const enforceDependency = function ({ valid, when, is }) {
   return valid.when(when, {
-    is: is, then: Joi.required(), otherwise: Joi.forbidden()
+    is: is, then: Joi.any().required(), otherwise: Joi.any().forbidden()
   }).error((errors) => {
     return errors.map((error) => {
       const path = error.path;
@@ -48,9 +69,9 @@ const enforceDependency = function ({ valid, when, is }) {
 };
 
 const itemsValid = Joi.object().keys({
-  type: Joi.valid('Symbol', 'Link').required(),
+  type: Joi.string().valid('Symbol', 'Link').required(),
   linkType: enforceDependency({
-    valid: Joi.valid('Asset', 'Entry'),
+    valid: Joi.string().valid('Asset', 'Entry'),
     when: 'type',
     is: 'Link'
   }),
@@ -65,7 +86,7 @@ const fieldSchema = Joi.object().keys({
     // the empty case will be caught by joi by default, we don't want duplicate errors
     .regex(/^$|^[a-zA-Z][a-zA-Z0-9_]*$/),
   name: Joi.string().required(),
-  type: Joi.valid(
+  type: Joi.string().valid(
     'Symbol',
     'Text',
     'Integer',
@@ -78,7 +99,7 @@ const fieldSchema = Joi.object().keys({
     'Location'
   ).required(),
   linkType: enforceDependency({
-    valid: Joi.valid(['Asset', 'Entry']),
+    valid: Joi.string().valid('Asset', 'Entry'),
     when: 'type',
     is: 'Link'
   }),
@@ -105,7 +126,7 @@ const contentTypeSchema = Joi.object().keys({
   fields: Joi.array().max(MAX_FIELDS).required()
 });
 
-const validateContentType = function (payload) {
+const validateContentType = function (payload): PayloadValidationError[] {
   const contentTypeId = payload.meta.contentTypeId;
 
   const { error } = Joi.validate(payload.payload, contentTypeSchema, {
@@ -116,7 +137,7 @@ const validateContentType = function (payload) {
     return [];
   }
 
-  return error.details.map(({ path, type }) => {
+  return error.details.map(({ path, type }): PayloadValidationError => {
     if (type === 'any.required') {
       return {
         type: 'InvalidPayload',
@@ -132,7 +153,7 @@ const validateContentType = function (payload) {
   });
 };
 
-const unknownCombinationError = function ({ path, keys }) {
+const unknownCombinationError = function ({ path, keys }): SimplifiedValidationError {
   const type = 'object.unknownCombination';
   const message = `"${keys.join()}" is not allowed`;
   const context = { keys };
@@ -147,13 +168,15 @@ const unknownCombinationError = function ({ path, keys }) {
 //   type: 'object.allowUnknown',
 //   context: { child: 'foo', key: 'foo' }
 // }]
-const combineErrors = function (fieldValidationsErrors) {
-  const byItemPath = _.groupBy(fieldValidationsErrors, ({ path }) => {
+const combineErrors = function (fieldValidationsErrors: SimplifiedValidationError[]): SimplifiedValidationError[] {
+  const byItemPath: _.Dictionary<SimplifiedValidationError[]> = _.groupBy(fieldValidationsErrors, ({ path }) => {
     return path.split('.').slice(0, -1).join('.');
   });
 
-  const uniqPropErrorsByPath = _.entries(byItemPath).map(([path, itemErrors]) => {
-    const uniqErrors = _.uniqBy(itemErrors, 'context.key');
+  const pathErrorTuples : [string, SimplifiedValidationError[]][] = _.entries(byItemPath);
+
+  const uniqPropErrorsByPath: [string, SimplifiedValidationError[]][] = _.map(pathErrorTuples, ([path, itemErrors]): [string, SimplifiedValidationError[]] => {
+    const uniqErrors: SimplifiedValidationError[] = _.uniqBy(itemErrors, 'context.key');
     return [path, uniqErrors];
   });
 
@@ -174,7 +197,7 @@ const combineErrors = function (fieldValidationsErrors) {
 // Joi might return an `object.allowUnknown` error for each
 // non-matched field validation in `Joi.alternatives.try()`.
 // They are noise, execept when all error types are the same.
-const cleanNoiseFromJoiErrors = function (error) {
+const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): SimplifiedValidationError[] {
   const [normalErrors, fieldValidationsErrors] = _.partition(error.details, (detail) => {
     const [, fieldProp] = detail.path.split('.');
     return fieldProp !== 'validations';
@@ -197,7 +220,7 @@ const cleanNoiseFromJoiErrors = function (error) {
   return [...normalErrors, ...remainingFieldValidationsErrors];
 };
 
-const validateFields = function (payload) {
+const validateFields = function (payload): PayloadValidationError[] {
   const fields = payload.payload.fields;
   const { error } = Joi.validate(fields, fieldsSchema, {
     abortEarly: false
@@ -207,7 +230,7 @@ const validateFields = function (payload) {
     return [];
   }
 
-  return cleanNoiseFromJoiErrors(error).map((details) => {
+  return cleanNoiseFromJoiErrors(error).map((details: SimplifiedValidationError): PayloadValidationError => {
     const { path, type, context } = details;
 
     // `path` looks like `0.field`
@@ -311,7 +334,7 @@ const validateFields = function (payload) {
   });
 };
 
-module.exports = {
+export {
   validateContentType,
   validateFields
-};
+}

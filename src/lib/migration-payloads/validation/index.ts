@@ -1,6 +1,6 @@
 import * as _ from 'lodash'
 import { validateContentType, validateFields } from './schema-validation'
-import * as errorMessages from './errors'
+import errorMessages from './errors'
 import { PayloadValidationError, InvalidActionError } from '../../interfaces/errors'
 
 const isDisplayFieldAndHasBeenDeleted = function (field, displayField) {
@@ -34,15 +34,15 @@ const checkIfDisplayFieldsExist = function (payload): InvalidActionError[] {
   return errors;
 };
 
-const deletedFieldError = function (contentTypeId, fieldId): InvalidActionError {
+const deletedFieldError = function (contentTypeId: string, fieldId: string): InvalidActionError {
   return {
     type: 'InvalidAction',
     message: errorMessages.field.NO_DELETE_WITHOUT_OMIT(fieldId, contentTypeId)
   };
 };
 
-const checkIfDeletionWasOmitted = function (payload) {
-  const contentTypeId = payload.meta.contentTypeId;
+const checkIfDeletionWasOmitted = function (payload): InvalidActionError[]{
+  const contentTypeId: string = payload.meta.contentTypeId;
   const deletedFields = payload.payload.fields.filter((field) => {
     return field.deleted === true;
   }).map((field) => field.id);
@@ -61,10 +61,10 @@ const checkIfDeletionWasOmitted = function (payload) {
 
   const deletedButNotOmitted = _.difference(deletedFields, previouslyOmittedFields);
 
-  return deletedButNotOmitted.map((fieldId) => deletedFieldError(contentTypeId, fieldId));
+  return deletedButNotOmitted.map((fieldId: string) => deletedFieldError(contentTypeId, fieldId));
 };
 
-const checkIfTypeWasChanged = function (payload) {
+const checkIfTypeWasChanged = function (payload): InvalidActionError[] {
   const contentTypeId = payload.meta.contentTypeId;
   const fieldsById = _.keyBy(payload.payload.fields, 'id');
 
@@ -73,7 +73,7 @@ const checkIfTypeWasChanged = function (payload) {
   }
 
   const parentFieldsById = _.keyBy(payload.meta.parent.payload.fields, 'id');
-  const errors = [];
+  const errors: InvalidActionError[] = [];
 
   for (const fieldId of Object.keys(fieldsById)) {
     const parentField = parentFieldsById[fieldId];
@@ -95,8 +95,8 @@ const checkIfTypeWasChanged = function (payload) {
   return errors;
 };
 
-export default function validatePayloads (payloads): (PayloadValidationError | InvalidActionError)[] {
-  return payloads.map((payload) => {
+export default function validatePayloads (payloads): (PayloadValidationError | InvalidActionError)[][] {
+  return payloads.map((payload): (PayloadValidationError | InvalidActionError)[] => {
     if (payload.isDelete) {
       return [];
     }

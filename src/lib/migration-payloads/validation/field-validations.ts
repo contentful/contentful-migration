@@ -1,6 +1,4 @@
-'use strict';
-
-const Joi = require('joi');
+import * as Joi from 'joi'
 
 const validation = (name, constraint) => Joi.object({
   [name]: constraint,
@@ -33,7 +31,7 @@ const assetImageDimensions = validation('assetImageDimensions', Joi.object({
 
 const assetFileSize = validation('assetFileSize', range('number'));
 
-module.exports = Joi.alternatives().try(
+const validations = Joi.alternatives().try(
   linkContentType,
   inValidation,
   linkMimetypeGroup,
@@ -45,3 +43,5 @@ module.exports = Joi.alternatives().try(
   assetImageDimensions,
   assetFileSize
 );
+
+export default validations
