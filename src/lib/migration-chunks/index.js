@@ -5,7 +5,6 @@ const sliceByContentTypeId = require('./slicers/content-type-id');
 const sliceByFieldDelete = require('./slicers/chunk-with-single-step')('field/delete');
 const sliceByFieldIdChange = require('./slicers/chunk-with-single-step')('field/rename');
 const slicedByContentTransform = require('./slicers/content-transform');
-const sliceByFieldIdChange = require('./slicers/field-id-change');
 
 module.exports = function migrationPlan (migrationSteps) {
   const uninterruptedSteps = sliceByContentTypeId(migrationSteps);
