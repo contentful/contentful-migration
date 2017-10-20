@@ -1,18 +1,15 @@
 import Intent from './base-intent'
 import Action from '../interfaces/action'
+import { FieldCreateAction } from '../action/field-create'
 
 
-/*
-applyTo (state) {
-  const ct = state.getContentType(id)
-  const field = new Field(this.fieldId)
-  ct.addField(field)
-  state.setContentType(id, ct)
-}
-*/
 export default class CreateFieldIntent extends Intent {
   isFieldCreate() {
     return true
+  }
+
+  toActions () {
+    return [new FieldCreateAction(this.payload)]
   }
 }
 
