@@ -4,15 +4,15 @@ const Bluebird = require('bluebird');
 const { expect } = require('chai');
 const sinon = require('sinon');
 
-const migrationPlan = require('../../../src/lib/migration-chunks');
 const migrationSteps = require('../../../src/lib/migration-steps').migration;
+const IntentList = require('../../../src/lib/intent-list').default;
 const contentTypesInPlan = require('../../../src/lib/content-types-in-plan').fetcher;
 
 const co = Bluebird.coroutine;
 
 describe('Content Type fetcher', function () {
   it('fetches all the Content Types in the plan', co(function * () {
-    const steps = yield migrationSteps(function up (migration) {
+    const intents = yield migrationSteps(function up (migration) {
       const person = migration.createContentType('person', {
         name: 'bar',
         description: 'A content type for a person'
@@ -70,8 +70,11 @@ describe('Content Type fetcher', function () {
       ]
     });
 
-    const plan = migrationPlan(steps);
-    const contentTypes = yield contentTypesInPlan(plan, request);
+    const intentList = new IntentList(intents);
+    const sliced = intentList.slice();
+    const raw = sliced.map((list) => list.toRaw());
+
+    const contentTypes = yield contentTypesInPlan(raw, request);
 
     expect(request).to.have.been.calledWith({
       method: 'GET',

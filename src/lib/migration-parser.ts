@@ -4,14 +4,13 @@ import * as _ from 'lodash'
 import * as Bluebird from 'bluebird'
 import { migration as buildIntents } from './migration-steps/index'
 import * as validateChunks from './migration-chunks/validation/index'
-import * as buildChunks from './migration-chunks/index'
 import * as buildPlan from './migration-plan/index'
 import * as buildPayloads from './migration-payloads/index'
 
 import Intent from './intent/index'
 import RawStep from './interfaces/raw-step'
 import HttpRequest from './interfaces/request'
-import  ContentType from './classes/content-type'
+import ContentType from './content-type/index'
 import { fetcher as getContentTypesInChunks } from './content-types-in-plan'
 import checkEntriesForDeletedCts from './deleted-ct-entries'
 import validatePayloads from './migration-payloads/validation/index'
@@ -53,11 +52,13 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
 
     await hooks.onSteps(intents);
 
-    const chunks = buildChunks(intents);
+    const chunks = intentList.slice().map((intentList) => {
+      return intentList.toRaw();
+    });
 
     let APIContentTypes;
     try {
-      APIContentTypes= await getContentTypesInChunks(chunks, makeRequest);
+      APIContentTypes = await getContentTypesInChunks(chunks, makeRequest);
     } catch (error) {
       throw new errors.SpaceAccessError();
     }

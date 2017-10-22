@@ -3,7 +3,7 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const validateMigration = require('./validate-payloads');
+const validatePayloads = require('./validate-payloads');
 
 describe('payload validation', function () {
   describe('when setting a new id but it does not fit the requirements', function () {
@@ -33,7 +33,7 @@ describe('payload validation', function () {
         }
       ];
 
-      const errors = yield validateMigration(migration, existingCts);
+      const errors = yield validatePayloads(migration, existingCts);
 
       expect(errors).to.eql([
         [
@@ -72,7 +72,7 @@ describe('payload validation', function () {
         }
       ];
 
-      const errors = yield validateMigration(migration, existingCts);
+      const errors = yield validatePayloads(migration, existingCts);
 
       expect(errors).to.eql([
         [
@@ -110,7 +110,7 @@ describe('payload validation', function () {
         }
       ];
 
-      const errors = yield validateMigration(migration, existingCts);
+      const errors = yield validatePayloads(migration, existingCts);
 
       expect(errors).to.eql([
         [
@@ -149,7 +149,7 @@ describe('payload validation', function () {
       }
     ];
 
-    const errors = yield validateMigration(migration, existingCts);
+    const errors = yield validatePayloads(migration, existingCts);
     expect(errors).to.eql([[], []]);
   }));
 });

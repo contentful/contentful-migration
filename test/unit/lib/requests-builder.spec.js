@@ -3,16 +3,12 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const migrationPayloads = require('../../../src/lib/migration-payloads');
-const migrationChunks = require('../../../src/lib/migration-chunks');
-const migrationPlan = require('../../../src/lib/migration-plan');
-const migrationSteps = require('../../../src/lib/migration-steps').migration;
-const builder = require('../../../src/lib/requests-builder').default;
+const buildRequests = require('./build-requests');
 
 describe('Executor', function () {
   describe('With just one Content Type', function () {
     it('creates a Content Type', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const requests = yield buildRequests(function up (migration) {
         const person = migration.createContentType('person', {
           name: 'bar',
           description: 'A content type for a person'
@@ -30,12 +26,7 @@ describe('Executor', function () {
           required: true,
           localized: true
         });
-      });
-
-      const chunks = migrationChunks(steps);
-      const plan = migrationPlan(chunks);
-      const payloads = migrationPayloads(plan);
-      const requests = builder(payloads);
+      }, []);
 
       // Note: we are assuming that the 'request' has
       // been already configured with the space
@@ -76,7 +67,19 @@ describe('Executor', function () {
     }));
 
     it('updates a Content Type', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [{
+        sys: { id: 'dog', version: 10 },
+        fields: [
+          {
+            id: 'kills',
+            type: 'Number',
+            name: 'kills',
+            required: false
+          }
+        ]
+      }];
+
+      const requests = yield buildRequests(function up (migration) {
         const dog = migration.editContentType('dog', {
           description: 'Woof woof',
           name: 'Very nice dog'
@@ -91,22 +94,7 @@ describe('Executor', function () {
           type: 'Number',
           required: true
         });
-      });
-
-      const chunks = migrationChunks(steps);
-      const plan = migrationPlan(chunks);
-      const payloads = migrationPayloads(plan, [{
-        sys: { id: 'dog', version: 10 },
-        fields: [
-          {
-            id: 'kills',
-            type: 'Number',
-            name: 'kills',
-            required: false
-          }
-        ]
-      }]);
-      const requests = builder(payloads);
+      }, contentTypes);
 
       // Note: we are assuming that the 'request' has
       // been already configured with the space
@@ -148,7 +136,19 @@ describe('Executor', function () {
 
   describe('When creating and editing multiple CTs in sequence', function () {
     it('runs the requests', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [{
+        sys: { id: 'dog', version: 10 },
+        fields: [
+          {
+            id: 'kills',
+            type: 'Number',
+            name: 'kills',
+            required: false
+          }
+        ]
+      }];
+
+      const requests = yield buildRequests(function up (migration) {
         const person = migration.createContentType('person', {
           name: 'bar',
           description: 'A content type for a person'
@@ -193,22 +193,8 @@ describe('Executor', function () {
           type: 'Number',
           required: false
         });
-      });
+      }, contentTypes);
 
-      const chunks = migrationChunks(steps);
-      const plan = migrationPlan(chunks);
-      const payloads = migrationPayloads(plan, [{
-        sys: { id: 'dog', version: 10 },
-        fields: [
-          {
-            id: 'kills',
-            type: 'Number',
-            name: 'kills',
-            required: false
-          }
-        ]
-      }]);
-      const requests = builder(payloads);
 
       expect(requests).to.eql([
         {
@@ -357,7 +343,9 @@ describe('Executor', function () {
     }));
 
     it('deletes a field', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [];
+
+      const requests = yield buildRequests(function up (migration) {
         const person = migration.createContentType('person', {
           name: 'bar',
           description: 'A content type for a person'
@@ -370,12 +358,7 @@ describe('Executor', function () {
         });
 
         person.deleteField('age');
-      });
-
-      const chunks = migrationChunks(steps);
-      const plan = migrationPlan(chunks);
-      const payloads = migrationPayloads(plan);
-      const requests = builder(payloads);
+      }, contentTypes);
 
       // Note: we are assuming that the 'request' has
       // been already configured with the space
@@ -458,14 +441,11 @@ describe('Executor', function () {
   });
 
   it('makes correct requests when deleting a content type', Bluebird.coroutine(function * () {
-    const steps = yield migrationSteps(function up (migration) {
-      migration.deleteContentType('recipe');
-    });
+    const contentTypes = [];
 
-    const chunks = migrationChunks(steps);
-    const plan = migrationPlan(chunks);
-    const payloads = migrationPayloads(plan);
-    const requests = builder(payloads);
+    const requests = yield buildRequests(function up (migration) {
+      migration.deleteContentType('recipe');
+    }, contentTypes);
 
     expect(requests).to.eql([{
       url: '/content_types/recipe/published',

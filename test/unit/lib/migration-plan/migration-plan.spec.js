@@ -3,17 +3,12 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const migrationPlan = require('../../../../src/lib/migration-plan');
-const migrationChunks = require('../../../../src/lib/migration-chunks');
-const migrationSteps = require('../../../../src/lib/migration-steps').migration;
-
-const stripCallsite = require('../../../helpers/strip-callsite');
-const stripCallsites = (plan) => plan.map((chunk) => chunk.map(stripCallsite));
+const migrationPlan = require('./build-plan');
 
 describe('migration-plan', function () {
   describe('when deleting a field', function () {
     it('includes it in the plan', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const plan = yield migrationPlan(function up (migration) {
         const person = migration.editContentType('person');
         person.createField('fullName', {
           name: 'Full Name',
@@ -26,9 +21,6 @@ describe('migration-plan', function () {
           name: 'New Last Name'
         });
       });
-
-      const chunks = stripCallsites(migrationChunks(steps));
-      const plan = migrationPlan(chunks);
 
       expect(plan).to.eql([
         [{

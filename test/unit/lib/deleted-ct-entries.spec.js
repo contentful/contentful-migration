@@ -4,15 +4,15 @@ const Bluebird = require('bluebird');
 const { expect } = require('chai');
 const sinon = require('sinon');
 
-const migrationPlan = require('../../../src/lib/migration-chunks');
 const migrationSteps = require('../../../src/lib/migration-steps').migration;
+const IntentList = require('../../../src/lib/intent-list').default;
 const deletedCtEntries = require('../../../src/lib/deleted-ct-entries').default;
 
 const co = Bluebird.coroutine;
 
 describe('Entries fetcher', function () {
   it('adds entries info to content types', co(function * () {
-    const steps = yield migrationSteps(function up (migration) {
+    const intents = yield migrationSteps(function up (migration) {
       migration.deleteContentType('foo');
       migration.deleteContentType('bar');
     });
@@ -33,12 +33,15 @@ describe('Entries fetcher', function () {
       })
       .resolves({ items: [] });
 
-    const plan = migrationPlan(steps);
+    const intentList = new IntentList(intents);
+    const sliced = intentList.slice();
+    const raw = sliced.map((list) => list.toRaw());
+
     const contentTypes = [
       { sys: { id: 'foo' } },
       { sys: { id: 'bar' } }
     ];
-    const contentTypesWithEntryInfo = yield deletedCtEntries(plan, contentTypes, request);
+    const contentTypesWithEntryInfo = yield deletedCtEntries(raw, contentTypes, request);
 
     expect(contentTypesWithEntryInfo).to.eql([
       {

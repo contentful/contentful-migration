@@ -4,15 +4,12 @@ const { expect } = require('chai');
 const _ = require('lodash');
 const Bluebird = require('bluebird');
 
-const migrationPlan = require('../../../../src/lib/migration-plan');
-const migrationChunks = require('../../../../src/lib/migration-chunks');
-const migrationSteps = require('../../../../src/lib/migration-steps').migration;
-const builder = require('../../../../src/lib/migration-payloads/index');
+const buildPayloads = require('./build-payloads');
 
 describe('Payload builder', function () {
   describe('Without a Content Type payload', function () {
     it('returns the expected payload', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const payloads = yield buildPayloads(function up (migration) {
         const person = migration.createContentType('person', {
           name: 'bar',
           description: 'A content type for a person'
@@ -30,13 +27,9 @@ describe('Payload builder', function () {
           required: true,
           localized: true
         });
-      });
+      }, []);
 
-      const chunks = migrationChunks(steps);
-      const plan = migrationPlan(chunks);
-      const payload = builder(plan);
-
-      expect(payload).to.eql([{
+      expect(payloads).to.eql([{
         meta: {
           contentTypeId: 'person',
           version: 1,
@@ -67,7 +60,7 @@ describe('Payload builder', function () {
 
   describe('when deleting a field', function () {
     it('returns the expected payload', Bluebird.coroutine(function * () {
-      const contentType = {
+      const contentTypes = [{
         name: 'Very dangerous dog',
         description: 'Woof woof',
         fields: [
@@ -88,18 +81,14 @@ describe('Payload builder', function () {
           version: 2,
           id: 'dog'
         }
-      };
+      }];
 
-      const steps = yield migrationSteps(function up (migration) {
+      const payloads = yield buildPayloads(function up (migration) {
         const dog = migration.editContentType('dog');
         dog.deleteField('favoriteFood');
 
         dog.createField('foo').name('A foo').type('Symbol');
-      });
-
-      const chunks = migrationChunks(steps);
-      const plan = migrationPlan(chunks);
-      const payloads = builder(plan, [contentType]);
+      }, contentTypes);
 
       const basePayload = {
         meta: {
@@ -107,7 +96,7 @@ describe('Payload builder', function () {
           version: 2,
           parentVersion: 1
         },
-        payload: _.omit(contentType, ['sys'])
+        payload: _.omit(contentTypes[0], ['sys'])
       };
 
       const firstPayload = {
@@ -224,10 +213,7 @@ describe('Payload builder', function () {
         }
       ];
 
-      const steps = yield migrationSteps(migration);
-      const chunks = migrationChunks(steps);
-      const plan = migrationPlan(chunks);
-      const payloads = builder(plan, existingCts);
+      const payloads = yield buildPayloads(migration, existingCts);
 
       const basePayload = {
         meta: {
@@ -296,7 +282,7 @@ describe('Payload builder', function () {
 
   describe('when reordering a field', function () {
     it('returns the expected payload', Bluebird.coroutine(function * () {
-      const contentType = {
+      const contentTypes = [{
         name: 'Very dangerous dog',
         description: 'Woof woof',
         fields: [
@@ -332,20 +318,16 @@ describe('Payload builder', function () {
           version: 2,
           id: 'dog'
         }
-      };
+      }];
 
-      const steps = yield migrationSteps(function up (migration) {
+      const payloads = yield buildPayloads(function up (migration) {
         const dog = migration.editContentType('dog');
 
         dog.moveField('favoriteFood').toTheTop();
         dog.moveField('kills').toTheBottom();
         dog.moveField('legs').beforeField('kills');
         dog.moveField('age').afterField('legs');
-      });
-
-      const chunks = migrationChunks(steps);
-      const plan = migrationPlan(chunks);
-      const payloads = builder(plan, [contentType]);
+      }, contentTypes);
 
       const basePayload = {
         meta: {
@@ -353,7 +335,7 @@ describe('Payload builder', function () {
           version: 2,
           parentVersion: 1
         },
-        payload: _.omit(contentType, ['sys'])
+        payload: _.omit(contentTypes[0], ['sys'])
       };
 
       const firstPayload = {
@@ -404,7 +386,7 @@ describe('Payload builder', function () {
 
   describe('when deleting a content type', function () {
     it('returns the expected payload', Bluebird.coroutine(function * () {
-      const contentType = {
+      const contentTypes = [{
         name: 'Very dangerous dog',
         description: 'Woof woof',
         fields: [
@@ -425,15 +407,11 @@ describe('Payload builder', function () {
           version: 2,
           id: 'dog'
         }
-      };
+      }];
 
-      const steps = yield migrationSteps(function up (migration) {
+      const payloads = yield buildPayloads(function up (migration) {
         migration.deleteContentType('dog');
-      });
-
-      const chunks = migrationChunks(steps);
-      const plan = migrationPlan(chunks);
-      const payloads = builder(plan, [contentType]);
+      }, contentTypes);
 
       const basePayload = {
         meta: {
@@ -441,7 +419,7 @@ describe('Payload builder', function () {
           version: 2,
           parentVersion: 1
         },
-        payload: _.omit(contentType, ['sys'])
+        payload: _.omit(contentTypes[0], ['sys'])
       };
 
       const deletePayload = {

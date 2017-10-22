@@ -3,27 +3,19 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const migrationPlan = require('../../../../../src/lib/migration-chunks');
-const migrationSteps = require('../../../../../src/lib/migration-steps').migration;
-const validatePlan = require('../../../../../src/lib/migration-chunks/validation');
-
-const stripCallsite = require('../../../../helpers/strip-callsite');
-const stripCallsites = (plan) => plan.map((chunk) => chunk.map(stripCallsite));
+const validateChunks = require('./validate-chunks');
 
 describe('content type delete validation', function () {
   describe('when deleting a content type twice', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
-        migration.deleteContentType('foo');
-        migration.deleteContentType('foo');
-      });
-
       const contentTypes = [{
         sys: { id: 'foo' }
       }];
 
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      const errors = yield validateChunks(function up (migration) {
+        migration.deleteContentType('foo');
+        migration.deleteContentType('foo');
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -47,26 +39,23 @@ describe('content type delete validation', function () {
 
   describe('when deleting several content types several times', function () {
     it('returns the right errors', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
-        migration.deleteContentType('foo');
-        migration.deleteContentType('bar');
-        migration.deleteContentType('baz');
-        migration.deleteContentType('foo');
-        migration.deleteContentType('bar');
-        migration.deleteContentType('baz');
-        migration.deleteContentType('foo');
-        migration.deleteContentType('bar');
-        migration.deleteContentType('baz');
-      });
-
       const contentTypes = [
         { sys: { id: 'foo' } },
         { sys: { id: 'bar' } },
         { sys: { id: 'baz' } }
       ];
 
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      const errors = yield validateChunks(function up (migration) {
+        migration.deleteContentType('foo');
+        migration.deleteContentType('bar');
+        migration.deleteContentType('baz');
+        migration.deleteContentType('foo');
+        migration.deleteContentType('bar');
+        migration.deleteContentType('baz');
+        migration.deleteContentType('foo');
+        migration.deleteContentType('bar');
+        migration.deleteContentType('baz');
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -165,18 +154,15 @@ describe('content type delete validation', function () {
 
   describe('when deleting a content type that does not exist', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
-        migration.deleteContentType('baz');
-      });
-
       const contentTypes = [{
         sys: { id: 'foo' }
       }, {
         sys: { id: 'bar' }
       }];
 
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      const errors = yield validateChunks(function up (migration) {
+        migration.deleteContentType('baz');
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -200,11 +186,6 @@ describe('content type delete validation', function () {
 
   describe('when editing a content type that has been deleted earlier', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
-        migration.deleteContentType('foo');
-        migration.editContentType('foo').editField('bar').type('Number');
-      });
-
       const contentTypes = [{
         sys: { id: 'foo' },
         fields: [{
@@ -213,8 +194,10 @@ describe('content type delete validation', function () {
         }]
       }];
 
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      const errors = yield validateChunks(function up (migration) {
+        migration.deleteContentType('foo');
+        migration.editContentType('foo').editField('bar').type('Number');
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -241,16 +224,6 @@ describe('content type delete validation', function () {
     }));
 
     it('returns an error also when several edits after several deletes', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
-        migration.editContentType('bar').editField('bar').name('confusedYet?');
-        migration.deleteContentType('foo');
-        migration.editContentType('foo').editField('bar').type('Number');
-        migration.deleteContentType('bar');
-        migration.editContentType('foo').editField('baz').type('Number');
-        migration.editContentType('bar').editField('foo').type('Number');
-        migration.editContentType('bar').editField('bar').type('Number');
-      });
-
       const contentTypes = [{
         sys: { id: 'foo' },
         fields: [{
@@ -271,8 +244,15 @@ describe('content type delete validation', function () {
         }]
       }];
 
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      const errors = yield validateChunks(function up (migration) {
+        migration.editContentType('bar').editField('bar').name('confusedYet?');
+        migration.deleteContentType('foo');
+        migration.editContentType('foo').editField('bar').type('Number');
+        migration.deleteContentType('bar');
+        migration.editContentType('foo').editField('baz').type('Number');
+        migration.editContentType('bar').editField('foo').type('Number');
+        migration.editContentType('bar').editField('bar').type('Number');
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -361,17 +341,14 @@ describe('content type delete validation', function () {
 
   describe('when deleting a content type twice', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
-        migration.deleteContentType('foo');
-        migration.deleteContentType('foo');
-      });
-
       const contentTypes = [{
         sys: { id: 'foo' }
       }];
 
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      const errors = yield validateChunks(function up (migration) {
+        migration.deleteContentType('foo');
+        migration.deleteContentType('foo');
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -395,11 +372,6 @@ describe('content type delete validation', function () {
 
   describe('when deleting a content type that still has entries', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
-        migration.deleteContentType('foo');
-        migration.deleteContentType('bar');
-      });
-
       const contentTypes = [{
         sys: { id: 'foo' },
         hasEntries: true,
@@ -410,8 +382,10 @@ describe('content type delete validation', function () {
         fields: []
       }];
 
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      const errors = yield validateChunks(function up (migration) {
+        migration.deleteContentType('foo');
+        migration.deleteContentType('bar');
+      }, contentTypes);
 
       expect(errors).to.eql([
         {

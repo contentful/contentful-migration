@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import * as errors from './errors';
-import ContentType from '../../classes/content-type'
+import ContentType from '../../content-type/index'
 const ctErrors = errors.contentType;
 
 const errorFormatter = function (messageFormatter) {
