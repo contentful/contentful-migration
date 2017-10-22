@@ -75,6 +75,7 @@
     "@types/joi": "^10.4.4",
     "@types/lodash": "^4.14.77",
     "@types/mocha": "^2.2.43",
+    "@types/node": "^8.0.46",
     "chai": "^4.1.2",
     "codecov": "^2.3.0",
     "dirty-chai": "^2.0.1",
