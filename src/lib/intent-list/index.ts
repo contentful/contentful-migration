@@ -57,7 +57,10 @@ class IntentList {
         previousIntentInGroup = null
       }
     }
-    slices.push(new IntentList(currentList));
+
+    if (currentList.length > 0) {
+      slices.push(new IntentList(currentList));
+    }
 
 
     return slices
