@@ -5,10 +5,10 @@ export default async function checkEntriesForDeletedCts (chunks, contentTypes: C
   const deletedCtIds: Set<string> = new Set(chunks
     .filter((chunk) => chunk[0].type === 'contentType/delete')
     .map((chunk) => chunk[0].payload.contentTypeId)
-  );
+  )
 
   if (deletedCtIds.size === 0) {
-    return contentTypes;
+    return contentTypes
   }
 
   return Bluebird.map(contentTypes, async function (ct: any): Promise<any> {
@@ -16,13 +16,13 @@ export default async function checkEntriesForDeletedCts (chunks, contentTypes: C
       const response = await request({
         method: 'GET',
         url: `/entries?sys.contentType.sys.id=${ct.sys.id}`
-      });
+      })
 
       if (response.items.length > 0) {
-        ct.hasEntries = true;
+        ct.hasEntries = true
       }
     }
 
-    return ct;
+    return ct
   })
 }

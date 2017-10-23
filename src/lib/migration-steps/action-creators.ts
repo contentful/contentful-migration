@@ -1,4 +1,4 @@
-import * as Intents from '../intent/index';
+import * as Intents from '../intent/index'
 
 const actionCreators = {
   contentType: {
@@ -145,6 +145,6 @@ const actionCreators = {
       }
     })
   }
-};
+}
 
 export default actionCreators

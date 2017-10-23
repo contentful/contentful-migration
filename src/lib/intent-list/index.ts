@@ -8,26 +8,26 @@ class IntentList {
   private validators: IntentValidator[]
 
   constructor (intents: Intent[]) {
-    this.intents = intents;
-    this.validators = [];
+    this.intents = intents
+    this.validators = []
   }
 
   addValidator (validator: IntentValidator) {
-    this.validators.push(validator);
+    this.validators.push(validator)
   }
 
   validate (): ValidationError[] {
-    let errors = [];
+    let errors = []
 
     for (const intent of this.intents) {
       for (const validator of this.validators) {
         if (validator.appliesTo(intent)) {
-          errors = errors.concat(validator.validate(intent));
+          errors = errors.concat(validator.validate(intent))
         }
       }
     }
 
-    return errors;
+    return errors
   }
 
   toRaw (): RawStep[] {
@@ -35,33 +35,32 @@ class IntentList {
   }
 
   slice (): IntentList[] {
-    const slices: IntentList[] = [];
+    const slices: IntentList[] = []
 
-    let currentList: Intent[] = [];
-    let previousIntentInGroup: Intent | null = null;
+    let currentList: Intent[] = []
+    let previousIntentInGroup: Intent | null = null
 
     for (const intent of this.intents) {
       if (previousIntentInGroup === null || intent.groupsWith(previousIntentInGroup)) {
         currentList.push(intent)
       } else {
-        slices.push(new IntentList(currentList));
+        slices.push(new IntentList(currentList))
         currentList = [
           intent
-        ];
+        ]
       }
-      previousIntentInGroup = intent;
+      previousIntentInGroup = intent
 
       if (intent.endsGroup()) {
-        slices.push(new IntentList(currentList));
+        slices.push(new IntentList(currentList))
         currentList = []
         previousIntentInGroup = null
       }
     }
 
     if (currentList.length > 0) {
-      slices.push(new IntentList(currentList));
+      slices.push(new IntentList(currentList))
     }
-
 
     return slices
   }

@@ -2,9 +2,8 @@ import Intent from './base-intent'
 import Action from '../interfaces/action'
 import { FieldCreateAction } from '../action/field-create'
 
-
 export default class CreateFieldIntent extends Intent {
-  isFieldCreate() {
+  isFieldCreate () {
     return true
   }
 
@@ -12,4 +11,3 @@ export default class CreateFieldIntent extends Intent {
     return [new FieldCreateAction(this.payload)]
   }
 }
-

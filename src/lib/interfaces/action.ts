@@ -1,5 +1,5 @@
 interface Action {
-  applyTo(any): any
+  applyTo (any): any
 }
 
 export {

@@ -5,4 +5,3 @@ export default class DeleteContentTypeIntent extends Intent {
     return true
   }
 }
-

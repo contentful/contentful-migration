@@ -1,18 +1,18 @@
 abstract class Action {
-  private payload;
+  private payload
 
-  getContentTypeId(): string {
-    return this.payload.contentTypeId;
+  getContentTypeId (): string {
+    return this.payload.contentTypeId
   }
-  getFieldId(): string {
-    return this.payload.fieldId;
+  getFieldId (): string {
+    return this.payload.fieldId
   }
-  getProps(): object {
-    return this.payload.props;
+  getProps (): object {
+    return this.payload.props
   }
 
   constructor (payload: any) {
-    this.payload = payload;
+    this.payload = payload
   }
 }
 

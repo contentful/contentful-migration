@@ -5,7 +5,7 @@ class FieldUpdateStepValidator extends SchemaValidator {
   protected displayName = 'field'
 
   appliesTo (step) {
-    return step.isFieldUpdate();
+    return step.isFieldUpdate()
   }
 
   get schema () {
@@ -22,7 +22,7 @@ class FieldUpdateStepValidator extends SchemaValidator {
       deleted: Joi.boolean().required().strict(),
       linkType: Joi.string().required(),
       items: Joi.object().required()
-    };
+    }
   }
 }
 

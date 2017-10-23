@@ -5,7 +5,7 @@ class ContentTypeUpdateStepValidator extends SchemaValidator {
   protected displayName = 'content type'
 
   appliesTo (step) {
-    return step.isContentTypeUpdate();
+    return step.isContentTypeUpdate()
   }
 
   get schema () {
@@ -13,8 +13,8 @@ class ContentTypeUpdateStepValidator extends SchemaValidator {
       name: Joi.string().required(),
       description: Joi.string().required(),
       displayField: Joi.string().required()
-    };
+    }
   }
 }
 
-export default ContentTypeUpdateStepValidator;
+export default ContentTypeUpdateStepValidator

@@ -1,16 +1,15 @@
 import Intent from './base-intent'
 
 export default class DeleteFieldIntent extends Intent {
-  isFieldDelete() {
+  isFieldDelete () {
     return true
   }
- 
-  groupsWith(other: Intent): boolean {
-    return false;
+
+  groupsWith (other: Intent): boolean {
+    return false
   }
 
-  endsGroup(): boolean {
+  endsGroup (): boolean {
     return true
   }
 }
-

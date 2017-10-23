@@ -1,6 +1,6 @@
 import { Intent as IntentInterface } from '../interfaces/intent'
 import { Action as ActionInterface } from '../interfaces/action'
-import { RawStep, RawStepMeta, RawStepPayload} from '../interfaces/raw-step'
+import { RawStep, RawStepMeta, RawStepPayload } from '../interfaces/raw-step'
 
 export default abstract class Intent implements IntentInterface {
   protected type: string
@@ -16,14 +16,14 @@ export default abstract class Intent implements IntentInterface {
   abstract toActions (): ActionInterface[]
 
   getContentTypeId () {
-    return this.payload.contentTypeId;
+    return this.payload.contentTypeId
   }
 
   isContentTypeUpdate () {
     return false
   }
 
-  isContentTypeDelete() {
+  isContentTypeDelete () {
     return false
   }
 
@@ -61,11 +61,11 @@ export default abstract class Intent implements IntentInterface {
     if (other.isContentTransform()) {
       return false
     }
-    
+
     if (other.getContentTypeId() === this.getContentTypeId()) {
-      return true;
+      return true
     }
-    return false;
+    return false
   }
 
   endsGroup (): boolean {
@@ -77,6 +77,6 @@ export default abstract class Intent implements IntentInterface {
       type: this.type,
       meta: this.meta,
       payload: this.payload
-    };
+    }
   }
 }

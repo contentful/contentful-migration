@@ -6,7 +6,6 @@ export default class UpdateFieldIntent extends Intent {
     return true
   }
   toActions () {
-    return [new FieldUpdateAction(this.payload)];
+    return [new FieldUpdateAction(this.payload)]
   }
 }
-

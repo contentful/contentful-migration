@@ -1,17 +1,16 @@
 import Intent from './base-intent'
 
 export default class TransformContentIntent extends Intent {
-  isContentTransform() {
+  isContentTransform () {
     return true
   }
-  
-  groupsWith(other: Intent): boolean {
+
+  groupsWith (other: Intent): boolean {
     if (other.isContentTransform()) {
       if (other.getContentTypeId() === this.getContentTypeId()) {
         return true
       }
     }
-    return false;
+    return false
   }
 }
-

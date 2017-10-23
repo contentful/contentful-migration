@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 import * as getFirstExternalCaller from './first-external-caller'
 
@@ -21,22 +21,22 @@ class DispatchProxy {
         // Since we return the proxy for every unknown value
         // this breaks asynchronous migration functions.
         if (['then', 'catch'].indexOf(propertyName) !== -1) {
-          return void 0;
+          return void 0
         }
 
         if (propertyName in target) {
-          return target[propertyName];
+          return target[propertyName]
         }
 
         return function (propertyValue) {
-          const callsite = getFirstExternalCaller();
-          dispatchUpdate(callsite, propertyName, propertyValue);
-          return this;
-        };
+          const callsite = getFirstExternalCaller()
+          dispatchUpdate(callsite, propertyName, propertyValue)
+          return this
+        }
       }
-    });
+    })
 
-    return dispatchProxy;
+    return dispatchProxy
   }
 }
 

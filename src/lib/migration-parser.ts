@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 import * as _ from 'lodash'
 import * as Bluebird from 'bluebird'
@@ -28,72 +28,72 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
     onChunks: () => {},
     onPlan: () => {},
     onPayloads: () => {}
-  }, hooks);
+  }, hooks)
 
   // Ensure we follow the promise interface
   hooks = _.mapValues(hooks, (hook) => {
-    return Bluebird.method(hook);
-  });
+    return Bluebird.method(hook)
+  })
 
   return async function migration (migrationCreator) {
-    const intents = await buildIntents(migrationCreator);
+    const intents = await buildIntents(migrationCreator)
 
-    const intentList = new IntentList(intents);
+    const intentList = new IntentList(intents)
 
-    intentList.addValidator(new ContentTypeUpdateIntentValidator());
-    intentList.addValidator(new FieldUpdateIntentValidator());
-    intentList.addValidator(new FieldMovementValidator());
+    intentList.addValidator(new ContentTypeUpdateIntentValidator())
+    intentList.addValidator(new FieldUpdateIntentValidator())
+    intentList.addValidator(new FieldMovementValidator())
 
-    const intentValidationErrors = intentList.validate();
+    const intentValidationErrors = intentList.validate()
 
     if (intentValidationErrors.length > 0) {
-      throw new errors.StepsValidationError(intentValidationErrors);
+      throw new errors.StepsValidationError(intentValidationErrors)
     }
 
-    await hooks.onSteps(intents);
+    await hooks.onSteps(intents)
 
     const chunks = intentList.slice().map((intentList) => {
-      return intentList.toRaw();
-    });
+      return intentList.toRaw()
+    })
 
-    let APIContentTypes;
+    let APIContentTypes
     try {
-      APIContentTypes = await getContentTypesInChunks(chunks, makeRequest);
+      APIContentTypes = await getContentTypesInChunks(chunks, makeRequest)
     } catch (error) {
-      throw new errors.SpaceAccessError();
+      throw new errors.SpaceAccessError()
     }
 
-    const contentTypes = APIContentTypes.map((apiCt => new ContentType(apiCt)));
+    const contentTypes = APIContentTypes.map((apiCt => new ContentType(apiCt)))
 
-    const ctsWithEntryInfo = await checkEntriesForDeletedCts(chunks, contentTypes, makeRequest);
+    const ctsWithEntryInfo = await checkEntriesForDeletedCts(chunks, contentTypes, makeRequest)
 
-    const chunksValidationErrors = validateChunks(chunks, ctsWithEntryInfo);
+    const chunksValidationErrors = validateChunks(chunks, ctsWithEntryInfo)
 
     if (chunksValidationErrors.length > 0) {
-      throw new errors.ChunksValidationError(chunksValidationErrors);
+      throw new errors.ChunksValidationError(chunksValidationErrors)
     }
 
-    await hooks.onChunks(chunks);
+    await hooks.onChunks(chunks)
 
-    const plan = buildPlan(chunks);
+    const plan = buildPlan(chunks)
 
-    await hooks.onPlan(plan);
+    await hooks.onPlan(plan)
 
-    const payloads = buildPayloads(plan, contentTypes);
-    const payloadValidationErrors = validatePayloads(payloads);
+    const payloads = buildPayloads(plan, contentTypes)
+    const payloadValidationErrors = validatePayloads(payloads)
 
-    const payloadValidationFailed = payloadValidationErrors.some(err => err.length > 0);
+    const payloadValidationFailed = payloadValidationErrors.some(err => err.length > 0)
     if (payloadValidationFailed) {
-      throw new errors.PayloadValidationError(payloadValidationErrors);
+      throw new errors.PayloadValidationError(payloadValidationErrors)
     }
 
-    await hooks.onPayloads(payloads);
+    await hooks.onPayloads(payloads)
 
-    const requests: HttpRequest[] = buildRequests(payloads);
+    const requests: HttpRequest[] = buildRequests(payloads)
 
-    return requests;
+    return requests
   }
-};
+}
 
 export {
   createMigrationParser as default,

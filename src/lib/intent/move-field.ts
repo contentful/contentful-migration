@@ -5,4 +5,3 @@ export default class MoveFieldIntent extends Intent {
     return true
   }
 }
-

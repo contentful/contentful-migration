@@ -5,4 +5,3 @@ export default class UpdateContentTypeIntent extends Intent {
     return true
   }
 }
-

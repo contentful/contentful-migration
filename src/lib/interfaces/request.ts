@@ -5,7 +5,6 @@ interface HttpRequest {
   data?: object
 }
 
-
 export {
   HttpRequest as default,
   HttpRequest
