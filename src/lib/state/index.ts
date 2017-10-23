@@ -63,19 +63,23 @@ export class State<EntityType> implements StateInterface<EntityType> {
     return this.entities;
   }
 
-  get entityIterator(): AsyncIterable<EntityType> {
+  get entityIterator(): AsyncIterable<[String , EntityType]> {
     return {
-      [Symbol.asyncIterator]: (): AsyncIterator<EntityType> =>  {
+      [Symbol.asyncIterator]: (): AsyncIterator<[String , EntityType]> =>  {
         let keys = Array.from(this.entities.keys());
         let index = 0;
 
         return {
-          next: async (): Promise<IteratorResult<EntityType>> => {
+          next: async (): Promise<IteratorResult<[String , EntityType]>> => {
             const isDone = index === keys.length;
 
+            let value: [String, EntityType];
+            if (!isDone) {
+              value = [keys[index], this.entities.get(keys[index])]
+            }
             const result = {
               done: isDone,
-              value: isDone ? undefined : this.entities.get(keys[index])
+              value: value
             };
 
             index += 1;
@@ -87,19 +91,23 @@ export class State<EntityType> implements StateInterface<EntityType> {
     }
   } 
 
-  get deletionIterator(): AsyncIterable<EntityType> {
+  get deletionIterator(): AsyncIterable<[String , EntityType]> {
     return {
-      [Symbol.asyncIterator]: (): AsyncIterator<EntityType> => {
+      [Symbol.asyncIterator]: (): AsyncIterator<[String , EntityType]> => {
         let keys = Array.from(this.deletedEntities.keys());
         let index = 0;
 
         return {
-          next: async (): Promise<IteratorResult<EntityType>> => {
+          next: async (): Promise<IteratorResult<[String , EntityType]>> => {
             const isDone = index === keys.length;
 
+            let value: [String, EntityType];
+            if (!isDone) {
+              value = [keys[index], this.deletedEntities.get(keys[index])]
+            }
             const result = {
               done: isDone,
-              value: isDone ? undefined : this.deletedEntities.get(keys[index])
+              value: isDone ? undefined : value
             };
 
             index += 1;
