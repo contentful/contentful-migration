@@ -4,7 +4,15 @@
     "allowJs": true,
     "target": "es6",
     "lib": [
-      "es2016"
+      "es2015",
+      "es2016",
+      "es2017",
+      "esnext"
+    ],
+    "sourceMap": true,
+    "typeRoots": [
+      "./typings",
+      "./node_modules/@types"
     ]
   },
   "include": [
