@@ -41,7 +41,8 @@ describe('State', function () {
       iterated.push(entity);
     }
     expect(iterated).to.eql([
-      'foos', 'bars'
+      ['foo', 'foos'],
+      ['bar', 'bars']
     ])
   });
 
@@ -102,7 +103,8 @@ describe('State', function () {
       iterated.push(entity);
     }
     expect(iterated).to.eql([
-      'foos', 'bars'
+      ['foo', 'foos'],
+      ['bar', 'bars']
     ])
   });
 

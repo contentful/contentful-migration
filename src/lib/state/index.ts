@@ -6,8 +6,8 @@ export interface StateInterface<EntityType> {
   wasDeleted(key: String)
   getDeletions() : Promise<Map<String, EntityType>>
   getAll() : Promise<Map<String, EntityType>>
-  entityIterator: AsyncIterable<EntityType>
-  deletionIterator: AsyncIterable<EntityType>
+  entityIterator: AsyncIterable<[String, EntityType]>
+  deletionIterator: AsyncIterable<[String, EntityType]>
 }
 
 (Symbol as any).asyncIterator = Symbol.asyncIterator || Symbol.for("Symbol.asyncIterator");
@@ -66,58 +66,30 @@ export class State<EntityType> implements StateInterface<EntityType> {
   get entityIterator(): AsyncIterable<[String , EntityType]> {
     return {
       [Symbol.asyncIterator]: (): AsyncIterator<[String , EntityType]> =>  {
-        let keys = Array.from(this.entities.keys());
-        let index = 0;
+        const iter = this.entities.entries()
 
         return {
           next: async (): Promise<IteratorResult<[String , EntityType]>> => {
-            const isDone = index === keys.length;
-
-            let value: [String, EntityType];
-            if (!isDone) {
-              value = [keys[index], this.entities.get(keys[index])]
-            }
-            const result = {
-              done: isDone,
-              value: value
-            };
-
-            index += 1;
-
-            return result;
+            return iter.next();
           }
         }
       }
     }
-  } 
+  }
 
   get deletionIterator(): AsyncIterable<[String , EntityType]> {
     return {
       [Symbol.asyncIterator]: (): AsyncIterator<[String , EntityType]> => {
-        let keys = Array.from(this.deletedEntities.keys());
-        let index = 0;
+        const iter = this.deletedEntities.entries()
 
         return {
           next: async (): Promise<IteratorResult<[String , EntityType]>> => {
-            const isDone = index === keys.length;
-
-            let value: [String, EntityType];
-            if (!isDone) {
-              value = [keys[index], this.deletedEntities.get(keys[index])]
-            }
-            const result = {
-              done: isDone,
-              value: isDone ? undefined : value
-            };
-
-            index += 1;
-
-            return result;
+            return iter.next();
           }
         }
       }
     }
-  } 
+  }
 }
 
 export default State
