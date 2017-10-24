@@ -1,7 +1,7 @@
 import { Action } from '../action/base-action'
 import { Action as ActionInterface } from '../interfaces/action'
 
-class FieldCreateAction extends Action implements ActionInterface {
+class FieldCreateAction extends Action {
   applyTo (state): any {
     const ct = state.getContentType(this.getContentTypeId())
     // const field = new Field(this.fieldId)

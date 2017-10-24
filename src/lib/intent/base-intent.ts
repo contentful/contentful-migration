@@ -1,6 +1,7 @@
 import { Intent as IntentInterface } from '../interfaces/intent'
 import { Action as ActionInterface } from '../interfaces/action'
 import { RawStep, RawStepMeta, RawStepPayload } from '../interfaces/raw-step'
+import { ContentType } from '../immutable-content-type/index'
 
 export default abstract class Intent implements IntentInterface {
   protected type: string
@@ -13,7 +14,7 @@ export default abstract class Intent implements IntentInterface {
     this.payload = rawStep.payload
   }
 
-  abstract toActions (): ActionInterface[]
+  abstract toActions (): ActionInterface<ContentType>[]
 
   getContentTypeId () {
     return this.payload.contentTypeId

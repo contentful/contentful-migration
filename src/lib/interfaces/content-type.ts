@@ -1,6 +1,9 @@
 export default interface APIContentType {
   sys: {
-    id: string
+    id: string,
+    version: number
   },
-  fields: object[]
+  fields: object[],
+  name: string,
+  description: string
 }

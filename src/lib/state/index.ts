@@ -68,7 +68,7 @@ export class State<EntityType> implements StateInterface<EntityType>, StateItera
 
   get entityIterator (): AsyncIterable<[String , EntityType]> {
     return {
-      [Symbol.asyncIterator]: (): AsyncIterator<[String , EntityType]> =>  {
+      [Symbol.asyncIterator]: (): AsyncIterator<[String , EntityType]> => {
         const iter = this.entities.entries()
 
         return {

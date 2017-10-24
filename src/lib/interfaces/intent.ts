@@ -1,8 +1,9 @@
 import Action from './action'
 import RawStep from './raw-step'
+import ContentType from '../immutable-content-type/index'
 
 interface Intent {
-  // toActions() : Action[]
+  toActions? (): Action<ContentType>[]
   toRaw (): RawStep
   getContentTypeId (): string
 
