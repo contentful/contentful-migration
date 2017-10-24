@@ -40,10 +40,14 @@ describe('Apply stuff', function () {
     const intents = await migration(function (migration) {
       const dog = migration.editContentType('dog')
 
-      // dog.name('1 nicer dog')
-      //   .description('vong dogginess her')
+      dog.name('1 nicer dog')
+        .description('vong dogginess her')
 
       dog.editField('kills').required(false)
+      migration.createContentType('cat').name('catty').description('a cat')
+      dog.name('super nicer dog')
+      dog.createField('woof').name('maybe?')
+      dog.deleteField('kills')
     })
 
     const list = new IntentList(intents)
@@ -78,13 +82,13 @@ describe('Apply stuff', function () {
       await state.endBatch()
     }
 
-    const batches = await state.getBatches();
+    const batches = await state.getBatches()
 
     for (const batch of batches) {
       console.log(batch.id)
       const allEntities = await batch.state.getAll()
       for (const [id, entity] of allEntities.entries()) {
-        console.log(id, entity.toRaw());
+        console.log(id, entity.toRaw())
       }
     }
   })

@@ -14,7 +14,7 @@ export default abstract class Intent implements IntentInterface {
     this.payload = rawStep.payload
   }
 
-  abstract toActions (): ActionInterface<ContentType>[]
+  // abstract toActions? (): ActionInterface<ContentType>[]
 
   getContentTypeId () {
     return this.payload.contentTypeId

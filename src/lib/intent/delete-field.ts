@@ -1,4 +1,5 @@
 import Intent from './base-intent'
+import { FieldUpdateAction } from '../action/field-update'
 
 export default class DeleteFieldIntent extends Intent {
   isFieldDelete () {
@@ -11,5 +12,20 @@ export default class DeleteFieldIntent extends Intent {
 
   endsGroup (): boolean {
     return true
+  }
+
+  toActions () {
+    return [
+      new FieldUpdateAction(
+        this.getContentTypeId(),
+        this.payload.fieldId,
+        { omitted: true }
+      ),
+      new FieldUpdateAction(
+        this.getContentTypeId(),
+        this.payload.fieldId,
+        { deleted: true }
+      )
+    ]
   }
 }

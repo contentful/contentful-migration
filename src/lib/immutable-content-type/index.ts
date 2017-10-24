@@ -34,9 +34,11 @@ class Fields {
     const allFields = this.fields
 
     const currentFieldIndex = allFields.findIndex((field) => field.id === id)
-    console.log(currentFieldIndex)
-    allFields[currentFieldIndex] = field
-    console.log(allFields)
+    if (currentFieldIndex === -1) {
+      allFields.push(field)
+    } else {
+      allFields[currentFieldIndex] = field
+    }
     this._fields = allFields
   }
 

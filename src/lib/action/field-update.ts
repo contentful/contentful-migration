@@ -1,13 +1,29 @@
-import { Action } from '../action/base-action'
-import { Action as ActionInterface } from '../interfaces/action'
-import ContentType from '../interfaces/content-type'
+import { FieldAction } from '../action/field-action'
+import { Action } from '../interfaces/action'
+import { StateInterface } from '../state/index'
+import ContentType from '../immutable-content-type/index'
 
-class FieldUpdateAction extends Action implements ActionInterface<ContentType> {
-  applyTo (state): any {
-    const ct = state.getContentType(this.getContentTypeId())
-    const field = ct.getField(this.getFieldId())
-    field.update(this.getProps())
-    // state.setContentType(id, ct)
+class FieldUpdateAction extends FieldAction implements Action<ContentType> {
+  private props: object
+
+  constructor (contentTypeId: string, fieldId: string, props: object) {
+    super(contentTypeId, fieldId)
+    this.props = props
+  }
+
+  async applyTo (state: StateInterface<ContentType>) {
+    const ct: ContentType = await state.get(this.getContentTypeId())
+
+    const clone = ct.clone()
+    const fields = clone.fields
+    const field = fields.getField(this.getFieldId())
+
+    Object.assign(field, this.props)
+
+    fields.setField(this.getFieldId(), field)
+
+    clone.fields = fields
+    await state.set(this.getContentTypeId(), clone)
   }
 }
 
