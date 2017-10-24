@@ -71,8 +71,9 @@ describe('Content Type fetcher', function () {
     });
 
     const intentList = new IntentList(intents);
-    const sliced = intentList.slice();
-    const raw = sliced.map((list) => list.toRaw());
+    const packages = intentList.toPackages();
+
+    const raw = packages.map((pack) => pack.toRawSteps());
 
     const contentTypes = yield contentTypesInPlan(raw, request);
 

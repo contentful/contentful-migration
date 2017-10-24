@@ -12,9 +12,9 @@ const validateChunks = Bluebird.coroutine(function * (migration, contentTypes) {
   const intents = yield migrationSteps(migration);
   const list = new IntentList(intents);
 
-  const sliced = list.slice();
+  const packages = list.toPackages();
 
-  const raw = sliced.map((list) => list.toRaw());
+  const raw = packages.map((pack) => pack.toRawSteps());
 
   const stripped = stripCallsites(raw);
 

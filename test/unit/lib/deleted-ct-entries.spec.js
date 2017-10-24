@@ -34,8 +34,9 @@ describe('Entries fetcher', function () {
       .resolves({ items: [] });
 
     const intentList = new IntentList(intents);
-    const sliced = intentList.slice();
-    const raw = sliced.map((list) => list.toRaw());
+    const packages = intentList.toPackages();
+
+    const raw = packages.map((pack) => pack.toRawSteps());
 
     const contentTypes = [
       { sys: { id: 'foo' } },

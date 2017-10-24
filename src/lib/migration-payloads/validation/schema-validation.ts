@@ -1,6 +1,3 @@
-
-declare function kindOf (object: any): string
-
 import * as Joi from 'joi'
 import * as _ from 'lodash'
 import { reach } from 'hoek'

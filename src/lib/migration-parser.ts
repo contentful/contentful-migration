@@ -52,8 +52,8 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
 
     await hooks.onSteps(intents)
 
-    const chunks = intentList.slice().map((intentList) => {
-      return intentList.toRaw()
+    const chunks = intentList.toPackages().map((pack) => {
+      return pack.toRawSteps();
     })
 
     let APIContentTypes

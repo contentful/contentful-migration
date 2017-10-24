@@ -2,6 +2,7 @@ import Intent from '../interfaces/intent'
 import IntentValidator from '../interfaces/intent-validator'
 import ValidationError from '../interfaces/errors'
 import RawStep from '../interfaces/raw-step'
+import Package from '../package/index'
 
 class IntentList {
   private intents: Intent[]
@@ -34,8 +35,8 @@ class IntentList {
     return this.intents.map((intent) => intent.toRaw())
   }
 
-  slice (): IntentList[] {
-    const slices: IntentList[] = []
+  toPackages (): Package[] {
+    const packages: Package[] = []
 
     let currentList: Intent[] = []
     let previousIntentInGroup: Intent | null = null
@@ -44,7 +45,7 @@ class IntentList {
       if (previousIntentInGroup === null || intent.groupsWith(previousIntentInGroup)) {
         currentList.push(intent)
       } else {
-        slices.push(new IntentList(currentList))
+        packages.push(new Package(currentList))
         currentList = [
           intent
         ]
@@ -52,17 +53,17 @@ class IntentList {
       previousIntentInGroup = intent
 
       if (intent.endsGroup()) {
-        slices.push(new IntentList(currentList))
+        packages.push(new Package(currentList))
         currentList = []
         previousIntentInGroup = null
       }
     }
 
     if (currentList.length > 0) {
-      slices.push(new IntentList(currentList))
+      packages.push(new Package(currentList))
     }
 
-    return slices
+    return packages
   }
 }
 

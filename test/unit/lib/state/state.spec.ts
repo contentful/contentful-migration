@@ -8,7 +8,7 @@ import State from '../../../../src/lib/state/index'
 const co = Bluebird.coroutine
 
 describe('State', function () {
-  it('can get an entity', async function  () {
+  it('can get an entity', async function () {
     const state = new State<String>(new Map([
       ['foo', 'foo'],
       ['bar', 'bar']
