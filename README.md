@@ -63,6 +63,8 @@ yarn add contentful-management
 
 ### Browser:
 
+For browsers, we recommend to download the SDK via npm or yarn to ensure 100% availability.
+
 If you'd like to use a standalone built file you can use the following script tag or download it from [unpkg](https://unpkg.com), under the `dist` directory:
 
 ``` html
@@ -73,7 +75,8 @@ If you'd like to use a standalone built file you can use the following script ta
 Using `contentful@latest` will always get you the latest version, but you can also specify a specific version number:
 
 ``` html
-<script src="https://unpkg.com/contentful-management@4.0.0/dist/contentful-management.browser.min.js"></script>
+<!-- Avoid using the following url for production. You can not rely on its availability. -->
+<script src="https://unpkg.com/contentful-management@4.0.1/dist/contentful-management.browser.min.js"></script>
 ```
 
 The Contentful Management SDK will be accessible via the `contentfulManagement` global variable.
@@ -157,6 +160,10 @@ You can try and change the above example at [Tonic](https://tonicdev.com/npm/con
 - **I can't Install the package via npm**
 	- Check your internet connection
 	- It is called `contentful-management` and not `contenful-management` ¯\\\_(ツ)_/¯
+ - **Can I use the SDK in react native projects**
+  	- Yes it is possible
+ - **I get the error: Unable to resolve module `http`**
+ 	- Our SDK is supplied as node and browser version. Most non-node environments, like React Native, act like a browser. To force using of the browser version, you can require it via: `const { createClient } = require('contentful-management/dist/contentful-management.browser.min.js')`	
 - **Can I use it with typescript?**
 	- Yes, type definition file coming soon
 - **I am not sure what payload to send when creating and entity (Asset/Entity/ContentType etc...)**
