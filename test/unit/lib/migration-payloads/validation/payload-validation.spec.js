@@ -127,4 +127,32 @@ describe('payload validation', function () {
       ]);
     }));
   });
+
+  describe('when setting a description', function () {
+    it('returns no error', Bluebird.coroutine(function * () {
+      const steps = yield migrationSteps(function (migration) {
+        const lunch = migration.createContentType('lunch');
+        lunch.name('A lunch');
+        lunch.description('A description');
+      });
+      const chunks = migrationChunks(steps);
+      const plan = migrationPlan(chunks);
+      const payloads = migrationPayloads(plan);
+      const errors = validatePayloads(payloads);
+      expect(errors).to.eql([[]]);
+    }));
+
+    it('accepts empty string', Bluebird.coroutine(function * () {
+      const steps = yield migrationSteps(function (migration) {
+        const lunch = migration.createContentType('lunch');
+        lunch.name('A lunch');
+        lunch.description('');
+      });
+      const chunks = migrationChunks(steps);
+      const plan = migrationPlan(chunks);
+      const payloads = migrationPayloads(plan);
+      const errors = validatePayloads(payloads);
+      expect(errors).to.eql([[]]);
+    }));
+  });
 });
