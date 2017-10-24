@@ -15,6 +15,6 @@ export default class CreateContentTypeIntent extends Intent implements Action<Co
   }
 
   toActions () {
-    return [this]
+    return [[this]]
   }
 }

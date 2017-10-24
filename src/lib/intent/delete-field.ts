@@ -16,16 +16,20 @@ export default class DeleteFieldIntent extends Intent {
 
   toActions () {
     return [
-      new FieldUpdateAction(
-        this.getContentTypeId(),
-        this.payload.fieldId,
-        { omitted: true }
-      ),
-      new FieldUpdateAction(
-        this.getContentTypeId(),
-        this.payload.fieldId,
-        { deleted: true }
-      )
+      [
+        new FieldUpdateAction(
+          this.getContentTypeId(),
+          this.payload.fieldId,
+          { omitted: true }
+        )
+      ],
+      [
+        new FieldUpdateAction(
+          this.getContentTypeId(),
+          this.payload.fieldId,
+          { deleted: true }
+        )
+      ]
     ]
   }
 }

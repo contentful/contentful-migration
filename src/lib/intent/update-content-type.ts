@@ -18,6 +18,6 @@ export default class UpdateContentTypeIntent extends Intent implements Action<Co
   }
 
   toActions () {
-    return [this]
+    return [[this]]
   }
 }

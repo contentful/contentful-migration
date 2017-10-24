@@ -69,17 +69,17 @@ describe('Apply stuff', function () {
     const state = new ChangeRecorder<ContentType>(immutableExistingCts)
 
     for (const pkg of packages) {
-      await state.startBatch('foo')
-
       const intents = pkg.getIntents()
       for (const intent of intents) {
-        const actions = intent.toActions()
-        for (const action of actions) {
-          await action.applyTo(state)
+        const actionsList = intent.toActions()
+        for (const actions of actionsList) {
+          await state.startBatch('foo')
+          for (const action of actions) {
+            await action.applyTo(state)
+          }
+          await state.endBatch()
         }
       }
-
-      await state.endBatch()
     }
 
     const batches = await state.getBatches()

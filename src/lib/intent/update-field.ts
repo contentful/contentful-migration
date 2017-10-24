@@ -10,10 +10,10 @@ export default class UpdateFieldIntent extends Intent {
   }
 
   toActions () {
-    return [new FieldUpdateAction(
+    return [[new FieldUpdateAction(
       this.getContentTypeId(),
       this.payload.fieldId,
       this.payload.props
-    )]
+    )]]
   }
 }

@@ -22,6 +22,6 @@ export default class CreateFieldIntent extends Intent {
   }
 
   toActions () {
-    return [this]
+    return [[this]]
   }
 }
