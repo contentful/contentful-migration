@@ -10,7 +10,7 @@ const inquirer = require('inquirer');
 const Listr = require('listr');
 const _ = require('lodash');
 const { createManagementClient } = require('./lib/contentful-client');
-const { version } = require('../package.json');
+const { version } = require('../../package.json');
 
 const argv = yargs
   .usage('Parses and runs a migration script on a Contentful space.\n\nUsage: contentful-migration [args] <path-to-script-file>\n\nScript: path to a migration script.')
@@ -44,7 +44,7 @@ const {
   ChunksValidationError,
   SpaceAccessError
 } = require('../lib/errors');
-const createMigrationParser = require('../lib/migration-parser');
+const createMigrationParser = require('../lib/migration-parser').default;
 const renderPlanMessages = require('./lib/plan-messages');
 const renderStepsErrors = require('./lib/steps-errors');
 
