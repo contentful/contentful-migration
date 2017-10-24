@@ -25,7 +25,7 @@
     "build": "tsc -p .",
     "test": "npm run test-unit && npm run test-integration && npm run lint",
     "test-watch": "npm run test-unit -- --watch",
-    "test-unit": "NODE_ENV=test mocha 'test/unit/**/*.spec.js'",
+    "test-unit": "NODE_ENV=test mocha 'test/unit/**/*.spec.js' 'test/unit/**/*.spec.ts'",
     "test-integration": "NODE_ENV=test mocha --require test/integration/setup.js 'test/integration/**/*.spec.js'",
     "test-e2e": "NODE_ENV=test mocha 'test/end-to-end/**/*.spec.js'",
     "cover-unit": "nyc npm run test-unit",
