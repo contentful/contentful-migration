@@ -1,6 +1,5 @@
 import { Intent as IntentInterface } from '../interfaces/intent'
 import { RawStep, RawStepMeta, RawStepPayload } from '../interfaces/raw-step'
-import { ContentType } from '../immutable-content-type/index'
 
 export default abstract class Intent implements IntentInterface {
   protected type: string

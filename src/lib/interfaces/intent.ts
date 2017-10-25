@@ -1,6 +1,5 @@
 import { APIAction, EntityAction } from '../action/action'
 import RawStep from './raw-step'
-import ContentType from '../immutable-content-type/index'
 
 interface Intent {
   toActions? (): (APIAction|EntityAction)[]

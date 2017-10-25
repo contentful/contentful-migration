@@ -1,3 +1,5 @@
+import ContentTransform from './content-transform'
+
 interface RawStep {
   type: string
   meta: RawStepMeta
@@ -19,7 +21,7 @@ interface RawStepPayload {
   contentTypeId: string
   fieldId?: string
   props?: RawStepProps
-  transformation?: string
+  transformation?: ContentTransform
   movement?: Movement
 }
 

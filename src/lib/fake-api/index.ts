@@ -2,13 +2,14 @@
 // - EntityAction
 import ContentType from '../entities/content-type'
 import Request from '../interfaces/request'
+import { Entry } from '../entities/entry';
 
 interface RequestBatch {
   id: string
   requests: Request[]
 }
 
-const saveRequest = function (ct: ContentType): Request {
+const saveContentTypeRequest = function (ct: ContentType): Request {
   return {
     method: 'PUT',
     url: `/content_types/${ct.id}`,
@@ -23,7 +24,29 @@ const saveRequest = function (ct: ContentType): Request {
   }
 }
 
-const publishRequest = function (ct: ContentType): Request {
+const saveEntryRequest = function (entry: Entry): Request {
+  return {
+    method: 'PUT',
+    url: `/entries/${entry.id}`,
+    headers: {
+      'X-Contentful-Version': entry.version
+    },
+    data: {
+      fields: entry.fields
+    }
+  }
+}
+const publishEntryRequest = function (entry: Entry): Request {
+  return {
+    method: 'PUT',
+    url: `/entries/${entry.id}/published`,
+    headers: {
+      'X-Contentful-Version': entry.version
+    }
+  }
+}
+
+const publishContentTypeRequest = function (ct: ContentType): Request {
   return {
     method: 'PUT',
     url: `/content_types/${ct.id}/published`,
@@ -55,16 +78,18 @@ const deleteRequest = function (ct: ContentType): Request {
 
 class OfflineAPI {
   private contentTypes: Map<String, ContentType> = null
+  private entries: Entry[] = null
   private isRecordingRequests: boolean = false
   private currentRequestsRecorded: Request[] = null
   private batchId: string = null
   private requestBatches: RequestBatch[] = []
 
-  constructor (contentTypes: Map<String, ContentType> = new Map()) {
+  constructor (contentTypes: Map<String, ContentType> = new Map(), entries: Entry[] = []) {
     this.contentTypes = contentTypes
+    this.entries = entries
   }
 
-  async getContentType (id: string): Promise<ContentType>  {
+  async getContentType (id: string): Promise<ContentType> {
     this.assertRecording()
 
     if (!this.hasContentType(id)) {
@@ -99,7 +124,7 @@ class OfflineAPI {
 
     const ct = await this.getContentType(id)
     // Store clone as a request
-    this.currentRequestsRecorded.push(saveRequest(ct.clone()))
+    this.currentRequestsRecorded.push(saveContentTypeRequest(ct.clone()))
 
     // Mutate version bump
     ct.version = ct.version + 1
@@ -114,7 +139,7 @@ class OfflineAPI {
 
     const ct = await this.getContentType(id)
     // Store clone as a request
-    this.currentRequestsRecorded.push(publishRequest(ct.clone()))
+    this.currentRequestsRecorded.push(publishContentTypeRequest(ct.clone()))
 
     // Mutate version bump
     ct.version = ct.version + 1
@@ -139,7 +164,7 @@ class OfflineAPI {
     return ct
   }
 
-  async deleteContentType (id: string)  {
+  async deleteContentType (id: string) {
     this.assertRecording()
 
     const ct = await this.getContentType(id)
@@ -147,6 +172,51 @@ class OfflineAPI {
     this.currentRequestsRecorded.push(deleteRequest(ct.clone()))
 
     await this.contentTypes.delete(id)
+  }
+
+  async saveEntry (id: string) {
+    this.assertRecording()
+
+    const hasEntry = this.entries.some((entry) => entry.id === id)
+
+    if (!hasEntry) {
+      throw new Error(`Cannot save Entry ${id} because it does not exist`)
+    }
+
+    const entry = this.entries.find((entry) => entry.id === id)
+    // Store clone as a request
+    this.currentRequestsRecorded.push(saveEntryRequest(entry.clone()))
+
+    // Mutate version bump
+    entry.version = entry.version + 1
+
+    return entry
+  }
+
+  async publishEntry(id: string): Promise<Entry> {
+    this.assertRecording()
+
+    const hasEntry = this.entries.some((entry) => entry.id === id)
+
+    if (!hasEntry) {
+      throw new Error(`Cannot publish Entry ${id} because it does not exist`)
+    }    // Store clone as a request
+    const entry = this.entries.find((entry) => entry.id === id)
+
+    this.currentRequestsRecorded.push(publishEntryRequest(entry.clone()))
+
+    // Mutate version bump
+    entry.version = entry.version + 1
+
+    return entry
+  }
+
+  async getEntriesForContentType(ctId: string): Promise<Entry[]> {
+    this.assertRecording()
+    console.log(this.entries)
+    const entries = this.entries.filter((entry) => entry.contentTypeId === ctId)
+
+    return entries
   }
 
   async startRecordingRequests (id: string) {
@@ -183,7 +253,7 @@ class OfflineAPI {
     return this.requestBatches
   }
 
-  private assertRecording ()  {
+  private assertRecording () {
     if (this.isRecordingRequests) {
       return
     }

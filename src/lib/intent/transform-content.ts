@@ -1,4 +1,5 @@
 import Intent from './base-intent'
+import { EntryTransformAction } from '../action/entry-transform'
 
 export default class TransformContentIntent extends Intent {
   isContentTransform () {
@@ -12,5 +13,16 @@ export default class TransformContentIntent extends Intent {
       }
     }
     return false
+  }
+
+  toActions () {
+    return [
+      new EntryTransformAction(
+        this.getContentTypeId(),
+        this.payload.transformation.from,
+        this.payload.transformation.to,
+        this.payload.transformation.transform
+      )
+    ]
   }
 }

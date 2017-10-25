@@ -13,7 +13,6 @@ class FieldUpdateAction extends FieldAction {
   async applyTo (ct: ContentType) {
     const fields = ct.fields
     const field = fields.getField(this.getFieldId())
-    console.log(this.getFieldId(), field)
 
     Object.assign(field, this.props)
 

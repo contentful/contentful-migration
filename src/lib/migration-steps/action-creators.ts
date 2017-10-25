@@ -1,3 +1,4 @@
+import ContentTransform from '../interfaces/content-transform'
 import * as Intents from '../intent/index'
 
 const actionCreators = {
@@ -46,7 +47,7 @@ const actionCreators = {
         payload: { contentTypeId: id }
       })
     },
-    transformContent: (id, instanceId, transformation, callsite): Intents.TransformContent => new Intents.TransformContent({
+    transformContent: (id, instanceId, transformation: ContentTransform, callsite): Intents.TransformContent => new Intents.TransformContent({
       type: 'contentType/transformContent',
       meta: {
         contentTypeInstanceId: `contentType/${id}/${instanceId}`,
