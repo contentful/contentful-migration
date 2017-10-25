@@ -1,4 +1,5 @@
 'use strict'
+import orchestrator from '../../../src/lib/orchestrator'
 import { Packet } from '_debugger'
 
 const Bluebird = require('bluebird')
@@ -82,7 +83,7 @@ describe('Apply stuff', function () {
       }
     }]
 
-    const intents = await migration(function (migration) {
+    const migrationScript = function (migration) {
       const dog = migration.editContentType('dog')
 
       dog.name('1 nicer dog')
@@ -113,41 +114,9 @@ describe('Apply stuff', function () {
         }
       })
       // dog.deleteField('kills')
-    })
-
-    const list = new IntentList(intents)
-    const packages = list.toPackages()
-
-    const existingCTs: Map<String, ContentType> = new Map()
-
-    for (const ct of existingCts) {
-      const contentType = new ContentType({
-        id: ct.sys.id,
-        version: ct.sys.version,
-        name: ct.name,
-        description: ct.description,
-        fields: ct.fields as Field[]
-      })
-
-      existingCTs.set(contentType.id, contentType)
     }
 
-    const entries: Entry[] = apiEntries.map((apiEntry) => {
-      return new Entry({
-        id: apiEntry.sys.id,
-        contentTypeId: apiEntry.sys.contentType.sys.id,
-        fields: apiEntry.fields,
-        version: apiEntry.sys.version
-      })
-    })
-
-    const state = new FakeAPI(existingCTs, entries)
-
-    for (const pkg of packages) {
-      await pkg.applyTo(state)
-    }
-
-    const batches = await state.getRequestBatches()
+    const batches = await orchestrator(existingCts, apiEntries, migrationScript)
 
     for (const batch of batches) {
       console.log(batch.id)

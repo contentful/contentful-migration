@@ -45,7 +45,6 @@ class Field extends DispatchProxy {
 class ContentType extends DispatchProxy {
   public id: string
   public instanceId: string
-  public dispatch? (step: Intent): void
   public fieldInstanceIds?
 
   constructor (id, instanceId, props = {}, dispatch) {
@@ -64,6 +63,8 @@ class ContentType extends DispatchProxy {
       this[propertyName](props[propertyName])
     })
   }
+
+  public dispatch? (step: Intent): void
 
   createField (id, init) {
     const callsite = getFirstExternalCaller()

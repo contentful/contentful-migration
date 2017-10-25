@@ -2,7 +2,7 @@
 // - EntityAction
 import ContentType from '../entities/content-type'
 import Request from '../interfaces/request'
-import { Entry } from '../entities/entry';
+import { Entry } from '../entities/entry'
 
 interface RequestBatch {
   id: string
@@ -193,7 +193,7 @@ class OfflineAPI {
     return entry
   }
 
-  async publishEntry(id: string): Promise<Entry> {
+  async publishEntry (id: string): Promise<Entry> {
     this.assertRecording()
 
     const hasEntry = this.entries.some((entry) => entry.id === id)
@@ -211,7 +211,7 @@ class OfflineAPI {
     return entry
   }
 
-  async getEntriesForContentType(ctId: string): Promise<Entry[]> {
+  async getEntriesForContentType (ctId: string): Promise<Entry[]> {
     this.assertRecording()
     console.log(this.entries)
     const entries = this.entries.filter((entry) => entry.contentTypeId === ctId)
