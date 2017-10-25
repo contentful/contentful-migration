@@ -1,5 +1,4 @@
 import { Intent as IntentInterface } from '../interfaces/intent'
-import { Action as ActionInterface } from '../interfaces/action'
 import { RawStep, RawStepMeta, RawStepPayload } from '../interfaces/raw-step'
 import { ContentType } from '../immutable-content-type/index'
 

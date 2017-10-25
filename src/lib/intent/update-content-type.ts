@@ -1,23 +1,17 @@
 import Intent from './base-intent'
-import Action from '../interfaces/action'
-import { StateInterface } from '../state/index'
-import ContentType from '../immutable-content-type/index'
+import { ContentTypeUpdateAction } from '../action/content-type-update'
 
-export default class UpdateContentTypeIntent extends Intent implements Action<ContentType> {
+export default class UpdateContentTypeIntent extends Intent {
   isContentTypeUpdate () {
     return true
   }
 
-  async applyTo (state: StateInterface<ContentType>) {
-    const ct: ContentType = await state.get(this.getContentTypeId())
-
-    const ctClone = ct.clone()
-    Object.assign(ctClone, this.payload.props)
-
-    await state.set(this.getContentTypeId(), ctClone)
-  }
-
   toActions () {
-    return [[this]]
+    return [
+      new ContentTypeUpdateAction(
+        this.getContentTypeId(),
+        this.payload.props
+      )
+    ]
   }
 }

@@ -3,12 +3,12 @@
 const Bluebird = require('bluebird')
 const { expect } = require('chai')
 
-import ChangeRecorder from '../../../src/lib/state/change-recorder'
+import FakeAPI from '../../../src/lib/fake-api/index'
 import { migration } from '../../../src/lib/migration-steps/index'
 import IntentList from '../../../src/lib/intent-list/index'
 
 import ApiContentType from '../../../src/lib/interfaces/content-type'
-import { ContentType, Field } from '../../../src/lib/immutable-content-type/index'
+import { ContentType, Field } from '../../../src/lib/entities/content-type'
 
 const co = Bluebird.coroutine
 
@@ -53,43 +53,32 @@ describe('Apply stuff', function () {
     const list = new IntentList(intents)
     const packages = list.toPackages()
 
-    const immutableExistingCts: Map<String, ContentType> = new Map()
+    const existingCTs: Map<String, ContentType> = new Map()
 
     for (const ct of existingCts) {
       const contentType = new ContentType({
         id: ct.sys.id,
+        version: ct.sys.version,
         name: ct.name,
         description: ct.description,
         fields: ct.fields as Field[]
       })
 
-      immutableExistingCts.set(contentType.id, contentType)
+      existingCTs.set(contentType.id, contentType)
     }
 
-    const state = new ChangeRecorder<ContentType>(immutableExistingCts)
+    const state = new FakeAPI(existingCTs)
 
     for (const pkg of packages) {
-      const intents = pkg.getIntents()
-      for (const intent of intents) {
-        const actionsList = intent.toActions()
-        for (const actions of actionsList) {
-          await state.startBatch('foo')
-          for (const action of actions) {
-            await action.applyTo(state)
-          }
-          await state.endBatch()
-        }
-      }
+      await pkg.applyTo(state)
     }
 
-    const batches = await state.getBatches()
+    const batches = await state.getRequestBatches()
 
     for (const batch of batches) {
       console.log(batch.id)
-      const allEntities = await batch.state.getAll()
-      for (const [id, entity] of allEntities.entries()) {
-        console.log(id, entity.toRaw())
-      }
+      console.log(batch.requests)
+      console.log('------------\n')
     }
   })
 })

@@ -1,9 +1,8 @@
 import { FieldAction } from '../action/field-action'
-import { Action } from '../interfaces/action'
 import { StateInterface } from '../state/index'
-import ContentType from '../immutable-content-type/'
+import ContentType from '../entities/content-type'
 
-class FieldUpdateAction extends FieldAction implements Action<ContentType> {
+class FieldUpdateAction extends FieldAction {
   private props: object
 
   constructor (contentTypeId: string, fieldId: string, props: object) {
@@ -11,19 +10,14 @@ class FieldUpdateAction extends FieldAction implements Action<ContentType> {
     this.props = props
   }
 
-  async applyTo (state: StateInterface<ContentType>) {
-    const ct: ContentType = await state.get(this.getContentTypeId())
-
-    const clone = ct.clone()
-    const fields = clone.fields
+  async applyTo (ct: ContentType) {
+    const fields = ct.fields
     const field = fields.getField(this.getFieldId())
+    console.log(this.getFieldId(), field)
 
     Object.assign(field, this.props)
 
     fields.setField(this.getFieldId(), field)
-
-    clone.fields = fields
-    await state.set(this.getContentTypeId(), clone)
   }
 }
 

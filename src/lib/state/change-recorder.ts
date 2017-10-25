@@ -3,11 +3,13 @@ import { State, StateInterface } from './index'
 interface Batch<EntityType> {
   id: string
   state: State<EntityType>
+  publishedState: State<EntityType>
 }
 
 export default class ChangeRecorder<EntityType> implements StateInterface<EntityType> {
   private committedState: State<EntityType>
   private stagedState: State<EntityType> = null
+  private publishedState: State<EntityType> = null
   private hasOpenBatch: boolean = false
   private batches: Batch<EntityType>[] = []
   private batchId: string = null
@@ -19,14 +21,17 @@ export default class ChangeRecorder<EntityType> implements StateInterface<Entity
   async startBatch (id: string) {
     this.hasOpenBatch = true
     this.stagedState = new State()
+    this.publishedState = new State()
     this.batchId = id
   }
 
-  async endBatch () {
-    this.batches.push({
+  async endBatch (): Promise<Batch<EntityType>> {
+    const batch = {
       id: this.batchId,
-      state: this.stagedState
-    })
+      state: this.stagedState,
+      publishedState: this.publishedState
+    }
+    this.batches.push(batch)
 
     for await (const [key, value] of this.stagedState.deletionIterator) {
       await this.committedState.delete(key)
@@ -35,9 +40,19 @@ export default class ChangeRecorder<EntityType> implements StateInterface<Entity
     for await (const [key, value] of this.stagedState.entityIterator) {
       await this.committedState.set(key, value)
     }
+
+    for await (const [key, value] of this.publishedState.deletionIterator) {
+      await this.committedState.delete(key)
+    }
+
+    for await (const [key, value] of this.publishedState.entityIterator) {
+      await this.committedState.set(key, value)
+    }
     this.hasOpenBatch = false
     this.stagedState = null
     this.batchId = null
+
+    return batch
   }
 
   async has (key: String) {
@@ -53,14 +68,25 @@ export default class ChangeRecorder<EntityType> implements StateInterface<Entity
     return false
   }
 
+  async hasPublished (key: String) {
+    this.assertOpenBatch()
+
+    return this.publishedState.has(key)
+  }
+
   async get (key: String) {
     this.assertOpenBatch()
 
+    const hasPublished = await this.publishedState.has(key)
     const hasStaged = await this.stagedState.has(key)
     const hasCommited = await this.committedState.has(key)
 
-    if (!hasStaged && !hasCommited) {
+    if (!hasStaged && !hasCommited && !hasPublished) {
       throw new Error(`Cannot get key ${key} because it does not exist`)
+    }
+
+    if (hasPublished) {
+      return this.publishedState.get(key)
     }
 
     if (hasStaged) {
@@ -73,7 +99,30 @@ export default class ChangeRecorder<EntityType> implements StateInterface<Entity
   async set (key: String, value: EntityType) {
     this.assertOpenBatch()
 
+    const hasPublished = await this.publishedState.has(key)
+
+    if (hasPublished) {
+      throw new Error(`Cannot set ${key} because there is already a published version stored`)
+    }
+
     return this.stagedState.set(key, value)
+  }
+
+  async setPublished (key: String, value: EntityType) {
+    this.assertOpenBatch()
+
+    const hasStaged = await this.stagedState.has(key)
+    const hasCommited = await this.committedState.has(key)
+
+    if (hasStaged) {
+      throw new Error(`Cannot set ${key} to published because there is already a staged version. Please end the batch and set then.`)
+    }
+
+    if (!hasCommited) {
+      throw new Error(`Cannot set ${key} to published because there is no committed version yet.`)
+    }
+
+    return this.publishedState.set(key, value)
   }
 
   async delete (key: String) {
@@ -81,9 +130,14 @@ export default class ChangeRecorder<EntityType> implements StateInterface<Entity
 
     const hasStaged = await this.stagedState.has(key)
     const hasCommited = await this.committedState.has(key)
+    const hasPublished = await this.publishedState.has(key)
 
     if (!hasStaged && !hasCommited) {
       throw new Error(`Cannot delete key ${key} because it does not exist`)
+    }
+
+    if (hasPublished) {
+      throw new Error(`Cannot delete ${key} because there is already a published version stored`)
     }
 
     // Payload needs to be copied to staged state before deleting it
@@ -116,6 +170,17 @@ export default class ChangeRecorder<EntityType> implements StateInterface<Entity
 
   async getCommited (key: String) {
     return this.committedState.get(key)
+  }
+
+  // We needed to increase version numbers
+  // but needed to prevent the updates being reflected in the batches
+  // For that reason we allow setting directly to the committed
+  // state as long as we are not inside of a batch
+  async setCommitted (key: String, value: EntityType) {
+    if (this.hasOpenBatch) {
+      throw new Error('Batch needs to be closed before calling setCommitted method on it.')
+    }
+    return this.committedState.set(key, value)
   }
 
   async getBatches () {

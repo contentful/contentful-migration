@@ -1,14 +1,20 @@
-import { Action } from '../action/base-action'
-import { Action as ActionInterface } from '../interfaces/action'
+import { FieldAction } from '../action/field-action'
+import { StateInterface } from '../state/index'
+import { ContentType, Field } from '../entities/content-type'
 
-class FieldCreateAction extends Action {
-  applyTo (state): any {
-    const ct = state.getContentType(this.getContentTypeId())
-    // const field = new Field(this.fieldId)
-    // ct.addField(field)
-    // state.setContentType(id, ct)
+class FieldCreateAction extends FieldAction {
+  private props: object
+
+  constructor (contentTypeId: string, fieldId: string) {
+    super(contentTypeId, fieldId)
   }
 
+  async applyTo (ct: ContentType) {
+    const fields = ct.fields
+    const field: Field = { id: this.fieldId }
+
+    fields.setField(this.fieldId, field)
+  }
 }
 
 export { FieldCreateAction }

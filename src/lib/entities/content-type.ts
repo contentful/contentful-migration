@@ -27,7 +27,7 @@ class Fields {
   }
 
   getField (id: string): Field {
-    return cloneDeep(find(this._fields, { id }))
+    return find(this._fields, { id })
   }
 
   setField (id: string, field: Field) {
@@ -43,11 +43,11 @@ class Fields {
   }
 
   get fields () {
-    return cloneDeep(this._fields)
+    return this._fields
   }
 
   set fields (fields: Field[]) {
-    this._fields = cloneDeep(fields)
+    this._fields = fields
   }
 
   clone (): Fields {
@@ -61,6 +61,7 @@ class Fields {
 
 interface RawCT {
   id: string
+  version: number
   name?: string
   fields?: Field[]
   description?: string
@@ -71,12 +72,14 @@ class ContentType {
   private _fields: Fields
   private _name: string
   private _description: string
+  private _version: number
 
   constructor (ct: RawCT) {
     this._id = ct.id
     this._fields = new Fields(ct.fields)
     this._name = ct.name
     this._description = ct.description
+    this._version = ct.version
   }
 
   get id () {
@@ -84,11 +87,11 @@ class ContentType {
   }
 
   get fields () {
-    return cloneDeep(this._fields)
+    return this._fields
   }
 
   set fields (fields: Fields) {
-    this._fields = fields.clone()
+    this._fields = fields
   }
 
   get name () {
@@ -107,12 +110,21 @@ class ContentType {
     this._description = description
   }
 
+  get version () {
+    return this._version
+  }
+
+  set version (version: number) {
+    this._version = version
+  }
+
   toRaw (): RawCT {
     return {
       id: this.id,
       name: this.name,
       fields: this.fields.toRaw(),
-      description: this.description
+      description: this.description,
+      version: this.version
     }
   }
 
