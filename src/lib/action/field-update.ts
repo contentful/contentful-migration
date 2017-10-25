@@ -1,7 +1,7 @@
 import { FieldAction } from '../action/field-action'
 import { Action } from '../interfaces/action'
 import { StateInterface } from '../state/index'
-import ContentType from '../immutable-content-type/index'
+import ContentType from '../immutable-content-type/'
 
 class FieldUpdateAction extends FieldAction implements Action<ContentType> {
   private props: object
