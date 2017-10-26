@@ -1,19 +1,15 @@
 'use strict'
-import { Packet } from '_debugger'
-
-const Bluebird = require('bluebird')
-const { expect } = require('chai')
+import * as _ from 'lodash'
 
 import FakeAPI from './fake-api/index'
 import { migration } from './migration-steps/index'
 import IntentList from './intent-list/index'
 
-import ApiContentType from './interfaces/content-type'
-import ApiEntry from './interfaces/api-entry'
 import { ContentType, Field } from './entities/content-type'
 import { Entry } from './entities/entry'
+import { HttpRequest } from './interfaces/request'
 
-export default async function (existingCts, existingEntries, migrationScript) {
+export default async function (existingCts, existingEntries, migrationScript): Promise<HttpRequest[]> {
   const intents = await migration(migrationScript)
   const list = new IntentList(intents)
   const packages = list.toPackages()
@@ -48,5 +44,6 @@ export default async function (existingCts, existingEntries, migrationScript) {
   }
 
   const batches = await state.getRequestBatches()
-  return batches
+  // for now, making this compatible to our tests where we expect a flat array of request objects
+  return _.flatten(batches.map(b => b.requests))
 }

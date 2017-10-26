@@ -1,32 +1,33 @@
-'use strict';
+'use strict'
+import orchestrator from '../../../src/lib/orchestrator'
 
-const { expect } = require('chai');
-const Bluebird = require('bluebird');
+const { expect } = require('chai')
+const Bluebird = require('bluebird')
 
-const buildRequests = require('./build-requests');
+const buildRequests = require('./build-requests')
 
 describe('Executor', function () {
   describe('With just one Content Type', function () {
-    it('creates a Content Type', Bluebird.coroutine(function * () {
-      const requests = yield buildRequests(function up (migration) {
+    it('creates a Content Type', async function () {
+      const requests = await orchestrator([], [], function up (migration) {
         const person = migration.createContentType('person', {
           name: 'bar',
           description: 'A content type for a person'
-        });
+        })
 
         person.createField('age', {
           name: 'Age',
           type: 'Number',
           required: true
-        });
+        })
 
         person.createField('fullName', {
           name: 'Full Name',
           type: 'Symbol',
           required: true,
           localized: true
-        });
-      }, []);
+        })
+      })
 
       // Note: we are assuming that the 'request' has
       // been already configured with the space
@@ -63,10 +64,10 @@ describe('Executor', function () {
         headers: {
           'X-Contentful-Version': 1
         }
-      }]);
-    }));
+      }])
+    })
 
-    it('updates a Content Type', Bluebird.coroutine(function * () {
+    it('updates a Content Type', Bluebird.coroutine(function* () {
       const contentTypes = [{
         sys: { id: 'dog', version: 10 },
         fields: [
@@ -77,24 +78,24 @@ describe('Executor', function () {
             required: false
           }
         ]
-      }];
+      }]
 
       const requests = yield buildRequests(function up (migration) {
         const dog = migration.editContentType('dog', {
           description: 'Woof woof',
           name: 'Very nice dog'
-        });
+        })
 
         dog.editField('kills', {
           required: false
-        });
+        })
 
         dog.createField('goodboys', {
           name: 'Who is a good boy',
           type: 'Number',
           required: true
-        });
-      }, contentTypes);
+        })
+      }, contentTypes)
 
       // Note: we are assuming that the 'request' has
       // been already configured with the space
@@ -130,12 +131,12 @@ describe('Executor', function () {
         headers: {
           'X-Contentful-Version': 11
         }
-      }]);
-    }));
-  });
+      }])
+    }))
+  })
 
   describe('When creating and editing multiple CTs in sequence', function () {
-    it('runs the requests', Bluebird.coroutine(function * () {
+    it('runs the requests', Bluebird.coroutine(function* () {
       const contentTypes = [{
         sys: { id: 'dog', version: 10 },
         fields: [
@@ -146,55 +147,54 @@ describe('Executor', function () {
             required: false
           }
         ]
-      }];
+      }]
 
       const requests = yield buildRequests(function up (migration) {
         const person = migration.createContentType('person', {
           name: 'bar',
           description: 'A content type for a person'
-        });
+        })
 
         person.createField('age', {
           name: 'Age',
           type: 'Number',
           required: true
-        });
+        })
 
         person.createField('fullName', {
           name: 'Full Name',
           type: 'Symbol',
           required: true,
           localized: true
-        });
+        })
 
         const dog = migration.editContentType('dog', {
           description: 'Woof woof',
           name: 'Very nice dog'
-        });
+        })
 
         dog.editField('kills', {
           required: false
-        });
+        })
 
         dog.createField('goodboys', {
           name: 'Who is a good boy',
           type: 'Number',
           required: true
-        });
+        })
 
         person.createField('lastName', {
           name: 'Last Name',
           type: 'Symbol',
           localized: true
-        });
+        })
 
         dog.createField('barks', {
           name: 'Bark Bark',
           type: 'Number',
           required: false
-        });
-      }, contentTypes);
-
+        })
+      }, contentTypes)
 
       expect(requests).to.eql([
         {
@@ -339,26 +339,26 @@ describe('Executor', function () {
             'X-Contentful-Version': 13
           }
         }
-      ]);
-    }));
+      ])
+    }))
 
-    it('deletes a field', Bluebird.coroutine(function * () {
-      const contentTypes = [];
+    it('deletes a field', Bluebird.coroutine(function* () {
+      const contentTypes = []
 
       const requests = yield buildRequests(function up (migration) {
         const person = migration.createContentType('person', {
           name: 'bar',
           description: 'A content type for a person'
-        });
+        })
 
         person.createField('age', {
           name: 'Age',
           type: 'Number',
           required: true
-        });
+        })
 
-        person.deleteField('age');
-      }, contentTypes);
+        person.deleteField('age')
+      }, contentTypes)
 
       // Note: we are assuming that the 'request' has
       // been already configured with the space
@@ -436,16 +436,16 @@ describe('Executor', function () {
           'X-Contentful-Version': 5
         }
       }
-      ]);
-    }));
-  });
+      ])
+    }))
+  })
 
-  it('makes correct requests when deleting a content type', Bluebird.coroutine(function * () {
-    const contentTypes = [];
+  it('makes correct requests when deleting a content type', Bluebird.coroutine(function* () {
+    const contentTypes = []
 
     const requests = yield buildRequests(function up (migration) {
-      migration.deleteContentType('recipe');
-    }, contentTypes);
+      migration.deleteContentType('recipe')
+    }, contentTypes)
 
     expect(requests).to.eql([{
       url: '/content_types/recipe/published',
@@ -460,6 +460,6 @@ describe('Executor', function () {
       headers: {
         'X-Contentful-Version': 1
       }
-    }]);
-  }));
-});
+    }])
+  }))
+})
