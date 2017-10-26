@@ -14,7 +14,9 @@
       "./typings",
       "./node_modules/@types"
     ],
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   },
   "include": [
     "./src/**/*"
