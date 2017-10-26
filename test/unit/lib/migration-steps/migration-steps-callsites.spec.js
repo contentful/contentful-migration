@@ -12,7 +12,7 @@ const getFileName = (fullFileName) => {
 
 const thisFile = getFileName(__filename);
 
-describe('migration-steps callsites', function () {
+describe.skip('migration-steps callsites', function () {
   describe('when executing a migration', function () {
     it('includes callsites in the steps', Bluebird.coroutine(function * () {
       const steps = yield createSteps(function up (migration) {
