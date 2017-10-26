@@ -19,7 +19,7 @@ const saveContentTypeRequest = function (ct: ContentType): Request {
     data: {
       name: ct.name,
       description: ct.description,
-      fields: ct.fields
+      fields: ct.toRaw().fields
     }
   }
 }
@@ -32,7 +32,7 @@ const saveEntryRequest = function (entry: Entry): Request {
       'X-Contentful-Version': entry.version
     },
     data: {
-      fields: entry.fields
+      fields: entry.toRaw().fields
     }
   }
 }
