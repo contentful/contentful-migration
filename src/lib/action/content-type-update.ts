@@ -1,4 +1,3 @@
-import { StateInterface } from '../state/index'
 import { EntityAction } from './action'
 import ContentType from '../entities/content-type'
 

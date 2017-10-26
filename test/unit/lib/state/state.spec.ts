@@ -1,11 +1,8 @@
 'use strict'
 
-const Bluebird = require('bluebird')
 const { expect } = require('chai')
 
 import State from '../../../../src/lib/state/index'
-
-const co = Bluebird.coroutine
 
 describe('State', function () {
   it('can get an entity', async function () {

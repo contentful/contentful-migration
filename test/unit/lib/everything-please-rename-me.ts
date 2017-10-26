@@ -1,20 +1,7 @@
 'use strict'
 import orchestrator from '../../../src/lib/orchestrator'
-import { Packet } from '_debugger'
-
-const Bluebird = require('bluebird')
-const { expect } = require('chai')
-
-import FakeAPI from '../../../src/lib/fake-api/index'
-import { migration } from '../../../src/lib/migration-steps/index'
-import IntentList from '../../../src/lib/intent-list/index'
-
 import ApiContentType from '../../../src/lib/interfaces/content-type'
 import ApiEntry from '../../../src/lib/interfaces/api-entry'
-import { ContentType, Field } from '../../../src/lib/entities/content-type'
-import { Entry } from '../../../src/lib/entities/entry'
-
-const co = Bluebird.coroutine
 
 describe('Apply stuff', function () {
   it('can get an entity', async function () {
@@ -118,10 +105,6 @@ describe('Apply stuff', function () {
 
     const batches = await orchestrator(existingCts, apiEntries, migrationScript)
 
-    for (const batch of batches) {
-      console.log(batch.id)
-      console.log(JSON.stringify(batch.requests, null, 2))
-      console.log('------------\n')
-    }
+    console.log(batches)
   })
 })

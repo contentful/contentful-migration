@@ -5,7 +5,7 @@ export default class RenameFieldIntent extends Intent {
     return true
   }
 
-  groupsWith (other: Intent): boolean {
+  groupsWith (): boolean {
     return false
   }
 

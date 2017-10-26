@@ -1,5 +1,4 @@
 import { FieldAction } from '../action/field-action'
-import { StateInterface } from '../state/index'
 import ContentType from '../entities/content-type'
 
 class FieldUpdateAction extends FieldAction {

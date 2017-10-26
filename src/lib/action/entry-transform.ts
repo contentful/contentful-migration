@@ -1,5 +1,4 @@
 import { APIAction } from './action'
-import { StateInterface } from '../state/index'
 import { OfflineAPI } from '../fake-api'
 import Entry from '../entities/entry'
 

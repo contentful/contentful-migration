@@ -4,7 +4,7 @@ import { reach } from 'hoek'
 import * as kindOf from 'kind-of'
 import fieldValidations from './field-validations'
 import errorMessages from './errors'
-import { PayloadValidationError, InvalidActionError } from '../../interfaces/errors'
+import { PayloadValidationError } from '../../interfaces/errors'
 
 interface SimplifiedValidationError {
   message: string
