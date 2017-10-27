@@ -33,7 +33,7 @@ export default class ChangeRecorder<EntityType> implements StateInterface<Entity
     }
     this.batches.push(batch)
 
-    for await (const [key, value] of this.stagedState.deletionIterator) {
+    for await (const [key] of this.stagedState.deletionIterator) {
       await this.committedState.delete(key)
     }
 
@@ -41,7 +41,7 @@ export default class ChangeRecorder<EntityType> implements StateInterface<Entity
       await this.committedState.set(key, value)
     }
 
-    for await (const [key, value] of this.publishedState.deletionIterator) {
+    for await (const [key] of this.publishedState.deletionIterator) {
       await this.committedState.delete(key)
     }
 
