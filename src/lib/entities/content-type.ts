@@ -68,6 +68,7 @@ interface RawCT {
 }
 
 class ContentType {
+  public hasEntries: Boolean
   private _id: string
   private _fields: Fields
   private _name: string

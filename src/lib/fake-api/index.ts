@@ -213,7 +213,6 @@ class OfflineAPI {
 
   async getEntriesForContentType (ctId: string): Promise<Entry[]> {
     this.assertRecording()
-    console.log(this.entries)
     const entries = this.entries.filter((entry) => entry.contentTypeId === ctId)
 
     return entries

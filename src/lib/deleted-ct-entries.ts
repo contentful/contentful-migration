@@ -1,5 +1,5 @@
 import * as Bluebird from 'bluebird'
-import ContentType from './content-type/index'
+import ContentType from './entities/content-type'
 
 export default async function checkEntriesForDeletedCts (chunks, contentTypes: ContentType[], request): Promise<any> {
   const deletedCtIds: Set<string> = new Set(chunks

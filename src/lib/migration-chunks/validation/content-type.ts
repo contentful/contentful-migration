@@ -1,6 +1,6 @@
 import * as _ from 'lodash'
 import * as errors from './errors'
-import ContentType from '../../content-type/index'
+import ContentType from '../../entities/content-type'
 const ctErrors = errors.contentType
 
 const errorFormatter = function (messageFormatter) {
@@ -16,7 +16,7 @@ const errorFormatter = function (messageFormatter) {
 }
 
 const filterStepsForExistingCTs = function (steps, contentTypes) {
-  const existingIds = contentTypes.map((ct) => ct.sys.id)
+  const existingIds = contentTypes.map((ct) => ct.id)
   const nonExistingCTSteps = steps.filter((step) => !existingIds.includes(step.payload.contentTypeId))
 
   return nonExistingCTSteps
@@ -89,7 +89,7 @@ const checks = {
 
   alreadyExistingCreates: {
     validate: function (steps, contentTypes) {
-      const existingIds = contentTypes.map((ct) => ct.sys.id)
+      const existingIds = contentTypes.map((ct) => ct.id)
       // Find all create steps
       const ctCreates = steps.filter((step) => step.type === 'contentType/create')
       const existingCreates = ctCreates.filter((step) => existingIds.includes(step.payload.contentTypeId))
@@ -143,7 +143,7 @@ const checks = {
       const deleteSteps = steps.filter((step) => step.type === 'contentType/delete')
       const badDeleteSteps = deleteSteps.filter((step) => {
         const ctForThisStep = contentTypes.find((ct) => {
-          return ct.sys.id === step.payload.contentTypeId
+          return ct.id === step.payload.contentTypeId
         })
         return ctForThisStep && ctForThisStep.hasEntries
       })

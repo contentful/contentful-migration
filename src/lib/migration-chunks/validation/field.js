@@ -210,7 +210,7 @@ module.exports = function (chunks, contentTypes = []) {
   const errors = [];
   const contentTypeFields = contentTypes.reduce((acc, curr) => {
     const fieldIds = curr.fields.map((f) => f.id);
-    acc[curr.sys.id] = new Set(fieldIds);
+    acc[curr.id] = new Set(fieldIds);
     return acc;
   }, {});
 
@@ -220,7 +220,7 @@ module.exports = function (chunks, contentTypes = []) {
 
   for (const chunk of chunks) {
     const contentTypeId = chunk[0].payload.contentTypeId;
-    const contentTypeExists = Boolean(contentTypes.find((ct) => ct.sys.id === contentTypeId));
+    const contentTypeExists = Boolean(contentTypes.find((ct) => ct.id === contentTypeId));
     const fieldSet = contentTypeFields[contentTypeId] || new Set();
     const fieldRemovals = recentlyRemoved[contentTypeId] || new Set();
     const fieldMovements = recentlyMoved[contentTypeId] || new Set();
