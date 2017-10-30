@@ -4,6 +4,14 @@ import Package from '../../lib/package'
 import * as chalk from 'chalk'
 import * as _ from 'lodash'
 
+const renderTransformContentPackage = (pkg, message, contentType) => {
+  message.push(chalk`{bold.underline Transform Entries on Content Type} {bold.yellow ${contentType}}`)
+  for (const transformIntent of pkg.getIntents()) {
+    // TODO why is the transform function not included?
+    message.push(JSON.stringify(transformIntent.toRaw().payload))
+  }
+}
+
 const renderPackage = (pkg: Package, errors?: any) => {
   const message = []
   const contentType = pkg.getContentTypeId()
@@ -15,7 +23,7 @@ const renderPackage = (pkg: Package, errors?: any) => {
   } else if (pkg.deletesContentType) {
     message.push(chalk`{bold.underline Delete Content Type} {bold.yellow ${contentType}}`)
   } else if (pkg.transformsContent) {
-    message.push(chalk`{bold.underline Transform Content} {bold.yellow ${contentType}}`)
+    renderTransformContentPackage(pkg, message, contentType)
   }
 
   if (pkg.updatesContentType) {
