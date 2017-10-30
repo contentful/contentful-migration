@@ -8,7 +8,7 @@ const stripCallsite = require('../../../../helpers/strip-callsite');
 const stripCallsites = (plan) => plan.map((chunk) => chunk.map(stripCallsite));
 const validate = require('../../../../../src/lib/migration-chunks/validation');
 
-const validateChunks = Bluebird.coroutine(function * (migration, contentTypes) {
+const validateChunks = Bluebird.coroutine(function * (migration, testCts) {
   const intents = yield migrationSteps(migration);
   const list = new IntentList(intents);
 
@@ -18,7 +18,19 @@ const validateChunks = Bluebird.coroutine(function * (migration, contentTypes) {
 
   const stripped = stripCallsites(raw);
 
-  return validate(stripped, contentTypes);
+  const existingCts = testCts.map((ct) => {
+    const contentType = {
+      id: ct.sys.id,
+      version: ct.sys.version,
+      name: ct.name,
+      description: ct.description,
+      fields: ct.fields,
+      hasEntries: ct.hasEntries
+    };
+    return contentType;
+  });
+
+  return validate(stripped, existingCts);
 });
 
 module.exports = validateChunks;
