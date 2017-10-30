@@ -9,8 +9,8 @@ const idChange = require('../../examples/change-field-id');
 const deleteContentType = require('../../examples/delete-content-type');
 const fieldValidation = require('../../examples/09-validate-validations');
 
-const createMigrationParser = require('../../lib/migration-parser');
-const executor = require('../../lib/executor');
+const createMigrationParser = require('../../built/lib/migration-parser');
+const executor = require('../../built/lib/executor');
 const co = Bluebird.coroutine;
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
