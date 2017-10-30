@@ -14,6 +14,8 @@ interface Intent {
   isFieldDelete (): boolean
   isFieldRename (): boolean
   isFieldMove (): boolean
+  isAboutContentType (): boolean
+  isAboutField (): boolean
   isContentTransform (): boolean
 
   groupsWith (other: Intent): boolean

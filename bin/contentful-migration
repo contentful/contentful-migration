@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 
-const run = require('../built/bin/contentful-migration.js');
+const run = require('../built/bin/cli').default;
 
 run();

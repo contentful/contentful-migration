@@ -52,6 +52,24 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
+  isAboutContentType () {
+    return (
+      this.isContentTypeUpdate() ||
+      this.isContentTypeCreate() ||
+      this.isContentTypeDelete()
+    )
+  }
+
+  isAboutField () {
+    return (
+      this.isFieldCreate() ||
+      this.isFieldUpdate() ||
+      this.isFieldMove() ||
+      this.isFieldRename() ||
+      this.isFieldDelete()
+    )
+  }
+
   groupsWith (other: Intent): boolean {
     // A content transform does not end the group,
     // but still could share a content type ID

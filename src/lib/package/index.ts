@@ -7,21 +7,31 @@ import { ContentTypePublishAction } from '../action/content-type-publish'
 import { EntryTransformAction } from '../action/entry-transform'
 
 class Package {
+  public createsContentType: boolean = false
+  public transformsContent: boolean = false
+  public updatesContentType: boolean = false
+  public deletesContentType: boolean = false
   private intents: Intent[]
   private contentTypeId: string
-  private _createsContentType: boolean
-  private _transformsContent: boolean
 
   constructor (intents: Intent[] = []) {
     this.intents = intents
     this.contentTypeId = intents[0].getContentTypeId()
 
-    this._createsContentType = intents.some((intent) => {
+    this.createsContentType = intents.some((intent) => {
       return intent.isContentTypeCreate()
     })
 
-    this._transformsContent = intents.some((intent) => {
+    this.transformsContent = intents.some((intent) => {
       return intent.isContentTransform()
+    })
+
+    this.deletesContentType = intents.some((intent) => {
+      return intent.isContentTypeDelete()
+    })
+
+    this.updatesContentType = intents.some((intent) => {
+      return intent.isContentTypeUpdate()
     })
   }
 
@@ -33,14 +43,6 @@ class Package {
     return this.contentTypeId
   }
 
-  createsContentType (): boolean {
-    return this._createsContentType
-  }
-
-  transformsContent (): boolean {
-    return this._transformsContent
-  }
-
   toRawSteps (): RawStep[] {
     return this.intents.map((intent) => intent.toRaw())
   }
@@ -48,7 +50,7 @@ class Package {
   async applyTo (api: FakeAPI) {
     await api.startRecordingRequests('foo')
     const intents = this.getIntents()
-    if (this.transformsContent()) {
+    if (this.transformsContent) {
       for (const intent of intents) {
         for (const action of intent.toActions()) {
           if (action instanceof EntryTransformAction) {
