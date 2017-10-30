@@ -21,7 +21,7 @@ module.exports = function (chunks, contentTypes) {
 
     for (const ctId of createdIds) {
       createdCTs.push({
-        sys: { id: ctId },
+        id: ctId,
         fields: []
       });
     }
