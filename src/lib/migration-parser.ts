@@ -21,6 +21,7 @@ import Entry from './entities/entry'
 import FakeAPI from './fake-api'
 
 const createMigrationParser = function (makeRequest, hooks): (migrationCreator: () => any) => Promise<any[]> {
+  // tslint:disable: no-empty
   hooks = Object.assign({
     onSteps: () => {},
     onChunks: () => {},
@@ -28,6 +29,7 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
     onPayloads: () => {},
     onPackages: () => {}
   }, hooks)
+  // tslint:enable: no-empty
 
   // Ensure we follow the promise interface
   hooks = _.mapValues(hooks, (hook) => {
@@ -39,9 +41,9 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
 
     const intentList = new IntentList(intents)
 
-    // intentList.addValidator(new ContentTypeUpdateIntentValidator())
-    // intentList.addValidator(new FieldUpdateIntentValidator())
-    // intentList.addValidator(new FieldMovementValidator())
+    intentList.addValidator(new ContentTypeUpdateIntentValidator())
+    intentList.addValidator(new FieldUpdateIntentValidator())
+    intentList.addValidator(new FieldMovementValidator())
 
     const intentValidationErrors = intentList.validate()
 
@@ -104,11 +106,11 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
 
     const ctsWithEntryInfo = await checkEntriesForDeletedCts(chunks, contentTypes, makeRequest)
 
-    // const chunksValidationErrors = validateChunks(chunks, ctsWithEntryInfo)
+    const chunksValidationErrors = validateChunks(chunks, ctsWithEntryInfo)
 
-    // if (chunksValidationErrors.length > 0) {
-    //   throw new errors.ChunksValidationError(chunksValidationErrors)
-    // }
+    if (chunksValidationErrors.length > 0) {
+      throw new errors.ChunksValidationError(chunksValidationErrors)
+    }
 
     const state = new FakeAPI(existingCts, entries)
 
