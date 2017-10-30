@@ -112,7 +112,7 @@ var client = createClient({
 OR
 ```js
 // import everything from contentful
-import * as contentfulManagement from 'contentful-management'
+import * as contentful from 'contentful-management'
 var client = contentful.createClient({
   // This is the access token for this space. Normally you get the token in the Contentful web app
   accessToken: 'YOUR_ACCESS_TOKEN'
