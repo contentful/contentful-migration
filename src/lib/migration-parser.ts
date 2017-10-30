@@ -106,7 +106,8 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
 
     const ctsWithEntryInfo = await checkEntriesForDeletedCts(chunks, contentTypes, makeRequest)
 
-    const chunksValidationErrors = validateChunks(chunks, ctsWithEntryInfo)
+    const rawCtsWithEntryInfo = ctsWithEntryInfo.map(c => c.toRaw())
+    const chunksValidationErrors = validateChunks(chunks, rawCtsWithEntryInfo)
 
     if (chunksValidationErrors.length > 0) {
       throw new errors.ChunksValidationError(chunksValidationErrors)

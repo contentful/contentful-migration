@@ -5,7 +5,6 @@ const fieldValidations = require('./field');
 const checkForDuplicatePropsErrors = require('./duplicate-props');
 
 module.exports = function (chunks, contentTypes) {
-  contentTypes = contentTypes.map(ct => ct.toRaw());
   const ctErrors = contentTypeValidations(chunks, contentTypes);
 
   if (ctErrors.length > 0) {
