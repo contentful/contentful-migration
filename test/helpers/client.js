@@ -4,7 +4,7 @@ const Bluebird = require('bluebird');
 
 const path = require('path');
 const packageVersion = require('../../package.json').version;
-const { createManagementClient } = require('../../bin/lib/contentful-client');
+const { createManagementClient } = require('../../built/bin/lib/contentful-client');
 
 const config = {
   accessToken: process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN,
