@@ -16,6 +16,10 @@ export default abstract class Intent implements IntentInterface {
     return this.payload.contentTypeId
   }
 
+  getFieldId () {
+    return this.payload.fieldId
+  }
+
   isContentTypeUpdate () {
     return false
   }
@@ -93,5 +97,9 @@ export default abstract class Intent implements IntentInterface {
       meta: this.meta,
       payload: this.payload
     }
+  }
+
+  getRawType (): string {
+    return this.type
   }
 }

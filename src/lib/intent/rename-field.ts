@@ -12,4 +12,8 @@ export default class RenameFieldIntent extends Intent {
   endsGroup (): boolean {
     return true
   }
+
+  getNewId (): string {
+    return this.payload.props.newId
+  }
 }

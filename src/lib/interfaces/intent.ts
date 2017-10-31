@@ -5,6 +5,8 @@ interface Intent {
   toActions? (): (APIAction|EntityAction)[]
   toRaw (): RawStep
   getContentTypeId (): string
+  getFieldId (): string
+  getRawType (): string
 
   isContentTypeUpdate (): boolean
   isContentTypeDelete (): boolean
