@@ -1,10 +1,9 @@
-'use strict'
 import APIEntry from './interfaces/api-entry'
 
 import * as _ from 'lodash'
 import * as Bluebird from 'bluebird'
-import { migration as buildIntents } from './migration-steps/index'
-import * as validateChunks from './migration-chunks/validation/index'
+import { migration as buildIntents } from './migration-steps'
+import validateChunks from './migration-chunks/validation'
 
 import { ContentType, Field } from './entities/content-type'
 import { fetcher as getContentTypesInChunks } from './content-types-in-plan'
@@ -14,7 +13,7 @@ import checkEntriesForDeletedCts from './deleted-ct-entries'
 import ContentTypeUpdateIntentValidator from './intent-validator/content-type-update'
 import FieldUpdateIntentValidator from './intent-validator/field-update'
 import FieldMovementValidator from './intent-validator/field-movement'
-import IntentList from './intent-list/index'
+import IntentList from './intent-list'
 import * as errors from './errors/index'
 
 import Entry from './entities/entry'
@@ -23,10 +22,6 @@ import FakeAPI from './fake-api'
 const createMigrationParser = function (makeRequest, hooks): (migrationCreator: () => any) => Promise<any[]> {
   // tslint:disable: no-empty
   hooks = Object.assign({
-    onSteps: () => {},
-    onChunks: () => {},
-    onPlan: () => {},
-    onPayloads: () => {},
     onPackages: () => {}
   }, hooks)
   // tslint:enable: no-empty
@@ -45,11 +40,7 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
     intentList.addValidator(new FieldUpdateIntentValidator())
     intentList.addValidator(new FieldMovementValidator())
 
-    const intentValidationErrors = intentList.validate()
-
-    if (intentValidationErrors.length > 0) {
-      throw new errors.StepsValidationError(intentValidationErrors)
-    }
+    intentList.validate()
 
     await hooks.onPackages(intentList.toPackages())
 
@@ -107,11 +98,7 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
     const ctsWithEntryInfo = await checkEntriesForDeletedCts(chunks, contentTypes, makeRequest)
 
     const rawCtsWithEntryInfo = ctsWithEntryInfo.map(c => c.toRaw())
-    const chunksValidationErrors = validateChunks(chunks, rawCtsWithEntryInfo)
-
-    if (chunksValidationErrors.length > 0) {
-      throw new errors.ChunksValidationError(chunksValidationErrors)
-    }
+    validateChunks(intentList, rawCtsWithEntryInfo)
 
     const state = new FakeAPI(existingCts, entries)
 

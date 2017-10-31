@@ -1,34 +1,37 @@
-import Intent from '../interfaces/intent'
+import Intent from '../intent'
 import IntentValidator from '../interfaces/intent-validator'
-import ValidationError from '../interfaces/errors'
+import ErrorCollection from '../errors/error-collection'
 import RawStep from '../interfaces/raw-step'
 import Package from '../package/index'
 
 class IntentList {
   private intents: Intent[]
-  private validators: IntentValidator[]
+  private validators: IntentValidator[] = []
 
   constructor (intents: Intent[]) {
     this.intents = intents
-    this.validators = []
   }
 
   addValidator (validator: IntentValidator) {
     this.validators.push(validator)
   }
 
-  validate (): ValidationError[] {
+  validate (): void {
     let errors = []
 
-    for (const intent of this.intents) {
+    for (const intent of this.getIntents()) {
       for (const validator of this.validators) {
         if (validator.appliesTo(intent)) {
-          errors = errors.concat(validator.validate(intent))
+          const intentErrors = validator.validate(intent)
+          if (intentErrors.length) {
+            errors = errors.concat(intentErrors)
+          }
         }
       }
     }
-
-    return errors
+    if (errors.length) {
+      throw new ErrorCollection(errors)
+    }
   }
 
   toRaw (): RawStep[] {
@@ -64,6 +67,10 @@ class IntentList {
     }
 
     return packages
+  }
+
+  getIntents (): Intent[] {
+    return this.intents
   }
 }
 

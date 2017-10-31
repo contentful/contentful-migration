@@ -3,7 +3,7 @@
 import * as Bluebird from 'bluebird'
 import actionCreators from './action-creators'
 import * as getFirstExternalCaller from './first-external-caller'
-import Intent from '../interfaces/intent'
+import Intent from '../intent'
 import DispatchProxy from './dispatch-proxy'
 
 const createInstanceIdManager = () => {

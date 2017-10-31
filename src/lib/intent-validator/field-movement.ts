@@ -1,12 +1,10 @@
-'use strict'
-
 import * as Joi from 'joi'
 import * as didYouMean from 'didyoumean2'
 import * as kindOf from 'kind-of'
 
 import IntentValidator from '../interfaces/intent-validator'
 import ValidationError from '../interfaces/errors'
-import Intent from '../interfaces/intent'
+import MoveFieldIntent from '../intent/move-field'
 
 const validationErrors = {
   INVALID_MOVEMENT_TYPE: (typeName) => {
@@ -46,26 +44,25 @@ class FieldMovementStepValidator implements IntentValidator {
     }
   }
 
-  validate (intent: Intent): ValidationError[] {
-    const step = intent.toRaw()
+  validate (intent: MoveFieldIntent): ValidationError[] {
     const validationErrors = this.validationErrors
     const fieldMovementValidations = this.schema
     const validMoves = Object.keys(fieldMovementValidations)
-    const movement = step.payload.movement.direction
+    const movement = intent.getDirection()
 
     if (validMoves.includes(movement)) {
-      const pivot = step.payload.movement.pivot
+      const pivot = intent.getPivotId()
       const schema = fieldMovementValidations[movement]
       const { error } = Joi.validate(pivot, schema)
       const pivotType = kindOf(pivot)
-      const sourceFieldId = step.payload.fieldId
+      const sourceFieldId = intent.getFieldId()
 
       if (error) {
         return [
           {
             type: 'InvalidType',
             message: validationErrors.INVALID_MOVEMENT_TYPE(pivotType),
-            details: { step }
+            details: { intent }
           }
         ]
       }
@@ -75,7 +72,7 @@ class FieldMovementStepValidator implements IntentValidator {
           {
             type: 'InvalidMovement',
             message: validationErrors.INVALID_MOVEMENT_WITH_SELF(sourceFieldId),
-            details: { step }
+            details: { intent }
           }
         ]
       }
@@ -95,7 +92,7 @@ class FieldMovementStepValidator implements IntentValidator {
       {
         type: 'InvalidMovement',
         message,
-        details: { step }
+        details: { intent }
       }
     ]
   }
