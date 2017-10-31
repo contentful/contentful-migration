@@ -1,10 +1,10 @@
-import RawStep from './raw-step'
+import { Intent } from '../intent/index'
 
 interface ValidationError {
   type: string,
   message: string,
   details?: {
-    step: RawStep
+    intent: Intent
   }
 }
 
@@ -22,7 +22,7 @@ interface InvalidTypeError extends ValidationError {
   type: 'InvalidType',
   message: string,
   details: {
-    step: RawStep
+    intent: Intent
   }
 }
 
@@ -30,7 +30,7 @@ interface InvalidMovementError extends ValidationError {
   type: 'InvalidMovement',
   message: string,
   details: {
-    step: RawStep
+    intent: Intent
   }
 }
 

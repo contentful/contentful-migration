@@ -24,12 +24,12 @@ const validationErrors = {
   Needs getters for `schema` and `displayName` implemented in subclasses
 */
 abstract class SchemaValidator implements IntentValidator {
+  protected abstract displayName: string
   get validationErrors () {
     return validationErrors
   }
 
   abstract appliesTo (intent: Intent): boolean
-  protected abstract displayName: string
 
   get schema () {
     return {}
@@ -60,7 +60,7 @@ abstract class SchemaValidator implements IntentValidator {
         errors.push({
           type: 'InvalidProperty',
           message,
-          details: { step }
+          details: { intent }
         })
       } else {
         const schema = validations[propName]
@@ -74,7 +74,7 @@ abstract class SchemaValidator implements IntentValidator {
           errors.push({
             type: 'InvalidType',
             message,
-            details: { step }
+            details: { intent }
           })
         }
       }
