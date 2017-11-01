@@ -22,7 +22,6 @@ function validateChunks (intentList: IntentList, contentTypes): void {
   fieldErrors = fieldErrors.concat(checkForDuplicatePropsErrors(intentList.toPackages()))
 
   if (fieldErrors.length > 0) {
-    console.log('but here')
     throw new ErrorCollection(fieldErrors, {payloadValidationError: true})
   }
 }
