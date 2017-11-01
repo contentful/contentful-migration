@@ -513,4 +513,18 @@ describe('migration-steps validation', function () {
       ]);
     }));
   });
+
+  describe('when setting an empty description for a content type', function () {
+    it('does not return any errors', Bluebird.coroutine(function * () {
+      const steps = yield createSteps(function up (migration) {
+        migration.createContentType('person', {
+          description: ''
+        });
+      });
+
+      const validationErrors = stripCallsites(validateSteps(steps));
+
+      expect(validationErrors).to.eql([]);
+    }));
+  });
 });
