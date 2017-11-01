@@ -1,6 +1,6 @@
 {
   "name": "contentful-migration-cli",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Migration tooling for contentful",
   "author": "Contentful GmbH",
   "license": "MIT",
