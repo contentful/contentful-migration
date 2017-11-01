@@ -1,10 +1,13 @@
 import { Intent as IntentInterface } from '../interfaces/intent'
 import { RawStep, RawStepMeta, RawStepPayload } from '../interfaces/raw-step'
+import { Package } from '../package/index'
+import { APIAction, EntityAction } from '../action/action'
 
 export default abstract class Intent implements IntentInterface {
   protected type: string
   protected meta: RawStepMeta
   protected payload: RawStepPayload
+  protected package: Package
 
   constructor (rawStep: RawStep) {
     this.type = rawStep.type
@@ -102,4 +105,18 @@ export default abstract class Intent implements IntentInterface {
   getRawType (): string {
     return this.type
   }
+
+  belongsToPackage (): Package {
+    return this.package
+  }
+
+  setPackage (pkg: Package) {
+    this.package = pkg
+  }
+
+  toActions? (): (APIAction|EntityAction)[]
+
+  getDirection? (): string
+
+  getPivotId? (): string
 }

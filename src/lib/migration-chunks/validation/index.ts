@@ -10,7 +10,7 @@ function validateChunks (intentList: IntentList, contentTypes): void {
   const ctErrors = contentTypeValidations(intents, contentTypes)
 
   if (ctErrors.length > 0) {
-    throw new ErrorCollection(ctErrors)
+    throw new ErrorCollection(ctErrors, {payloadValidationError: true})
   }
 
   const createCTs = intents.filter((intent) => intent.isContentTypeCreate())
@@ -22,7 +22,8 @@ function validateChunks (intentList: IntentList, contentTypes): void {
   fieldErrors = fieldErrors.concat(checkForDuplicatePropsErrors(intentList.toPackages()))
 
   if (fieldErrors.length > 0) {
-    throw new ErrorCollection(fieldErrors)
+    console.log('but here')
+    throw new ErrorCollection(fieldErrors, {payloadValidationError: true})
   }
 }
 

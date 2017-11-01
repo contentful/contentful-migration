@@ -1,4 +1,4 @@
-import { Intent } from '../intent/index'
+import { Intent } from './intent'
 
 interface ValidationError {
   type: string,

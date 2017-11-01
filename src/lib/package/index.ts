@@ -1,10 +1,10 @@
-import Intent from '../interfaces/intent'
 import RawStep from '../interfaces/raw-step'
 import FakeAPI from '../fake-api/index'
 import { APIAction, EntityAction } from '../action/action'
 import { ContentTypeSaveAction } from '../action/content-type-save'
 import { ContentTypePublishAction } from '../action/content-type-publish'
 import { EntryTransformAction } from '../action/entry-transform'
+import { Intent } from '../intent'
 
 class Package {
   public createsContentType: boolean = false
@@ -15,7 +15,11 @@ class Package {
   private contentTypeId: string
 
   constructor (intents: Intent[] = []) {
-    this.intents = intents
+    const intentsWithPkgInfo = intents.map((intent) => {
+      intent.setPackage(this)
+      return intent
+    })
+    this.intents = intentsWithPkgInfo
     this.contentTypeId = intents[0].getContentTypeId()
 
     this.createsContentType = intents.some((intent) => {

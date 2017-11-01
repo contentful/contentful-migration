@@ -1,3 +1,4 @@
+import * as _ from 'lodash'
 import Intent from '../intent'
 import IntentValidator from '../interfaces/intent-validator'
 import ErrorCollection from '../errors/error-collection'
@@ -6,10 +7,12 @@ import Package from '../package/index'
 
 class IntentList {
   private intents: Intent[]
+  private packages: Package[] = []
   private validators: IntentValidator[] = []
 
   constructor (intents: Intent[]) {
-    this.intents = intents
+    this.packages = this.transformToPackages(intents)
+    this.intents = _.flatten(this.packages.map((pkg) => pkg.getIntents()))
   }
 
   addValidator (validator: IntentValidator) {
@@ -39,16 +42,23 @@ class IntentList {
   }
 
   toPackages (): Package[] {
-    const packages: Package[] = []
+    return this.packages
+  }
 
+  getIntents (): Intent[] {
+    return this.intents
+  }
+
+  private transformToPackages (intents: Intent[]) {
     let currentList: Intent[] = []
     let previousIntentInGroup: Intent | null = null
+    let packages: Package[] = []
 
-    for (const intent of this.intents) {
+    for (const intent of intents) {
       if (previousIntentInGroup === null || intent.groupsWith(previousIntentInGroup)) {
         currentList.push(intent)
       } else {
-        packages.push(new Package(currentList))
+        this.packages.push(new Package(currentList))
         currentList = [
           intent
         ]
@@ -56,7 +66,7 @@ class IntentList {
       previousIntentInGroup = intent
 
       if (intent.endsGroup()) {
-        packages.push(new Package(currentList))
+        this.packages.push(new Package(currentList))
         currentList = []
         previousIntentInGroup = null
       }
@@ -67,10 +77,6 @@ class IntentList {
     }
 
     return packages
-  }
-
-  getIntents (): Intent[] {
-    return this.intents
   }
 }
 
