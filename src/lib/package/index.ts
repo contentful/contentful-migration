@@ -15,11 +15,6 @@ class Package {
   private contentTypeId: string
 
   constructor (intents: Intent[] = []) {
-    const intentsWithPkgInfo = intents.map((intent) => {
-      intent.setPackage(this)
-      return intent
-    })
-    this.intents = intentsWithPkgInfo
     this.contentTypeId = intents[0].getContentTypeId()
 
     this.createsContentType = intents.some((intent) => {
@@ -37,6 +32,11 @@ class Package {
     this.updatesContentType = intents.some((intent) => {
       return intent.isContentTypeUpdate()
     })
+    const intentsWithPkgInfo = intents.map((intent) => {
+      intent.setPackage(this)
+      return intent
+    })
+    this.intents = intentsWithPkgInfo
   }
 
   getIntents (): Intent[] {

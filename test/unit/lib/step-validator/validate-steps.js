@@ -7,6 +7,7 @@ const IntentList = require('../../../../src/lib/intent-list').default;
 
 const stripCallsites = (errors) => {
   return errors.map((error) => {
+    delete error.details.intent.package;
     error.details.step = error.details.intent;
     delete error.details.intent;
     delete error.details.step.meta.callsite;

@@ -50,15 +50,16 @@ class IntentList {
   }
 
   private transformToPackages (intents: Intent[]) {
+    const packages: Package[] = []
+
     let currentList: Intent[] = []
     let previousIntentInGroup: Intent | null = null
-    let packages: Package[] = []
 
     for (const intent of intents) {
       if (previousIntentInGroup === null || intent.groupsWith(previousIntentInGroup)) {
         currentList.push(intent)
       } else {
-        this.packages.push(new Package(currentList))
+        packages.push(new Package(currentList))
         currentList = [
           intent
         ]
@@ -66,7 +67,7 @@ class IntentList {
       previousIntentInGroup = intent
 
       if (intent.endsGroup()) {
-        this.packages.push(new Package(currentList))
+        packages.push(new Package(currentList))
         currentList = []
         previousIntentInGroup = null
       }

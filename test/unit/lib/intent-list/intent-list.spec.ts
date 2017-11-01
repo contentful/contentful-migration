@@ -1,0 +1,40 @@
+import { expect } from 'chai'
+import IntentList from '../../../../src/lib/intent-list/index'
+import { migration as parseIntoIntents } from '../../../../src/lib/migration-steps/index'
+
+describe('Intent List', function () {
+  it('initializes correctly', async function () {
+    const intents = await parseIntoIntents(function up (migration) {
+      const person = migration.createContentType('person', {
+        description: 'A content type for a person',
+        name: 'foo'
+      })
+
+      const fullName = person.createField('fullName', {
+        name: 'Full Name',
+        type: 'Symbol'
+      })
+
+      person.editField('lastName', {
+        name: 'New Last Name'
+      })
+
+      person.editField('fullName').localized(true)
+      fullName.required(true)
+
+      person.name('bar')
+
+      const address = migration.editContentType('address', {
+        name: 'the new name'
+      })
+      person.name('a person')
+
+      address.editField('houseNumber').omitted(true)
+      address.createField('houseExtension', {
+        type: 'Symbol'
+      })
+    })
+    const intentList = new IntentList(intents)
+    expect(intentList.getIntents().length).to.equal(15)
+  })
+})
