@@ -11,7 +11,7 @@ const deletedCtEntries = require('../../../src/lib/deleted-ct-entries').default;
 const co = Bluebird.coroutine;
 
 describe('Entries fetcher', function () {
-  it('adds entries info to content types', co(function * () {
+  it.only('adds entries info to content types', co(function * () {
     const intents = yield migrationSteps(function up (migration) {
       migration.deleteContentType('foo');
       migration.deleteContentType('bar');
@@ -39,18 +39,18 @@ describe('Entries fetcher', function () {
     const raw = packages.map((pack) => pack.toRawSteps());
 
     const contentTypes = [
-      { sys: { id: 'foo' } },
-      { sys: { id: 'bar' } }
+      { id: 'foo' },
+      { id: 'bar' }
     ];
     const contentTypesWithEntryInfo = yield deletedCtEntries(raw, contentTypes, request);
 
     expect(contentTypesWithEntryInfo).to.eql([
       {
-        sys: { id: 'foo' },
+        id: 'foo',
         hasEntries: true
       },
       {
-        sys: { id: 'bar' }
+        id: 'bar'
       }
     ]);
   }));
