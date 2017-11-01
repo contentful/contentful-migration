@@ -1,15 +1,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## v0.3.2 - 2017-11-01
 ## v0.3.1 - 2017-10-24
 ### Changed
-- _[chunks]_ refactor slicers
-- _[e2e]_ extend e2e tests by examples coverage
+- *[chunks]* refactor slicers
+- *[e2e]* extend e2e tests by examples coverage
 
 ### Fixed
-- _[payloads]_ Do not report errors when fields are recreated
-- _[e2e]_ moved client to shared location
-- _[e2e]_ fix linting errors
+- *[payloads]* Do not report errors when fields are recreated
+- *[e2e]* moved client to shared location
+- *[e2e]* fix linting errors
 
 ## v0.3.0 - 2017-10-05
 ### Changed
