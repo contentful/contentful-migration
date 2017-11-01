@@ -18,7 +18,10 @@ const getLineWithContext = function (lines, lineNumber, context) {
 };
 
 const renderStepsErrors = function (errors) {
-  const errorsByFile = _.groupBy(errors, (error) => error.details.step.meta.callsite.file);
+  const errorsByFile = _.groupBy(errors, (error) => {
+    const intent = error.details.intent;
+    return intent.toRaw().meta.callsite.file;
+  });
 
   const messages = [];
 
@@ -29,7 +32,8 @@ const renderStepsErrors = function (errors) {
 
     const fileErrorsMessage = chalk`{red Errors in ${file}}\n\n`;
     const errorMessages = errorsByFile[file].map((error) => {
-      const callsite = error.details.step.meta.callsite;
+      const intent = error.details.intent;
+      const callsite = intent.toRaw().meta.callsite;
       const context = 2;
       const { before, line, after } = getLineWithContext(lines, callsite.line, context);
 

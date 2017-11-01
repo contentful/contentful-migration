@@ -42,8 +42,6 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
 
     intentList.validate()
 
-    await hooks.onPackages(intentList.toPackages())
-
     const chunks = intentList.toPackages().map((pack) => {
       return pack.toRawSteps()
     })
@@ -98,6 +96,8 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
     const ctsWithEntryInfo = await checkEntriesForDeletedCts(chunks, contentTypes, makeRequest)
 
     const rawCtsWithEntryInfo = ctsWithEntryInfo.map(c => c.toRaw())
+
+    await hooks.onPackages(intentList.toPackages())
     validateChunks(intentList, rawCtsWithEntryInfo)
 
     const state = new FakeAPI(existingCts, entries)

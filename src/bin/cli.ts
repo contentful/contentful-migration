@@ -1,17 +1,18 @@
-'use-strict'
-import Package from '../lib/package'
-import path = require('path')
-import fs = require('fs')
-import yargs = require('yargs')
+import * as path from 'path'
+import * as fs from 'fs'
+import * as yargs from 'yargs'
 
-import Bluebird = require('bluebird')
 import chalk = require('chalk')
 import inquirer = require('inquirer')
 import Listr = require('listr')
 import { createManagementClient } from './lib/contentful-client'
 const { version } = require('../../package.json')
-import { renderWithoutErrors } from './lib/render-packages'
+const {
+  SpaceAccessError
+} = require('../lib/errors')
 import createMigrationParser from '../lib/migration-parser'
+import * as renderPlanMessages from './lib/plan-messages'
+import * as renderStepsErrors from './lib/steps-errors'
 
 const argv = yargs
   .usage('Parses and runs a migration script on a Contentful space.\n\nUsage: contentful-migration [args] <path-to-script-file>\n\nScript: path to a migration script.')
@@ -39,7 +40,15 @@ const argv = yargs
   .strict()
   .argv
 
-const run = Bluebird.coroutine(function * () {
+const renderFailedValidation = function (errors, renderer) {
+  return [
+    chalk`{red.bold Validation failed}\n`,
+    renderer(errors),
+    chalk`🚨  {bold.red Migration unsuccessful}`
+  ].join('\n')
+}
+
+const run = async function () {
   let migrationFunction
   try {
     migrationFunction = require(argv.filePath)
@@ -66,24 +75,38 @@ const run = Bluebird.coroutine(function * () {
     return client.rawRequest(requestConfig)
   }
 
+  let packages
   const migrationParser = createMigrationParser(makeRequest, {
-    onPackages: function (packages: Package[]) {
-      console.log(chalk`{bold.green The following migration has been planned}\n`)
-      console.log(renderWithoutErrors(packages))
-      console.log('\n')
+    onPackages: function (_packages) {
+      packages = _packages
     }
   })
 
   let requests
 
   try {
-    requests = yield migrationParser(migrationFunction)
-  } catch (error) {
-    console.log(error)
-    // how do we receive errors?
-
+    requests = await migrationParser(migrationFunction)
+  } catch (e) {
+    let message = e.message
+    if (e.errors && e.payloadValidationError) {
+      message = renderFailedValidation(e.errors, renderPlanMessages.withErrors)
+    }
+    if (e.errors) {
+      const errors = e.errors
+      message = renderFailedValidation(errors, renderStepsErrors)
+    } else if (e instanceof SpaceAccessError) {
+      message = [
+        chalk`{red.bold ${e.message}}\n`,
+        chalk`🚨  {bold.red Migration unsuccessful}`
+      ].join('\n')
+    }
+    console.log(message)
     process.exit(1)
   }
+
+  console.log(chalk`{bold.green The following migration has been planned}\n`)
+  console.log(renderPlanMessages.withoutErrors(packages))
+  console.log('\n')
 
   const tasks = requests.map((request) => {
     return {
@@ -97,7 +120,7 @@ const run = Bluebird.coroutine(function * () {
     }
   })
 
-  const answers = yield inquirer.prompt([{
+  const answers = await inquirer.prompt([{
     type: 'confirm',
     message: 'Do you want to apply the migration',
     name: 'applyMigration'
@@ -105,7 +128,7 @@ const run = Bluebird.coroutine(function * () {
 
   if (answers.applyMigration) {
     try {
-      const successfulMigration = yield (new Listr(tasks)).run()
+      const successfulMigration = await (new Listr(tasks)).run()
       console.log(chalk`🎉  {bold.green Migration successful}`)
       return successfulMigration
     } catch (err) {
@@ -115,6 +138,6 @@ const run = Bluebird.coroutine(function * () {
   } else {
     console.log(chalk`⚠️  {bold.yellow Migration aborted}`)
   }
-})
+}
 
 export default run
