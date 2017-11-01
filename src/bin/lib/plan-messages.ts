@@ -37,8 +37,12 @@ const renderPackage = (pkg: Package, errors?: ValidationError[]) => {
       message.push(chalk`\n  {bold Create field {yellow ${firstChange.getFieldId()}}}`)
     }
 
-    if (firstChange.isFieldUpdate()) {
+    if (firstChange.isFieldUpdate() || firstChange.isFieldRename()) {
       message.push(chalk`\n  {bold Update field {yellow ${firstChange.getFieldId()}}}`)
+    }
+
+    if (firstChange.isFieldDelete()) {
+      message.push(chalk`\n  {bold Delete field {yellow ${firstChange.getFieldId()}}}`)
     }
 
     for (const fieldChange of fieldChanges) {

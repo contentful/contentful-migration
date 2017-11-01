@@ -37,7 +37,7 @@ describe('apply field migration examples', function () {
       .run(`--space-id ${devSpaceId} ./examples/06-delete-field.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
       .expect(assert.plans.contentType.create('dog', { name: 'Angry dog' }))
-      .expect(assert.plans.field.update('postmenBites', { omitted: true, deleted: true }))
+      .expect(assert.plans.field.delete('postmenBites'))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
         const contentType = yield getDevContentType(devSpaceId, 'dog');
