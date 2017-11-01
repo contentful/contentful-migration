@@ -99,6 +99,9 @@ const run = async function () {
         chalk`{red.bold ${e.message}}\n`,
         chalk`🚨  {bold.red Migration unsuccessful}`
       ].join('\n')
+    } else {
+      console.log(e)
+      process.exit(1)
     }
     console.log(message)
     process.exit(1)

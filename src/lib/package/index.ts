@@ -11,27 +11,30 @@ class Package {
   public transformsContent: boolean = false
   public updatesContentType: boolean = false
   public deletesContentType: boolean = false
+  public modifiesFields: boolean = false
+
   private intents: Intent[]
   private contentTypeId: string
 
   constructor (intents: Intent[] = []) {
     this.contentTypeId = intents[0].getContentTypeId()
 
-    this.createsContentType = intents.some((intent) => {
-      return intent.isContentTypeCreate()
+    this.createsContentType = intents.some((intent) => intent.isContentTypeCreate())
+
+    this.transformsContent = intents.some((intent) => intent.isContentTransform())
+
+    this.deletesContentType = intents.some((intent) => intent.isContentTypeDelete())
+
+    this.updatesContentType = intents.some((intent) => intent.isContentTypeUpdate())
+
+    this.modifiesFields = intents.some((intent) => {
+      return intent.isFieldCreate() ||
+        intent.isFieldUpdate() ||
+        intent.isFieldDelete() ||
+        intent.isFieldRename() ||
+        intent.isFieldMove()
     })
 
-    this.transformsContent = intents.some((intent) => {
-      return intent.isContentTransform()
-    })
-
-    this.deletesContentType = intents.some((intent) => {
-      return intent.isContentTypeDelete()
-    })
-
-    this.updatesContentType = intents.some((intent) => {
-      return intent.isContentTypeUpdate()
-    })
     const intentsWithPkgInfo = intents.map((intent) => {
       intent.setPackage(this)
       return intent

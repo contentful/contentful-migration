@@ -9,14 +9,15 @@ const renderPackage = (pkg: Package, errors?: ValidationError[]) => {
 
   if (pkg.createsContentType) {
     message.push(chalk`{bold.underline Create Content Type} {bold.yellow ${contentType}}`)
-  } else if (pkg.updatesContentType) {
+  } else if (pkg.updatesContentType || pkg.modifiesFields) {
     message.push(chalk`{bold.underline Update Content Type} {bold.yellow ${contentType}}`)
   } else if (pkg.deletesContentType) {
     message.push(chalk`{bold.underline Delete Content Type} {bold.yellow ${contentType}}`)
   }
 
   const packageIntents = pkg.getIntents()
-  for (const intent of packageIntents) {
+  const contentTypeIntents = packageIntents.filter((i) => i.isAboutContentType())
+  for (const intent of contentTypeIntents) {
     if (intent.toRaw().payload.props) {
       const props = intent.toRaw().payload.props
       for (const key of Object.keys(props)) {
@@ -32,11 +33,11 @@ const renderPackage = (pkg: Package, errors?: ValidationError[]) => {
   for (const fieldChanges of Object.values(fieldIntentsByField)) {
     const firstChange = fieldChanges[0]
 
-    if (firstChange.isFieldCreate) {
+    if (firstChange.isFieldCreate()) {
       message.push(chalk`\n  {bold Create field {yellow ${firstChange.getFieldId()}}}`)
     }
 
-    if (firstChange.isFieldUpdate) {
+    if (firstChange.isFieldUpdate()) {
       message.push(chalk`\n  {bold Update field {yellow ${firstChange.getFieldId()}}}`)
     }
 
