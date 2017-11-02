@@ -232,6 +232,7 @@ describe.only('Payload builder', function () {
         },
         data: {
           name: 'Book',
+          description: undefined,
           fields: [{
             id: 'title',
             name: 'Title',
@@ -252,6 +253,7 @@ describe.only('Payload builder', function () {
         },
         data: {
           name: 'Book',
+          description: undefined,
           fields: [{
             id: 'title',
             newId: 'newTitle',
@@ -273,6 +275,7 @@ describe.only('Payload builder', function () {
         },
         data: {
           name: 'Book',
+          description: undefined,
           fields: [{
             id: 'newTitle',
             name: 'new Title',
