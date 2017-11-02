@@ -1,6 +1,7 @@
 import RawStep from '../interfaces/raw-step'
 import OfflineAPI from '../offline-api/index'
 import { APIAction, EntityAction } from '../action/action'
+import { FieldRenameAction } from '../action/field-rename'
 import { ContentTypeSaveAction } from '../action/content-type-save'
 import { ContentTypePublishAction } from '../action/content-type-publish'
 import { EntryTransformAction } from '../action/entry-transform'
@@ -12,6 +13,7 @@ class Package {
   public updatesContentType: boolean = false
   public deletesContentType: boolean = false
   public modifiesFields: boolean = false
+  private renamesField: boolean = false
 
   private intents: Intent[]
   private contentTypeId: string
@@ -33,6 +35,10 @@ class Package {
         intent.isFieldDelete() ||
         intent.isFieldRename() ||
         intent.isFieldMove()
+    })
+
+    this.renamesField = intents.some((intent) => {
+      return intent.isFieldRename()
     })
 
     const intentsWithPkgInfo = intents.map((intent) => {
@@ -65,6 +71,22 @@ class Package {
             continue
           }
         }
+      }
+    } else if (this.renamesField) {
+      if (intents.length > 1) {
+        throw new Error('Packages that rename a field may only contain one intent.')
+      }
+      const renameAction = intents[0].toActions()[0]
+      if (renameAction instanceof FieldRenameAction) {
+        const entityId = renameAction.getEntityId()
+        const ct = await api.getContentType(entityId)
+        await renameAction.applyTo(ct)
+        const save = new ContentTypeSaveAction(this.getContentTypeId())
+        const publish = new ContentTypePublishAction(this.getContentTypeId())
+
+        await save.applyTo(api)
+        await publish.applyTo(api)
+        renameAction.updateOfflineAPIWithNewFieldId(ct)
       }
     } else {
       for (const intent of intents) {

@@ -42,6 +42,11 @@ class Fields {
     this._fields = allFields
   }
 
+  deleteField (id: string) {
+    const fieldToDelete = find(this._fields, { id })
+    pull(this._fields, fieldToDelete)
+  }
+
   moveField (id: string, direction: string, pivot: string) {
     const fields = this._fields
     const field = this.getField(id)

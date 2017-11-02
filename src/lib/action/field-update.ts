@@ -2,7 +2,7 @@ import { FieldAction } from '../action/field-action'
 import ContentType from '../entities/content-type'
 
 class FieldUpdateAction extends FieldAction {
-  private props: object
+  protected props: { newId?: string }
 
   constructor (contentTypeId: string, fieldId: string, props: object) {
     super(contentTypeId, fieldId)
