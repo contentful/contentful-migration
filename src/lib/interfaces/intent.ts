@@ -27,7 +27,7 @@ interface Intent {
   getDirection? (): string
   getPivotId? (): string
 
-  belongsToPackage? (): Package
+  getPackage? (): Package
 }
 
 export {

@@ -1,5 +1,5 @@
 import RawStep from '../interfaces/raw-step'
-import FakeAPI from '../fake-api/index'
+import OfflineAPI from '../offline-api/index'
 import { APIAction, EntityAction } from '../action/action'
 import { ContentTypeSaveAction } from '../action/content-type-save'
 import { ContentTypePublishAction } from '../action/content-type-publish'
@@ -54,7 +54,7 @@ class Package {
     return this.intents.map((intent) => intent.toRaw())
   }
 
-  async applyTo (api: FakeAPI) {
+  async applyTo (api: OfflineAPI) {
     await api.startRecordingRequests('foo')
     const intents = this.getIntents()
     if (this.transformsContent) {

@@ -1,4 +1,4 @@
-import { cloneDeep, find, findIndex, pull } from 'lodash'
+import { cloneDeep, find, filter, findIndex, pull } from 'lodash'
 
 interface Field {
   id: string
@@ -64,6 +64,10 @@ class Fields {
     if (direction === 'beforeField') {
       fields.splice(pivotIndex, 0, field)
     }
+  }
+
+  filter (predicate: (field: Field) => boolean): Field[] {
+    return filter(this._fields, predicate)
   }
 
   get fields () {

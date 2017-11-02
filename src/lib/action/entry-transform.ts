@@ -1,5 +1,5 @@
 import { APIAction } from './action'
-import { OfflineAPI } from '../fake-api'
+import { OfflineAPI } from '../offline-api'
 import Entry from '../entities/entry'
 
 class EntryTransformAction extends APIAction {

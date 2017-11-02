@@ -1,9 +1,9 @@
 import ContentType from '../entities/content-type'
 import Entry from '../entities/entry'
-import FakeApi from '../fake-api/index'
+import OfflineApi from '../offline-api/index'
 
 abstract class APIAction {
-  abstract applyTo (api: FakeApi): Promise<void>
+  abstract applyTo (api: OfflineApi): Promise<void>
 }
 
 abstract class EntityAction {

@@ -39,14 +39,27 @@
   "nyc": {
     "per-file": true,
     "include": [
-      "lib/**/*.js",
-      "bin/**/*.js",
-      "bin/contentful-migration"
+      "src/lib/**/*.js",
+      "src/lib/**/*.ts",
+      "src/bin/**/*.js",
+      "src/bin/**/*.ts",
+      "built/lib/**/*.js",
+      "built/bin/**/*.js"
     ],
     "exclude": [
       "test/**/*.spec.js",
+      "test/**/*.spec.ts",
       "test/**/*.js",
-      "node_modules/**/*.js"
+      "test/**/*.ts",
+      "node_modules/**/*.js",
+      "node_modules/**/*.ts",
+      "typings"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
     ],
     "all": true
   },

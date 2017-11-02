@@ -1,7 +1,7 @@
 'use strict'
 import * as _ from 'lodash'
 
-import FakeAPI from './fake-api/index'
+import OfflineAPI from './offline-api/index'
 import { migration } from './migration-steps/index'
 import IntentList from './intent-list/index'
 
@@ -37,7 +37,7 @@ export default async function (existingCts, existingEntries, migrationScript): P
     })
   })
 
-  const state = new FakeAPI(existingCTs, entries)
+  const state = new OfflineAPI(existingCTs, entries)
 
   for (const pkg of packages) {
     await pkg.applyTo(state)

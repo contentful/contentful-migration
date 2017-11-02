@@ -106,7 +106,7 @@ export default abstract class Intent implements IntentInterface {
     return this.type
   }
 
-  belongsToPackage (): Package {
+  getPackage (): Package {
     return this.package
   }
 

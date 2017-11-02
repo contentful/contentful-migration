@@ -17,7 +17,7 @@ import IntentList from './intent-list'
 import * as errors from './errors/index'
 
 import Entry from './entities/entry'
-import FakeAPI from './fake-api'
+import OfflineAPI from './offline-api'
 
 const createMigrationParser = function (makeRequest, hooks): (migrationCreator: () => any) => Promise<any[]> {
   // tslint:disable: no-empty
@@ -100,7 +100,7 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
     await hooks.onPackages(intentList.toPackages())
     validateChunks(intentList, rawCtsWithEntryInfo)
 
-    const state = new FakeAPI(existingCts, entries)
+    const state = new OfflineAPI(existingCts, entries)
 
     for (const pkg of intentList.toPackages()) {
       await pkg.applyTo(state)

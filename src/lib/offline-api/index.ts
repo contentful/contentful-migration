@@ -1,12 +1,21 @@
-// - ApiAction
-// - EntityAction
+import FieldDeletionValidator from './validator/field-deletion'
+import { ContentTypePayloadValidator } from './validator/content-type'
 import ContentType from '../entities/content-type'
 import Request from '../interfaces/request'
 import { Entry } from '../entities/entry'
+import { PayloadValidationError, InvalidActionError } from '../interfaces/errors'
 
 interface RequestBatch {
   id: string
   requests: Request[]
+  errors: (PayloadValidationError | InvalidActionError)[]
+}
+
+export enum ApiHook {
+  SaveContentType = 'SAVE_CONTENT_TYPE',
+  PublishContentType = 'PUBLISH_CONTENT_TYPE',
+  UnpublishContentType = 'UNPUBLISH_CONTENT_TYPE',
+  DeleteContentType = 'DELETE_CONTENT_TYPE'
 }
 
 const saveContentTypeRequest = function (ct: ContentType): Request {
@@ -77,15 +86,38 @@ const deleteRequest = function (ct: ContentType): Request {
 }
 
 class OfflineAPI {
-  private contentTypes: Map<String, ContentType> = null
+  private modifiedContentTypes: Map<String, ContentType> = null
+  private savedContentTypes: Map<String, ContentType> = null
+  private publishedContentTypes: Map<String, ContentType> = null
   private entries: Entry[] = null
   private isRecordingRequests: boolean = false
   private currentRequestsRecorded: Request[] = null
+  private currentErrorsRecorded: (PayloadValidationError | InvalidActionError)[] = null
   private batchId: string = null
   private requestBatches: RequestBatch[] = []
+  private contentTypeValidators: ContentTypePayloadValidator[] = []
 
   constructor (contentTypes: Map<String, ContentType> = new Map(), entries: Entry[] = []) {
-    this.contentTypes = contentTypes
+    this.modifiedContentTypes = contentTypes
+
+    // Initialize saved and published state
+    // These are (currently) exclusively needed for stateful validations
+    // for example "cannot delete before omitted was published"
+    //
+    // Since the `modifiedContentTypes` are mutable,
+    // we need to perform a clone.
+    // TODO: Build a better abstraction over `Map` that allows easy cloning
+    // and also allows us to implement async iterators
+    this.savedContentTypes = new Map()
+    this.publishedContentTypes = new Map()
+
+    for (const [id, contentType] of contentTypes.entries()) {
+      this.savedContentTypes.set(id, contentType.clone())
+      this.publishedContentTypes.set(id, contentType.clone())
+    }
+
+    this.contentTypeValidators.push(new FieldDeletionValidator())
+
     this.entries = entries
   }
 
@@ -96,11 +128,11 @@ class OfflineAPI {
       throw new Error(`Cannot get CT ${id} because it does not exist`)
     }
 
-    return this.contentTypes.get(id)
+    return this.modifiedContentTypes.get(id)
   }
 
   async hasContentType (id: string): Promise<boolean> {
-    return this.contentTypes.has(id)
+    return this.modifiedContentTypes.has(id)
   }
 
   async createContentType (id: string): Promise<ContentType> {
@@ -108,7 +140,7 @@ class OfflineAPI {
 
     const ct = new ContentType({ id , version: 0 })
 
-    await this.contentTypes.set(id, ct)
+    await this.modifiedContentTypes.set(id, ct)
 
     return ct
   }
@@ -116,7 +148,7 @@ class OfflineAPI {
   async saveContentType (id: string): Promise<ContentType> {
     this.assertRecording()
 
-    const hasContentType = this.contentTypes.has(id)
+    const hasContentType = this.modifiedContentTypes.has(id)
 
     if (!hasContentType) {
       throw new Error(`Cannot save CT ${id} because it does not exist`)
@@ -129,7 +161,15 @@ class OfflineAPI {
     // Mutate version bump
     ct.version = ct.version + 1
 
-    await this.contentTypes.set(id, ct)
+    await this.modifiedContentTypes.set(id, ct)
+    await this.savedContentTypes.set(id, ct.clone())
+
+    for (const validator of this.contentTypeValidators) {
+      if (validator.hooks.includes(ApiHook.SaveContentType)) {
+        const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
+        this.currentErrorsRecorded = this.currentErrorsRecorded.concat(errors)
+      }
+    }
 
     return ct
   }
@@ -144,7 +184,9 @@ class OfflineAPI {
     // Mutate version bump
     ct.version = ct.version + 1
 
-    await this.contentTypes.set(id, ct)
+    await this.modifiedContentTypes.set(id, ct)
+    await this.savedContentTypes.set(id, ct.clone())
+    await this.publishedContentTypes.set(id, ct.clone())
 
     return ct
   }
@@ -159,7 +201,9 @@ class OfflineAPI {
     // Mutate version bump
     ct.version = ct.version + 1
 
-    await this.contentTypes.set(id, ct)
+    await this.modifiedContentTypes.set(id, ct)
+    await this.savedContentTypes.set(id, ct)
+    await this.publishedContentTypes.delete(id)
 
     return ct
   }
@@ -171,7 +215,9 @@ class OfflineAPI {
     // Store clone as a request
     this.currentRequestsRecorded.push(deleteRequest(ct.clone()))
 
-    await this.contentTypes.delete(id)
+    await this.modifiedContentTypes.delete(id)
+    await this.publishedContentTypes.delete(id)
+    await this.savedContentTypes.delete(id)
   }
 
   async saveEntry (id: string) {
@@ -224,6 +270,7 @@ class OfflineAPI {
     }
     this.isRecordingRequests = true
     this.currentRequestsRecorded = []
+    this.currentErrorsRecorded = []
     this.batchId = id
   }
 
@@ -235,13 +282,15 @@ class OfflineAPI {
     }
     const batch: RequestBatch = {
       id: this.batchId,
-      requests: this.currentRequestsRecorded
+      requests: this.currentRequestsRecorded,
+      errors: this.currentErrorsRecorded
     }
 
     this.requestBatches.push(batch)
 
     this.isRecordingRequests = false
     this.currentRequestsRecorded = []
+    this.currentErrorsRecorded = []
     this.batchId = null
   }
 

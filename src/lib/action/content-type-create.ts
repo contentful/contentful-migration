@@ -1,5 +1,5 @@
 import { APIAction } from './action'
-import FakeAPI from '../fake-api/index'
+import OfflineAPI from '../offline-api/index'
 
 class ContentTypeCreateAction extends APIAction {
   private contentTypeId: string
@@ -9,7 +9,7 @@ class ContentTypeCreateAction extends APIAction {
     this.contentTypeId = contentTypeId
   }
 
-  async applyTo (api: FakeAPI) {
+  async applyTo (api: OfflineAPI) {
     await api.createContentType(this.contentTypeId)
   }
 }

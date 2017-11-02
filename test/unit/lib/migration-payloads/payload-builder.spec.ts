@@ -1,41 +1,38 @@
-'use strict';
+'use strict'
 
-const { expect } = require('chai');
-const _ = require('lodash');
-const Bluebird = require('bluebird');
+import { expect } from 'chai'
+import buildPayloads from './build-payloads'
 
-const buildPayloads = require('./build-payloads');
-
-describe('Payload builder', function () {
+describe.only('Payload builder', function () {
   describe('Without a Content Type payload', function () {
-    it('returns the expected payload', Bluebird.coroutine(function * () {
-      const payloads = yield buildPayloads(function up (migration) {
+    it('returns the expected payload', async function () {
+      const requests = await buildPayloads(function up (migration) {
         const person = migration.createContentType('person', {
           name: 'bar',
           description: 'A content type for a person'
-        });
+        })
 
         person.createField('age', {
           name: 'Age',
           type: 'Number',
           required: true
-        });
+        })
 
         person.createField('fullName', {
           name: 'Full Name',
           type: 'Symbol',
           required: true,
           localized: true
-        });
-      }, []);
+        })
+      }, [])
 
-      expect(payloads).to.eql([{
-        meta: {
-          contentTypeId: 'person',
-          version: 1,
-          parentVersion: 0
+      expect(requests).to.eql([[{
+        url: '/content_types/person',
+        method: 'PUT',
+        headers: {
+          'X-Contentful-Version': 0
         },
-        payload: {
+        data: {
           name: 'bar',
           description: 'A content type for a person',
           fields: [
@@ -54,12 +51,18 @@ describe('Payload builder', function () {
             }
           ]
         }
-      }]);
-    }));
-  });
+      }, {
+        url: '/content_types/person/published',
+        method: 'PUT',
+        headers: {
+          'X-Contentful-Version': 1
+        }
+      }]])
+    })
+  })
 
   describe('when deleting a field', function () {
-    it('returns the expected payload', Bluebird.coroutine(function * () {
+    it('returns the expected payload', async function () {
       const contentTypes = [{
         name: 'Very dangerous dog',
         description: 'Woof woof',
@@ -81,32 +84,22 @@ describe('Payload builder', function () {
           version: 2,
           id: 'dog'
         }
-      }];
+      }]
 
-      const payloads = yield buildPayloads(function up (migration) {
-        const dog = migration.editContentType('dog');
-        dog.deleteField('favoriteFood');
+      const requests = await buildPayloads(function up (migration) {
+        const dog = migration.editContentType('dog')
+        dog.deleteField('favoriteFood')
 
-        dog.createField('foo').name('A foo').type('Symbol');
-      }, contentTypes);
+        dog.createField('foo').name('A foo').type('Symbol')
+      }, contentTypes)
 
-      const basePayload = {
-        meta: {
-          contentTypeId: 'dog',
-          version: 2,
-          parentVersion: 1
+      expect(requests).to.eql([[{
+        url: '/content_types/dog',
+        method: 'PUT',
+        headers: {
+          'X-Contentful-Version': 2
         },
-        payload: _.omit(contentTypes[0], ['sys'])
-      };
-
-      const firstPayload = {
-        meta: {
-          contentTypeId: 'dog',
-          version: 3,
-          parentVersion: 2,
-          parent: basePayload
-        },
-        payload: {
+        data: {
           name: 'Very dangerous dog',
           description: 'Woof woof',
           fields: [
@@ -115,7 +108,8 @@ describe('Payload builder', function () {
               type: 'Number',
               name: 'kills',
               required: true
-            }, {
+            },
+            {
               id: 'favoriteFood',
               type: 'Symbol',
               name: 'food',
@@ -124,16 +118,19 @@ describe('Payload builder', function () {
             }
           ]
         }
-      };
-
-      const secondPayload = {
-        meta: {
-          contentTypeId: 'dog',
-          version: 5,
-          parentVersion: 4,
-          parent: firstPayload
+      }, {
+        url: '/content_types/dog/published',
+        method: 'PUT',
+        headers: {
+          'X-Contentful-Version': 3
+        }
+      }, {
+        url: '/content_types/dog',
+        method: 'PUT',
+        headers: {
+          'X-Contentful-Version': 4
         },
-        payload: {
+        data: {
           name: 'Very dangerous dog',
           description: 'Woof woof',
           fields: [
@@ -142,7 +139,8 @@ describe('Payload builder', function () {
               type: 'Number',
               name: 'kills',
               required: true
-            }, {
+            },
+            {
               id: 'favoriteFood',
               type: 'Symbol',
               name: 'food',
@@ -152,51 +150,62 @@ describe('Payload builder', function () {
             }
           ]
         }
-      };
-
-      const thirdPayload = {
-        meta: {
-          contentTypeId: 'dog',
-          version: 7,
-          parentVersion: 6,
-          parent: secondPayload
-        },
-        payload: {
-          name: 'Very dangerous dog',
-          description: 'Woof woof',
-          fields: [
-            {
-              id: 'kills',
-              type: 'Number',
-              name: 'kills',
-              required: true
-            }, {
-              id: 'favoriteFood',
-              type: 'Symbol',
-              name: 'food',
-              required: true,
-              omitted: true,
-              deleted: true
-            }, {
-              id: 'foo',
-              type: 'Symbol',
-              name: 'A foo'
-            }
-          ]
+      }, {
+        url: '/content_types/dog/published',
+        method: 'PUT',
+        headers: {
+          'X-Contentful-Version': 5
         }
-      };
+      }], [
+        {
+          url: '/content_types/dog',
+          method: 'PUT',
+          headers: {
+            'X-Contentful-Version': 6
+          },
+          data: {
+            name: 'Very dangerous dog',
+            description: 'Woof woof',
+            fields: [
+              {
+                id: 'kills',
+                type: 'Number',
+                name: 'kills',
+                required: true
+              },
+              {
+                id: 'favoriteFood',
+                type: 'Symbol',
+                name: 'food',
+                required: true,
+                omitted: true,
+                deleted: true
+              }, {
+                id: 'foo',
+                type: 'Symbol',
+                name: 'A foo'
+              }
+            ]
+          }
+        }, {
+          url: '/content_types/dog/published',
+          method: 'PUT',
+          headers: {
+            'X-Contentful-Version': 7
+          }
+        }
+      ]])
+    })
+  })
 
-      expect(payloads).to.eql([firstPayload, secondPayload, thirdPayload]);
-    }));
-  });
   describe('when referring to a field by its new id in the same migration', function () {
-    it('builds the correct payloads', Bluebird.coroutine(function * () {
+    it('builds the correct requests', async function () {
       const migration = function (migration) {
-        const book = migration.editContentType('book');
-        book.editField('title').type('Text');
-        book.changeFieldId('title', 'newTitle');
-        book.editField('newTitle').name('new Title');
-      };
+        const book = migration.editContentType('book')
+        book.editField('title').type('Text')
+        book.changeFieldId('title', 'newTitle')
+        book.editField('newTitle').name('new Title')
+      }
 
       const existingCts = [
         {
@@ -211,27 +220,17 @@ describe('Payload builder', function () {
             type: 'Symbol'
           }]
         }
-      ];
+      ]
 
-      const payloads = yield buildPayloads(migration, existingCts);
+      const requests = await buildPayloads(migration, existingCts)
 
-      const basePayload = {
-        meta: {
-          contentTypeId: 'book',
-          version: 1,
-          parentVersion: 0
+      expect(requests).to.eql([[{
+        url: '/content_types/book',
+        method: 'PUT',
+        headers: {
+          'X-Contentful-Version': 1
         },
-        payload: _.omit(existingCts[0], ['sys'])
-      };
-
-      const firstPayload = {
-        meta: {
-          contentTypeId: 'book',
-          version: 2,
-          parentVersion: 1,
-          parent: basePayload
-        },
-        payload: {
+        data: {
           name: 'Book',
           fields: [{
             id: 'title',
@@ -239,16 +238,19 @@ describe('Payload builder', function () {
             type: 'Text'
           }]
         }
-      };
-
-      const secondPayload = {
-        meta: {
-          contentTypeId: 'book',
-          version: 4,
-          parentVersion: 3,
-          parent: firstPayload
+      }, {
+        url: '/content_types/book/published',
+        method: 'PUT',
+        headers: {
+          'X-Contentful-Version': 2
+        }
+      }], [{
+        url: '/content_types/book',
+        method: 'PUT',
+        headers: {
+          'X-Contentful-Version': 3
         },
-        payload: {
+        data: {
           name: 'Book',
           fields: [{
             id: 'title',
@@ -257,16 +259,19 @@ describe('Payload builder', function () {
             type: 'Text'
           }]
         }
-      };
-
-      const thirdPayload = {
-        meta: {
-          contentTypeId: 'book',
-          version: 6,
-          parentVersion: 5,
-          parent: secondPayload
+      }, {
+        url: '/content_types/book/published',
+        method: 'PUT',
+        headers: {
+          'X-Contentful-Version': 4
+        }
+      }], [{
+        url: '/content_types/book',
+        method: 'PUT',
+        headers: {
+          'X-Contentful-Version': 5
         },
-        payload: {
+        data: {
           name: 'Book',
           fields: [{
             id: 'newTitle',
@@ -274,14 +279,18 @@ describe('Payload builder', function () {
             type: 'Text'
           }]
         }
-      };
-
-      expect(payloads).to.eql([firstPayload, secondPayload, thirdPayload]);
-    }));
-  });
+      }, {
+        url: '/content_types/book/published',
+        method: 'PUT',
+        headers: {
+          'X-Contentful-Version': 6
+        }
+      }]])
+    })
+  })
 
   describe('when reordering a field', function () {
-    it('returns the expected payload', Bluebird.coroutine(function * () {
+    it('returns the expected payload', async function () {
       const contentTypes = [{
         name: 'Very dangerous dog',
         description: 'Woof woof',
@@ -318,34 +327,24 @@ describe('Payload builder', function () {
           version: 2,
           id: 'dog'
         }
-      }];
+      }]
 
-      const payloads = yield buildPayloads(function up (migration) {
-        const dog = migration.editContentType('dog');
+      const requests = await buildPayloads(function up (migration) {
+        const dog = migration.editContentType('dog')
 
-        dog.moveField('favoriteFood').toTheTop();
-        dog.moveField('kills').toTheBottom();
-        dog.moveField('legs').beforeField('kills');
-        dog.moveField('age').afterField('legs');
-      }, contentTypes);
+        dog.moveField('favoriteFood').toTheTop()
+        dog.moveField('kills').toTheBottom()
+        dog.moveField('legs').beforeField('kills')
+        dog.moveField('age').afterField('legs')
+      }, contentTypes)
 
-      const basePayload = {
-        meta: {
-          contentTypeId: 'dog',
-          version: 2,
-          parentVersion: 1
+      expect(requests).to.eql([[{
+        url: '/content_types/dog',
+        method: 'PUT',
+        headers: {
+          'X-Contentful-Version': 2
         },
-        payload: _.omit(contentTypes[0], ['sys'])
-      };
-
-      const firstPayload = {
-        meta: {
-          contentTypeId: 'dog',
-          version: 3,
-          parentVersion: 2,
-          parent: basePayload
-        },
-        payload: {
+        data: {
           name: 'Very dangerous dog',
           description: 'Woof woof',
           fields: [
@@ -378,14 +377,18 @@ describe('Payload builder', function () {
             }
           ]
         }
-      };
-
-      expect(payloads).to.eql([firstPayload]);
-    }));
-  });
+      }, {
+        url: '/content_types/dog/published',
+        method: 'PUT',
+        headers: {
+          'X-Contentful-Version': 3
+        }
+      }]])
+    })
+  })
 
   describe('when deleting a content type', function () {
-    it('returns the expected payload', Bluebird.coroutine(function * () {
+    it('returns the expected payload', async function () {
       const contentTypes = [{
         name: 'Very dangerous dog',
         description: 'Woof woof',
@@ -407,32 +410,25 @@ describe('Payload builder', function () {
           version: 2,
           id: 'dog'
         }
-      }];
+      }]
 
-      const payloads = yield buildPayloads(function up (migration) {
-        migration.deleteContentType('dog');
-      }, contentTypes);
+      const requests = await buildPayloads(function up (migration) {
+        migration.deleteContentType('dog')
+      }, contentTypes)
 
-      const basePayload = {
-        meta: {
-          contentTypeId: 'dog',
-          version: 2,
-          parentVersion: 1
-        },
-        payload: _.omit(contentTypes[0], ['sys'])
-      };
-
-      const deletePayload = {
-        meta: {
-          contentTypeId: 'dog',
-          version: 3,
-          parentVersion: 2,
-          parent: basePayload
-        },
-        isDelete: true
-      };
-
-      expect(payloads).to.eql([deletePayload]);
-    }));
-  });
-});
+      expect(requests).to.eql([[{
+        url: '/content_types/dog/published',
+        method: 'DELETE',
+        headers: {
+          'X-Contentful-Version': 2
+        }
+      }, {
+        url: '/content_types/dog',
+        method: 'DELETE',
+        headers: {
+          'X-Contentful-Version': 3
+        }
+      }]])
+    })
+  })
+})

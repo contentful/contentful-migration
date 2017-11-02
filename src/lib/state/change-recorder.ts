@@ -172,17 +172,6 @@ export default class ChangeRecorder<EntityType> implements StateInterface<Entity
     return this.committedState.get(key)
   }
 
-  // We needed to increase version numbers
-  // but needed to prevent the updates being reflected in the batches
-  // For that reason we allow setting directly to the committed
-  // state as long as we are not inside of a batch
-  async setCommitted (key: String, value: EntityType) {
-    if (this.hasOpenBatch) {
-      throw new Error('Batch needs to be closed before calling setCommitted method on it.')
-    }
-    return this.committedState.set(key, value)
-  }
-
   async getBatches () {
     if (this.hasOpenBatch) {
       throw new Error('Batch needs to be closed before calling getBatches method on it.')
