@@ -1,4 +1,4 @@
-import { find } from 'lodash'
+import { cloneDeep, find, findIndex } from 'lodash'
 
 interface Field {
   id: string
@@ -42,6 +42,28 @@ class Fields {
     this._fields = allFields
   }
 
+  moveField (id: string, direction: string, pivot: string) {
+    const fields = this._fields
+    const field = this.getField(id)
+    if (direction === 'toTheTop') {
+      fields.unshift(field)
+    }
+
+    if (direction === 'toTheBottom') {
+      fields.push(field)
+    }
+
+    const pivotIndex = findIndex(fields, { id: pivot })
+
+    if (direction === 'afterField') {
+      fields.splice(pivotIndex + 1, 0, field)
+    }
+
+    if (direction === 'beforeField') {
+      fields.splice(pivotIndex, 0, field)
+    }
+  }
+
   get fields () {
     return this._fields
   }
@@ -51,11 +73,11 @@ class Fields {
   }
 
   clone (): Fields {
-    return new Fields(this.fields)
+    return new Fields(this.toRaw())
   }
 
   toRaw (): Field[] {
-    return this.fields
+    return cloneDeep(this.fields)
   }
 }
 

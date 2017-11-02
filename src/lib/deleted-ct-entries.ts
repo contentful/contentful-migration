@@ -12,7 +12,6 @@ export default async function checkEntriesForDeletedCts (chunks, contentTypes: C
   }
 
   return Bluebird.map(contentTypes, async function (ct: any): Promise<any> {
-    console.log(ct)
     if (deletedCtIds.has(ct.id)) {
       const response = await request({
         method: 'GET',

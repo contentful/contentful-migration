@@ -114,7 +114,7 @@ export default abstract class Intent implements IntentInterface {
     this.package = pkg
   }
 
-  toActions? (): (APIAction|EntityAction)[]
+  abstract toActions (): (APIAction|EntityAction)[]
 
   getDirection? (): string
 

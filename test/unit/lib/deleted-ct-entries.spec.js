@@ -11,7 +11,7 @@ const deletedCtEntries = require('../../../src/lib/deleted-ct-entries').default;
 const co = Bluebird.coroutine;
 
 describe('Entries fetcher', function () {
-  it.only('adds entries info to content types', co(function * () {
+  it('adds entries info to content types', co(function * () {
     const intents = yield migrationSteps(function up (migration) {
       migration.deleteContentType('foo');
       migration.deleteContentType('bar');

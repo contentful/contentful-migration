@@ -3,7 +3,7 @@ import RawStep from './raw-step'
 import { Package } from '../package/index'
 
 interface Intent {
-  toActions? (): (APIAction|EntityAction)[]
+  toActions (): (APIAction|EntityAction)[]
   toRaw (): RawStep
   getContentTypeId (): string
   getFieldId (): string

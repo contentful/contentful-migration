@@ -1,5 +1,5 @@
 import * as _ from 'lodash'
-import Intent from '../intent'
+import Intent from '../intent/index'
 import IntentValidator from '../interfaces/intent-validator'
 import ErrorCollection from '../errors/error-collection'
 import RawStep from '../interfaces/raw-step'
