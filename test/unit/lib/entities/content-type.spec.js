@@ -2,7 +2,7 @@ const { expect } = require('chai');
 
 const Fields = require('../../../../src/lib/entities/content-type').Fields;
 
-it.only('moves fields correctly', () => {
+it('moves fields correctly', () => {
   const myFields = [
     { id: 'a' },
     { id: 'b' },

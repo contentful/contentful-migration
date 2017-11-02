@@ -85,12 +85,15 @@ class Package {
           }
         }
       }
-      // Auto insert publish and save
-      const save = new ContentTypeSaveAction(this.getContentTypeId())
-      const publish = new ContentTypePublishAction(this.getContentTypeId())
 
-      await save.applyTo(api)
-      await publish.applyTo(api)
+      if (!this.deletesContentType) {
+        // Auto insert publish and save
+        const save = new ContentTypeSaveAction(this.getContentTypeId())
+        const publish = new ContentTypePublishAction(this.getContentTypeId())
+
+        await save.applyTo(api)
+        await publish.applyTo(api)
+      }
     }
     await api.stopRecordingRequests()
   }
