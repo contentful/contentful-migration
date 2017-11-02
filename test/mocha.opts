@@ -1,3 +1,4 @@
 --require test/setup
+--require source-map-support/register
 --compilers ts-node/register
 --check-leaks
