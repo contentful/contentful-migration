@@ -1,4 +1,4 @@
-import { cloneDeep, find, findIndex } from 'lodash'
+import { cloneDeep, find, findIndex, pull } from 'lodash'
 
 interface Field {
   id: string
@@ -45,6 +45,8 @@ class Fields {
   moveField (id: string, direction: string, pivot: string) {
     const fields = this._fields
     const field = this.getField(id)
+    pull(fields, field)
+
     if (direction === 'toTheTop') {
       fields.unshift(field)
     }

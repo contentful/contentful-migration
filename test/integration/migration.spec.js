@@ -8,8 +8,10 @@ const invalidScript = require('../../examples/05-plan-errors');
 const idChange = require('../../examples/change-field-id');
 const deleteContentType = require('../../examples/delete-content-type');
 const fieldValidation = require('../../examples/09-validate-validations');
+const displayField = require('../../examples/07-display-field');
+const fieldMove = require('../../examples/08-move-field');
 
-const createMigrationParser = require('../../built/lib/migration-parser');
+const { createMigrationParser } = require('../../built/lib/migration-parser');
 const executor = require('../../built/lib/executor');
 const co = Bluebird.coroutine;
 
@@ -202,6 +204,82 @@ describe('the migration', function () {
     ]);
   }));
 
+  it('allows moving fields', co(function * () {
+    yield migrator(displayField);
+    yield migrator(fieldMove);
+
+    const resultAfterModify = yield request({
+      method: 'GET',
+      url: '/content_types/food',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1
+      }
+    });
+
+    expect(resultAfterModify.fields).to.eql([
+      {
+        id: 'calories',
+        name: 'How many calories does it have?',
+        type: 'Number',
+        required: false,
+        disabled: false,
+        localized: false,
+        omitted: false,
+        validations: []
+      },
+      {
+        id: 'taste',
+        name: 'what it tastes like',
+        type: 'Symbol',
+        required: false,
+        disabled: false,
+        localized: false,
+        omitted: false,
+        validations: []
+      },
+      {
+        id: 'producer',
+        name: 'Food producer',
+        type: 'Symbol',
+        required: false,
+        disabled: false,
+        localized: false,
+        omitted: false,
+        validations: []
+      },
+      {
+        id: 'vegan',
+        name: 'Vegan friendly',
+        type: 'Boolean',
+        required: false,
+        disabled: false,
+        localized: false,
+        omitted: false,
+        validations: []
+      },
+      {
+        id: 'gmo',
+        name: 'Genetically modified food',
+        type: 'Boolean',
+        required: false,
+        disabled: false,
+        localized: false,
+        omitted: false,
+        validations: []
+      },
+      {
+        id: 'sugar',
+        name: 'Amount of sugar',
+        type: 'Number',
+        required: false,
+        disabled: false,
+        localized: false,
+        omitted: false,
+        validations: []
+      }
+    ]);
+  }));
+
   it('works when creating and modifying lots of things', co(function * () {
     yield migrator(longExample);
 
@@ -299,7 +377,7 @@ describe('the migration', function () {
       result = yield migrationParser(invalidScript);
     } catch (err) {
       expect(err).to.be.an('error');
-      expect(err.message).to.include('Chunks validation failed');
+      expect(err.message).to.include('Validation failed');
     }
 
     expect(result).to.be.undefined();

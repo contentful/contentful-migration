@@ -1,4 +1,5 @@
 import Intent from './base-intent'
+import { FieldMoveAction } from '../action/field-move'
 
 export default class MoveFieldIntent extends Intent {
   isFieldMove () {
@@ -15,5 +16,14 @@ export default class MoveFieldIntent extends Intent {
 
   getDirection () {
     return this.payload.movement.direction
+  }
+
+  toActions () {
+    return [new FieldMoveAction(
+      this.getContentTypeId(),
+      this.getFieldId(),
+      this.getDirection(),
+      this.getPivotId()
+    )]
   }
 }
