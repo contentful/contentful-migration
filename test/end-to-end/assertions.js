@@ -142,6 +142,15 @@ module.exports = {
             expect(withoutAnsiCodes).to.include(`Move field ${first} ${position} field ${second}`);
           }
         };
+      },
+      delete: function (id) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+
+          expect(withoutAnsiCodes).to.include(`Delete field ${id}`);
+        };
       }
     },
     actions: {
