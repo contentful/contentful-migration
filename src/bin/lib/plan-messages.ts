@@ -73,7 +73,7 @@ const renderPackage = (pkg: Package, errors?: ValidationError[]) => {
           humanizedMovement = chalk`before field {yellow ${fieldChange.getPivotId()}}`
         }
 
-        message.push(chalk`  {bold Move field {yellow ${fieldChange.getFieldId()}} ${humanizedMovement}}`)
+        message.push(chalk`\n  {bold Move field {yellow ${fieldChange.getFieldId()}} ${humanizedMovement}}`)
       }
     }
   }
