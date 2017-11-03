@@ -165,7 +165,11 @@ class ContentType {
   }
 
   toRaw (): RawCT {
-    return omitBy({
+    const alwaysRequired = {
+      id: this.id,
+      version: this.version
+    }
+    const optional = omitBy({
       id: this.id,
       name: this.name,
       displayField: this.displayField,
@@ -173,6 +177,7 @@ class ContentType {
       description: this.description,
       version: this.version
     }, isUndefined)
+    return Object.assign(alwaysRequired, optional)
   }
 
   toAPI (): APIContentType {
