@@ -5,5 +5,6 @@ export default interface APIContentType {
   },
   fields: object[],
   name: string,
-  description: string
+  description?: string,
+  displayField?: string
 }

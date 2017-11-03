@@ -31,7 +31,7 @@ const assetImageDimensions = validation('assetImageDimensions', Joi.object({
 
 const assetFileSize = validation('assetFileSize', range('number'))
 
-const validations = Joi.alternatives().try(
+const fieldValidations = Joi.alternatives().try(
   linkContentType,
   inValidation,
   linkMimetypeGroup,
@@ -44,4 +44,4 @@ const validations = Joi.alternatives().try(
   assetFileSize
 )
 
-export default validations
+export default fieldValidations

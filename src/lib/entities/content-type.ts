@@ -1,4 +1,5 @@
-import { cloneDeep, find, filter, findIndex, pull } from 'lodash'
+import APIContentType from '../interfaces/content-type'
+import { cloneDeep, find, filter, findIndex, pull, omitBy, isUndefined } from 'lodash'
 
 interface Field {
   id: string
@@ -96,6 +97,7 @@ interface RawCT {
   id: string
   version: number
   name?: string
+  displayField?: string
   fields?: Field[]
   description?: string
 }
@@ -107,6 +109,7 @@ class ContentType {
   private _name: string
   private _description: string
   private _version: number
+  private _displayField: string
 
   constructor (ct: RawCT) {
     this._id = ct.id
@@ -114,6 +117,7 @@ class ContentType {
     this._name = ct.name
     this._description = ct.description
     this._version = ct.version
+    this._displayField = ct.displayField
   }
 
   get id () {
@@ -144,6 +148,14 @@ class ContentType {
     this._description = description
   }
 
+  get displayField () {
+    return this._displayField
+  }
+
+  set displayField (displayField: string) {
+    this._displayField = displayField
+  }
+
   get version () {
     return this._version
   }
@@ -153,12 +165,26 @@ class ContentType {
   }
 
   toRaw (): RawCT {
-    return {
+    return omitBy({
       id: this.id,
       name: this.name,
+      displayField: this.displayField,
       fields: this.fields.toRaw(),
       description: this.description,
       version: this.version
+    }, isUndefined)
+  }
+
+  toAPI (): APIContentType {
+    return {
+      sys: {
+        id: this.id,
+        version: this.version
+      },
+      name: this.name,
+      displayField: this.displayField,
+      fields: this.fields.toRaw(),
+      description: this.description
     }
   }
 

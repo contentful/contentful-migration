@@ -2,7 +2,7 @@ import { ApiHook } from '../'
 import { ContentTypePayloadValidator } from './content-type'
 import { PayloadValidationError, InvalidActionError } from '../../interfaces/errors'
 import { ContentType } from '../../entities/content-type'
-import errorMessages from '../../migration-payloads/validation/errors'
+import errorMessages from './errors'
 import { difference } from 'lodash'
 
 const deletedFieldError = function (contentTypeId: string, fieldId: string): InvalidActionError {

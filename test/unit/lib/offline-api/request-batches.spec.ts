@@ -3,7 +3,7 @@
 import { expect } from 'chai'
 import buildPayloads from './build-payloads'
 
-describe.only('Payload builder', function () {
+describe('Payload builder', function () {
   describe('Without a Content Type payload', function () {
     it('returns the expected payload', async function () {
       const requests = await buildPayloads(function up (migration) {

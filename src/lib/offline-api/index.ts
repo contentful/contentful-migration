@@ -4,6 +4,9 @@ import ContentType from '../entities/content-type'
 import Request from '../interfaces/request'
 import { Entry } from '../entities/entry'
 import { PayloadValidationError, InvalidActionError } from '../interfaces/errors'
+import DisplayFieldValidator from './validator/display-field'
+import SchemaValidator from './validator/schema/index'
+import TypeChangeValidator from './validator/type-change'
 
 interface RequestBatch {
   id: string
@@ -117,6 +120,9 @@ class OfflineAPI {
     }
 
     this.contentTypeValidators.push(new FieldDeletionValidator())
+    this.contentTypeValidators.push(new DisplayFieldValidator())
+    this.contentTypeValidators.push(new SchemaValidator())
+    this.contentTypeValidators.push(new TypeChangeValidator())
 
     this.entries = entries
   }

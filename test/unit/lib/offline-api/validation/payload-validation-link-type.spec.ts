@@ -1,23 +1,21 @@
-'use strict';
+'use strict'
 
-const { expect } = require('chai');
-const Bluebird = require('bluebird');
-
-const validatePayloads = require('./validate-payloads');
+import { expect } from 'chai'
+import validateBatches from './validate-batches'
 
 describe('payload validation (dependencies)', function () {
   describe('when setting a field to Link but not specifying the linkType', function () {
-    it('returns an error', Bluebird.coroutine(function * () {
-      const existingCts = [];
-      const errors = yield validatePayloads(function (migration) {
+    it('returns an error', async function () {
+      const existingCts = []
+      const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch')
           .name('Lunch')
-          .description('A Lunch');
+          .description('A Lunch')
 
         lunch.createField('mainCourse')
           .name('Main Course')
-          .type('Link');
-      }, existingCts);
+          .type('Link')
+      }, existingCts)
 
       expect(errors).to.eql([
         [
@@ -26,23 +24,23 @@ describe('payload validation (dependencies)', function () {
             message: 'The property "linkType" is required on the field "mainCourse" because "type" is "Link".'
           }
         ]
-      ]);
-    }));
-  });
+      ])
+    })
+  })
 
   describe('when setting a field to Symbol but specifying the linkType', function () {
-    it('returns an error', Bluebird.coroutine(function * () {
-      const existingCts = [];
-      const errors = yield validatePayloads(function (migration) {
+    it('returns an error', async function () {
+      const existingCts = []
+      const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch')
           .name('Lunch')
-          .description('A Lunch');
+          .description('A Lunch')
 
         lunch.createField('mainCourse')
           .name('Main Course')
           .type('Symbol')
-          .linkType('Entry');
-      }, existingCts);
+          .linkType('Entry')
+      }, existingCts)
 
       expect(errors).to.eql([
         [
@@ -51,23 +49,23 @@ describe('payload validation (dependencies)', function () {
             message: 'The property "linkType" is forbidden on the field "mainCourse" because "type" is not "Link".'
           }
         ]
-      ]);
-    }));
-  });
+      ])
+    })
+  })
 
   describe('when setting a field to Link but specifying a wrong linkType', function () {
-    it('returns an error', Bluebird.coroutine(function * () {
-      const existingCts = [];
-      const errors = yield validatePayloads(function (migration) {
+    it('returns an error', async function () {
+      const existingCts = []
+      const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch')
           .name('Lunch')
-          .description('A Lunch');
+          .description('A Lunch')
 
         lunch.createField('mainCourse')
           .name('Main Course')
           .type('Link')
-          .linkType('Hermann');
-      }, existingCts);
+          .linkType('Hermann')
+      }, existingCts)
 
       expect(errors).to.eql([
         [
@@ -76,7 +74,7 @@ describe('payload validation (dependencies)', function () {
             message: 'The property "linkType" on the field "mainCourse" must be one of ["Asset", "Entry"].'
           }
         ]
-      ]);
-    }));
-  });
-});
+      ])
+    })
+  })
+})
