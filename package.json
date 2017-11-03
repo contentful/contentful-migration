@@ -34,7 +34,7 @@
     "cover": "nyc --no-clean -s npm run test-unit && nyc --no-clean -s npm run test-integration && nyc --no-clean -s npm run test-e2e && nyc report",
     "coverage": "npm run cover && nyc report --reporter=text-lcov > coverage.lcov",
     "coverage-report": "npm run coverage && codecov && rm -rf ./nyc_output && rm coverage.lcov",
-    "lint": "eslint 'examples/**/*.js' 'test/**/*.js' 'test/**/*.ts' 'src/**/*.js' 'src/**/*.ts'"
+    "lint": "eslint 'examples/**/*.js' 'test/**/*.js' 'src/**/*.js' && tslint --project tsconfig.json --config tslint.json"
   },
   "nyc": {
     "per-file": true,
@@ -100,7 +100,6 @@
     "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
-    "eslint-plugin-typescript": "^0.8.0",
     "mocha": "^3.4.0",
     "nixt": "^0.5.0",
     "nyc": "^11.2.1",
@@ -112,8 +111,7 @@
     "ts-node": "^3.3.0",
     "tslint": "^5.7.0",
     "tslint-config-standard": "^6.0.1",
-    "typescript": "^2.5.3",
-    "typescript-eslint-parser": "^8.0.0"
+    "typescript": "^2.5.3"
   },
   "bin": {
     "contentful-migration": "./built/bin/contentful-migration"
