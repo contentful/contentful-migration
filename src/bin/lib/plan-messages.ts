@@ -93,7 +93,7 @@ const renderPackage = (pkg: Package, errors?: ValidationError[]) => {
 
 const withErrors = (errors) => {
   const messages = errors.map((error) => {
-    const pkg = error.details.intent.belongsToPackage()
+    const pkg = error.details.intent.getPackage()
     return renderPackage(pkg, errors)
   })
 
