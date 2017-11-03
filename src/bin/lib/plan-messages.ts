@@ -1,4 +1,4 @@
-import * as chalk from 'chalk'
+import chalk from 'chalk'
 import * as _ from 'lodash'
 import { Package } from '../../lib/package/index'
 import ValidationError from '../../lib/interfaces/errors'

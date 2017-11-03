@@ -2,9 +2,9 @@ import * as path from 'path'
 import * as fs from 'fs'
 import * as yargs from 'yargs'
 
-import chalk = require('chalk')
-import inquirer = require('inquirer')
-import Listr = require('listr')
+import chalk from 'chalk'
+import inquirer from 'inquirer'
+import Listr from 'listr'
 import { createManagementClient } from './lib/contentful-client'
 const { version } = require('../../package.json')
 const {
