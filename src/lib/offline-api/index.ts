@@ -22,6 +22,16 @@ export enum ApiHook {
 }
 
 const saveContentTypeRequest = function (ct: ContentType): Request {
+  const data: any = {
+    name: ct.name,
+    description: ct.description,
+    fields: ct.toRaw().fields
+  }
+
+  if (ct.displayField) {
+    data.displayField = ct.displayField
+  }
+
   return {
     method: 'PUT',
     url: `/content_types/${ct.id}`,
@@ -31,8 +41,7 @@ const saveContentTypeRequest = function (ct: ContentType): Request {
     data: {
       name: ct.name,
       description: ct.description,
-      fields: ct.toRaw().fields,
-      displayField: ct.displayField
+      fields: ct.toRaw().fields
     }
   }
 }
