@@ -31,7 +31,8 @@ const saveContentTypeRequest = function (ct: ContentType): Request {
     data: {
       name: ct.name,
       description: ct.description,
-      fields: ct.toRaw().fields
+      fields: ct.toRaw().fields,
+      displayField: ct.displayField
     }
   }
 }
