@@ -68,6 +68,8 @@ module.exports = {
     contentType: {
       create: function (id, params) {
         return result => {
+          console.log(result.stdout)
+          console.log(result.stderr)
           expect(result.stdout).not.to.be.empty();
 
           const withoutAnsiCodes = stripAnsi(result.stdout);
