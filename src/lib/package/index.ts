@@ -7,6 +7,65 @@ import { ContentTypePublishAction } from '../action/content-type-publish'
 import { EntryTransformAction } from '../action/entry-transform'
 import { Intent } from '../intent'
 
+const applyTransformActions = async (api, intents) => {
+  for (const intent of intents) {
+    for (const action of intent.toActions()) {
+      if (action instanceof EntryTransformAction) {
+        await action.applyTo(api)
+        continue
+      }
+    }
+  }
+}
+
+const applyRenameField = async (api, intents, ctId) => {
+  if (intents.length > 1) {
+    throw new Error('Packages that rename a field may only contain one intent.')
+  }
+  const renameAction = intents[0].toActions()[0]
+  if (renameAction instanceof FieldRenameAction) {
+    const entityId = renameAction.getEntityId()
+    const ct = await api.getContentType(entityId)
+    await renameAction.applyTo(ct)
+    const save = new ContentTypeSaveAction(ctId)
+    const publish = new ContentTypePublishAction(ctId)
+
+    await save.applyTo(api)
+    await publish.applyTo(api)
+    renameAction.updateOfflineAPIWithNewFieldId(ct)
+  }
+}
+
+const applyIntents = async (api, intents, ctId, deletesContentType) => {
+  for (const intent of intents) {
+    for (const action of intent.toActions()) {
+      if (action instanceof APIAction) {
+        await action.applyTo(api)
+        continue
+      }
+      if (action instanceof EntityAction) {
+        const entityType = action.getEntityType()
+        const entityId = action.getEntityId()
+
+        if (entityType === 'CONTENT_TYPE') {
+          const ct = await api.getContentType(entityId)
+          await action.applyTo(ct)
+        }
+        continue
+      }
+    }
+  }
+
+  if (!deletesContentType) {
+    // Auto insert publish and save
+    const save = new ContentTypeSaveAction(ctId)
+    const publish = new ContentTypePublishAction(ctId)
+
+    await save.applyTo(api)
+    await publish.applyTo(api)
+  }
+}
+
 class Package {
   public createsContentType: boolean = false
   public transformsContent: boolean = false
@@ -64,58 +123,11 @@ class Package {
     await api.startRecordingRequests('foo')
     const intents = this.getIntents()
     if (this.transformsContent) {
-      for (const intent of intents) {
-        for (const action of intent.toActions()) {
-          if (action instanceof EntryTransformAction) {
-            await action.applyTo(api)
-            continue
-          }
-        }
-      }
+      await applyTransformActions(api, intents)
     } else if (this.renamesField) {
-      if (intents.length > 1) {
-        throw new Error('Packages that rename a field may only contain one intent.')
-      }
-      const renameAction = intents[0].toActions()[0]
-      if (renameAction instanceof FieldRenameAction) {
-        const entityId = renameAction.getEntityId()
-        const ct = await api.getContentType(entityId)
-        await renameAction.applyTo(ct)
-        const save = new ContentTypeSaveAction(this.getContentTypeId())
-        const publish = new ContentTypePublishAction(this.getContentTypeId())
-
-        await save.applyTo(api)
-        await publish.applyTo(api)
-        renameAction.updateOfflineAPIWithNewFieldId(ct)
-      }
+      await applyRenameField(api, intents, this.getContentTypeId())
     } else {
-      for (const intent of intents) {
-        for (const action of intent.toActions()) {
-          if (action instanceof APIAction) {
-            await action.applyTo(api)
-            continue
-          }
-          if (action instanceof EntityAction) {
-            const entityType = action.getEntityType()
-            const entityId = action.getEntityId()
-
-            if (entityType === 'CONTENT_TYPE') {
-              const ct = await api.getContentType(entityId)
-              await action.applyTo(ct)
-            }
-            continue
-          }
-        }
-      }
-
-      if (!this.deletesContentType) {
-        // Auto insert publish and save
-        const save = new ContentTypeSaveAction(this.getContentTypeId())
-        const publish = new ContentTypePublishAction(this.getContentTypeId())
-
-        await save.applyTo(api)
-        await publish.applyTo(api)
-      }
+      await applyIntents(api, intents, this.getContentTypeId(), this.deletesContentType)
     }
     await api.stopRecordingRequests()
   }
