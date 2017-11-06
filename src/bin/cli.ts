@@ -103,6 +103,8 @@ const run = async function () {
       console.log(e)
       process.exit(1)
     }
+    // debug, remove this again
+    console.log(e)
     console.log(message)
     process.exit(1)
   }
