@@ -31,7 +31,7 @@
     "cover-unit": "nyc npm run test-unit",
     "cover-integration": "nyc npm run test-integration",
     "cover-e2e": "nyc npm run test-e2e",
-    "cover": "nyc --no-clean -s npm run test-unit && nyc --no-clean -s npm run test-integration && nyc --no-clean -s npm run test-e2e && nyc report",
+    "cover": "nyc --no-clean -s npm run test-unit && nyc --no-clean -s npm run test-integration && nyc report",
     "coverage": "npm run cover && nyc report --reporter=text-lcov > coverage.lcov",
     "coverage-report": "npm run coverage && codecov && rm -rf ./nyc_output && rm coverage.lcov",
     "lint": "eslint 'examples/**/*.js' 'test/**/*.js' 'src/**/*.js' && tslint --project tsconfig.json --config tslint.json"
