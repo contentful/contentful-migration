@@ -9,5 +9,5 @@ env:
   - NODE_ENV=test
 
 script:
-  - npm run lint
-  - npm run coverage-report
+  - npm run build
+  - npm run test-e2e
