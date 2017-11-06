@@ -22,7 +22,6 @@ export enum ApiHook {
 }
 
 const saveContentTypeRequest = function (ct: ContentType): Request {
-  throw new Error ('moreBoom');
   const data: any = {
     name: ct.name,
     description: ct.description,
