@@ -114,6 +114,6 @@
     "typescript": "^2.5.3"
   },
   "bin": {
-    "contentful-migration": "./built/bin/contentful-migration"
+    "contentful-migration": "./bin/contentful-migration"
   }
 }
