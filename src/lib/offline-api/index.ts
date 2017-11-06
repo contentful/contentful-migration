@@ -38,11 +38,7 @@ const saveContentTypeRequest = function (ct: ContentType): Request {
     headers: {
       'X-Contentful-Version': ct.version
     },
-    data: {
-      name: ct.name,
-      description: ct.description,
-      fields: ct.toRaw().fields
-    }
+    data: data
   }
 }
 
