@@ -3,8 +3,8 @@ import * as Intents from '../intent/index'
 
 const actionCreators = {
   contentType: {
-    create: (id, instanceId, callsite): Intents.CreateContentType => {
-      return new Intents.CreateContentType({
+    create: (id, instanceId, callsite): Intents.ContentTypeCreate => {
+      return new Intents.ContentTypeCreate({
         type: 'contentType/create',
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
@@ -16,8 +16,8 @@ const actionCreators = {
         payload: { contentTypeId: id }
       })
     },
-    update: (id, instanceId, callsite, property, value): Intents.UpdateContentType => {
-      return new Intents.UpdateContentType({
+    update: (id, instanceId, callsite, property, value): Intents.ContentTypeUpdate => {
+      return new Intents.ContentTypeUpdate({
         type: 'contentType/update',
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
@@ -34,8 +34,8 @@ const actionCreators = {
         }
       })
     },
-    delete: (id, instanceId, callsite): Intents.DeleteContentType => {
-      return new Intents.DeleteContentType({
+    delete: (id, instanceId, callsite): Intents.ContentTypeDelete => {
+      return new Intents.ContentTypeDelete({
         type: 'contentType/delete',
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
@@ -47,7 +47,7 @@ const actionCreators = {
         payload: { contentTypeId: id }
       })
     },
-    transformContent: (id, instanceId, transformation: ContentTransform, callsite): Intents.TransformContent => new Intents.TransformContent({
+    transformContent: (id, instanceId, transformation: ContentTransform, callsite): Intents.EntryTransform => new Intents.EntryTransform({
       type: 'contentType/transformContent',
       meta: {
         contentTypeInstanceId: `contentType/${id}/${instanceId}`,
@@ -63,7 +63,7 @@ const actionCreators = {
     })
   },
   field: {
-    create: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite): Intents.CreateField => new Intents.CreateField({
+    create: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite): Intents.FieldCreate => new Intents.FieldCreate({
       type: 'field/create',
       meta: {
         contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
@@ -78,7 +78,7 @@ const actionCreators = {
         fieldId
       }
     }),
-    update: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, property, value): Intents.UpdateField => new Intents.UpdateField({
+    update: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, property, value): Intents.FieldUpdate => new Intents.FieldUpdate({
       type: 'field/update',
       meta: {
         contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
@@ -96,7 +96,7 @@ const actionCreators = {
         }
       }
     }),
-    move: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, movement): Intents.MoveField => new Intents.MoveField({
+    move: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, movement): Intents.FieldMove => new Intents.FieldMove({
       type: 'field/move',
       meta: {
         contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
@@ -112,7 +112,7 @@ const actionCreators = {
         movement
       }
     }),
-    rename: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, value): Intents.RenameField => new Intents.RenameField({
+    rename: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, value): Intents.FieldRename => new Intents.FieldRename({
       type: 'field/rename',
       meta: {
         contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
@@ -130,7 +130,7 @@ const actionCreators = {
         }
       }
     }),
-    delete: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite): Intents.DeleteField => new Intents.DeleteField({
+    delete: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite): Intents.FieldDelete => new Intents.FieldDelete({
       type: 'field/delete',
       meta: {
         contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,

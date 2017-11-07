@@ -35,6 +35,7 @@ describe('Payload builder', function () {
         data: {
           name: 'bar',
           description: 'A content type for a person',
+          displayField: undefined,
           fields: [
             {
               id: 'age',
@@ -102,6 +103,7 @@ describe('Payload builder', function () {
         data: {
           name: 'Very dangerous dog',
           description: 'Woof woof',
+          displayField: undefined,
           fields: [
             {
               id: 'kills',
@@ -133,6 +135,7 @@ describe('Payload builder', function () {
         data: {
           name: 'Very dangerous dog',
           description: 'Woof woof',
+          displayField: undefined,
           fields: [
             {
               id: 'kills',
@@ -166,6 +169,7 @@ describe('Payload builder', function () {
           data: {
             name: 'Very dangerous dog',
             description: 'Woof woof',
+            displayField: undefined,
             fields: [
               {
                 id: 'kills',
@@ -233,6 +237,7 @@ describe('Payload builder', function () {
         data: {
           name: 'Book',
           description: undefined,
+          displayField: undefined,
           fields: [{
             id: 'title',
             name: 'Title',
@@ -254,6 +259,7 @@ describe('Payload builder', function () {
         data: {
           name: 'Book',
           description: undefined,
+          displayField: undefined,
           fields: [{
             id: 'title',
             newId: 'newTitle',
@@ -276,6 +282,7 @@ describe('Payload builder', function () {
         data: {
           name: 'Book',
           description: undefined,
+          displayField: undefined,
           fields: [{
             id: 'newTitle',
             name: 'new Title',
@@ -297,6 +304,7 @@ describe('Payload builder', function () {
       const contentTypes = [{
         name: 'Very dangerous dog',
         description: 'Woof woof',
+        displayField: undefined,
         fields: [
           {
             id: 'kills',
@@ -350,6 +358,7 @@ describe('Payload builder', function () {
         data: {
           name: 'Very dangerous dog',
           description: 'Woof woof',
+          displayField: undefined,
           fields: [
             {
               id: 'favoriteFood',
@@ -395,6 +404,7 @@ describe('Payload builder', function () {
       const contentTypes = [{
         name: 'Very dangerous dog',
         description: 'Woof woof',
+        displayField: undefined,
         fields: [
           {
             id: 'kills',

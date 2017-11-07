@@ -1,7 +1,7 @@
 import Intent from './base-intent'
 import { FieldCreateAction } from '../action/field-create'
 
-export default class CreateFieldIntent extends Intent {
+export default class FieldCreateIntent extends Intent {
   isFieldCreate () {
     return true
   }

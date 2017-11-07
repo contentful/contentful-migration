@@ -1,24 +1,24 @@
 import Intent from './base-intent'
-import UpdateFieldIntent from './update-field'
-import UpdateContentTypeIntent from './update-content-type'
-import TransformContentIntent from './transform-content'
-import RenameFieldIntent from './rename-field'
-import MoveFieldIntent from './move-field'
-import DeleteFieldIntent from './delete-field'
-import CreateFieldIntent from './create-field'
-import CreateContentTypeIntent from './create-content-type'
-import DeleteContentTypeIntent from './delete-content-type'
+import FieldUpdateIntent from './field-update'
+import ContentTypeUpdateIntent from './content-type-update'
+import EntryTransformIntent from './entry-transform'
+import FieldRenameIntent from './field-rename'
+import FieldMoveIntent from './field-move'
+import FieldDeleteIntent from './field-delete'
+import FieldCreateIntent from './field-create'
+import ContentTypeCreateIntent from './content-type-create'
+import ContentTypeDeleteIntent from './content-type-delete'
 
 export {
   Intent as default,
   Intent,
-  UpdateFieldIntent as UpdateField,
-  UpdateContentTypeIntent as UpdateContentType,
-  TransformContentIntent as TransformContent,
-  RenameFieldIntent as RenameField,
-  MoveFieldIntent as MoveField,
-  DeleteFieldIntent as DeleteField,
-  CreateFieldIntent as CreateField,
-  CreateContentTypeIntent as CreateContentType,
-  DeleteContentTypeIntent as DeleteContentType
+  FieldUpdateIntent as FieldUpdate,
+  EntryTransformIntent as EntryTransform,
+  FieldRenameIntent as FieldRename,
+  FieldMoveIntent as FieldMove,
+  FieldDeleteIntent as FieldDelete,
+  FieldCreateIntent as FieldCreate,
+  ContentTypeCreateIntent as ContentTypeCreate,
+  ContentTypeDeleteIntent as ContentTypeDelete,
+  ContentTypeUpdateIntent as ContentTypeUpdate
 }

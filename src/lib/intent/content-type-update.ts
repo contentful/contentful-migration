@@ -1,7 +1,7 @@
 import Intent from './base-intent'
 import { ContentTypeUpdateAction } from '../action/content-type-update'
 
-export default class UpdateContentTypeIntent extends Intent {
+export default class ContentTypeUpdateIntent extends Intent {
   isContentTypeUpdate () {
     return true
   }

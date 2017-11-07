@@ -1,3 +1,4 @@
+import { omit } from 'lodash'
 import FieldDeletionValidator from './validator/field-deletion'
 import { ContentTypePayloadValidator } from './validator/content-type'
 import ContentType from '../entities/content-type'
@@ -22,23 +23,13 @@ export enum ApiHook {
 }
 
 const saveContentTypeRequest = function (ct: ContentType): Request {
-  const data: any = {
-    name: ct.name,
-    description: ct.description,
-    fields: ct.toRaw().fields
-  }
-
-  if (ct.displayField) {
-    data.displayField = ct.displayField
-  }
-
   return {
     method: 'PUT',
     url: `/content_types/${ct.id}`,
     headers: {
       'X-Contentful-Version': ct.version
     },
-    data: data
+    data: omit(ct.toAPI(), 'sys')
   }
 }
 
@@ -49,9 +40,7 @@ const saveEntryRequest = function (entry: Entry): Request {
     headers: {
       'X-Contentful-Version': entry.version
     },
-    data: {
-      fields: entry.toRaw().fields
-    }
+    data: entry.toApiEntry()
   }
 }
 const publishEntryRequest = function (entry: Entry): Request {
@@ -134,8 +123,6 @@ class OfflineAPI {
   }
 
   async getContentType (id: string): Promise<ContentType> {
-    this.assertRecording()
-
     if (!this.hasContentType(id)) {
       throw new Error(`Cannot get CT ${id} because it does not exist`)
     }
@@ -150,7 +137,7 @@ class OfflineAPI {
   async createContentType (id: string): Promise<ContentType> {
     this.assertRecording()
 
-    const ct = new ContentType({ id , version: 0 })
+    const ct = new ContentType({ sys: { id, version: 0 }, fields: [], name: undefined })
 
     await this.modifiedContentTypes.set(id, ct)
 
@@ -291,7 +278,6 @@ class OfflineAPI {
   }
 
   async getEntriesForContentType (ctId: string): Promise<Entry[]> {
-    this.assertRecording()
     const entries = this.entries.filter((entry) => entry.contentTypeId === ctId)
 
     return entries

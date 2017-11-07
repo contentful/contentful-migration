@@ -16,7 +16,7 @@ const errorFormatter = function (messageFormatter) {
   }
 }
 
-const filterIntentsForExistingCts = function (intents: Intent[], contentTypes) {
+const filterIntentsForExistingCts = function (intents: Intent[], contentTypes: ContentType[]) {
   const existingIds = contentTypes.map((ct) => ct.id)
   const nonExistingCTintents = intents.filter((i) => !existingIds.includes(i.getContentTypeId()))
 
@@ -25,7 +25,7 @@ const filterIntentsForExistingCts = function (intents: Intent[], contentTypes) {
 
 const checks = {
   duplicateCreate: {
-    validate: function (intents: Intent[], contentTypes) {
+    validate: function (intents: Intent[], contentTypes: ContentType[]) {
       // Find all create intents
       const ctCreates = intents.filter((i) => i.isContentTypeCreate())
       // Filter out the ones that already exist on the API side. They are handled by different validation
@@ -45,7 +45,7 @@ const checks = {
   },
 
   editBeforeCreate: {
-    validate: function (intents, contentTypes) {
+    validate: function (intents, contentTypes: ContentType[]) {
       const nonExistentCTs = filterIntentsForExistingCts(intents, contentTypes)
       // Find all create and edit intents
       const ctChanges = nonExistentCTs.filter((intent) => intent.isContentTypeCreate() || intent.isContentTypeUpdate())
@@ -69,7 +69,7 @@ const checks = {
   },
 
   nonExistingEdits: {
-    validate: function (intents, contentTypes) {
+    validate: function (intents, contentTypes: ContentType[]) {
       const nonExistentCTs = filterIntentsForExistingCts(intents, contentTypes)
       // Find all create and edit intents
       const ctChanges = nonExistentCTs.filter((intent) => intent.isContentTypeCreate() || intent.isContentTypeUpdate())
@@ -89,7 +89,7 @@ const checks = {
   },
 
   alreadyExistingCreates: {
-    validate: function (intents, contentTypes) {
+    validate: function (intents, contentTypes: ContentType[]) {
       const existingIds = contentTypes.map((ct) => ct.id)
       // Find all create intents
       const ctCreates = intents.filter((intent) => intent.isContentTypeCreate())
@@ -101,7 +101,7 @@ const checks = {
   },
 
   nonExistingDeletes: {
-    validate: function (intents, contentTypes) {
+    validate: function (intents, contentTypes: ContentType[]) {
       const nonExistentCTs = filterIntentsForExistingCts(intents, contentTypes)
       const nonExistentDeletes = nonExistentCTs.filter((intent) => intent.isContentTypeDelete())
       return nonExistentDeletes
@@ -140,7 +140,7 @@ const checks = {
   },
 
   deleteCtWithEntries: {
-    validate: function (intents, contentTypes) {
+    validate: function (intents, contentTypes: ContentType[]) {
       const deleteintents = intents.filter((intent) => intent.type === 'contentType/delete')
       const badDeleteintents = deleteintents.filter((intent) => {
         const ctForThisintent = contentTypes.find((ct) => {
