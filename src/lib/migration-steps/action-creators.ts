@@ -96,7 +96,7 @@ const actionCreators = {
         }
       }
     }),
-    move: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, movement): Intents.MoveField => new Intents.MoveField({
+    move: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, movement): Intents.FieldMove => new Intents.FieldMove({
       type: 'field/move',
       meta: {
         contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,

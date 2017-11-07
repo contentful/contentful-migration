@@ -1,7 +1,7 @@
 import Intent from './base-intent'
 import { FieldMoveAction } from '../action/field-move'
 
-export default class MoveFieldIntent extends Intent {
+export default class FieldMoveIntent extends Intent {
   isFieldMove () {
     return true
   }
