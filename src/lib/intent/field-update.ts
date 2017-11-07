@@ -1,7 +1,7 @@
 import Intent from './base-intent'
 import { FieldUpdateAction } from '../action/field-update'
 
-export default class UpdateFieldIntent extends Intent {
+export default class FieldUpdateIntent extends Intent {
   isFieldUpdate () {
     return true
   }

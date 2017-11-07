@@ -78,7 +78,7 @@ const actionCreators = {
         fieldId
       }
     }),
-    update: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, property, value): Intents.UpdateField => new Intents.UpdateField({
+    update: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, property, value): Intents.FieldUpdate => new Intents.FieldUpdate({
       type: 'field/update',
       meta: {
         contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
