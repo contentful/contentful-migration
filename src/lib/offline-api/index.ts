@@ -200,6 +200,13 @@ class OfflineAPI {
     await this.savedContentTypes.set(id, ct.clone())
     await this.publishedContentTypes.set(id, ct.clone())
 
+    for (const validator of this.contentTypeValidators) {
+      if (validator.hooks.includes(ApiHook.PublishContentType)) {
+        const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
+        this.currentErrorsRecorded = this.currentErrorsRecorded.concat(errors)
+      }
+    }
+
     return ct
   }
 
@@ -217,6 +224,13 @@ class OfflineAPI {
     await this.savedContentTypes.set(id, ct)
     await this.publishedContentTypes.delete(id)
 
+    for (const validator of this.contentTypeValidators) {
+      if (validator.hooks.includes(ApiHook.UnpublishContentType)) {
+        const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
+        this.currentErrorsRecorded = this.currentErrorsRecorded.concat(errors)
+      }
+    }
+
     return ct
   }
 
@@ -230,6 +244,13 @@ class OfflineAPI {
     await this.modifiedContentTypes.delete(id)
     await this.publishedContentTypes.delete(id)
     await this.savedContentTypes.delete(id)
+
+    for (const validator of this.contentTypeValidators) {
+      if (validator.hooks.includes(ApiHook.DeleteContentType)) {
+        const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
+        this.currentErrorsRecorded = this.currentErrorsRecorded.concat(errors)
+      }
+    }
   }
 
   async saveEntry (id: string) {
