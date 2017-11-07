@@ -1,7 +1,7 @@
 import Intent from './base-intent'
 import FieldUpdateIntent from './field-update'
 import ContentTypeUpdateIntent from './content-type-update'
-import TransformContentIntent from './transform-content'
+import EntryTransformIntent from './entry-transform'
 import FieldRenameIntent from './field-rename'
 import FieldMoveIntent from './field-move'
 import FieldDeleteIntent from './field-delete'
@@ -13,7 +13,7 @@ export {
   Intent as default,
   Intent,
   FieldUpdateIntent as FieldUpdate,
-  TransformContentIntent as TransformContent,
+  EntryTransformIntent as EntryTransform,
   FieldRenameIntent as FieldRename,
   FieldMoveIntent as FieldMove,
   FieldDeleteIntent as FieldDelete,

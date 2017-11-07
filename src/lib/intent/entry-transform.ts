@@ -1,7 +1,7 @@
 import Intent from './base-intent'
 import { EntryTransformAction } from '../action/entry-transform'
 
-export default class TransformContentIntent extends Intent {
+export default class EntryTransformIntent extends Intent {
   isContentTransform () {
     return true
   }

@@ -47,7 +47,7 @@ const actionCreators = {
         payload: { contentTypeId: id }
       })
     },
-    transformContent: (id, instanceId, transformation: ContentTransform, callsite): Intents.TransformContent => new Intents.TransformContent({
+    transformContent: (id, instanceId, transformation: ContentTransform, callsite): Intents.EntryTransform => new Intents.EntryTransform({
       type: 'contentType/transformContent',
       meta: {
         contentTypeInstanceId: `contentType/${id}/${instanceId}`,
