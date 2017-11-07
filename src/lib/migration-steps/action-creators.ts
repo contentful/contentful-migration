@@ -112,7 +112,7 @@ const actionCreators = {
         movement
       }
     }),
-    rename: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, value): Intents.RenameField => new Intents.RenameField({
+    rename: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, value): Intents.FieldRename => new Intents.FieldRename({
       type: 'field/rename',
       meta: {
         contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,

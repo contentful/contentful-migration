@@ -1,7 +1,7 @@
 import Intent from './base-intent'
 import { FieldRenameAction } from '../action/field-rename'
 
-export default class RenameFieldIntent extends Intent {
+export default class FieldRenameIntent extends Intent {
   isFieldRename () {
     return true
   }
