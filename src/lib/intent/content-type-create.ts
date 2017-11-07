@@ -1,7 +1,7 @@
 import Intent from './base-intent'
 import { ContentTypeCreateAction } from '../action/content-type-create'
 
-export default class CreateContentTypeIntent extends Intent {
+export default class ContentTypeCreateIntent extends Intent {
   isContentTypeCreate () {
     return true
   }

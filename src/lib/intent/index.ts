@@ -6,7 +6,7 @@ import RenameFieldIntent from './rename-field'
 import MoveFieldIntent from './move-field'
 import FieldDeleteIntent from './field-delete'
 import CreateFieldIntent from './create-field'
-import CreateContentTypeIntent from './create-content-type'
+import ContentTypeCreateIntent from './content-type-create'
 import DeleteContentTypeIntent from './delete-content-type'
 
 export {
@@ -19,6 +19,6 @@ export {
   MoveFieldIntent as MoveField,
   FieldDeleteIntent as FieldDelete,
   CreateFieldIntent as CreateField,
-  CreateContentTypeIntent as CreateContentType,
+  ContentTypeCreateIntent as ContentTypeCreate,
   DeleteContentTypeIntent as DeleteContentType
 }

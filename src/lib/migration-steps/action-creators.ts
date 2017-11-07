@@ -3,8 +3,8 @@ import * as Intents from '../intent/index'
 
 const actionCreators = {
   contentType: {
-    create: (id, instanceId, callsite): Intents.CreateContentType => {
-      return new Intents.CreateContentType({
+    create: (id, instanceId, callsite): Intents.ContentTypeCreate => {
+      return new Intents.ContentTypeCreate({
         type: 'contentType/create',
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
