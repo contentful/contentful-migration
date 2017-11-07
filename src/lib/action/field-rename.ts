@@ -1,19 +1,33 @@
-import { FieldUpdateAction } from '../action/field-update'
+import { EntityAction } from './action'
 import ContentType from '../entities/content-type'
 
 interface FieldRenameProps { newId: string }
 
-class FieldRenameAction extends FieldUpdateAction {
+class FieldRenameAction extends EntityAction {
+  private props: FieldRenameProps
+  private contentTypeId: string
+  private fieldId: string
+
   constructor (contentTypeId: string, fieldId: string, props: FieldRenameProps) {
-    super(contentTypeId, fieldId, props)
+    super()
+    this.contentTypeId = contentTypeId
+    this.fieldId = fieldId
     this.props = props
   }
 
-  updateOfflineAPIWithNewFieldId (ct: ContentType) {
-    const fields = ct.fields
-    const field = fields.getField(this.getFieldId())
+  getEntityId (): string {
+    return this.contentTypeId
+  }
 
-    fields.deleteField(this.getFieldId())
+  getEntityType (): string {
+    return 'CONTENT_TYPE'
+  }
+
+  async applyTo (ct: ContentType) {
+    const fields = ct.fields
+    const field = fields.getField(this.fieldId)
+
+    fields.deleteField(this.fieldId)
     field.id = this.props.newId
     delete field.newId
 
@@ -21,4 +35,7 @@ class FieldRenameAction extends FieldUpdateAction {
   }
 }
 
-export { FieldRenameAction }
+export {
+  FieldRenameAction,
+  FieldRenameProps
+}

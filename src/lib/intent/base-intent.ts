@@ -94,6 +94,18 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
+  shouldSave (): boolean {
+    return true
+  }
+
+  shouldPublish (): boolean {
+    if (!this.shouldSave()) {
+      throw new Error('Cannot publish when shouldSave has falsy value')
+    }
+
+    return true
+  }
+
   toRaw (): RawStep {
     return {
       type: this.type,
