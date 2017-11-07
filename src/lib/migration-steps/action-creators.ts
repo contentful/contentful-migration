@@ -63,7 +63,7 @@ const actionCreators = {
     })
   },
   field: {
-    create: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite): Intents.CreateField => new Intents.CreateField({
+    create: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite): Intents.FieldCreate => new Intents.FieldCreate({
       type: 'field/create',
       meta: {
         contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
