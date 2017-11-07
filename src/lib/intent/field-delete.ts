@@ -2,8 +2,9 @@ import Intent from './base-intent'
 import { FieldUpdateAction } from '../action/field-update'
 import { ContentTypeSaveAction } from '../action/content-type-save'
 import { ContentTypePublishAction } from '../action/content-type-publish'
+import { EntryFieldPurgeAction } from '../action/entry-field-purge'
 
-export default class DeleteFieldIntent extends Intent {
+export default class FieldDeleteIntent extends Intent {
   isFieldDelete () {
     return true
   }
@@ -31,6 +32,10 @@ export default class DeleteFieldIntent extends Intent {
         this.getContentTypeId(),
         this.payload.fieldId,
         { deleted: true }
+      ),
+      new EntryFieldPurgeAction(
+        this.getContentTypeId(),
+        this.payload.fieldId
       )
     ]
   }

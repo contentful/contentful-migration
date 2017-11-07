@@ -85,12 +85,7 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
     }
 
     const entries: Entry[] = existingEntries.map((apiEntry) => {
-      return new Entry({
-        id: apiEntry.sys.id,
-        contentTypeId: apiEntry.sys.contentType.sys.id,
-        fields: apiEntry.fields,
-        version: apiEntry.sys.version
-      })
+      return new Entry(apiEntry)
     })
 
     const ctsWithEntryInfo = await checkEntriesForDeletedCts(chunks, contentTypes, makeRequest)

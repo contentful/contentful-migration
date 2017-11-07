@@ -1,11 +1,5 @@
 import { cloneDeep } from 'lodash'
-
-interface RawEntry {
-  id: string
-  contentTypeId: string
-  version: number
-  fields: object
-}
+import APIEntry from '../interfaces/api-entry'
 
 class Entry {
   private _id: string
@@ -13,11 +7,11 @@ class Entry {
   private _version: number
   private _fields: object
 
-  constructor (entry: RawEntry) {
-    this._id = entry.id
+  constructor (entry: APIEntry) {
+    this._id = entry.sys.id
     this._fields = entry.fields
-    this._version = entry.version
-    this._contentTypeId = entry.contentTypeId
+    this._version = entry.sys.version
+    this._contentTypeId = entry.sys.contentType.sys.id
   }
 
   get id () {
@@ -44,22 +38,31 @@ class Entry {
     this._version = version
   }
 
-  toRaw (): RawEntry {
-    return {
+  toApiEntry (): APIEntry {
+    const sys = {
       id: this.id,
-      contentTypeId: this.contentTypeId,
-      fields: cloneDeep(this.fields),
-      version: this.version
+      version: this.version,
+      contentType: {
+        sys: {
+          type: 'Link',
+          linkType: 'ContentType',
+          id: this.contentTypeId
+        }
+      }
+    }
+
+    return {
+      sys,
+      fields: cloneDeep(this.fields)
     }
   }
 
   clone (): Entry {
-    return new Entry(this.toRaw())
+    return new Entry(this.toApiEntry())
   }
 }
 
 export {
   Entry as default,
-  Entry,
-  RawEntry
+  Entry
 }

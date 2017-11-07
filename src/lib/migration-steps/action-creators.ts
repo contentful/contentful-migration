@@ -130,7 +130,7 @@ const actionCreators = {
         }
       }
     }),
-    delete: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite): Intents.DeleteField => new Intents.DeleteField({
+    delete: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite): Intents.FieldDelete => new Intents.FieldDelete({
       type: 'field/delete',
       meta: {
         contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,

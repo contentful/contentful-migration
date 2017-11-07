@@ -49,9 +49,7 @@ const saveEntryRequest = function (entry: Entry): Request {
     headers: {
       'X-Contentful-Version': entry.version
     },
-    data: {
-      fields: entry.toRaw().fields
-    }
+    data: entry.toApiEntry()
   }
 }
 const publishEntryRequest = function (entry: Entry): Request {
@@ -134,8 +132,6 @@ class OfflineAPI {
   }
 
   async getContentType (id: string): Promise<ContentType> {
-    this.assertRecording()
-
     if (!this.hasContentType(id)) {
       throw new Error(`Cannot get CT ${id} because it does not exist`)
     }
@@ -291,7 +287,6 @@ class OfflineAPI {
   }
 
   async getEntriesForContentType (ctId: string): Promise<Entry[]> {
-    this.assertRecording()
     const entries = this.entries.filter((entry) => entry.contentTypeId === ctId)
 
     return entries
