@@ -16,8 +16,8 @@ const actionCreators = {
         payload: { contentTypeId: id }
       })
     },
-    update: (id, instanceId, callsite, property, value): Intents.UpdateContentType => {
-      return new Intents.UpdateContentType({
+    update: (id, instanceId, callsite, property, value): Intents.ContentTypeUpdate => {
+      return new Intents.ContentTypeUpdate({
         type: 'contentType/update',
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
