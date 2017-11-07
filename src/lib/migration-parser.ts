@@ -5,7 +5,7 @@ import * as Bluebird from 'bluebird'
 import { migration as buildIntents } from './migration-steps'
 import validateChunks from './migration-chunks/validation'
 
-import { ContentType, Field } from './entities/content-type'
+import { ContentType } from './entities/content-type'
 import { fetcher as getContentTypesInChunks } from './content-types-in-plan'
 import { fetcher as getEntriesInIntents } from './fetch-entries'
 import checkEntriesForDeletedCts from './deleted-ct-entries'
@@ -46,36 +46,22 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
       return pack.toRawSteps()
     })
 
-    let APIContentTypes
+    let apiContentTypes
     try {
-      APIContentTypes = await getContentTypesInChunks(chunks, makeRequest)
+      apiContentTypes = await getContentTypesInChunks(chunks, makeRequest)
     } catch (error) {
       throw new errors.SpaceAccessError()
     }
 
     const existingCts: Map<String, ContentType> = new Map()
-    for (const apiCt of APIContentTypes) {
-      const contentType = new ContentType({
-        id: apiCt.sys.id,
-        version: apiCt.sys.version,
-        name: apiCt.name,
-        description: apiCt.description,
-        fields: apiCt.fields as Field[]
-      })
+    for (const apiCt of apiContentTypes) {
+      const contentType = new ContentType(apiCt)
       existingCts.set(contentType.id, contentType)
     }
 
-    const rawCts = APIContentTypes.map((apiCt) => {
-      return {
-        id: apiCt.sys.id,
-        version: apiCt.sys.version,
-        fields: apiCt.fields,
-        name: apiCt.name,
-        description: apiCt.description
-      }
+    const contentTypes: ContentType[] = apiContentTypes.map((apiCt) => {
+      return new ContentType(apiCt)
     })
-
-    const contentTypes: ContentType[] = rawCts.map((rawCt => new ContentType(rawCt)))
 
     let existingEntries: APIEntry[]
     try {
@@ -90,10 +76,8 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
 
     const ctsWithEntryInfo = await checkEntriesForDeletedCts(chunks, contentTypes, makeRequest)
 
-    const rawCtsWithEntryInfo = ctsWithEntryInfo.map(c => c.toRaw())
-
     await hooks.onPackages(intentList.toPackages())
-    validateChunks(intentList, rawCtsWithEntryInfo)
+    validateChunks(intentList, ctsWithEntryInfo)
 
     const state = new OfflineAPI(existingCts, entries)
 

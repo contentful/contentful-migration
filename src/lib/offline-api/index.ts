@@ -1,3 +1,4 @@
+import { omit } from 'lodash'
 import FieldDeletionValidator from './validator/field-deletion'
 import { ContentTypePayloadValidator } from './validator/content-type'
 import ContentType from '../entities/content-type'
@@ -22,23 +23,13 @@ export enum ApiHook {
 }
 
 const saveContentTypeRequest = function (ct: ContentType): Request {
-  const data: any = {
-    name: ct.name,
-    description: ct.description,
-    fields: ct.toRaw().fields
-  }
-
-  if (ct.displayField) {
-    data.displayField = ct.displayField
-  }
-
   return {
     method: 'PUT',
     url: `/content_types/${ct.id}`,
     headers: {
       'X-Contentful-Version': ct.version
     },
-    data: data
+    data: omit(ct.toAPI(), 'sys')
   }
 }
 
@@ -146,7 +137,7 @@ class OfflineAPI {
   async createContentType (id: string): Promise<ContentType> {
     this.assertRecording()
 
-    const ct = new ContentType({ id , version: 0 })
+    const ct = new ContentType({ sys: { id, version: 0 }, fields: [], name: undefined })
 
     await this.modifiedContentTypes.set(id, ct)
 

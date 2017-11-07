@@ -1,7 +1,7 @@
 import APIEntry from '../../../../src/lib/interfaces/api-entry'
 import APIContentType from '../../../../src/lib/interfaces/content-type'
 import IntentList from '../../../../src/lib/intent-list'
-import { ContentType, Field } from '../../../../src/lib/entities/content-type'
+import { ContentType } from '../../../../src/lib/entities/content-type'
 import { OfflineAPI } from '../../../../src/lib/offline-api/index'
 import { Entry } from '../../../../src/lib/entities/entry'
 
@@ -13,13 +13,7 @@ const runIntent = async function (intent, contentTypes: APIContentType[], entrie
   const existingEntries: Entry[] = []
 
   for (const ct of contentTypes) {
-    const contentType = new ContentType({
-      id: ct.sys.id,
-      version: ct.sys.version,
-      name: ct.name,
-      description: ct.description,
-      fields: ct.fields as Field[]
-    })
+    const contentType = new ContentType(ct)
 
     existingCTs.set(contentType.id, contentType)
   }

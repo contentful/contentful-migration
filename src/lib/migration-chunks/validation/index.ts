@@ -4,8 +4,9 @@ import IntentList from '../../intent-list'
 import contentTypeValidations from './content-type'
 import fieldValidations from './field'
 import checkForDuplicatePropsErrors from './duplicate-props'
+import { ContentType } from '../../entities/content-type'
 
-function validateChunks (intentList: IntentList, contentTypes): void {
+function validateChunks (intentList: IntentList, contentTypes: ContentType[]): void {
   const intents: Intent[] = intentList.getIntents()
   const ctErrors = contentTypeValidations(intents, contentTypes)
 
@@ -15,7 +16,7 @@ function validateChunks (intentList: IntentList, contentTypes): void {
 
   const createCTs = intents.filter((intent) => intent.isContentTypeCreate())
   const createdIds = createCTs.map((createIntent) => createIntent.getContentTypeId())
-  const createdCTs = createdIds.map((id) => ({id, fields: [] }))
+  const createdCTs = createdIds.map((id) => new ContentType({ sys: { id, version: 0 }, name: undefined, fields: [] }))
 
   const allCTs = contentTypes.concat(createdCTs)
   let fieldErrors = fieldValidations(intentList.toPackages(), allCTs)

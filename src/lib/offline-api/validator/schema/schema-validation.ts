@@ -38,7 +38,6 @@ const validateContentType = function (contentType: ContentType): PayloadValidati
   }
 
   return error.details.map(({ path, type }): PayloadValidationError => {
-    console.log(path, type)
     if (type === 'any.required') {
       return {
         type: 'InvalidPayload',

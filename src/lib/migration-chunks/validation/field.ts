@@ -2,6 +2,7 @@ const { field: fieldErrors } = require('./errors')
 import Package from '../../package'
 import ValidationError from '../../interfaces/errors'
 import { Intent } from '../../intent/index'
+import { ContentType } from '../../entities/content-type'
 
 const invalidActionError = (message, intent) => {
   return {
@@ -191,7 +192,7 @@ const checks = {
   }
 }
 
-export default function (packages: Package[], contentTypes = []): ValidationError[] {
+export default function (packages: Package[], contentTypes: ContentType[] = []): ValidationError[] {
   const errors = []
   const contentTypeFields = contentTypes.reduce((acc, curr) => {
     const fieldIds = curr.fields.map((f) => f.id)

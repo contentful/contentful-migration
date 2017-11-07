@@ -1,24 +1,5 @@
-import APIContentType from '../interfaces/content-type'
-import { cloneDeep, find, filter, findIndex, pull, omitBy, isUndefined } from 'lodash'
-
-interface Field {
-  id: string
-  newId?: string
-  name?: string
-  type?: string
-  linkType?: string
-  items?: {
-    type: string
-    linkType?: string
-    validations?: any[]
-  }
-  omitted?: boolean
-  deleted?: boolean
-  localized?: boolean
-  required?: boolean
-  validations?: any[]
-  disabled?: boolean
-}
+import { APIContentType, Field } from '../interfaces/content-type'
+import { cloneDeep, find, filter, findIndex, pull } from 'lodash'
 
 class Fields {
   private _fields: Field[]
@@ -76,6 +57,10 @@ class Fields {
     return filter(this._fields, predicate)
   }
 
+  map<T> (mapper: (field: Field) => T): T[] {
+    return this._fields.map(mapper)
+  }
+
   get fields () {
     return this._fields
   }
@@ -93,15 +78,6 @@ class Fields {
   }
 }
 
-interface RawCT {
-  id: string
-  version: number
-  name?: string
-  displayField?: string
-  fields?: Field[]
-  description?: string
-}
-
 class ContentType {
   public hasEntries: Boolean
   private _id: string
@@ -111,12 +87,12 @@ class ContentType {
   private _version: number
   private _displayField: string
 
-  constructor (ct: RawCT) {
-    this._id = ct.id
+  constructor (ct: APIContentType) {
+    this._id = ct.sys.id
     this._fields = new Fields(ct.fields)
     this._name = ct.name
     this._description = ct.description
-    this._version = ct.version
+    this._version = ct.sys.version
     this._displayField = ct.displayField
   }
 
@@ -164,22 +140,6 @@ class ContentType {
     this._version = version
   }
 
-  toRaw (): RawCT {
-    const alwaysRequired = {
-      id: this.id,
-      version: this.version
-    }
-    const optional = omitBy({
-      id: this.id,
-      name: this.name,
-      displayField: this.displayField,
-      fields: this.fields.toRaw(),
-      description: this.description,
-      version: this.version
-    }, isUndefined)
-    return Object.assign(alwaysRequired, optional)
-  }
-
   toAPI (): APIContentType {
     return {
       sys: {
@@ -194,7 +154,7 @@ class ContentType {
   }
 
   clone (): ContentType {
-    return new ContentType(this.toRaw())
+    return new ContentType(this.toAPI())
   }
 }
 

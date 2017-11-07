@@ -1,4 +1,4 @@
-import Field from '../../interfaces/field'
+import { Field } from '../../interfaces/content-type'
 import { ApiHook } from '../'
 import { ContentTypePayloadValidator } from './content-type'
 import { InvalidActionError } from '../../interfaces/errors'

@@ -1,6 +1,6 @@
 import APIContentType from '../../../../src/lib/interfaces/content-type'
 import IntentList from '../../../../src/lib/intent-list'
-import { ContentType, Field } from '../../../../src/lib/entities/content-type'
+import { ContentType } from '../../../../src/lib/entities/content-type'
 import { OfflineAPI } from '../../../../src/lib/offline-api/index'
 import { migration } from '../../../../src/lib/migration-steps'
 
@@ -13,13 +13,7 @@ const buildPayloads = async function (runMigration, contentTypes: APIContentType
   const existingCTs: Map<String, ContentType> = new Map()
 
   for (const ct of contentTypes) {
-    const contentType = new ContentType({
-      id: ct.sys.id,
-      version: ct.sys.version,
-      name: ct.name,
-      description: ct.description,
-      fields: ct.fields as Field[]
-    })
+    const contentType = new ContentType(ct)
 
     existingCTs.set(contentType.id, contentType)
   }

@@ -38,6 +38,7 @@ describe('Orchestrator', function () {
         data: {
           name: 'bar',
           description: 'A content type for a person',
+          displayField: undefined,
           fields: [
             {
               id: 'age',
