@@ -7,7 +7,7 @@ import MoveFieldIntent from './move-field'
 import FieldDeleteIntent from './field-delete'
 import CreateFieldIntent from './create-field'
 import ContentTypeCreateIntent from './content-type-create'
-import DeleteContentTypeIntent from './delete-content-type'
+import ContentTypeDeleteIntent from './content-type-delete'
 
 export {
   Intent as default,
@@ -20,5 +20,5 @@ export {
   FieldDeleteIntent as FieldDelete,
   CreateFieldIntent as CreateField,
   ContentTypeCreateIntent as ContentTypeCreate,
-  DeleteContentTypeIntent as DeleteContentType
+  ContentTypeDeleteIntent as ContentTypeDelete
 }

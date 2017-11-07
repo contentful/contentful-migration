@@ -34,8 +34,8 @@ const actionCreators = {
         }
       })
     },
-    delete: (id, instanceId, callsite): Intents.DeleteContentType => {
-      return new Intents.DeleteContentType({
+    delete: (id, instanceId, callsite): Intents.ContentTypeDelete => {
+      return new Intents.ContentTypeDelete({
         type: 'contentType/delete',
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
