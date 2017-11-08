@@ -97,6 +97,7 @@ class IntentList {
     const intents = this.getIntents()
 
     for (const intent of intents) {
+      // TODO give this a real name
       await api.startRecordingRequests('foo')
 
       for (const action of intent.toActions()) {
@@ -122,18 +123,16 @@ class IntentList {
         }
       }
 
-      if (!intent.isContentTypeDelete()) {
-        // Auto insert publish and save
+      // Auto insert publish and save
 
-        if (intent.shouldSave()) {
-          const save = new ContentTypeSaveAction(intent.getContentTypeId())
-          await save.applyTo(api)
-        }
+      if (intent.shouldSave()) {
+        const save = new ContentTypeSaveAction(intent.getContentTypeId())
+        await save.applyTo(api)
+      }
 
-        if (intent.shouldPublish()) {
-          const publish = new ContentTypePublishAction(intent.getContentTypeId())
-          await publish.applyTo(api)
-        }
+      if (intent.shouldPublish()) {
+        const publish = new ContentTypePublishAction(intent.getContentTypeId())
+        await publish.applyTo(api)
       }
 
       await api.stopRecordingRequests()

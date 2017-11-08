@@ -15,6 +15,14 @@ export default class ContentTypeDeleteIntent extends Intent {
     return true
   }
 
+  shouldSave (): boolean {
+    return false
+  }
+
+  shouldPublish (): boolean {
+    return false
+  }
+
   toActions () {
     return [
       new ContentTypeUnpublishAction(this.getContentTypeId()),
