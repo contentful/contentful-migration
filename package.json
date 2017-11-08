@@ -58,9 +58,6 @@
     "extension": [
       ".ts"
     ],
-    "require": [
-      "source-map-support/register"
-    ],
     "all": true
   },
   "dependencies": {
