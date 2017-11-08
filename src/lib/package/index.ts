@@ -1,7 +1,6 @@
 import RawStep from '../interfaces/raw-step'
 import OfflineAPI from '../offline-api/index'
 import { APIAction, EntityAction } from '../action/action'
-import { FieldRenameAction } from '../action/field-rename'
 import { ContentTypeSaveAction } from '../action/content-type-save'
 import { ContentTypePublishAction } from '../action/content-type-publish'
 import { EntryTransformAction } from '../action/entry-transform'
@@ -18,25 +17,13 @@ const applyTransformActions = async (api, intents) => {
   }
 }
 
-const applyRenameField = async (api, intents, ctId) => {
-  if (intents.length > 1) {
-    throw new Error('Packages that rename a field may only contain one intent.')
-  }
-  const renameAction = intents[0].toActions()[0]
-  if (renameAction instanceof FieldRenameAction) {
-    const entityId = renameAction.getEntityId()
-    const ct = await api.getContentType(entityId)
-    await renameAction.applyTo(ct)
-    const save = new ContentTypeSaveAction(ctId)
-    const publish = new ContentTypePublishAction(ctId)
-
-    await save.applyTo(api)
-    await publish.applyTo(api)
-    renameAction.updateOfflineAPIWithNewFieldId(ct)
-  }
+interface ApplyModifiers {
+  deletesContentType: boolean
+  savesContentType: boolean,
+  publishesContentType: boolean
 }
 
-const applyIntents = async (api, intents, ctId, deletesContentType) => {
+const applyIntents = async (api, intents, ctId, modifiers: ApplyModifiers) => {
   for (const intent of intents) {
     for (const action of intent.toActions()) {
       if (action instanceof APIAction) {
@@ -56,13 +43,18 @@ const applyIntents = async (api, intents, ctId, deletesContentType) => {
     }
   }
 
-  if (!deletesContentType) {
+  if (!modifiers.deletesContentType) {
     // Auto insert publish and save
-    const save = new ContentTypeSaveAction(ctId)
-    const publish = new ContentTypePublishAction(ctId)
 
-    await save.applyTo(api)
-    await publish.applyTo(api)
+    if (modifiers.savesContentType) {
+      const save = new ContentTypeSaveAction(ctId)
+      await save.applyTo(api)
+    }
+
+    if (modifiers.publishesContentType) {
+      const publish = new ContentTypePublishAction(ctId)
+      await publish.applyTo(api)
+    }
   }
 }
 
@@ -72,7 +64,8 @@ class Package {
   public updatesContentType: boolean = false
   public deletesContentType: boolean = false
   public modifiesFields: boolean = false
-  private renamesField: boolean = false
+  public savesContentType: boolean = true
+  public publishesContentType: boolean = true
 
   private intents: Intent[]
   private contentTypeId: string
@@ -88,16 +81,18 @@ class Package {
 
     this.updatesContentType = intents.some((intent) => intent.isContentTypeUpdate())
 
+    // TODO: better abstraction than package,
+    // values inside intents cannot have different values
+    // for those checks
+    this.savesContentType = intents.every((intent) => intent.shouldSave())
+    this.publishesContentType = intents.every((intent) => intent.shouldPublish())
+
     this.modifiesFields = intents.some((intent) => {
       return intent.isFieldCreate() ||
         intent.isFieldUpdate() ||
         intent.isFieldDelete() ||
         intent.isFieldRename() ||
         intent.isFieldMove()
-    })
-
-    this.renamesField = intents.some((intent) => {
-      return intent.isFieldRename()
     })
 
     const intentsWithPkgInfo = intents.map((intent) => {
@@ -124,10 +119,12 @@ class Package {
     const intents = this.getIntents()
     if (this.transformsContent) {
       await applyTransformActions(api, intents)
-    } else if (this.renamesField) {
-      await applyRenameField(api, intents, this.getContentTypeId())
     } else {
-      await applyIntents(api, intents, this.getContentTypeId(), this.deletesContentType)
+      await applyIntents(api, intents, this.getContentTypeId(), {
+        deletesContentType: this.deletesContentType,
+        savesContentType: this.savesContentType,
+        publishesContentType: this.publishesContentType
+      })
     }
     await api.stopRecordingRequests()
   }
