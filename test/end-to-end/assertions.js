@@ -199,5 +199,27 @@ module.exports = {
         expect(withoutAnsiCodes).to.include(`Please provide the file containing the migration script.`);
       };
     }
+  },
+  payload: {
+    notDefined: function (method) {
+      return result => {
+        expect(result.code).to.eql(1);
+        expect(result.stdout).not.to.be.empty();
+
+        const withoutAnsiCodes = stripAnsi(result.stdout);
+        expect(withoutAnsiCodes).to.include(`${method} is not defined`);
+      };
+    },
+    syntaxError: function (script, line, message) {
+      return result => {
+        expect(result.code).to.eql(0);
+        expect(result.stdout).not.to.be.empty();
+
+        const withoutAnsiCodes = stripAnsi(result.stdout);
+        expect(withoutAnsiCodes).to.include(`script could not be parsed, as it seems to contain syntax errors.`);
+        expect(withoutAnsiCodes).to.include(`${script}:${line}`);
+        expect(withoutAnsiCodes).to.include(`SyntaxError: ${message}`);
+      };
+    }
   }
 };
