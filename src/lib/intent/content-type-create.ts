@@ -6,9 +6,8 @@ export default class ContentTypeCreateIntent extends Intent {
     return true
   }
 
-  groupsWith (other: Intent): boolean {
-    const sameContentType = other.getContentTypeId() === this.getContentTypeId()
-    return other.isContentTypeUpdate() && sameContentType
+  groupsWith (): boolean {
+    return false
   }
 
   endsGroup (): boolean {

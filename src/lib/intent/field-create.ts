@@ -5,14 +5,15 @@ export default class FieldCreateIntent extends Intent {
   isFieldCreate () {
     return true
   }
-
-  isContentTypeUpdate () {
-    return true
-  }
-
+  
   groupsWith (other: Intent): boolean {
     const sameContentType = other.getContentTypeId() === this.getContentTypeId()
-    return other.isContentTypeUpdate() && sameContentType
+    return (
+      other.isContentTypeUpdate() ||
+      other.isContentTypeCreate() ||
+      other.isFieldCreate() ||
+      other.isFieldUpdate()
+    ) && sameContentType
   }
 
   endsGroup (): boolean {

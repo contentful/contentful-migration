@@ -5,11 +5,7 @@ export default class FieldMoveIntent extends Intent {
   isFieldMove () {
     return true
   }
-
-  isContentTypeUpdate () {
-    return true
-  }
-
+  
   groupsWith (other: Intent): boolean {
     const sameContentType = other.getContentTypeId() === this.getContentTypeId()
     return other.isContentTypeUpdate() && sameContentType
