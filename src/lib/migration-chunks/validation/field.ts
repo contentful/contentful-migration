@@ -1,7 +1,6 @@
 const { field: fieldErrors } = require('./errors')
-import Package from '../../package'
 import ValidationError from '../../interfaces/errors'
-import { Intent } from '../../intent/index'
+import { Intent } from '../../interfaces/intent'
 import { ContentType } from '../../entities/content-type'
 
 const invalidActionError = (message, intent) => {
@@ -192,20 +191,20 @@ const checks = {
   }
 }
 
-export default function (packages: Package[], contentTypes: ContentType[] = []): ValidationError[] {
+export default function (intents: Intent[], contentTypes: ContentType[] = []): ValidationError[] {
   const errors = []
-  const contentTypeFields = contentTypes.reduce((acc, curr) => {
+  const contentTypeFields: { [key: string]: Set<string> } = contentTypes.reduce((acc, curr) => {
     const fieldIds = curr.fields.map((f) => f.id)
     acc[curr.id] = new Set(fieldIds)
     return acc
   }, {})
 
-  const recentlyRemoved = {}
-  const recentlyMoved = {}
-  const changedFieldIds = {}
+  const recentlyRemoved: { [key: string]: Set<string> } = {}
+  const recentlyMoved: { [key: string]: Set<string> } = {}
+  const changedFieldIds: { [key: string]: Map<string, string> } = {}
 
-  for (const pkg of packages) {
-    const contentTypeId = pkg.getContentTypeId()
+  for (const intent of intents) {
+    const contentTypeId = intent.getContentTypeId()
     const contentTypeExists = Boolean(contentTypes.find((ct) => ct.id === contentTypeId))
     const fieldSet = contentTypeFields[contentTypeId] || new Set()
     const fieldRemovals = recentlyRemoved[contentTypeId] || new Set()
@@ -213,9 +212,7 @@ export default function (packages: Package[], contentTypes: ContentType[] = []):
     const fieldIdChanges = changedFieldIds[contentTypeId] || new Map()
     const validationContext = { fieldSet, fieldRemovals, fieldMovements, fieldIdChanges }
 
-    const fieldIntents = pkg.getIntents().filter((intent) => intent.isAboutField())
-
-    for (const intent of fieldIntents) {
+    if (intent.isAboutField()) {
       const fieldId = intent.getFieldId()
 
       if (!contentTypeExists) {

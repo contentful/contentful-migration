@@ -42,13 +42,9 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
 
     intentList.validate()
 
-    const chunks = intentList.toPackages().map((pack) => {
-      return pack.toRawSteps()
-    })
-
     let apiContentTypes
     try {
-      apiContentTypes = await getContentTypesInChunks(chunks, makeRequest)
+      apiContentTypes = await getContentTypesInChunks(intentList, makeRequest)
     } catch (error) {
       throw new errors.SpaceAccessError()
     }
@@ -65,7 +61,7 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
 
     let existingEntries: APIEntry[]
     try {
-      existingEntries = await getEntriesInIntents(chunks, makeRequest)
+      existingEntries = await getEntriesInIntents(intentList, makeRequest)
     } catch (error) {
       throw new errors.SpaceAccessError()
     }
@@ -74,18 +70,17 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
       return new Entry(apiEntry)
     })
 
-    const ctsWithEntryInfo = await checkEntriesForDeletedCts(chunks, contentTypes, makeRequest)
+    const ctsWithEntryInfo = await checkEntriesForDeletedCts(intentList, contentTypes, makeRequest)
 
-    await hooks.onPackages(intentList.toPackages())
+    // TODO: remove onPackages hook, implement onIntents hook
+    // await hooks.onPackages(intentList.toPackages())
     validateChunks(intentList, ctsWithEntryInfo)
 
-    const state = new OfflineAPI(existingCts, entries)
+    const api = new OfflineAPI(existingCts, entries)
 
-    for (const pkg of intentList.toPackages()) {
-      await pkg.applyTo(state)
-    }
+    await intentList.compressed().applyTo(api)
 
-    const batches = await state.getRequestBatches()
+    const batches = await api.getRequestBatches()
       // for now, making this compatible to our tests where we expect a flat array of request objects
     return _.flatten(batches.map(b => b.requests))
   }

@@ -1,6 +1,5 @@
 import { APIAction, EntityAction } from '../action/action'
 import RawStep from './raw-step'
-import { Package } from '../package/index'
 
 interface Intent {
   toActions (): (APIAction|EntityAction)[]
@@ -8,6 +7,9 @@ interface Intent {
   getContentTypeId (): string
   getFieldId (): string
   getRawType (): string
+
+  shouldSave (): boolean
+  shouldPublish (): boolean
 
   isContentTypeUpdate (): boolean
   isContentTypeDelete (): boolean
@@ -21,13 +23,13 @@ interface Intent {
   isAboutField (): boolean
   isContentTransform (): boolean
 
+  isComposedIntent (): boolean
+
   groupsWith (other: Intent): boolean
   endsGroup (): boolean
 
   getDirection? (): string
   getPivotId? (): string
-
-  getPackage? (): Package
 }
 
 export {

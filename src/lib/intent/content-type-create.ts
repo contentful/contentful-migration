@@ -6,6 +6,15 @@ export default class ContentTypeCreateIntent extends Intent {
     return true
   }
 
+  groupsWith (other: Intent): boolean {
+    const sameContentType = other.getContentTypeId() === this.getContentTypeId()
+    return other.isContentTypeUpdate() && sameContentType
+  }
+
+  endsGroup (): boolean {
+    return false
+  }
+
   toActions () {
     return [
       new ContentTypeCreateAction(this.getContentTypeId())

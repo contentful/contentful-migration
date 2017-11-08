@@ -7,7 +7,6 @@ import { Entry } from '../../../../src/lib/entities/entry'
 
 const runIntent = async function (intent, contentTypes: APIContentType[], entries: APIEntry[]): Promise<OfflineAPI> {
   const list = new IntentList([intent])
-  const packages = list.toPackages()
 
   const existingCTs: Map<String, ContentType> = new Map()
   const existingEntries: Entry[] = []
@@ -24,9 +23,7 @@ const runIntent = async function (intent, contentTypes: APIContentType[], entrie
 
   const api = new OfflineAPI(existingCTs, existingEntries)
 
-  for (const pkg of packages) {
-    await pkg.applyTo(api)
-  }
+  await list.compressed().applyTo(api)
 
   return api
 }

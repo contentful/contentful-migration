@@ -3,7 +3,7 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const validateChunks = require('../validate-chunks');
+const validateChunks = require('../validate-chunks').default;
 
 describe('field deletion plan validation', function () {
   describe('when creating a field two times but deleting it in between and then once more', function () {

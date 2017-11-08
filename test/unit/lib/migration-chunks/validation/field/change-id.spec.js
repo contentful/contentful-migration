@@ -3,7 +3,7 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const validateChunks = require('../validate-chunks');
+const validateChunks = require('../validate-chunks').default;
 
 describe('chunks validation when changing field ids', () => {
   it('returns an error when referring to a field by its old id in the same migration', Bluebird.coroutine(function * () {

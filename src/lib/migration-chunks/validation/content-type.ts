@@ -1,7 +1,7 @@
 import * as _ from 'lodash'
 import * as errors from './errors'
 import ContentType from '../../entities/content-type'
-import Intent from '../../intent'
+import Intent from '../../interfaces/intent'
 const ctErrors = errors.contentType
 
 const errorFormatter = function (messageFormatter) {

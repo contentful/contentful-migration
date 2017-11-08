@@ -7,6 +7,14 @@ export default class ContentTypeDeleteIntent extends Intent {
     return true
   }
 
+  groupsWith (): boolean {
+    return false
+  }
+
+  endsGroup (): boolean {
+    return true
+  }
+
   toActions () {
     return [
       new ContentTypeUnpublishAction(this.getContentTypeId()),

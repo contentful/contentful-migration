@@ -7,11 +7,11 @@ export default class EntryTransformIntent extends Intent {
   }
 
   groupsWith (other: Intent): boolean {
-    if (other.isContentTransform()) {
-      if (other.getContentTypeId() === this.getContentTypeId()) {
-        return true
-      }
-    }
+    const sameContentType = other.getContentTypeId() === this.getContentTypeId()
+    return other.isContentTransform() && sameContentType
+  }
+
+  endsGroup (): boolean {
     return false
   }
 

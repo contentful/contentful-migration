@@ -7,8 +7,6 @@ const validateBatches = async function (runMigration, contentTypes) {
   const intents = await migration(runMigration)
   const list = new IntentList(intents)
 
-  const packages = list.toPackages()
-
   const existingCTs: Map<String, ContentType> = new Map()
 
   for (const ct of contentTypes) {
@@ -17,12 +15,11 @@ const validateBatches = async function (runMigration, contentTypes) {
     existingCTs.set(contentType.id, contentType)
   }
 
-  const state = new OfflineAPI(existingCTs, [])
+  const api = new OfflineAPI(existingCTs, [])
 
-  for (const pkg of packages) {
-    await pkg.applyTo(state)
-  }
-  const batches = await state.getRequestBatches()
+  await list.compressed().applyTo(api)
+
+  const batches = await api.getRequestBatches()
 
   return batches.map((batch) => batch.errors)
 }

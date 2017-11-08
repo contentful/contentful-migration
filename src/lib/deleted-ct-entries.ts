@@ -1,10 +1,11 @@
+import IntentList from './intent-list'
 import * as Bluebird from 'bluebird'
 import ContentType from './entities/content-type'
 
-export default async function checkEntriesForDeletedCts (chunks, contentTypes: ContentType[], request): Promise<ContentType[]> {
-  const deletedCtIds: Set<string> = new Set(chunks
-    .filter((chunk) => chunk[0].type === 'contentType/delete')
-    .map((chunk) => chunk[0].payload.contentTypeId)
+export default async function checkEntriesForDeletedCts (intentList: IntentList, contentTypes: ContentType[], request): Promise<ContentType[]> {
+  const deletedCtIds: Set<string> = new Set(intentList.getIntents()
+    .filter((intent) => intent.isContentTypeDelete())
+    .map((intent) => intent.getContentTypeId())
   )
 
   if (deletedCtIds.size === 0) {

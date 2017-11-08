@@ -3,7 +3,7 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const validateChunks = require('../validate-chunks');
+const validateChunks = require('../validate-chunks').default;
 
 describe('field movement plan validation', function () {
   describe('when moving a field that does not exist', function () {

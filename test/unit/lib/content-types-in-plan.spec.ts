@@ -1,43 +1,40 @@
-'use strict';
+'use strict'
 
-const Bluebird = require('bluebird');
-const { expect } = require('chai');
-const sinon = require('sinon');
+import { expect } from 'chai'
+import * as sinon from 'sinon'
 
-const migrationSteps = require('../../../src/lib/migration-steps').migration;
-const IntentList = require('../../../src/lib/intent-list').default;
-const contentTypesInPlan = require('../../../src/lib/content-types-in-plan').fetcher;
-
-const co = Bluebird.coroutine;
+import {migration as migrationSteps } from '../../../src/lib/migration-steps'
+import IntentList from '../../../src/lib/intent-list'
+import { fetcher as contentTypesInPlan } from '../../../src/lib/content-types-in-plan'
 
 describe('Content Type fetcher', function () {
-  it('fetches all the Content Types in the plan', co(function * () {
-    const intents = yield migrationSteps(function up (migration) {
+  it('fetches all the Content Types in the plan', async function () {
+    const intents = await migrationSteps(function up (migration) {
       const person = migration.createContentType('person', {
         name: 'bar',
         description: 'A content type for a person'
-      });
+      })
 
       person.createField('name', {
         name: 'Name',
         type: 'Symbol'
-      });
+      })
 
       migration.editContentType('dog', {
         name: 'Doggo',
         description: 'A shepard dog'
-      });
+      })
 
       migration.editContentType('cat', {
         name: 'Cat',
         description: 'The trump of the animal world'
-      });
+      })
 
-      migration.deleteContentType('dog');
-      migration.deleteContentType('plant');
-    });
+      migration.deleteContentType('dog')
+      migration.deleteContentType('plant')
+    })
 
-    const request = sinon.stub();
+    const request = sinon.stub()
 
     request.resolves({
       items: [
@@ -68,19 +65,16 @@ describe('Content Type fetcher', function () {
           fields: []
         }
       ]
-    });
+    })
 
-    const intentList = new IntentList(intents);
-    const packages = intentList.toPackages();
+    const intentList = new IntentList(intents)
 
-    const raw = packages.map((pack) => pack.toRawSteps());
-
-    const contentTypes = yield contentTypesInPlan(raw, request);
+    const contentTypes = await contentTypesInPlan(intentList, request)
 
     expect(request).to.have.been.calledWith({
       method: 'GET',
       url: '/content_types?sys.id[in]=person,dog,cat,plant'
-    });
+    })
     expect(contentTypes).to.eql([
       {
         name: 'Person',
@@ -108,6 +102,6 @@ describe('Content Type fetcher', function () {
         description: 'A plant!',
         fields: []
       }
-    ]);
-  }));
-});
+    ])
+  })
+})

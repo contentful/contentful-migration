@@ -1,9 +1,11 @@
 'use strict'
+import APIEntry from './interfaces/api-entry'
+import IntentList from './intent-list'
 
 import * as _ from 'lodash'
 
-async function fetcher (plan: any, request: any): Promise<any[]> {
-  const ids: Array<string> = _.uniq(plan.map((chunk) => chunk[0].payload.contentTypeId))
+async function fetcher (intentList: IntentList, request: any): Promise<APIEntry[]> {
+  const ids: string[] = _.uniq(intentList.getIntents().map((intent) => intent.getContentTypeId()))
 
   if (ids.length === 0) {
     return []

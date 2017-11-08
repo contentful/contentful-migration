@@ -1,6 +1,8 @@
+import IntentList from '../../intent-list'
+import ComposedIntent from '../../intent/composed-intent'
 import ValidationError from '../../interfaces/errors'
 import * as errorMessages from './errors'
-import { Package } from '../../package/index'
+import { Intent } from '../../interfaces/intent'
 
 const isSameEntity = (step, otherStep) => {
   return (
@@ -38,9 +40,8 @@ const getDuplicateProps = (step, chunk, stepIndex) => {
   }, [])
 }
 
-const getErrorsForPackage = (pkg: Package) => {
-  const intents = pkg.getIntents()
-  return intents.reduce((pkgErrors, intent, stepIndex) => {
+const getErrorsForIntents = (intents: Intent[]) => {
+  return intents.reduce((intentErrors, intent, stepIndex) => {
     const step = intent.toRaw()
     if (step.payload.props) {
       const duplicateProps = getDuplicateProps(step, intents, stepIndex)
@@ -52,15 +53,19 @@ const getErrorsForPackage = (pkg: Package) => {
           details: { intent }
         }
       })
-      pkgErrors = pkgErrors.concat(errors)
+      intentErrors = intentErrors.concat(errors)
     }
-    return pkgErrors
+    return intentErrors
   }, [])
 }
 
-export default function (packages: Package[]): ValidationError[] {
-  return packages.reduce((errors, pkg) => {
-    const pkgErrors = getErrorsForPackage(pkg)
-    return errors.concat(pkgErrors)
+export default function (intentList: IntentList): ValidationError[] {
+  const intents = intentList.compressed().getIntents()
+  return intents.reduce((errors, intent) => {
+    if (intent.isComposedIntent()) {
+      return errors.concat(getErrorsForIntents((intent as ComposedIntent).getIntents()))
+    }
+
+    return errors
   }, [])
 }

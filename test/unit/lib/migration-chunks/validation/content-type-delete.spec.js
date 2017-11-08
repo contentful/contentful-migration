@@ -3,7 +3,7 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const validateChunks = require('./validate-chunks');
+const validateChunks = require('./validate-chunks').default;
 
 describe('content type delete validation', function () {
   describe('when deleting a content type twice', function () {

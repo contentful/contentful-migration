@@ -3,7 +3,7 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const validateChunks = require('../validate-chunks');
+const validateChunks = require('../validate-chunks').default;
 
 describe('field creation plan validation', function () {
   describe('when creating a field twice in one chunk', function () {
@@ -166,6 +166,26 @@ describe('field creation plan validation', function () {
                 'fieldId': 'name',
                 'props': {
                   'type': 'Decimal'
+                }
+              }
+            }
+          }
+        },
+        {
+          type: 'InvalidAction',
+          message: 'You are setting the property "type" on field "name" more than once. Please set it only once.',
+          details: {
+            step: {
+              'type': 'field/update',
+              'meta': {
+                'contentTypeInstanceId': 'contentType/person/0',
+                'fieldInstanceId': 'fields/name/2'
+              },
+              'payload': {
+                'contentTypeId': 'person',
+                'fieldId': 'name',
+                'props': {
+                  'type': 'Array'
                 }
               }
             }

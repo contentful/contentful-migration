@@ -6,6 +6,19 @@ export default class FieldUpdateIntent extends Intent {
     return true
   }
 
+  isContentTypeUpdate () {
+    return true
+  }
+
+  groupsWith (other: Intent): boolean {
+    const sameContentType = other.getContentTypeId() === this.getContentTypeId()
+    return other.isContentTypeUpdate() && sameContentType
+  }
+
+  endsGroup (): boolean {
+    return false
+  }
+
   toActions () {
     return [
       new FieldUpdateAction(
