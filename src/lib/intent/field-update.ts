@@ -12,7 +12,8 @@ export default class FieldUpdateIntent extends Intent {
       other.isContentTypeUpdate() ||
       other.isContentTypeCreate() ||
       other.isFieldCreate() ||
-      other.isFieldUpdate()
+      other.isFieldUpdate() ||
+      other.isFieldMove()
     ) && sameContentType
   }
 
