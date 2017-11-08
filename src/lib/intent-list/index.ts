@@ -82,6 +82,14 @@ class IntentList {
       }
     }
 
+    if (composableIntents.length === 1) {
+      composedIntents = composedIntents.concat(composableIntents)
+    }
+
+    if (composableIntents.length > 1) {
+      composedIntents.push(new ComposedIntent(composableIntents))
+    }
+
     return new IntentList(composedIntents)
   }
 
