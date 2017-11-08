@@ -37,14 +37,9 @@ describe('Entries fetcher', function () {
     ]
     const contentTypesWithEntryInfo = await deletedCtEntries(intentList, contentTypes, request)
 
-    expect(contentTypesWithEntryInfo).to.eql([
-      {
-        id: 'foo',
-        hasEntries: true
-      },
-      {
-        id: 'bar'
-      }
-    ])
+    const fooCT = contentTypesWithEntryInfo.find((ct) => ct.id === 'foo')
+    expect(fooCT.hasEntries).to.eql(true)
+    const barCT = contentTypesWithEntryInfo.find((ct) => ct.id === 'bar')
+    expect(barCT.hasEntries).to.eql(undefined)
   })
 })
