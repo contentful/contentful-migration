@@ -66,7 +66,6 @@ class Package {
   public modifiesFields: boolean = false
   public savesContentType: boolean = true
   public publishesContentType: boolean = true
-  private renamesField: boolean = false
 
   private intents: Intent[]
   private contentTypeId: string
@@ -94,10 +93,6 @@ class Package {
         intent.isFieldDelete() ||
         intent.isFieldRename() ||
         intent.isFieldMove()
-    })
-
-    this.renamesField = intents.some((intent) => {
-      return intent.isFieldRename()
     })
 
     const intentsWithPkgInfo = intents.map((intent) => {
