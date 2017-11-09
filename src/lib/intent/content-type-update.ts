@@ -40,7 +40,8 @@ export default class ContentTypeUpdateIntent extends Intent {
 
     return {
       heading: chalk`Update Content Type {bold.yellow ${this.getContentTypeId()}}`,
-      details
+      details,
+      sections: []
     }
   }
 }

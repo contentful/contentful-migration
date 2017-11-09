@@ -30,7 +30,9 @@ export default class EntryTransformIntent extends Intent {
 
   toPlanMessage (): PlanMessage {
     return {
-      heading: chalk`Transform entries for {bold.yellow ${this.getContentTypeId()}}`
+      heading: chalk`Transform entries for {bold.yellow ${this.getContentTypeId()}}`,
+      details: [],
+      sections: []
     }
   }
 }

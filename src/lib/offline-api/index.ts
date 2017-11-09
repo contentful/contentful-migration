@@ -1,4 +1,4 @@
-import { omit } from 'lodash'
+import { omit, compact } from 'lodash'
 import FieldDeletionValidator from './validator/field-deletion'
 import { ContentTypePayloadValidator } from './validator/content-type'
 import ContentType from '../entities/content-type'
@@ -303,7 +303,7 @@ class OfflineAPI {
     const batch: RequestBatch = {
       intent: this.intent,
       requests: this.currentRequestsRecorded,
-      errors: this.currentErrorsRecorded
+      errors: compact(this.currentErrorsRecorded)
     }
 
     this.requestBatches.push(batch)

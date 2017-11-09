@@ -46,8 +46,10 @@ export default class FieldDeleteIntent extends Intent {
     return {
       heading: chalk`Update Content Type {bold.yellow ${this.getContentTypeId()}}`,
       sections: [{
-        heading: chalk`Delete field {yellow ${this.getFieldId()}}`
-      }]
+        heading: chalk`Delete field {yellow ${this.getFieldId()}}`,
+        details: []
+      }],
+      details: []
     }
   }
 }

@@ -33,8 +33,10 @@ export default class FieldCreateIntent extends Intent {
     return {
       heading: chalk`Update Content Type {bold.yellow ${this.getContentTypeId()}}`,
       sections: [{
-        heading: chalk`Create field {yellow ${this.getFieldId()}}`
-      }]
+        heading: chalk`Create field {yellow ${this.getFieldId()}}`,
+        details: []
+      }],
+      details: []
     }
   }
 }

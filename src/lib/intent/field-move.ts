@@ -68,8 +68,10 @@ export default class FieldMoveIntent extends Intent {
     return {
       heading: chalk`Update Content Type {bold.yellow ${this.getContentTypeId()}}`,
       sections: [{
-        heading: chalk`{bold Move field {yellow ${this.getFieldId()}} ${humanizedMovement}}`
-      }]
+        heading: chalk`{bold Move field {yellow ${this.getFieldId()}} ${humanizedMovement}}`,
+        details: []
+      }],
+      details: []
     }
   }
 }

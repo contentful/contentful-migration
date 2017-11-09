@@ -104,7 +104,11 @@ const run = async function () {
 
   const hasErrors = batches.some((batch) => batch.errors.length > 0)
 
-  console.log(chalk`{bold.green The following migration has been planned}\n`)
+  if (hasErrors) {
+    console.log(chalk`{bold.red The following migration has been planned but cannot be run because it contains errors}\n\n`)
+  } else {
+    console.log(chalk`{bold.green The following migration has been planned}\n`)
+  }
   renderPlan(batches)
 
   if (hasErrors) {

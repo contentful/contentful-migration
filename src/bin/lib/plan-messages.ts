@@ -3,7 +3,19 @@ import { RequestBatch } from '../../lib/offline-api/index'
 
 const renderBatch = function (batch: RequestBatch) {
   const planMessage = batch.intent.toPlanMessage()
-  console.log(planMessage)
+  const message = []
+  message.push(chalk`{bold.underline ${planMessage.heading}}`)
+  for (const detail of planMessage.details) {
+    message.push(chalk`  - ${detail}`)
+  }
+  for (const section of planMessage.sections) {
+    message.push(chalk`\n  {bold ${section.heading}}`)
+    for (const sectionDetail of section.details) {
+      message.push(chalk`    - ${sectionDetail}`)
+    }
+  }
+
+  console.log(message.join('\n'))
 }
 
 const renderPlan = (batches: RequestBatch[]) => {
@@ -11,13 +23,16 @@ const renderPlan = (batches: RequestBatch[]) => {
   for (const batch of batches) {
     renderBatch(batch)
     for (const error of batch.errors) {
+      if (!hadError) {
+        console.log('\n')
+      }
       hadError = true
+      console.log(error)
       console.log(chalk`{red.bold Error: ${error.message}}`)
-
     }
 
     if (hadError) {
-      console.log(chalk`{bold.red The following migration has been planned but cannot be run because it contains errors}\n\n`)
+      console.log('\n')
       return
     }
 

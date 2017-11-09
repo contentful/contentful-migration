@@ -44,7 +44,8 @@ export default class FieldUpdateIntent extends Intent {
       sections: [{
         heading: chalk`Update field {yellow ${this.getFieldId()}}`,
         details
-      }]
+      }],
+      details: []
     }
   }
 }

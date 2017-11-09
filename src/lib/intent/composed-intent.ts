@@ -101,7 +101,9 @@ export default class ComposedIntent implements Intent {
       const combinedHeading = `${singleHeading} (${transformCount}x)`
 
       return {
-        heading: combinedHeading
+        heading: combinedHeading,
+        sections: [],
+        details: []
       }
     }
 
@@ -167,12 +169,7 @@ function mergeSections (sections: Section[]): Section {
 
   for (const [heading, sections] of entries(sameSections)) {
     const details: string[] = flatten(sections.map((section: Section) => section.details || []))
-    const hasDetails = details.length > 0
-    const section: Section = { heading }
-
-    if (hasDetails) {
-      section.details = details
-    }
+    const section: Section = { heading, details }
 
     mergedSections.push(section)
   }

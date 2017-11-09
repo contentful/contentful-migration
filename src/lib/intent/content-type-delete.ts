@@ -34,7 +34,9 @@ export default class ContentTypeDeleteIntent extends Intent {
 
   toPlanMessage (): PlanMessage {
     return {
-      heading: chalk`Delete Content Type {bold.yellow ${this.getContentTypeId()}}`
+      heading: chalk`Delete Content Type {bold.yellow ${this.getContentTypeId()}}`,
+      details: [],
+      sections: []
     }
   }
 }

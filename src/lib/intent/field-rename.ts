@@ -63,8 +63,10 @@ export default class FieldRenameIntent extends Intent {
     return {
       heading: chalk`Update Content Type {bold.yellow ${this.getContentTypeId()}}`,
       sections: [{
-        heading: chalk`Rename field {yellow ${this.getFieldId()}} to {yellow ${this.getNewId()}}`
-      }]
+        heading: chalk`Rename field {yellow ${this.getFieldId()}} to {yellow ${this.getNewId()}}`,
+        details: []
+      }],
+      details: []
     }
   }
 }

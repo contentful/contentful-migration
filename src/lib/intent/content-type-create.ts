@@ -24,7 +24,9 @@ export default class ContentTypeCreateIntent extends Intent {
 
   toPlanMessage (): PlanMessage {
     return {
-      heading: chalk`Create Content Type {bold.yellow ${this.getContentTypeId()}}`
+      heading: chalk`Create Content Type {bold.yellow ${this.getContentTypeId()}}`,
+      details: [],
+      sections: []
     }
   }
 }
