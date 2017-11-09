@@ -23,16 +23,16 @@
   },
   "scripts": {
     "build": "tsc -p .",
-    "test": "npm run test-unit && npm run test-integration && npm run lint",
+    "test": "npm run build && npm run test-unit && npm run test-integration && npm run lint",
     "test-watch": "npm run test-unit -- --watch",
-    "test-unit": "NODE_ENV=test mocha 'test/unit/**/*.spec.js' 'test/unit/**/*.spec.ts'",
-    "test-integration": "NODE_ENV=test npm run build && mocha --require test/integration/setup.js 'test/integration/**/*.spec.js'",
+    "test-unit": "NODE_ENV=test mocha --compilers ts-node/register 'test/unit/**/*.spec.js' 'test/unit/**/*.spec.ts'",
+    "test-integration": "NODE_ENV=test mocha --require test/integration/setup.js 'test/integration/**/*.spec.js'",
     "test-e2e": "NODE_ENV=test mocha 'test/end-to-end/**/*.spec.js'",
     "cover-unit": "nyc npm run test-unit",
     "cover-integration": "nyc npm run test-integration",
     "cover-e2e": "nyc npm run test-e2e",
-    "cover": "nyc --no-clean -s npm run test-unit && nyc --no-clean -s npm run test-integration && nyc report",
-    "coverage": "npm run cover && nyc report --reporter=text-lcov > coverage.lcov",
+    "cover": "nyc --no-clean -s npm run test-unit && nyc --no-clean -s npm run test-integration && nyc --no-clean -s npm run test-e2e && nyc report",
+    "coverage": "npm run build && npm run cover && nyc report --reporter=text-lcov > coverage.lcov",
     "coverage-report": "npm run coverage && codecov && rm -rf ./nyc_output && rm coverage.lcov",
     "lint": "eslint 'examples/**/*.js' 'test/**/*.js' 'src/**/*.js' && tslint --project tsconfig.json --config tslint.json"
   },
@@ -58,9 +58,6 @@
     "extension": [
       ".ts"
     ],
-    "require": [
-      "ts-node/register"
-    ],
     "all": true
   },
   "dependencies": {
@@ -68,7 +65,7 @@
     "callsites": "^2.0.0",
     "cardinal": "^1.0.0",
     "chalk": "^2.2.0",
-    "contentful-management": "^3.11.0",
+    "contentful-management": "^4.0.3",
     "didyoumean2": "^1.3.0",
     "hoek": "^4.2.0",
     "https-proxy-agent": "^2.1.0",
