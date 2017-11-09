@@ -4,7 +4,7 @@ const Bluebird = require('bluebird');
 
 const path = require('path');
 const packageVersion = require('../../package.json').version;
-const { createManagementClient } = require('../../bin/lib/contentful-client');
+const { createManagementClient } = require('../../built/bin/lib/contentful-client');
 
 const config = {
   accessToken: process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN,
@@ -20,45 +20,57 @@ const makeRequest = function (spaceId, requestConfig) {
 
 const waitForJobCompletion = Bluebird.coroutine(function * (makeRequest, spaceId, jobId) {
   while (true) {
-    const devSpaceJob = yield makeRequest(spaceId, {
-      method: 'GET',
-      url: `/dev_space_jobs/${jobId}`,
-      headers: {
-        'X-Contentful-Beta-Dev-Spaces': 1
+    try {
+      const devSpaceJob = yield makeRequest(spaceId, {
+        method: 'GET',
+        url: `/dev_space_jobs/${jobId}`,
+        headers: {
+          'X-Contentful-Beta-Dev-Spaces': 1
+        }
+      });
+
+      const status = devSpaceJob.status.value;
+
+      if (status === 'failed') {
+        throw new Error('Could not create dev space');
       }
-    });
 
-    const status = devSpaceJob.status.value;
+      if (status === 'done') {
+        return;
+      }
 
-    if (status === 'failed') {
-      throw new Error('Could not create dev space');
+      yield Bluebird.delay(1000);
+    } catch (error) {
+      console.log('Space copy job failed');
+      console.log(JSON.stringify(error));
+      throw error;
     }
-
-    if (status === 'done') {
-      return;
-    }
-
-    yield Bluebird.delay(1000);
   }
 });
 
 const createDevSpace = Bluebird.coroutine(function * (spaceId, name) {
-  const devSpaceJob = yield makeRequest(spaceId, {
-    method: 'POST',
-    url: '/dev_space_jobs',
-    headers: {
-      'X-Contentful-Beta-Dev-Spaces': 1
-    },
-    data: {
-      name
-    }
-  });
+  try {
+    const devSpaceJob = yield makeRequest(spaceId, {
+      method: 'POST',
+      url: '/dev_space_jobs',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1
+      },
+      data: {
+        name
+      }
+    });
 
-  const jobId = devSpaceJob.sys.id;
+    const jobId = devSpaceJob.sys.id;
 
-  yield waitForJobCompletion(makeRequest, spaceId, jobId);
+    yield waitForJobCompletion(makeRequest, spaceId, jobId);
 
-  return devSpaceJob.devSpace.sys.id;
+    return devSpaceJob.devSpace.sys.id;
+  } catch (error) {
+    console.log('Could not initiate dev space job');
+    console.log(JSON.stringify(error));
+    throw error;
+  }
 });
 
 function getDevContentType (spaceId, id) {

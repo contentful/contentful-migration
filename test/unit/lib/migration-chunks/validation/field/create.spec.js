@@ -3,17 +3,13 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const migrationPlan = require('../../../../../../lib/migration-chunks');
-const migrationSteps = require('../../../../../../lib/migration-steps');
-const validatePlan = require('../../../../../../lib/migration-chunks/validation');
-
-const stripCallsite = require('../../../../../helpers/strip-callsite');
-const stripCallsites = (plan) => plan.map((chunk) => chunk.map(stripCallsite));
+const validateChunks = require('../validate-chunks').default;
 
 describe('field creation plan validation', function () {
   describe('when creating a field twice in one chunk', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [];
+      const errors = yield validateChunks(function up (migration) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
           name: 'foo'
@@ -22,12 +18,7 @@ describe('field creation plan validation', function () {
         person.createField('name').type('Symbol');
         person.createField('name').type('Decimal');
         person.createField('name').type('Array');
-      });
-
-      const contentTypes = [];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -110,7 +101,8 @@ describe('field creation plan validation', function () {
 
   describe('when creating a field three times in two chunks', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [];
+      const errors = yield validateChunks(function up (migration) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
           name: 'foo'
@@ -122,12 +114,7 @@ describe('field creation plan validation', function () {
         migration.createContentType('animal').name('animal').description('An animal');
 
         person.createField('name').type('Array');
-      });
-
-      const contentTypes = [];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -189,19 +176,16 @@ describe('field creation plan validation', function () {
   });
   describe('when creating a field that already exists', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
-        const person = migration.editContentType('person');
-
-        person.createField('name').type('Symbol');
-      });
-
       const contentTypes = [{
         sys: { id: 'person' },
         fields: [{ id: 'name' }]
       }];
 
-      const chunks = stripCallsites(migrationPlan(steps, contentTypes));
-      const errors = validatePlan(chunks, contentTypes);
+      const errors = yield validateChunks(function up (migration) {
+        const person = migration.editContentType('person');
+
+        person.createField('name').type('Symbol');
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -226,16 +210,12 @@ describe('field creation plan validation', function () {
 
   describe('when creating a field on a CT that does not exist', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [];
+      const errors = yield validateChunks(function up (migration) {
         const person = migration.editContentType('person');
 
         person.createField('name');
-      });
-
-      const contentTypes = [];
-
-      const chunks = stripCallsites(migrationPlan(steps, contentTypes));
-      const errors = validatePlan(chunks, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {

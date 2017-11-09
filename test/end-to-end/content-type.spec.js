@@ -59,7 +59,7 @@ describe('apply content-type migration examples', function () {
       .run(`--space-id ${devSpaceId} ./examples/02-friendly-dog.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('Y\n')
       .expect(assert.plans.contentType.update('dog'))
-      .expect(assert.plans.field.create('goodboys', { type: '"Number"', name: '"number of times he has been called a good boy"' }))
+      .expect(assert.plans.field.create('goodboys', { type: 'Number', name: 'number of times he has been called a good boy' }))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
         const contentType = yield getDevContentType(devSpaceId, 'dog');
@@ -86,15 +86,15 @@ describe('apply content-type migration examples', function () {
       .run(`--space-id ${devSpaceId} ./examples/03-long-example.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('Y\n')
       .expect(assert.plans.contentType.create('person', { name: 'Person' }))
-      .expect(assert.plans.field.create('age', { type: '"Number"', name: '"Age"', required: true }))
-      .expect(assert.plans.field.create('fullName', { type: '"Symbol"', name: '"Full name"', required: true, localized: true }))
+      .expect(assert.plans.field.create('age', { type: 'Number', name: 'Age', required: true }))
+      .expect(assert.plans.field.create('fullName', { type: 'Symbol', name: 'Full name', required: true, localized: true }))
       .expect(assert.plans.contentType.create('animal', { name: 'Animal' }))
-      .expect(assert.plans.field.create('species', { type: '"Symbol"', name: '"The species of the animal"', required: true }))
-      .expect(assert.plans.field.create('isFurry', { type: '"Boolean"', name: '"Is this a furry animal"', required: false }))
+      .expect(assert.plans.field.create('species', { type: 'Symbol', name: 'The species of the animal', required: true }))
+      .expect(assert.plans.field.create('isFurry', { type: 'Boolean', name: 'Is this a furry animal', required: false }))
       .expect(assert.plans.contentType.update('person'))
-      .expect(assert.plans.field.create('pet', { type: '"Link"', name: '"Their pet"', linkType: '"Entry"', required: false }))
+      .expect(assert.plans.field.create('pet', { type: 'Link', name: 'Their pet', linkType: 'Entry', required: false }))
       .expect(assert.plans.contentType.update('animal'))
-      .expect(assert.plans.field.create('name', { type: '"Symbol"', name: '"The name of the animal"', required: true, localized: true }))
+      .expect(assert.plans.field.create('name', { type: 'Symbol', name: 'The name of the animal', required: true, localized: true }))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
         const contentTypePerson = yield getDevContentType(devSpaceId, 'person');

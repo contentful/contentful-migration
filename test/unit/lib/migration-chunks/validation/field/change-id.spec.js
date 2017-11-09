@@ -3,21 +3,10 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const migrationPlan = require('../../../../../../lib/migration-chunks');
-const migrationSteps = require('../../../../../../lib/migration-steps');
-const validatePlan = require('../../../../../../lib/migration-chunks/validation');
-
-const stripCallsite = require('../../../../../helpers/strip-callsite');
-const stripCallsites = (plan) => plan.map((chunk) => chunk.map(stripCallsite));
+const validateChunks = require('../validate-chunks').default;
 
 describe('chunks validation when changing field ids', () => {
   it('returns an error when referring to a field by its old id in the same migration', Bluebird.coroutine(function * () {
-    const steps = yield migrationSteps(function up (migration) {
-      const book = migration.editContentType('book');
-      book.changeFieldId('title', 'newTitle');
-      book.editField('title').name('new Title');
-    });
-    const plan = stripCallsites(migrationPlan(steps));
     const contentTypes = [{
       sys: { id: 'book' },
       fields: [{
@@ -25,8 +14,13 @@ describe('chunks validation when changing field ids', () => {
       }]
     }];
 
-    const validationErrors = validatePlan(plan, contentTypes);
-    expect(validationErrors).to.eql([
+    const errors = yield validateChunks(function up (migration) {
+      const book = migration.editContentType('book');
+      book.changeFieldId('title', 'newTitle');
+      book.editField('title').name('new Title');
+    }, contentTypes);
+
+    expect(errors).to.eql([
       {
         type: 'InvalidAction',
         message: 'You cannot edit the field "title" because its ID was changed to "newTitle" earlier in the migration.',
@@ -51,14 +45,6 @@ describe('chunks validation when changing field ids', () => {
   }));
 
   it('does not return errors when switching ids for several fields', Bluebird.coroutine(function * () {
-    const steps = yield migrationSteps(function up (migration) {
-      const book = migration.editContentType('book');
-      book.changeFieldId('title', 'newTitle');
-      migration.editContentType('movie').changeFieldId('title', 'newTitle');
-      book.editField('newTitle').name('new Title');
-      book.changeFieldId('pages', 'numberOfPages');
-    });
-    const plan = stripCallsites(migrationPlan(steps));
     const contentTypes = [{
       sys: { id: 'book' },
       fields: [{
@@ -73,20 +59,18 @@ describe('chunks validation when changing field ids', () => {
       }]
     }];
 
-    const validationErrors = validatePlan(plan, contentTypes);
-    expect(validationErrors).to.eql([]);
+    const errors = yield validateChunks(function up (migration) {
+      const book = migration.editContentType('book');
+      book.changeFieldId('title', 'newTitle');
+      migration.editContentType('movie').changeFieldId('title', 'newTitle');
+      book.editField('newTitle').name('new Title');
+      book.changeFieldId('pages', 'numberOfPages');
+    }, contentTypes);
+
+    expect(errors).to.eql([]);
   }));
 
   it('does not return errors when switching the id for a field and then creating a field with the same id later on', Bluebird.coroutine(function * () {
-    const steps = yield migrationSteps(function up (migration) {
-      const book = migration.editContentType('book');
-      book.changeFieldId('title', 'newTitle');
-      book.createField('title', {
-        name: 'titulo',
-        type: 'Symbol'
-      });
-    });
-    const plan = stripCallsites(migrationPlan(steps));
     const contentTypes = [{
       sys: { id: 'book' },
       fields: [{
@@ -94,16 +78,19 @@ describe('chunks validation when changing field ids', () => {
       }]
     }];
 
-    const validationErrors = validatePlan(plan, contentTypes);
-    expect(validationErrors).to.eql([]);
+    const errors = yield validateChunks(function up (migration) {
+      const book = migration.editContentType('book');
+      book.changeFieldId('title', 'newTitle');
+      book.createField('title', {
+        name: 'titulo',
+        type: 'Symbol'
+      });
+    }, contentTypes);
+
+    expect(errors).to.eql([]);
   }));
 
   it('does return an error when switching the id of a field to an already existing one', Bluebird.coroutine(function * () {
-    const steps = yield migrationSteps(function up (migration) {
-      const book = migration.editContentType('book');
-      book.changeFieldId('title', 'pages');
-    });
-    const plan = stripCallsites(migrationPlan(steps));
     const contentTypes = [{
       sys: { id: 'book' },
       fields: [{
@@ -113,8 +100,12 @@ describe('chunks validation when changing field ids', () => {
       }]
     }];
 
-    const validationErrors = validatePlan(plan, contentTypes);
-    expect(validationErrors).to.eql([
+    const errors = yield validateChunks(function up (migration) {
+      const book = migration.editContentType('book');
+      book.changeFieldId('title', 'pages');
+    }, contentTypes);
+
+    expect(errors).to.eql([
       {
         type: 'InvalidAction',
         message: 'Cannot rename field "title" to "pages" because a field with this ID already exists on content type "book".',
@@ -139,13 +130,6 @@ describe('chunks validation when changing field ids', () => {
   }));
 
   it('does return an error when switching the id of 2 fields to the same id', Bluebird.coroutine(function * () {
-    const steps = yield migrationSteps(function up (migration) {
-      const book = migration.editContentType('book');
-      book.changeFieldId('title', 'newTitle');
-      book.changeFieldId('pages', 'title');
-      book.changeFieldId('someThingElse', 'title');
-    });
-    const plan = stripCallsites(migrationPlan(steps));
     const contentTypes = [{
       sys: { id: 'book' },
       fields: [{
@@ -157,8 +141,14 @@ describe('chunks validation when changing field ids', () => {
       }]
     }];
 
-    const validationErrors = validatePlan(plan, contentTypes);
-    expect(validationErrors).to.eql([
+    const errors = yield validateChunks(function up (migration) {
+      const book = migration.editContentType('book');
+      book.changeFieldId('title', 'newTitle');
+      book.changeFieldId('pages', 'title');
+      book.changeFieldId('someThingElse', 'title');
+    }, contentTypes);
+
+    expect(errors).to.eql([
       {
         type: 'InvalidAction',
         message: 'Cannot rename field "someThingElse" to "title" because a field with this ID already exists on content type "book".',
@@ -183,11 +173,6 @@ describe('chunks validation when changing field ids', () => {
   }));
 
   it('returns an error when setting a new id but it is the same as the old', Bluebird.coroutine(function * () {
-    const steps = yield migrationSteps(function up (migration) {
-      const book = migration.editContentType('book');
-      book.changeFieldId('title', 'title');
-    });
-    const plan = stripCallsites(migrationPlan(steps));
     const contentTypes = [{
       sys: { id: 'book' },
       fields: [{
@@ -195,8 +180,12 @@ describe('chunks validation when changing field ids', () => {
       }]
     }];
 
-    const validationErrors = validatePlan(plan, contentTypes);
-    expect(validationErrors).to.eql([
+    const errors = yield validateChunks(function up (migration) {
+      const book = migration.editContentType('book');
+      book.changeFieldId('title', 'title');
+    }, contentTypes);
+
+    expect(errors).to.eql([
       {
         type: 'InvalidAction',
         message: 'The new ID for the field "title" contains the same value as the existing ID. The new ID must be different from the old.',
@@ -221,12 +210,6 @@ describe('chunks validation when changing field ids', () => {
   }));
 
   it('returns an error when changing the ID of a field more than once', Bluebird.coroutine(function * () {
-    const steps = yield migrationSteps(function up (migration) {
-      const school = migration.editContentType('student');
-      school.changeFieldId('school', 'primarySchool');
-      school.changeFieldId('primarySchool', 'preSchool');
-    });
-    const plan = stripCallsites(migrationPlan(steps));
     const contentTypes = [{
       sys: { id: 'student' },
       fields: [{
@@ -234,9 +217,13 @@ describe('chunks validation when changing field ids', () => {
       }]
     }];
 
-    const validationErrors = validatePlan(plan, contentTypes);
+    const errors = yield validateChunks(function up (migration) {
+      const school = migration.editContentType('student');
+      school.changeFieldId('school', 'primarySchool');
+      school.changeFieldId('primarySchool', 'preSchool');
+    }, contentTypes);
 
-    expect(validationErrors).to.eql([
+    expect(errors).to.eql([
       {
         type: 'InvalidAction',
         message: 'The ID of "primarySchool" was already changed in this migration. You cannot change the ID of a field more than once.',
@@ -261,11 +248,6 @@ describe('chunks validation when changing field ids', () => {
   }));
 
   it('when changing the ID of a field but that field does not exist', Bluebird.coroutine(function * () {
-    const steps = yield migrationSteps(function up (migration) {
-      const school = migration.editContentType('student');
-      school.changeFieldId('primarySchool', 'preSchool');
-    });
-    const plan = stripCallsites(migrationPlan(steps));
     const contentTypes = [{
       sys: { id: 'student' },
       fields: [{
@@ -273,9 +255,12 @@ describe('chunks validation when changing field ids', () => {
       }]
     }];
 
-    const validationErrors = validatePlan(plan, contentTypes);
+    const errors = yield validateChunks(function up (migration) {
+      const school = migration.editContentType('student');
+      school.changeFieldId('primarySchool', 'preSchool');
+    }, contentTypes);
 
-    expect(validationErrors).to.eql([
+    expect(errors).to.eql([
       {
         type: 'InvalidAction',
         message: 'You cannot edit field "primarySchool" because it does not exist.',
