@@ -1,5 +1,7 @@
 import Intent from './base-intent'
 import { FieldMoveAction } from '../action/field-move'
+import { PlanMessage } from '../interfaces/plan-message'
+import chalk from 'chalk'
 
 export default class FieldMoveIntent extends Intent {
   isFieldMove () {
@@ -40,5 +42,34 @@ export default class FieldMoveIntent extends Intent {
       this.getDirection(),
       this.getPivotId()
     )]
+  }
+
+  toPlanMessage (): PlanMessage {
+    const direction = this.getDirection()
+    const pivot = this.getPivotId()
+    let humanizedMovement
+
+    if (direction === 'toTheTop') {
+      humanizedMovement = `to the first position`
+    }
+
+    if (direction === 'toTheBottom') {
+      humanizedMovement = `to the last position`
+    }
+
+    if (direction === 'afterField') {
+      humanizedMovement = chalk`after field {yellow ${pivot}}`
+    }
+
+    if (direction === 'beforeField') {
+      humanizedMovement = chalk`before field {yellow ${pivot}}`
+    }
+
+    return {
+      heading: chalk`Update Content Type {bold.yellow ${this.getContentTypeId()}}`,
+      sections: [{
+        heading: chalk`{bold Move field {yellow ${this.getFieldId()}} ${humanizedMovement}}`
+      }]
+    }
   }
 }

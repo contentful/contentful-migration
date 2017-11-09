@@ -1,5 +1,8 @@
 import Intent from './base-intent'
 import { FieldUpdateAction } from '../action/field-update'
+import { PlanMessage } from '../interfaces/plan-message'
+import chalk from 'chalk'
+import { entries } from 'lodash'
 
 export default class FieldUpdateIntent extends Intent {
   isFieldUpdate () {
@@ -29,5 +32,16 @@ export default class FieldUpdateIntent extends Intent {
         this.payload.props
       )
     ]
+  }
+
+  toPlanMessage (): PlanMessage {
+    const details = entries(this.payload.props).map(([key, value]) => {
+      return chalk`{italic ${key}}: ${JSON.stringify(value)}`
+    })
+
+    return {
+      heading: chalk`Update Content Type {bold.yellow ${this.getContentTypeId()}}`,
+      details
+    }
   }
 }

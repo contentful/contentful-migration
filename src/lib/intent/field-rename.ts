@@ -4,6 +4,8 @@ import { EntryFieldRenameAction } from '../action/entry-field-rename'
 import { ContentTypeSaveAction } from '../action/content-type-save'
 import { ContentTypePublishAction } from '../action/content-type-publish'
 import { FieldUpdateAction } from '../action/field-update'
+import { PlanMessage } from '../interfaces/plan-message'
+import chalk from 'chalk'
 
 export default class FieldRenameIntent extends Intent {
   isFieldRename () {
@@ -55,5 +57,14 @@ export default class FieldRenameIntent extends Intent {
         { newId: this.getNewId() }
       )
     ]
+  }
+
+  toPlanMessage (): PlanMessage {
+    return {
+      heading: chalk`Update Content Type {bold.yellow ${this.getContentTypeId()}}`,
+      sections: [{
+        heading: chalk`Rename field {yellow ${this.getFieldId()}} to {yellow ${this.getNewId()}}`
+      }]
+    }
   }
 }

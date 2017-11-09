@@ -1,6 +1,7 @@
 import { Intent as IntentInterface } from '../interfaces/intent'
 import { RawStep, RawStepMeta, RawStepPayload } from '../interfaces/raw-step'
 import { APIAction, EntityAction } from '../action/action'
+import { PlanMessage } from '../interfaces/plan-message'
 
 export default abstract class Intent implements IntentInterface {
   protected type: string
@@ -108,8 +109,5 @@ export default abstract class Intent implements IntentInterface {
   }
 
   abstract toActions (): (APIAction|EntityAction)[]
-
-  getDirection? (): string
-
-  getPivotId? (): string
+  abstract toPlanMessage (): PlanMessage
 }

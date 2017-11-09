@@ -1,6 +1,8 @@
 import Intent from './base-intent'
 import { ContentTypeUnpublishAction } from '../action/content-type-unpublish'
 import { ContentTypeDeleteAction } from '../action/content-type-delete'
+import chalk from 'chalk'
+import { PlanMessage } from '../interfaces/plan-message'
 
 export default class ContentTypeDeleteIntent extends Intent {
   isContentTypeDelete () {
@@ -28,5 +30,11 @@ export default class ContentTypeDeleteIntent extends Intent {
       new ContentTypeUnpublishAction(this.getContentTypeId()),
       new ContentTypeDeleteAction(this.getContentTypeId())
     ]
+  }
+
+  toPlanMessage (): PlanMessage {
+    return {
+      heading: chalk`Delete Content Type {bold.yellow ${this.getContentTypeId()}}`
+    }
   }
 }

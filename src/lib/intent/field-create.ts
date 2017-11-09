@@ -1,5 +1,7 @@
 import Intent from './base-intent'
 import { FieldCreateAction } from '../action/field-create'
+import { PlanMessage } from '../interfaces/plan-message'
+import chalk from 'chalk'
 
 export default class FieldCreateIntent extends Intent {
   isFieldCreate () {
@@ -25,5 +27,14 @@ export default class FieldCreateIntent extends Intent {
     return [
       new FieldCreateAction(this.getContentTypeId(), this.payload.fieldId)
     ]
+  }
+
+  toPlanMessage (): PlanMessage {
+    return {
+      heading: chalk`Update Content Type {bold.yellow ${this.getContentTypeId()}}`,
+      sections: [{
+        heading: chalk`Create field {yellow ${this.getFieldId()}}`
+      }]
+    }
   }
 }

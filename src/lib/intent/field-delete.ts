@@ -3,6 +3,8 @@ import { FieldUpdateAction } from '../action/field-update'
 import { ContentTypeSaveAction } from '../action/content-type-save'
 import { ContentTypePublishAction } from '../action/content-type-publish'
 import { EntryFieldPurgeAction } from '../action/entry-field-purge'
+import { PlanMessage } from '../interfaces/plan-message'
+import chalk from 'chalk'
 
 export default class FieldDeleteIntent extends Intent {
   isFieldDelete () {
@@ -38,5 +40,14 @@ export default class FieldDeleteIntent extends Intent {
         this.payload.fieldId
       )
     ]
+  }
+
+  toPlanMessage (): PlanMessage {
+    return {
+      heading: chalk`Update Content Type {bold.yellow ${this.getContentTypeId()}}`,
+      sections: [{
+        heading: chalk`Delete field {yellow ${this.getFieldId()}}`
+      }]
+    }
   }
 }

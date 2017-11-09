@@ -1,5 +1,7 @@
 import Intent from './base-intent'
 import { ContentTypeCreateAction } from '../action/content-type-create'
+import chalk from 'chalk'
+import { PlanMessage } from '../interfaces/plan-message'
 
 export default class ContentTypeCreateIntent extends Intent {
   isContentTypeCreate () {
@@ -18,5 +20,11 @@ export default class ContentTypeCreateIntent extends Intent {
     return [
       new ContentTypeCreateAction(this.getContentTypeId())
     ]
+  }
+
+  toPlanMessage (): PlanMessage {
+    return {
+      heading: chalk`Create Content Type {bold.yellow ${this.getContentTypeId()}}`
+    }
   }
 }

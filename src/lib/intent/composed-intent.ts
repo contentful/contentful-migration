@@ -1,6 +1,7 @@
 import Intent from '../interfaces/intent'
 import { RawStep } from '../interfaces/raw-step'
 import { flatten } from 'lodash'
+import { PlanMessage } from '../interfaces/plan-message'
 
 export default class ComposedIntent implements Intent {
   private contentTypeId: string
@@ -87,5 +88,26 @@ export default class ComposedIntent implements Intent {
 
   toActions () {
     return flatten(this.intents.map((intent) => intent.toActions()))
+  }
+
+  toPlanMessage (): PlanMessage {
+    const [firstIntent] = this.intents
+
+    // TODO: show more details about entry transforms
+    if (firstIntent.isContentTransform()) {
+      const singleHeading = firstIntent.toPlanMessage().heading
+      const transformCount = this.intents.length
+
+      const combinedHeading = `${singleHeading} (${transformCount}x)`
+
+      return {
+        heading: combinedHeading
+      }
+    }
+
+    const mainHeading = firstIntent.toPlanMessage().heading
+
+    const contentTypeUpdates = this.intents.filter((intent) => intent.isContentTypeUpdate())
+    const fieldCreates = this.intents.filter((intent) => intent.isFieldCreate())
   }
 }

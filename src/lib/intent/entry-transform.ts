@@ -1,5 +1,7 @@
 import Intent from './base-intent'
 import { EntryTransformAction } from '../action/entry-transform'
+import { PlanMessage } from '../interfaces/plan-message'
+import chalk from 'chalk'
 
 export default class EntryTransformIntent extends Intent {
   isContentTransform () {
@@ -24,5 +26,11 @@ export default class EntryTransformIntent extends Intent {
         this.payload.transformation.transform
       )
     ]
+  }
+
+  toPlanMessage (): PlanMessage {
+    return {
+      heading: chalk`Transform entries for {bold.yellow ${this.getContentTypeId()}}`
+    }
   }
 }

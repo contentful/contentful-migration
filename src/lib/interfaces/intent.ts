@@ -1,5 +1,6 @@
 import { APIAction, EntityAction } from '../action/action'
 import RawStep from './raw-step'
+import { PlanMessage } from './plan-message'
 
 interface Intent {
   toActions (): (APIAction|EntityAction)[]
@@ -28,8 +29,7 @@ interface Intent {
   groupsWith (other: Intent): boolean
   endsGroup (): boolean
 
-  getDirection? (): string
-  getPivotId? (): string
+  toPlanMessage (): PlanMessage
 }
 
 export {
