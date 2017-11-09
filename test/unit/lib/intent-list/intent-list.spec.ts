@@ -64,8 +64,6 @@ describe('Intent List', function () {
 
     const compressedIntent = compressedList.getIntents()[0] as ComposedIntent
 
-    console.dir(compressedList.getIntents())
-
     expect(compressedList.getIntents().length).to.equal(1)
     expect(compressedIntent.getIntents().length).to.equal(9)
   })
