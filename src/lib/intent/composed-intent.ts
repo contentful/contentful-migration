@@ -1,7 +1,7 @@
 import Intent from '../interfaces/intent'
 import { RawStep } from '../interfaces/raw-step'
-import { PlanMessage } from '../interfaces/plan-message'
-import { difference, groupBy, flatten } from 'lodash'
+import { PlanMessage, Section } from '../interfaces/plan-message'
+import { difference, groupBy, flatten, entries } from 'lodash'
 
 export default class ComposedIntent implements Intent {
   private contentTypeId: string
@@ -114,7 +114,6 @@ export default class ComposedIntent implements Intent {
     const createdFieldIds = fieldCreates.map((createIntent) => createIntent.getFieldId())
     const fieldUpdates = this.intents.filter((intent) => intent.isFieldUpdate())
     const fieldMoves = this.intents.filter((intent) => intent.isFieldMove())
-    const fieldRenames = this.intents.filter((intent) => intent.isFieldRename())
 
     const createdFieldUpdates = fieldUpdates.filter((updateIntent) => createdFieldIds.includes(updateIntent.getFieldId()))
     const onlyFieldUpdates = difference(fieldUpdates, createdFieldUpdates)
@@ -124,21 +123,34 @@ export default class ComposedIntent implements Intent {
 
     const topLevelDetails = flatten(contentTypeUpdates.map((updateIntent) => updateIntent.toPlanMessage().details))
 
-    const createSections = []
+    let createSections = []
 
-    for (const fieldId of createdFieldIds) {
-      const createIntent = fieldCreates.find((createIntent) => createIntent.getFieldId() === fieldId)
-      const heading = createIntent.toPlanMessage().sections[0].heading
-      let details = []
+    for (const createIntent of fieldCreates) {
+      const fieldId = createIntent.getFieldId()
+      // const belongsToField = this.intents.filter((intent) => intent.getFieldId() === fieldId && intent !== createIntent)
+      const [createSection] = createIntent.toPlanMessage().sections
+      const heading = createSection.heading
       const updateIntents = createdFieldUpdatesByField[fieldId]
-      for (const updateIntent of updateIntents) {
-        const message = updateIntent.toPlanMessage()
-        details = details.concat(message.details)
+      const allFieldUpdateSections = flatten(updateIntents.map((fieldIntent) => fieldIntent.toPlanMessage().sections))
+      const mergedSection = mergeSections(allFieldUpdateSections)
+      const nextCreateSection = {
+        ...mergedSection,
+        heading
       }
-      createSections.push({
-        heading,
-        details
-      })
+
+      createSections.push(nextCreateSection)
+    }
+
+    for (const [field, updateIntents] of entries(onlyFieldUpdatesByField)) {
+      const allSections = flatten(updateIntents.map((intent) => intent.toPlanMessage().sections))
+      const nextUpdateSection = mergeSections(allSections)
+
+      createSections.push(nextUpdateSection)
+    }
+
+    for (const moveIntent of fieldMoves) {
+      const planMessage = moveIntent.toPlanMessage()
+      createSections = createSections.concat(planMessage.sections)
     }
 
     return {
@@ -147,4 +159,27 @@ export default class ComposedIntent implements Intent {
       sections: createSections
     }
   }
+}
+
+function mergeSections (sections: Section[]): Section {
+  const sameSections = groupBy(sections, 'heading')
+  const mergedSections: Section[] = []
+
+  for (const [heading, sections] of entries(sameSections)) {
+    const details = flatten(sections.map((section) => section.details || []))
+    const hasDetails = details.length > 0
+    const section: Section = { heading }
+
+    if (hasDetails) {
+      section.details = details
+    }
+
+    mergedSections.push(section)
+  }
+
+  if (mergedSections.length > 1) {
+    throw new Error('mergeSections expect to receive sections from same type (i.e. same heading)')
+  }
+
+  return mergedSections[0]
 }

@@ -42,7 +42,7 @@ export default class FieldUpdateIntent extends Intent {
     return {
       heading: chalk`Update Content Type {bold.yellow ${this.getContentTypeId()}}`,
       sections: [{
-        heading: chalk`Update Field {bold.yellow ${this.getFieldId()}}`,
+        heading: chalk`Update field {yellow ${this.getFieldId()}}`,
         details
       }]
     }

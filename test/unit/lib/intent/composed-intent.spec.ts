@@ -18,7 +18,7 @@ const composedIntent = async function (migration): Promise<ComposedIntent> {
   return list.compressed().getIntents()[0] as ComposedIntent
 }
 
-describe.only('ComposedIntent', function () {
+describe('ComposedIntent', function () {
   describe('making a composed intent', function () {
     it('creates the right plan message', async function () {
       const intent = await composedIntent((migration) => {
@@ -76,8 +76,6 @@ describe.only('ComposedIntent', function () {
           }
         ]
       })
-
-      console.log(message)
     })
   })
 })
