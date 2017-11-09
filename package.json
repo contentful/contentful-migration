@@ -23,7 +23,7 @@
   },
   "scripts": {
     "build": "tsc -p .",
-    "test": "npm run build && npm run test-unit && npm run test-integration && npm run lint",
+    "test": "npm run build && npm run test-unit && npm run test-integration && npm run test-e2e && npm run lint",
     "test-watch": "npm run test-unit -- --watch",
     "test-unit": "NODE_ENV=test mocha --compilers ts-node/register 'test/unit/**/*.spec.js' 'test/unit/**/*.spec.ts'",
     "test-integration": "NODE_ENV=test mocha --require test/integration/setup.js 'test/integration/**/*.spec.js'",

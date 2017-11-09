@@ -66,7 +66,8 @@ describe('ComposedIntent', function () {
             ]
           },
           {
-            heading: chalk`{bold Move field {yellow description} to the first position}`
+            heading: chalk`{bold Move field {yellow description} to the first position}`,
+            details: []
           }
         ]
       })
