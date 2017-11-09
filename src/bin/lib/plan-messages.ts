@@ -30,7 +30,7 @@ const renderPackage = (pkg: Package, errors?: ValidationError[]) => {
   const fieldIntents = packageIntents.filter((i) => i.isAboutField())
   const fieldIntentsByField = _.groupBy(fieldIntents, (i) => i.getFieldId())
 
-  for (const fieldChanges of Object.values(fieldIntentsByField)) {
+  for (const fieldChanges of _.values(fieldIntentsByField)) {
     const firstChange = fieldChanges[0]
 
     if (firstChange.isFieldCreate()) {
