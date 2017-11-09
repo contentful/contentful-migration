@@ -1,7 +1,7 @@
 import Intent from '../interfaces/intent'
 import { RawStep } from '../interfaces/raw-step'
-import { flatten } from 'lodash'
 import { PlanMessage } from '../interfaces/plan-message'
+import { difference, groupBy, flatten } from 'lodash'
 
 export default class ComposedIntent implements Intent {
   private contentTypeId: string
@@ -108,6 +108,43 @@ export default class ComposedIntent implements Intent {
     const mainHeading = firstIntent.toPlanMessage().heading
 
     const contentTypeUpdates = this.intents.filter((intent) => intent.isContentTypeUpdate())
+
     const fieldCreates = this.intents.filter((intent) => intent.isFieldCreate())
+
+    const createdFieldIds = fieldCreates.map((createIntent) => createIntent.getFieldId())
+    const fieldUpdates = this.intents.filter((intent) => intent.isFieldUpdate())
+    const fieldMoves = this.intents.filter((intent) => intent.isFieldMove())
+    const fieldRenames = this.intents.filter((intent) => intent.isFieldRename())
+
+    const createdFieldUpdates = fieldUpdates.filter((updateIntent) => createdFieldIds.includes(updateIntent.getFieldId()))
+    const onlyFieldUpdates = difference(fieldUpdates, createdFieldUpdates)
+
+    const onlyFieldUpdatesByField = groupBy(onlyFieldUpdates, (intent) => intent.getFieldId())
+    const createdFieldUpdatesByField = groupBy(createdFieldUpdates, (intent) => intent.getFieldId())
+
+    const topLevelDetails = flatten(contentTypeUpdates.map((updateIntent) => updateIntent.toPlanMessage().details))
+
+    const createSections = []
+
+    for (const fieldId of createdFieldIds) {
+      const createIntent = fieldCreates.find((createIntent) => createIntent.getFieldId() === fieldId)
+      const heading = createIntent.toPlanMessage().sections[0].heading
+      let details = []
+      const updateIntents = createdFieldUpdatesByField[fieldId]
+      for (const updateIntent of updateIntents) {
+        const message = updateIntent.toPlanMessage()
+        details = details.concat(message.details)
+      }
+      createSections.push({
+        heading,
+        details
+      })
+    }
+
+    return {
+      heading: mainHeading,
+      details: topLevelDetails,
+      sections: createSections
+    }
   }
 }

@@ -1,10 +1,10 @@
+import FieldMoveIntent from '../intent/field-move'
 import * as Joi from 'joi'
 import * as didYouMean from 'didyoumean2'
 import * as kindOf from 'kind-of'
 
 import IntentValidator from '../interfaces/intent-validator'
 import ValidationError from '../interfaces/errors'
-import Intent from '../interfaces/intent'
 
 const validationErrors = {
   INVALID_MOVEMENT_TYPE: (typeName) => {
@@ -44,7 +44,7 @@ class FieldMovementStepValidator implements IntentValidator {
     }
   }
 
-  validate (intent: Intent): ValidationError[] {
+  validate (intent: FieldMoveIntent): ValidationError[] {
     const validationErrors = this.validationErrors
     const fieldMovementValidations = this.schema
     const validMoves = Object.keys(fieldMovementValidations)
