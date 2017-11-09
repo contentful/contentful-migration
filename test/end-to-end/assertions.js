@@ -221,5 +221,113 @@ module.exports = {
         expect(withoutAnsiCodes).to.include(`SyntaxError: ${message}`);
       };
     }
+  },
+  validations: {
+    contentType: {
+      requiredProperty: function (path) {
+        return result => {
+          expect(result.code).to.eql(1);
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Error: The property "${path}" is required on a content type.`);
+        };
+      },
+      nonExistentDisplayField: function (displayField, ctId) {
+        return result => {
+          expect(result.code).to.eql(1);
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Error: Cannot set "${displayField}" as displayField on content type "${ctId}" because it does not exist`);
+        };
+      },
+      deleteDisplayField: function (displayField, ctId) {
+        return result => {
+          expect(result.code).to.eql(1);
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Error: Cannot delete field "${displayField}" on content type "${ctId}" because it is set as the display field`);
+        };
+      }
+    },
+    field: {
+      requiredProperty: function (prop, id) {
+        return result => {
+          expect(result.code).to.eql(1);
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Error: The property "${prop}" is required on the field "${id}".`);
+        };
+      },
+      propertyOneOf: function (prop, id) {
+        return result => {
+          const oneOf = '["Symbol", "Text", "Integer", "Number", "Date", "Boolean", "Object", "Link", "Array", "Location"]';
+          expect(result.code).to.eql(1);
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Error: The property "${prop}" on the field "${id}" must be one of ${oneOf}.`);
+        };
+      },
+      noDeleteWithoutOmit: function (fieldId, ctId) {
+        return result => {
+          expect(result.code).to.eql(1);
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Error: Cannot set "deleted" to "true" on field "${fieldId}" on content type "${ctId}". It needs to be omitted first. Consider using "deleteField".`);
+        };
+      },
+      noTypeChange: function (fieldId, ctId, parentFieldType, fieldType) {
+        return result => {
+          expect(result.code).to.eql(1);
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Error: Cannot change the type of field "${fieldId}" on content type "${ctId}" from "${parentFieldType}" to "${fieldType}". Field types cannot be changed.`);
+        };
+      },
+      idMustMatchSchema: function (newId, fieldId) {
+        return result => {
+          expect(result.code).to.eql(1);
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Error: The new ID "${newId}" for the field "${fieldId}" does not match the requirements. IDs must be between 1 and 64 characters long, start with a letter, and contain only alphanumeric characters as well as underscores.`);
+        };
+      }
+    },
+    validations: {
+      duplicatedValidation: function (duplicatedValue) {
+        return result => {
+          expect(result.code).to.eql(1);
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Error: A field can't have duplicates in the validations array. Duplicate: "${JSON.stringify(duplicatedValue)}"`);
+        };
+      },
+      invalidValidationProperty: function (propName) {
+        return result => {
+          expect(result.code).to.eql(1);
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Error: A field can't have "${propName}" as a validation.`);
+        };
+      },
+      invalidValidationParameter: function (propName, expectedType, actualType) {
+        return result => {
+          expect(result.code).to.eql(1);
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Error: "${propName}" validation expected to be "${expectedType}", but got "${actualType}"`);
+        };
+      }
+    }
   }
 };
