@@ -129,7 +129,6 @@ export default class ComposedIntent implements Intent {
 
     for (const createIntent of fieldCreates) {
       const fieldId = createIntent.getFieldId()
-      // const belongsToField = this.intents.filter((intent) => intent.getFieldId() === fieldId && intent !== createIntent)
       const [createSection] = createIntent.toPlanMessage().sections
       const heading = createSection.heading
       const updateIntents = createdFieldUpdatesByField[fieldId]
