@@ -37,7 +37,7 @@ describe('apply field migration examples', function () {
       .run(`--space-id ${devSpaceId} ./examples/06-delete-field.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
       .expect(assert.plans.contentType.create('dog', { name: 'Angry dog' }))
-      .expect(assert.plans.field.update('postmenBites', { omitted: true, deleted: true }))
+      .expect(assert.plans.field.delete('postmenBites'))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
         const contentType = yield getDevContentType(devSpaceId, 'dog');
@@ -60,8 +60,8 @@ describe('apply field migration examples', function () {
     cli()
       .run(`--space-id ${devSpaceId} ./examples/change-field-id.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
-      .expect(assert.plans.contentType.update('dog', { newId: '"aDifferentId"' }))
-      .expect(assert.plans.field.update('aDifferentId', { name: '"ID switching is fun!"' }))
+      .expect(assert.plans.field.rename('goodboys', 'aDifferentId'))
+      .expect(assert.plans.field.update('aDifferentId', { name: 'ID switching is fun!' }))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
         const contentType = yield getDevContentType(devSpaceId, 'dog');
@@ -82,7 +82,7 @@ describe('apply field migration examples', function () {
       .run(`--space-id ${devSpaceId} ./examples/07-display-field.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
       .expect(assert.plans.contentType.create('food', { name: 'foooood', displayField: 'taste' }))
-      .expect(assert.plans.field.create('taste', { type: '"Symbol"', name: '"what it tastes like"' }))
+      .expect(assert.plans.field.create('taste', { type: 'Symbol', name: 'what it tastes like' }))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
         const contentType = yield getDevContentType(devSpaceId, 'food');
@@ -105,14 +105,14 @@ describe('apply field migration examples', function () {
       .run(`--space-id ${devSpaceId} ./examples/08-move-field.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
       .expect(assert.plans.contentType.update('food'))
-      .expect(assert.plans.field.create('calories', { type: '"Number"', name: '"How many calories does it have?"' }))
+      .expect(assert.plans.field.create('calories', { type: 'Number', name: 'How many calories does it have?' }))
       .expect(assert.plans.field.move('top', 'calories'))
-      .expect(assert.plans.field.create('sugar', { type: '"Number"', name: '"Amount of sugar"' }))
+      .expect(assert.plans.field.create('sugar', { type: 'Number', name: 'Amount of sugar' }))
       .expect(assert.plans.field.move('bottom', 'sugar'))
-      .expect(assert.plans.field.create('vegan', { type: '"Boolean"', name: '"Vegan friendly"' }))
-      .expect(assert.plans.field.create('producer', { type: '"Symbol"', name: '"Food producer"' }))
+      .expect(assert.plans.field.create('vegan', { type: 'Boolean', name: 'Vegan friendly' }))
+      .expect(assert.plans.field.create('producer', { type: 'Symbol', name: 'Food producer' }))
       .expect(assert.plans.field.move('before', 'producer', 'vegan'))
-      .expect(assert.plans.field.create('gmo', { type: '"Boolean"', name: '"Genetically modified food"' }))
+      .expect(assert.plans.field.create('gmo', { type: 'Boolean', name: 'Genetically modified food' }))
       .expect(assert.plans.field.move('after', 'gmo', 'vegan'))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {

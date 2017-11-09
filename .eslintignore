@@ -1,2 +1,0 @@
-# Ignore syntax incorrect files used in e2e tests
-examples/**/*-syntax-*.js

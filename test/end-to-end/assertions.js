@@ -74,7 +74,7 @@ module.exports = {
           expect(withoutAnsiCodes).to.include(`Create Content Type ${id}`);
           if (params != null) {
             Object.keys(params).forEach((param) => {
-              expect(withoutAnsiCodes).to.include(`- ${param}: ${params[param]}`);
+              expect(withoutAnsiCodes).to.include(`- ${param}: ${JSON.stringify(params[param])}`);
             });
           }
         };
@@ -87,7 +87,7 @@ module.exports = {
           expect(withoutAnsiCodes).to.include(`Update Content Type ${id}`);
           if (params != null) {
             return Object.keys(params).forEach((param) => {
-              expect(withoutAnsiCodes).to.include(`- ${param}: ${params[param]}`);
+              expect(withoutAnsiCodes).to.include(`- ${param}: ${JSON.stringify(params[param])}`);
             });
           }
         };
@@ -111,7 +111,7 @@ module.exports = {
           expect(withoutAnsiCodes).to.include(`Create field ${id}`);
           if (params != null) {
             Object.keys(params).forEach((param) => {
-              expect(withoutAnsiCodes).to.include(`- ${param}: ${params[param]}`);
+              expect(withoutAnsiCodes).to.include(`- ${param}: ${JSON.stringify(params[param])}`);
             });
           }
         };
@@ -124,7 +124,7 @@ module.exports = {
           expect(withoutAnsiCodes).to.include(`Update field ${id}`);
           if (params != null) {
             return Object.keys(params).forEach((param) => {
-              expect(withoutAnsiCodes).to.include(`- ${param}: ${params[param]}`);
+              expect(withoutAnsiCodes).to.include(`- ${param}: ${JSON.stringify(params[param])}`);
             });
           }
         };
@@ -141,6 +141,23 @@ module.exports = {
           } else {
             expect(withoutAnsiCodes).to.include(`Move field ${first} ${position} field ${second}`);
           }
+        };
+      },
+      rename: function (id, newId) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Rename field ${id} to ${newId}`);
+        };
+      },
+      delete: function (id) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+
+          expect(withoutAnsiCodes).to.include(`Delete field ${id}`);
         };
       }
     },
@@ -197,28 +214,6 @@ module.exports = {
 
         const withoutAnsiCodes = stripAnsi(result.stderr);
         expect(withoutAnsiCodes).to.include(`Please provide the file containing the migration script.`);
-      };
-    }
-  },
-  payload: {
-    notDefined: function (method) {
-      return result => {
-        expect(result.code).to.eql(1);
-        expect(result.stdout).not.to.be.empty();
-
-        const withoutAnsiCodes = stripAnsi(result.stdout);
-        expect(withoutAnsiCodes).to.include(`${method} is not defined`);
-      };
-    },
-    syntaxError: function (script, line, message) {
-      return result => {
-        expect(result.code).to.eql(0);
-        expect(result.stdout).not.to.be.empty();
-
-        const withoutAnsiCodes = stripAnsi(result.stdout);
-        expect(withoutAnsiCodes).to.include(`script could not be parsed, as it seems to contain syntax errors.`);
-        expect(withoutAnsiCodes).to.include(`${script}:${line}`);
-        expect(withoutAnsiCodes).to.include(`SyntaxError: ${message}`);
       };
     }
   }
