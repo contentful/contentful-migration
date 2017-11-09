@@ -8,9 +8,10 @@ import { PayloadValidationError, InvalidActionError } from '../interfaces/errors
 import DisplayFieldValidator from './validator/display-field'
 import SchemaValidator from './validator/schema/index'
 import TypeChangeValidator from './validator/type-change'
+import { Intent } from '../interfaces/intent'
 
 interface RequestBatch {
-  id: string
+  intent: Intent
   requests: Request[]
   errors: (PayloadValidationError | InvalidActionError)[]
 }
@@ -91,7 +92,7 @@ class OfflineAPI {
   private isRecordingRequests: boolean = false
   private currentRequestsRecorded: Request[] = null
   private currentErrorsRecorded: (PayloadValidationError | InvalidActionError)[] = null
-  private batchId: string = null
+  private intent: Intent = null
   private requestBatches: RequestBatch[] = []
   private contentTypeValidators: ContentTypePayloadValidator[] = []
 
@@ -283,14 +284,14 @@ class OfflineAPI {
     return entries
   }
 
-  async startRecordingRequests (id: string) {
+  async startRecordingRequests (intent: Intent) {
     if (this.isRecordingRequests) {
       throw new Error('You need to stop recording before starting again')
     }
     this.isRecordingRequests = true
     this.currentRequestsRecorded = []
     this.currentErrorsRecorded = []
-    this.batchId = id
+    this.intent = intent
   }
 
   // Returns all requests that needed to happen
@@ -300,7 +301,7 @@ class OfflineAPI {
       throw new Error('You need to start recording before stopping')
     }
     const batch: RequestBatch = {
-      id: this.batchId,
+      intent: this.intent,
       requests: this.currentRequestsRecorded,
       errors: this.currentErrorsRecorded
     }
@@ -310,7 +311,7 @@ class OfflineAPI {
     this.isRecordingRequests = false
     this.currentRequestsRecorded = []
     this.currentErrorsRecorded = []
-    this.batchId = null
+    this.intent = null
   }
 
   async getRequestBatches (): Promise<RequestBatch[]> {

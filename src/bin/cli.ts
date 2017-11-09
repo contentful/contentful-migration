@@ -11,8 +11,10 @@ const {
   SpaceAccessError
 } = require('../lib/errors')
 import createMigrationParser from '../lib/migration-parser'
-import * as renderPlanMessages from './lib/plan-messages'
+import renderPlan from './lib/plan-messages'
 import * as renderStepsErrors from './lib/steps-errors'
+import { RequestBatch } from '../lib/offline-api/index'
+import { flatten } from 'lodash'
 
 const argv = yargs
   .usage('Parses and runs a migration script on a Contentful space.\n\nUsage: contentful-migration [args] <path-to-script-file>\n\nScript: path to a migration script.')
@@ -75,22 +77,15 @@ const run = async function () {
     return client.rawRequest(requestConfig)
   }
 
-  let packages
-  const migrationParser = createMigrationParser(makeRequest, {
-    onPackages: function (_packages) {
-      packages = _packages
-    }
-  })
+  const migrationParser = createMigrationParser(makeRequest)
 
-  let requests
+  let batches: RequestBatch[]
 
   try {
-    requests = await migrationParser(migrationFunction)
+    batches = await migrationParser(migrationFunction)
   } catch (e) {
     let message = e.message
-    if (e.errors && e.payloadValidationError) {
-      message = renderFailedValidation(e.errors, renderPlanMessages.withErrors)
-    }
+
     if (e.errors) {
       const errors = e.errors
       message = renderFailedValidation(errors, renderStepsErrors)
@@ -107,10 +102,16 @@ const run = async function () {
     process.exit(1)
   }
 
-  console.log(chalk`{bold.green The following migration has been planned}\n`)
-  console.log(renderPlanMessages.withoutErrors(packages))
-  console.log('\n')
+  const hasErrors = batches.some((batch) => batch.errors.length > 0)
 
+  console.log(chalk`{bold.green The following migration has been planned}\n`)
+  renderPlan(batches)
+
+  if (hasErrors) {
+    console.log(chalk`🚨  {bold.red Migration unsuccessful}`)
+    process.exit(1)
+  }
+  const requests = flatten(batches.map((batch) => batch.requests))
   const tasks = requests.map((request) => {
     return {
       title: `${request.method} ${request.url} at V${request.headers['X-Contentful-Version']}`,

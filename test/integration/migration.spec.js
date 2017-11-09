@@ -1,6 +1,7 @@
 const Bluebird = require('bluebird');
 const { makeRequest, createDevSpace } = require('../helpers/client');
 const { expect } = require('chai');
+const { flatten } = require('lodash');
 const createDog = require('../../examples/01-angry-dog');
 const modifyDog = require('../../examples/02-friendly-dog');
 const longExample = require('../../examples/03-long-example');
@@ -29,7 +30,8 @@ describe('the migration', function () {
     request = makeRequest.bind(null, devSpaceId);
     migrationParser = createMigrationParser(request);
     migrator = co(function * (migration) {
-      const requests = yield migrationParser(migration);
+      const batches = yield migrationParser(migration);
+      const requests = flatten(batches.map((batch) => batch.requests));
       yield executor(requests, request);
     });
   }));

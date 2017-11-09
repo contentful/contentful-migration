@@ -1,13 +1,7 @@
 import { migration as migrationSteps } from '../../../../src/lib/migration-steps'
 import IntentList from '../../../../src/lib/intent-list'
-import ContentTypeUpdateIntent from '../../../../src/lib/intent/content-type-update'
 import ComposedIntent from '../../../../src/lib/intent/composed-intent'
-import actionCreators from '../../../../src/lib/migration-steps/action-creators'
-import FieldDeleteIntent from '../../../../src/lib/intent/field-delete'
 import { expect } from 'chai'
-import runIntent from './run-intent'
-import fakeCallsite from '../../../helpers/fake-callsite'
-import makeApiEntry from '../../../helpers/make-api-entry'
 import { PlanMessage } from '../../../../src/lib/interfaces/plan-message'
 import chalk from 'chalk'
 

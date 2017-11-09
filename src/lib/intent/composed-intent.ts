@@ -1,7 +1,7 @@
 import Intent from '../interfaces/intent'
 import { RawStep } from '../interfaces/raw-step'
 import { PlanMessage, Section } from '../interfaces/plan-message'
-import { difference, groupBy, flatten, entries } from 'lodash'
+import { difference, groupBy, flatten, values, entries } from 'lodash'
 
 export default class ComposedIntent implements Intent {
   private contentTypeId: string
@@ -141,8 +141,8 @@ export default class ComposedIntent implements Intent {
       createSections.push(nextCreateSection)
     }
 
-    for (const [field, updateIntents] of entries(onlyFieldUpdatesByField)) {
-      const allSections = flatten(updateIntents.map((intent) => intent.toPlanMessage().sections))
+    for (const updateIntents of values(onlyFieldUpdatesByField)) {
+      const allSections: Section[] = flatten(updateIntents.map((intent) => intent.toPlanMessage().sections))
       const nextUpdateSection = mergeSections(allSections)
 
       createSections.push(nextUpdateSection)
@@ -166,7 +166,7 @@ function mergeSections (sections: Section[]): Section {
   const mergedSections: Section[] = []
 
   for (const [heading, sections] of entries(sameSections)) {
-    const details = flatten(sections.map((section) => section.details || []))
+    const details: string[] = flatten(sections.map((section: Section) => section.details || []))
     const hasDetails = details.length > 0
     const section: Section = { heading }
 

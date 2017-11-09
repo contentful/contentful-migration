@@ -1,7 +1,5 @@
 import APIEntry from './interfaces/api-entry'
 
-import * as _ from 'lodash'
-import * as Bluebird from 'bluebird'
 import { migration as buildIntents } from './migration-steps'
 import validateChunks from './migration-chunks/validation'
 
@@ -17,20 +15,9 @@ import IntentList from './intent-list'
 import * as errors from './errors/index'
 
 import Entry from './entities/entry'
-import OfflineAPI from './offline-api'
+import OfflineAPI, { RequestBatch } from './offline-api'
 
-const createMigrationParser = function (makeRequest, hooks): (migrationCreator: () => any) => Promise<any[]> {
-  // tslint:disable: no-empty
-  hooks = Object.assign({
-    onPackages: () => {}
-  }, hooks)
-  // tslint:enable: no-empty
-
-  // Ensure we follow the promise interface
-  hooks = _.mapValues(hooks, (hook) => {
-    return Bluebird.method(hook)
-  })
-
+const createMigrationParser = function (makeRequest): (migrationCreator: () => any) => Promise<RequestBatch[]> {
   return async function migration (migrationCreator) {
     const intents = await buildIntents(migrationCreator)
 
@@ -72,8 +59,6 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
 
     const ctsWithEntryInfo = await checkEntriesForDeletedCts(intentList, contentTypes, makeRequest)
 
-    // TODO: remove onPackages hook, implement onIntents hook
-    // await hooks.onPackages(intentList.toPackages())
     validateChunks(intentList, ctsWithEntryInfo)
 
     const api = new OfflineAPI(existingCts, entries)
@@ -81,8 +66,8 @@ const createMigrationParser = function (makeRequest, hooks): (migrationCreator: 
     await intentList.compressed().applyTo(api)
 
     const batches = await api.getRequestBatches()
-      // for now, making this compatible to our tests where we expect a flat array of request objects
-    return _.flatten(batches.map(b => b.requests))
+
+    return batches
   }
 }
 

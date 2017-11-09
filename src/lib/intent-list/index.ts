@@ -98,7 +98,7 @@ class IntentList {
 
     for (const intent of intents) {
       // TODO give this a real name
-      await api.startRecordingRequests('foo')
+      await api.startRecordingRequests(intent)
 
       for (const action of intent.toActions()) {
         if (action instanceof APIAction) {
