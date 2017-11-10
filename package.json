@@ -22,7 +22,9 @@
     "url": "git://github.com/contentful/migration-cli.git"
   },
   "scripts": {
-    "build": "tsc -p .",
+    "clean": "rimraf built",
+    "build": "npm run clean && tsc -p .",
+    "prepare": "npm run build",
     "test": "npm run build && npm run test-unit && npm run test-integration && npm run test-e2e && npm run lint",
     "test-watch": "npm run test-unit -- --watch",
     "test-unit": "NODE_ENV=test mocha --compilers ts-node/register 'test/unit/**/*.spec.js' 'test/unit/**/*.spec.ts'",
@@ -102,6 +104,7 @@
     "nixt": "^0.5.0",
     "nyc": "^11.2.1",
     "rewire": "^2.5.2",
+    "rimraf": "^2.6.2",
     "sinon": "^2.4.1",
     "sinon-chai": "^2.13.0",
     "source-map-support": "^0.5.0",
@@ -113,5 +116,8 @@
   },
   "bin": {
     "contentful-migration": "./bin/contentful-migration"
+  },
+  "engines": {
+    "node": ">=8.0.0"
   }
 }
