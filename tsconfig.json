@@ -10,7 +10,7 @@
       "es2017",
       "esnext"
     ],
-    "inlineSourceMap": true,
+    "sourceMap": true,
     "typeRoots": [
       "./typings",
       "./node_modules/@types"
