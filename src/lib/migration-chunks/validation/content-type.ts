@@ -1,5 +1,5 @@
 import * as _ from 'lodash'
-import * as errors from './errors'
+import errors from './errors'
 import ContentType from '../../entities/content-type'
 import Intent from '../../interfaces/intent'
 const ctErrors = errors.contentType
