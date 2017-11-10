@@ -1,13 +1,28 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## v0.4.0 - 2017-11-10
+### Changed
+- make code work with 13-payload-validations
+- clean build artifacts & re-build prior to release
+- update copy of CONTRIBUTING.md
+- generate external sourcemaps
+- inline executor in test/integration/migration
+- _[contributing]_ Mention typescript
+- better separation of concerns & types
+- _[e2e]_ payload validations - added comments to example
+- _[e2e]_ payload validations tests
+- _[e2e]_ delete submitted by mistake not relevant example file
+- _[e2e]_ rename misleading tests purpose; added lint ignore config
+- _[e2e]_ added basic tests for payload validation errors
+
 ## v0.3.0 - 2017-10-05
 ### Changed
 - Run linter after tests
 - Include linter in npm test command
 
 ### Fixed
-- _[steps]_ allow migration script to be async
+- *[steps]* allow migration script to be async
 - Do not allow setting of same property multiple times
 
 ## v0.2.1 - 2017-09-29
