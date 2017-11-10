@@ -13,7 +13,6 @@ const displayField = require('../../examples/07-display-field');
 const fieldMove = require('../../examples/08-move-field');
 
 const { createMigrationParser } = require('../../built/lib/migration-parser');
-const executor = require('../../built/lib/executor');
 const co = Bluebird.coroutine;
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
@@ -32,7 +31,9 @@ describe('the migration', function () {
     migrator = co(function * (migration) {
       const batches = yield migrationParser(migration);
       const requests = flatten(batches.map((batch) => batch.requests));
-      yield executor(requests, request);
+      for (const req of requests) {
+        yield request(req);
+      }
     });
   }));
 
