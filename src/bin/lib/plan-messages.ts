@@ -19,21 +19,15 @@ const renderBatch = function (batch: RequestBatch) {
 }
 
 const renderPlan = (batches: RequestBatch[]) => {
-  let hadError = false
   for (const batch of batches) {
     renderBatch(batch)
-    for (const error of batch.errors) {
-      if (!hadError) {
-        console.log('\n')
-      }
-      hadError = true
-      console.log(error)
-      console.log(chalk`{red.bold Error: ${error.message}}`)
+
+    if (batch.errors.length > 0) {
+      console.log('\n')
     }
 
-    if (hadError) {
-      console.log('\n')
-      return
+    for (const error of batch.errors) {
+      console.log(chalk`{red.bold Error: ${error.message}}`)
     }
 
     if (batch.intent.shouldPublish()) {

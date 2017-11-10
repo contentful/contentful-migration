@@ -131,9 +131,9 @@ export default class ComposedIntent implements Intent {
       const fieldId = createIntent.getFieldId()
       const [createSection] = createIntent.toPlanMessage().sections
       const heading = createSection.heading
-      const updateIntents = createdFieldUpdatesByField[fieldId]
+      const updateIntents = createdFieldUpdatesByField[fieldId] || []
       const allFieldUpdateSections = flatten(updateIntents.map((fieldIntent) => fieldIntent.toPlanMessage().sections))
-      const mergedSection = mergeSections(allFieldUpdateSections)
+      const mergedSection = mergeSections(allFieldUpdateSections) || { details: [] }
       const nextCreateSection = {
         ...mergedSection,
         heading
