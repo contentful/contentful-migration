@@ -3,7 +3,8 @@ module.exports = function (migration) {
   const food = migration.createContentType('food');
 
   food
-    .name('foooood');
+    .name('foooood')
+    .description(' well, food');
 
   food.createField('taste')
     .type('Symbol')

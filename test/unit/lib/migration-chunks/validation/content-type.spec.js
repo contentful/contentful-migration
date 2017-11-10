@@ -3,17 +3,16 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const migrationPlan = require('../../../../../lib/migration-chunks');
-const migrationSteps = require('../../../../../lib/migration-steps');
-const validatePlan = require('../../../../../lib/migration-chunks/validation');
-
-const stripCallsite = require('../../../../helpers/strip-callsite');
-const stripCallsites = (plan) => plan.map((chunk) => chunk.map(stripCallsite));
+const validateChunks = require('./validate-chunks').default;
 
 describe('content type plan validation', function () {
   describe('when creating a content type twice', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [{
+        sys: { id: 'somethingElse' }
+      }];
+
+      const errors = yield validateChunks(function up (migration) {
         migration.createContentType('person', {
           description: 'A content type for a person',
           name: 'foo'
@@ -30,14 +29,7 @@ describe('content type plan validation', function () {
         migration.createContentType('person', {
           name: 'once again'
         });
-      });
-
-      const contentTypes = [{
-        sys: { id: 'somethingElse' }
-      }];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -76,7 +68,11 @@ describe('content type plan validation', function () {
 
   describe('when editing a content type before creating it', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [{
+        sys: { id: 'somethingElse' }
+      }];
+
+      const errors = yield validateChunks(function up (migration) {
         migration.editContentType('person', {
           description: 'A content type for a person',
           name: 'foo'
@@ -89,14 +85,7 @@ describe('content type plan validation', function () {
         migration.createContentType('person', {
           name: 'the new name'
         });
-      });
-
-      const contentTypes = [{
-        sys: { id: 'somethingElse' }
-      }];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -141,7 +130,13 @@ describe('content type plan validation', function () {
 
   describe('when editing a content type that already exists and creating it again later on', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [{
+        sys: { id: 'somethingElse' }
+      }, {
+        sys: { id: 'person' }
+      }];
+
+      const errors = yield validateChunks(function up (migration) {
         migration.editContentType('person', {
           description: 'A content type for a person',
           name: 'foo'
@@ -154,16 +149,7 @@ describe('content type plan validation', function () {
         migration.createContentType('person', {
           name: 'the new name'
         });
-      });
-
-      const contentTypes = [{
-        sys: { id: 'somethingElse' }
-      }, {
-        sys: { id: 'person' }
-      }];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -187,7 +173,13 @@ describe('content type plan validation', function () {
 
   describe('when creating a content type that already exists', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [{
+        sys: { id: 'somethingElse' }
+      }, {
+        sys: { id: 'person' }
+      }];
+
+      const errors = yield validateChunks(function up (migration) {
         migration.createContentType('person', {
           description: 'A content type for a person',
           name: 'foo'
@@ -204,16 +196,7 @@ describe('content type plan validation', function () {
         migration.createContentType('person', {
           name: 'once again'
         });
-      });
-
-      const contentTypes = [{
-        sys: { id: 'somethingElse' }
-      }, {
-        sys: { id: 'person' }
-      }];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -267,7 +250,11 @@ describe('content type plan validation', function () {
 
   describe('when editing a content type that does not exist', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [{
+        sys: { id: 'somethingElse' }
+      }];
+
+      const errors = yield validateChunks(function up (migration) {
         migration.editContentType('person', {
           description: 'A content type for a person',
           name: 'foo'
@@ -280,14 +267,7 @@ describe('content type plan validation', function () {
         migration.editContentType('person', {
           name: 'the new name'
         });
-      });
-
-      const contentTypes = [{
-        sys: { id: 'somethingElse' }
-      }];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -350,15 +330,12 @@ describe('content type plan validation', function () {
 
   describe('when setting the same prop more than once in one chunk', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
-        const person = migration.createContentType('person').name('Person');
-        person.name('Person McPersonface');
-      });
-
       const contentTypes = [];
 
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      const errors = yield validateChunks(function up (migration) {
+        const person = migration.createContentType('person').name('Person');
+        person.name('Person McPersonface');
+      }, contentTypes);
 
       expect(errors).to.eql([
         {

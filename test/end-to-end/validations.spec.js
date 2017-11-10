@@ -65,8 +65,8 @@ describe('apply validations migration examples', function () {
       .run(`--space-id ${devSpaceId} ./examples/09-validate-validations.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
       .expect(assert.plans.contentType.create('dieatary-food', { name: 'Dieatary Food', description: 'Food with up to 500 calories' }))
-      .expect(assert.plans.field.create('name', { type: '"Symbol"', name: '"name of the food"', validations: '[{"unique":true}]' }))
-      .expect(assert.plans.field.create('calories', { type: '"Number"', name: '"amount of calories the food contains"', validations: '[{"range":{"max":500}}]' }))
+      .expect(assert.plans.field.create('name', { type: 'Symbol', name: 'name of the food', validations: [{ unique: true }] }))
+      .expect(assert.plans.field.create('calories', { type: 'Number', name: 'amount of calories the food contains', validations: [{ range: { 'max': 500 } }] }))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
         const contentType = yield getDevContentType(devSpaceId, 'dieatary-food');

@@ -1,0 +1,8 @@
+{
+    "defaultSeverity": "error",
+    "extends": "tslint-config-standard",
+    "rules": {
+        "await-promise": false,
+        "return-undefined": false
+    }
+}

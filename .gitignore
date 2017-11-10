@@ -19,3 +19,6 @@ npm-debug.log
 .envrc
 /.nyc_output
 /coverage.lcov
+/built
+.vscode
+contentful-migration-cli-*.tgz

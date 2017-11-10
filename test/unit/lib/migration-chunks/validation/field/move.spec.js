@@ -3,28 +3,20 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const migrationPlan = require('../../../../../../lib/migration-chunks');
-const migrationSteps = require('../../../../../../lib/migration-steps');
-const validatePlan = require('../../../../../../lib/migration-chunks/validation');
-const stripCallsite = require('../../../../../helpers/strip-callsite');
-const stripCallsites = (plan) => plan.map((chunk) => chunk.map(stripCallsite));
+const validateChunks = require('../validate-chunks').default;
 
 describe('field movement plan validation', function () {
   describe('when moving a field that does not exist', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [];
+      const errors = yield validateChunks(function up (migration) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
           name: 'foo'
         });
 
         person.moveField('name').toTheTop();
-      });
-
-      const contentTypes = [];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -54,7 +46,8 @@ describe('field movement plan validation', function () {
 
   describe('when moving a field that was deleted', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [];
+      const errors = yield validateChunks(function up (migration) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
           name: 'foo'
@@ -63,12 +56,7 @@ describe('field movement plan validation', function () {
         person.createField('name').type('Symbol');
         person.deleteField('name');
         person.moveField('name').toTheTop();
-      });
-
-      const contentTypes = [];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -98,7 +86,8 @@ describe('field movement plan validation', function () {
 
   describe('when moving a field multiple times', function () {
     it('returns all the validation errors', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [];
+      const errors = yield validateChunks(function up (migration) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
           name: 'Person'
@@ -111,13 +100,7 @@ describe('field movement plan validation', function () {
 
         person.moveField('fullName').toTheTop();
         person.moveField('fullName').toTheTop();
-      });
-
-
-      const contentTypes = [];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -147,7 +130,8 @@ describe('field movement plan validation', function () {
 
   describe('when moving a field multiple times in different chunks', function () {
     it('returns all the validation errors', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [];
+      const errors = yield validateChunks(function up (migration) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
           name: 'Person'
@@ -171,13 +155,7 @@ describe('field movement plan validation', function () {
         });
 
         person.moveField('fullName').toTheBottom();
-      });
-
-
-      const contentTypes = [];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -207,17 +185,12 @@ describe('field movement plan validation', function () {
 
   describe('whe moving a field in a non existing Content Type', function () {
     it('returns all validation errors', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [];
+      const errors = yield validateChunks(function up (migration) {
         const person = migration.editContentType('person');
 
         person.moveField('fullName').toTheTop();
-      });
-
-
-      const contentTypes = [];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -247,7 +220,8 @@ describe('field movement plan validation', function () {
 
   describe('when moving a field relative to a non existing field', function () {
     it('returns all validation errors', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [];
+      const errors = yield validateChunks(function up (migration) {
         const person = migration.createContentType('person');
 
         person.createField('fullName').type('Symbol').name('Full name');
@@ -255,13 +229,7 @@ describe('field movement plan validation', function () {
 
         person.createField('age').type('Number').name('Full name');
         person.moveField('age').beforeField('i-do-not-exist');
-      });
-
-
-      const contentTypes = [];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -312,7 +280,8 @@ describe('field movement plan validation', function () {
 
   describe('when moving a field relative to a removed field', function () {
     it('returns all validation errors', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [];
+      const errors = yield validateChunks(function up (migration) {
         const person = migration.createContentType('person');
 
         person.createField('fullName').type('Symbol').name('Full name');
@@ -321,13 +290,7 @@ describe('field movement plan validation', function () {
 
         person.createField('age').type('Number').name('Full name');
         person.moveField('age').beforeField('fullName');
-      });
-
-
-      const contentTypes = [];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {

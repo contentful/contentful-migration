@@ -3,7 +3,7 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const migration = require('../../../../lib/migration-steps');
+const migration = require('../../../../src/lib/migration-steps').migration;
 const stripCallsite = require('../../../helpers/strip-callsite');
 const stripCallsites = (steps) => steps.map(stripCallsite);
 
@@ -658,7 +658,42 @@ describe('migration-steps', function () {
               newId: 'bookTitle'
             }
           }
-        }]);
+        }
+      ]);
+    }));
+  });
+
+  describe('when transforming content', function () {
+    it('returns the right steps', Bluebird.coroutine(function * () {
+      const transformFunction = function (sourceFields) {
+        const [firstName, lastName] = sourceFields;
+        return firstName + ' ' + lastName;
+      };
+      const plan = yield migration(function (migration) {
+        const author = migration.editContentType('author');
+        author.transformContent({
+          from: ['firstName', 'lastName'],
+          to: ['fullName'],
+          transform: transformFunction
+        });
+      });
+
+      expect(stripCallsites(plan)).to.eql([
+        {
+          type: 'contentType/transformContent',
+          meta: {
+            contentTypeInstanceId: 'contentType/author/0'
+          },
+          payload: {
+            contentTypeId: 'author',
+            transformation: {
+              from: ['firstName', 'lastName'],
+              to: ['fullName'],
+              transform: transformFunction
+            }
+          }
+        }
+      ]);
     }));
   });
 });

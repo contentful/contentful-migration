@@ -1,0 +1,11 @@
+src
+test
+typings
+.envrc
+.vscode/
+.eslintrc.js
+.travis.yml
+tsconfig.json
+tslint.json
+examples/demo.gif
+contentful-migration-cli-*.tgz

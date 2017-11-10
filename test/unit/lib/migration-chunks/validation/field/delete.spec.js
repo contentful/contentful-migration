@@ -3,17 +3,13 @@
 const { expect } = require('chai');
 const Bluebird = require('bluebird');
 
-const migrationPlan = require('../../../../../../lib/migration-chunks');
-const migrationSteps = require('../../../../../../lib/migration-steps');
-const validatePlan = require('../../../../../../lib/migration-chunks/validation');
-
-const stripCallsite = require('../../../../../helpers/strip-callsite');
-const stripCallsites = (plan) => plan.map((chunk) => chunk.map(stripCallsite));
+const validateChunks = require('../validate-chunks').default;
 
 describe('field deletion plan validation', function () {
   describe('when creating a field two times but deleting it in between and then once more', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [];
+      const errors = yield validateChunks(function up (migration) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
           name: 'foo'
@@ -26,12 +22,7 @@ describe('field deletion plan validation', function () {
         migration.createContentType('animal').name('animal').description('An animal');
 
         person.createField('name').type('Array');
-      });
-
-      const contentTypes = [];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -57,7 +48,8 @@ describe('field deletion plan validation', function () {
 
   describe('when creating a field two times but deleting it in between', function () {
     it('returns no errors', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [];
+      const errors = yield validateChunks(function up (migration) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
           name: 'foo'
@@ -66,12 +58,7 @@ describe('field deletion plan validation', function () {
         person.createField('name').type('Symbol');
         person.deleteField('name');
         person.createField('name').type('Decimal');
-      });
-
-      const contentTypes = [];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([]);
     }));
@@ -79,19 +66,15 @@ describe('field deletion plan validation', function () {
 
   describe('when deleting a field that does not exist', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [];
+      const errors = yield validateChunks(function up (migration) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
           name: 'foo'
         });
 
         person.deleteField('name');
-      });
-
-      const contentTypes = [];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -117,7 +100,8 @@ describe('field deletion plan validation', function () {
 
   describe('when deleting a field twice', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [];
+      const errors = yield validateChunks(function up (migration) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
           name: 'foo'
@@ -132,12 +116,7 @@ describe('field deletion plan validation', function () {
         });
 
         person.deleteField('name');
-      });
-
-      const contentTypes = [];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
@@ -163,12 +142,6 @@ describe('field deletion plan validation', function () {
 
   describe('when deleting a field that exists on a remote content type', function () {
     it('returns no error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
-        const person = migration.editContentType('person');
-
-        person.deleteField('name');
-      });
-
       const contentTypes = [{
         sys: { id: 'person' },
         fields: [
@@ -176,8 +149,11 @@ describe('field deletion plan validation', function () {
         ]
       }];
 
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      const errors = yield validateChunks(function up (migration) {
+        const person = migration.editContentType('person');
+
+        person.deleteField('name');
+      }, contentTypes);
 
       expect(errors).to.eql([]);
     }));
@@ -185,16 +161,12 @@ describe('field deletion plan validation', function () {
 
   describe('when deleting a field on a content type that does not exist', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const steps = yield migrationSteps(function up (migration) {
+      const contentTypes = [];
+      const errors = yield validateChunks(function up (migration) {
         const person = migration.editContentType('person');
 
         person.deleteField('name');
-      });
-
-      const contentTypes = [];
-
-      const plan = stripCallsites(migrationPlan(steps));
-      const errors = validatePlan(plan, contentTypes);
+      }, contentTypes);
 
       expect(errors).to.eql([
         {
