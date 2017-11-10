@@ -12,7 +12,7 @@ const {
 } = require('../lib/errors')
 import createMigrationParser from '../lib/migration-parser'
 import renderPlan from './lib/plan-messages'
-import * as renderStepsErrors from './lib/steps-errors'
+import renderStepsErrors from './lib/steps-errors'
 import { RequestBatch } from '../lib/offline-api/index'
 import { flatten } from 'lodash'
 
