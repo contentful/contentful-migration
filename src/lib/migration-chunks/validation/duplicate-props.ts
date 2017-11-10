@@ -1,7 +1,7 @@
 import IntentList from '../../intent-list'
 import ComposedIntent from '../../intent/composed-intent'
 import ValidationError from '../../interfaces/errors'
-import * as errorMessages from './errors'
+import errorMessages from './errors'
 import { Intent } from '../../interfaces/intent'
 
 const isSameEntity = (step, otherStep) => {
@@ -49,7 +49,7 @@ const getErrorsForIntents = (intents: Intent[]) => {
         const { type, id } = getErrorMsgParams(step)
         return {
           type: 'InvalidAction',
-          message: errorMessages.DUPLICATE_PROP(duplicateProp, type, id),
+          message: errorMessages.generic.DUPLICATE_PROP(duplicateProp, type, id),
           details: { intent }
         }
       })

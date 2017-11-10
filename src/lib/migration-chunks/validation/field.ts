@@ -1,7 +1,9 @@
-const { field: fieldErrors } = require('./errors')
+import errors from './errors'
 import ValidationError from '../../interfaces/errors'
 import { Intent } from '../../interfaces/intent'
 import { ContentType } from '../../entities/content-type'
+
+const fieldErrors = errors.field
 
 const invalidActionError = (message, intent) => {
   return {
