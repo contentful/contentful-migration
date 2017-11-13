@@ -177,6 +177,15 @@ export async function migration (migrationCreator): Promise<Intent[]> {
       const instanceId = instanceIdManager.getNew(id)
 
       dispatch(actionCreators.contentType.transformEntries(id, instanceId, transformation, callsite))
+    },
+
+    deriveLinkedEntries: function (transformation) {
+      const callsite = getFirstExternalCaller()
+      const id = transformation.contentType
+      delete transformation.contentType
+      const instanceId = instanceIdManager.getNew(id)
+
+      dispatch(actionCreators.contentType.deriveLinkedEntries(id, instanceId, transformation, callsite))
     }
   }
 

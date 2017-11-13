@@ -23,6 +23,7 @@ interface Intent {
   isAboutContentType (): boolean
   isAboutField (): boolean
   isContentTransform (): boolean
+  isEntryDerive (): boolean
 
   isComposedIntent (): boolean
 

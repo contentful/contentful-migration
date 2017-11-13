@@ -1,5 +1,6 @@
 import ContentTransform from '../interfaces/content-transform'
 import * as Intents from '../intent/index'
+import EntryDerive from '../interfaces/entry-derive'
 
 const actionCreators = {
   contentType: {
@@ -58,6 +59,20 @@ const actionCreators = {
       },
       payload: {
         transformation,
+        contentTypeId: id
+      }
+    }),
+    deriveLinkedEntries: (id, instanceId, derivation: EntryDerive, callsite): Intents.EntryDerive => new Intents.EntryDerive({
+      type: 'contentType/deriveEntries',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        derivation,
         contentTypeId: id
       }
     })
