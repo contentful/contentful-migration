@@ -3,6 +3,24 @@ import { RawStep } from '../interfaces/raw-step'
 import { PlanMessage, Section } from '../interfaces/plan-message'
 import { difference, groupBy, flatten, values, entries } from 'lodash'
 
+function mergeSections (sections: Section[]): Section {
+  const sameSections = groupBy(sections, 'heading')
+  const mergedSections: Section[] = []
+
+  for (const [heading, sections] of entries(sameSections)) {
+    const details: string[] = flatten(sections.map((section: Section) => section.details || []))
+    const section: Section = { heading, details }
+
+    mergedSections.push(section)
+  }
+
+  if (mergedSections.length > 1) {
+    throw new Error('mergeSections expect to receive sections from same type (i.e. same heading)')
+  }
+
+  return mergedSections[0]
+}
+
 export default class ComposedIntent implements Intent {
   private contentTypeId: string
   private intents: Intent[]
@@ -160,22 +178,4 @@ export default class ComposedIntent implements Intent {
       sections: createSections
     }
   }
-}
-
-function mergeSections (sections: Section[]): Section {
-  const sameSections = groupBy(sections, 'heading')
-  const mergedSections: Section[] = []
-
-  for (const [heading, sections] of entries(sameSections)) {
-    const details: string[] = flatten(sections.map((section: Section) => section.details || []))
-    const section: Section = { heading, details }
-
-    mergedSections.push(section)
-  }
-
-  if (mergedSections.length > 1) {
-    throw new Error('mergeSections expect to receive sections from same type (i.e. same heading)')
-  }
-
-  return mergedSections[0]
 }

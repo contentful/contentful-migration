@@ -20,24 +20,27 @@ export default class FieldDeleteIntent extends Intent {
   }
 
   toActions () {
+    const contentTypeId = this.getContentTypeId()
+    const fieldId = this.getFieldId()
+
     return [
       new FieldUpdateAction(
-        this.getContentTypeId(),
-        this.payload.fieldId,
+        contentTypeId,
+        fieldId,
         { omitted: true }
       ),
       // Save and publish are wrapped around packages automatically
       // But in this case we need to insert some explicit ones
-      new ContentTypeSaveAction(this.getContentTypeId()),
-      new ContentTypePublishAction(this.getContentTypeId()),
+      new ContentTypeSaveAction(contentTypeId),
+      new ContentTypePublishAction(contentTypeId),
       new FieldUpdateAction(
-        this.getContentTypeId(),
-        this.payload.fieldId,
+        contentTypeId,
+        fieldId,
         { deleted: true }
       ),
       new EntryFieldPurgeAction(
-        this.getContentTypeId(),
-        this.payload.fieldId
+        contentTypeId,
+        fieldId
       )
     ]
   }
