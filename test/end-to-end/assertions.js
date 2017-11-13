@@ -217,6 +217,20 @@ module.exports = {
       };
     }
   },
+  confirmation: {
+    noConfirmationMessage: function () {
+      return result => {
+        const stdtype = result.stdout;
+
+        expect(result.code).to.eql(0);
+        expect(stdtype).not.to.be.empty();
+
+        const withoutAnsiCodes = stripAnsi(stdtype);
+        expect(withoutAnsiCodes).to.not.include('Do you want to apply the migration');
+        expect(withoutAnsiCodes).to.include('Migration successful');
+      };
+    }
+  },
   payload: {
     notDefined: function (method) {
       return result => {
