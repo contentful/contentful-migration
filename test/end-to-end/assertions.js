@@ -62,6 +62,16 @@ module.exports = {
           expect(withoutAnsiCodes).to.include(`Line ${line}: Content type with id "${id}" already exists.`);
         };
       }
+    },
+    entriesTransform: function (id, message) {
+      return result => {
+        expect(result.code).to.eql(1);
+        expect(result.stdout).not.to.be.empty();
+
+        const withoutAnsiCodes = stripAnsi(result.stdout);
+        expect(withoutAnsiCodes).to.include(id);
+        expect(withoutAnsiCodes).to.include(message);
+      };
     }
   },
   plans: {
@@ -182,6 +192,14 @@ module.exports = {
           expect(withoutAnsiCodes).to.include(`Migration successful`);
         };
       }
+    },
+    entriesTransform: function (id) {
+      return result => {
+        expect(result.stdout).not.to.be.empty();
+
+        const withoutAnsiCodes = stripAnsi(result.stdout);
+        expect(withoutAnsiCodes).to.include(`Transform entries for ${id}`);
+      };
     }
   },
   help: {
