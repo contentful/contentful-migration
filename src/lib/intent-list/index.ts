@@ -7,7 +7,6 @@ import { OfflineAPI } from '../offline-api/index'
 import { APIAction, EntityAction } from '../action/action'
 import { ContentTypeSaveAction } from '../action/content-type-save'
 import { ContentTypePublishAction } from '../action/content-type-publish'
-import ErrorCollector from '../errors/error-collector'
 
 class IntentList {
   private intents: IntentInterface[]
@@ -93,7 +92,7 @@ class IntentList {
     return new IntentList(composedIntents)
   }
 
-  async applyTo (api: OfflineAPI, collector: ErrorCollector) {
+  async applyTo (api: OfflineAPI) {
     const intents = this.getIntents()
 
     for (const intent of intents) {
@@ -103,7 +102,7 @@ class IntentList {
       for (const action of intent.toActions()) {
 
         if (action instanceof APIAction) {
-          await action.applyTo(api, collector)
+          await action.applyTo(api)
           continue
         }
 

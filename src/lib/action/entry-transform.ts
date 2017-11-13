@@ -2,7 +2,6 @@ import { APIAction } from './action'
 import { OfflineAPI } from '../offline-api'
 import Entry from '../entities/entry'
 import * as _ from 'lodash'
-import ErrorCollector from '../errors/error-collector'
 
 class EntryTransformAction extends APIAction {
   private contentTypeId: string
@@ -21,7 +20,7 @@ class EntryTransformAction extends APIAction {
     this.shouldPublish = shouldPublish
   }
 
-  async applyTo (api: OfflineAPI, collector: ErrorCollector) {
+  async applyTo (api: OfflineAPI) {
     const entries: Entry[] = await api.getEntriesForContentType(this.contentTypeId)
     const locales: string[] = await api.getLocalesForSpace()
     for (const entry of entries) {
@@ -30,8 +29,8 @@ class EntryTransformAction extends APIAction {
         let outputsForCurrentLocale
         try {
           outputsForCurrentLocale = await this.transformEntryForLocale(inputs, locale)
-        } catch (e) {
-          collector.collect(e)
+        } catch (err) {
+          api.recordError(err)
           continue
         }
         // TODO verify that the toFields actually get written to

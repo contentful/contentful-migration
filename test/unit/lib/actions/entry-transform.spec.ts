@@ -5,7 +5,6 @@ import { expect } from 'chai'
 import { EntryTransformAction } from '../../../../src/lib/action/entry-transform'
 import OfflineApi from '../../../../src/lib/offline-api/index'
 import { Entry } from '../../../../src/lib/entities/entry'
-import ErrorCollector from '../../../../src/lib/errors/error-collector'
 
 import makeApiEntry from '../../../helpers/make-api-entry'
 
@@ -39,15 +38,14 @@ describe('Entry Action', function () {
       }))
     ]
     const api = new OfflineApi(new Map(), entries, ['en-US'])
-    const collector = new ErrorCollector()
     api.startRecordingRequests(null)
 
     try {
-      await action.applyTo(api, collector)
-
-      expect(collector.getAll()).to.eql([ourError, ourError])
+      await action.applyTo(api)
+      api.stopRecordingRequests()
+      const batches = await api.getRequestBatches()
+      expect(batches[0].errors).to.eql([ourError, ourError])
     } catch (err) {
-      console.log(err)
       expect.fail()
     }
   })

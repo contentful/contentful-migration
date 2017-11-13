@@ -327,6 +327,10 @@ class OfflineAPI {
     return this.requestBatches
   }
 
+  public recordError (error) {
+    this.currentErrorsRecorded.push(error)
+  }
+
   private assertRecording () {
     if (this.isRecordingRequests) {
       return

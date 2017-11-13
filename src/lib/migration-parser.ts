@@ -1,5 +1,4 @@
 import ContentTransformIntentValidator from './intent-validator/content-transform'
-import ErrorCollector from './errors/error-collector'
 import APIEntry from './interfaces/api-entry'
 
 import { migration as buildIntents } from './migration-steps'
@@ -16,7 +15,7 @@ import * as errors from './errors/index'
 import Entry from './entities/entry'
 import OfflineAPI, { RequestBatch } from './offline-api'
 
-const createMigrationParser = function (fetcher): (migrationCreator: (migration: any) => any) => Promise<{batches: RequestBatch[], errorCollector: ErrorCollector}> {
+const createMigrationParser = function (fetcher): (migrationCreator: (migration: any) => any) => Promise<{batches: RequestBatch[]}> {
   return async function migration (migrationCreator) {
     const intents = await buildIntents(migrationCreator)
 
@@ -61,19 +60,15 @@ const createMigrationParser = function (fetcher): (migrationCreator: (migration:
 
     validateChunks(intentList, ctsWithEntryInfo)
 
-    const collector = new ErrorCollector()
     const locales = await fetcher.getLocalesForSpace()
 
     const api = new OfflineAPI(existingCts, entries, locales)
 
-    await intentList.compressed().applyTo(api, collector)
+    await intentList.compressed().applyTo(api)
 
     const batches = await api.getRequestBatches()
 
-    return {
-      batches,
-      errorCollector: collector
-    }
+    return { batches }
   }
 }
 

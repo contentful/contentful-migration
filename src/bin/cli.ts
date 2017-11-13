@@ -16,7 +16,6 @@ import renderStepsErrors from './lib/steps-errors'
 import { RequestBatch } from '../lib/offline-api/index'
 import { flatten } from 'lodash'
 import Fetcher from '../lib/fetcher'
-import ErrorCollector from '../lib/errors/error-collector'
 
 const argv = yargs
   .usage('Parses and runs a migration script on a Contentful space.\n\nUsage: contentful-migration [args] <path-to-script-file>\n\nScript: path to a migration script.')
@@ -83,10 +82,9 @@ const run = async function () {
   const migrationParser = createMigrationParser(fetcher)
 
   let batches: RequestBatch[]
-  let errorCollector: ErrorCollector
 
   try {
-    ({ batches, errorCollector } = await migrationParser(migrationFunction))
+    ({ batches } = await migrationParser(migrationFunction))
   } catch (e) {
     let message = e.message
 
@@ -107,6 +105,7 @@ const run = async function () {
   }
 
   const hasErrors = batches.some((batch) => batch.errors.length > 0)
+  console.log(hasErrors)
 
   if (hasErrors) {
     console.log(chalk`{bold.red The following migration has been planned but cannot be run because it contains errors}\n\n`)
