@@ -68,6 +68,7 @@ const createMigrationParser = function (fetcher): (migrationCreator: (migration:
 
     const batches = await api.getRequestBatches()
 
+    console.log(batches[0].requests)
     return { batches }
   }
 }

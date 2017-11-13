@@ -22,12 +22,17 @@ const renderPlan = (batches: RequestBatch[]) => {
   for (const batch of batches) {
     renderBatch(batch)
 
-    if (batch.errors.length > 0) {
+    if (batch.errors.length > 0 || batch.contentTransformErrors.length > 0) {
       console.log('\n')
     }
 
     for (const error of batch.errors) {
       console.log(chalk`{red.bold Error: ${error.message}}`)
+    }
+
+    for (const transformError of batch.contentTransformErrors) {
+      console.log(transformError)
+      console.log('\n')
     }
 
     if (batch.intent.shouldPublish()) {

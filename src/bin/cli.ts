@@ -109,8 +109,7 @@ const run = async function () {
     process.exit(1)
   }
 
-  const hasErrors = batches.some((batch) => batch.errors.length > 0)
-  console.log(hasErrors)
+  const hasErrors = batches.some((batch) => batch.errors.length > 0 || batch.contentTransformErrors.length > 0)
 
   if (hasErrors) {
     console.log(chalk`{bold.red The following migration has been planned but cannot be run because it contains errors}\n\n`)
