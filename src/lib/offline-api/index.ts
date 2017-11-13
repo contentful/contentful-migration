@@ -9,6 +9,7 @@ import DisplayFieldValidator from './validator/display-field'
 import SchemaValidator from './validator/schema/index'
 import TypeChangeValidator from './validator/type-change'
 import { Intent } from '../interfaces/intent'
+import APIEntry from '../interfaces/api-entry'
 
 interface RequestBatch {
   intent: Intent
@@ -40,7 +41,8 @@ const saveEntryRequest = function (entry: Entry): Request {
     method: 'PUT',
     url: `/entries/${entry.id}`,
     headers: {
-      'X-Contentful-Version': entry.version
+      'X-Contentful-Version': entry.version,
+      'X-Contentful-Content-Type': entry.contentTypeId
     },
     data: entry.toApiEntry()
   }
@@ -50,7 +52,8 @@ const publishEntryRequest = function (entry: Entry): Request {
     method: 'PUT',
     url: `/entries/${entry.id}/published`,
     headers: {
-      'X-Contentful-Version': entry.version
+      'X-Contentful-Version': entry.version,
+      'X-Contentful-Content-Type': entry.contentTypeId
     }
   }
 }
@@ -245,10 +248,31 @@ class OfflineAPI {
     }
   }
 
+  async createEntry (contentTypeId: string, id: string): Promise<Entry> {
+    this.assertRecording()
+
+    const entryData: APIEntry = {
+      sys: {
+        id,
+        version: 0,
+        contentType: {
+          sys: { type: 'Link', linkType: 'ContentType', id: contentTypeId }
+        }
+      },
+      fields: {}
+    }
+
+    const entry = new Entry(entryData)
+
+    await this.entries.push(entry)
+
+    return entry
+  }
+
   async saveEntry (id: string) {
     this.assertRecording()
 
-    const hasEntry = this.entries.some((entry) => entry.id === id)
+    const hasEntry = await this.hasEntry(id)
 
     if (!hasEntry) {
       throw new Error(`Cannot save Entry ${id} because it does not exist`)
@@ -262,6 +286,10 @@ class OfflineAPI {
     entry.version = entry.version + 1
 
     return entry
+  }
+
+  async hasEntry (id: string): Promise<boolean> {
+    return this.entries.some((entry) => entry.id === id)
   }
 
   async publishEntry (id: string): Promise<Entry> {

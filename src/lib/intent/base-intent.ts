@@ -58,6 +58,10 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
+  isEntryDerive () {
+    return false
+  }
+
   isAboutContentType () {
     return (
       this.isContentTypeUpdate() ||
