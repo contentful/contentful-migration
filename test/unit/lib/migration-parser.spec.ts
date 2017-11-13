@@ -82,13 +82,18 @@ describe('Migration parser', function () {
       }
 
       const result = await migrationParser(throws)
-      const errors = result.errorCollector.getAll()
-      expect(errors).to.eql([fooError, catError])
       expect(result.batches.length).to.eql(2)
+
       expect(result.batches[0].requests.length).to.eql(2)
-      expect(result.batches[1].requests.length).to.eql(0)
+      expect(result.batches[0].errors.length).to.eql(1)
+      expect(result.batches[0].errors).to.eql([fooError])
+
       expect(result.batches[0].requests[0].url).to.eql('/entries/456')
       expect(result.batches[0].requests[1].url).to.eql('/entries/456/published')
+
+      expect(result.batches[1].requests.length).to.eql(0)
+      expect(result.batches[1].errors.length).to.eql(1)
+      expect(result.batches[1].errors).to.eql([catError])
     })
   })
 
@@ -145,12 +150,11 @@ describe('Migration parser', function () {
       }
 
       const result = await migrationParser(transformFunction)
-      const errors = result.errorCollector.getAll()
-      expect(errors).to.eql([])
       expect(result.batches.length).to.eql(1)
       expect(result.batches[0].requests.length).to.eql(2)
       expect(result.batches[0].requests[0].url).to.eql('/entries/123')
       expect(result.batches[0].requests[1].url).to.eql('/entries/456')
+      expect(result.batches[0].errors).to.eql([])
     })
   })
 })

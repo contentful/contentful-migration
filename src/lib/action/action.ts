@@ -1,10 +1,9 @@
 import ContentType from '../entities/content-type'
 import Entry from '../entities/entry'
 import OfflineApi from '../offline-api/index'
-import ErrorCollector from '../errors/error-collector'
 
 abstract class APIAction {
-  abstract applyTo (api: OfflineApi, collector?: ErrorCollector): Promise<void>
+  abstract applyTo (api: OfflineApi): Promise<void>
 }
 
 abstract class EntityAction {
