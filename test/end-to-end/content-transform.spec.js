@@ -90,7 +90,7 @@ describe.only('apply content transformation', function () {
       .end(async function () {
         const res = await getEntries(devSpaceId, 'newsArticle');
         const entriesWithoutSys = res.items.map(i => _.omit(i, 'sys'));
-        
+
         const expected = [
           {
             fields: {
@@ -100,7 +100,6 @@ describe.only('apply content transformation', function () {
             }
           }
         ];
-        console.log(entriesWithoutSys)
         expect(entriesWithoutSys).to.eql(expected);
         done();
       });
