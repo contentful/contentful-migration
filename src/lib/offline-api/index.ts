@@ -13,7 +13,8 @@ import { Intent } from '../interfaces/intent'
 interface RequestBatch {
   intent: Intent
   requests: Request[]
-  errors: (PayloadValidationError | InvalidActionError)[]
+  errors: (PayloadValidationError | InvalidActionError)[],
+  contentTransformErrors: Error[]
 }
 
 export enum ApiHook {
@@ -92,6 +93,7 @@ class OfflineAPI {
   private isRecordingRequests: boolean = false
   private currentRequestsRecorded: Request[] = null
   private currentErrorsRecorded: (PayloadValidationError | InvalidActionError)[] = null
+  private currentTransformErrorsRecorded: Error[]
   private intent: Intent = null
   private requestBatches: RequestBatch[] = []
   private contentTypeValidators: ContentTypePayloadValidator[] = []
@@ -297,6 +299,7 @@ class OfflineAPI {
     this.isRecordingRequests = true
     this.currentRequestsRecorded = []
     this.currentErrorsRecorded = []
+    this.currentTransformErrorsRecorded = []
     this.intent = intent
   }
 
@@ -309,7 +312,8 @@ class OfflineAPI {
     const batch: RequestBatch = {
       intent: this.intent,
       requests: this.currentRequestsRecorded,
-      errors: compact(this.currentErrorsRecorded)
+      errors: compact(this.currentErrorsRecorded),
+      contentTransformErrors: this.currentTransformErrorsRecorded
     }
 
     this.requestBatches.push(batch)
@@ -327,8 +331,8 @@ class OfflineAPI {
     return this.requestBatches
   }
 
-  public recordError (error) {
-    this.currentErrorsRecorded.push(error)
+  public recordTransformError (error) {
+    this.currentTransformErrorsRecorded.push(error)
   }
 
   private assertRecording () {

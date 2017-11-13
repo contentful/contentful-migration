@@ -85,15 +85,14 @@ describe('Migration parser', function () {
       expect(result.batches.length).to.eql(2)
 
       expect(result.batches[0].requests.length).to.eql(2)
-      expect(result.batches[0].errors.length).to.eql(1)
-      expect(result.batches[0].errors).to.eql([fooError])
-
       expect(result.batches[0].requests[0].url).to.eql('/entries/456')
       expect(result.batches[0].requests[1].url).to.eql('/entries/456/published')
+      expect(result.batches[0].contentTransformErrors.length).to.eql(1)
+      expect(result.batches[0].contentTransformErrors).to.eql([fooError])
 
       expect(result.batches[1].requests.length).to.eql(0)
-      expect(result.batches[1].errors.length).to.eql(1)
-      expect(result.batches[1].errors).to.eql([catError])
+      expect(result.batches[1].contentTransformErrors.length).to.eql(1)
+      expect(result.batches[1].contentTransformErrors).to.eql([catError])
     })
   })
 
