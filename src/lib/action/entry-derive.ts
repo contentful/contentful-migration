@@ -55,7 +55,7 @@ class EntryDeriveAction extends APIAction {
             // And how to make these things explicit
             continue
           }
-          // TODO verify that the toFields actually get written to
+          // TODO: verify that the toFields actually get written to
           // and to no other field
           Object.keys(outputsForCurrentLocale).forEach((fieldId) => {
             if (!targetEntry.fields[fieldId]) {

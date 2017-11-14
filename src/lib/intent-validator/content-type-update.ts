@@ -2,6 +2,7 @@ import SchemaValidator from './schema-validator'
 import * as Joi from 'joi'
 
 class ContentTypeUpdateStepValidator extends SchemaValidator {
+  protected article = 'a'
   protected displayName = 'content type'
 
   appliesTo (step) {

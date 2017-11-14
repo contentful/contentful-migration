@@ -144,7 +144,7 @@ describe('Content transformation', function () {
     })
   })
 
-  describe('when not providing the required properties', function () {
+  describe('when spelling a property wrong', function () {
     it('returns all validation errors', async function () {
       const properties = {
         contentType: 'person',

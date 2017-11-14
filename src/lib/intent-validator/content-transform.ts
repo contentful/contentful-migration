@@ -3,7 +3,9 @@ import SchemaValidator from './schema-validator'
 import * as Joi from 'joi'
 
 class ContentTransformIntentValidator extends SchemaValidator {
+  protected article = 'a'
   protected displayName = 'content transformation'
+  
   appliesTo (step: Intent) {
     return step.isContentTransform()
   }
