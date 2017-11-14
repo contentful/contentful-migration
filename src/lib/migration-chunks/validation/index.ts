@@ -6,6 +6,7 @@ import checkForDuplicatePropsErrors from './duplicate-props'
 import { ContentType } from '../../entities/content-type'
 import { Intent } from '../../interfaces/intent'
 import entriesTransformationsValidations from './entry-transformation'
+import entriesDerivationValidations from './entry-derivation'
 
 // TODO: rename to validateIntents
 function validateChunks (intentList: IntentList, contentTypes: ContentType[]): void {
@@ -33,6 +34,13 @@ function validateChunks (intentList: IntentList, contentTypes: ContentType[]): v
 
   if (entriesTransformationErrors.length > 0) {
     throw new ErrorCollection(entriesTransformationErrors, {payloadValidatioNError: true})
+  }
+
+  const entriesDerivationIntents = intents.filter((intent) => intent.isEntryDerive())
+  const entriesDerivationErrors = entriesDerivationValidations(entriesDerivationIntents, allCTs)
+
+  if (entriesDerivationErrors.length > 0) {
+    throw new ErrorCollection(entriesDerivationErrors, { payloadValidatioNError: true })
   }
 }
 

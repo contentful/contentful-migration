@@ -4,6 +4,12 @@ import { PlanMessage } from '../interfaces/plan-message'
 import chalk from 'chalk'
 
 export default class EntryDeriveIntent extends Intent {
+  getRelatedContentTypeIds () {
+    return [
+      this.getContentTypeId(),
+      this.payload.derivation.derivedContentType
+    ]
+  }
   isEntryDerive () {
     return true
   }

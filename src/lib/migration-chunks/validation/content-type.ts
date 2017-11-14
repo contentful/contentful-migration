@@ -181,6 +181,40 @@ class DeleteCtWithEntries implements ContentTypeValidation {
   }
 }
 
+class DeriveEntryFromNonExistingCT implements ContentTypeValidation {
+  message (id: string) {
+    return `You cannot derive entries from content type "${id}" because it does not exist.`
+  }
+  validate (intents: Intent[], contentTypes: ContentType[]) {
+    const deriveIntents = intents.filter((intent) => intent.isEntryDerive())
+
+    const badDeriveIntents = deriveIntents.filter((intent) => {
+      const ctForThisintent = contentTypes.find((ct) => {
+        return ct.id === intent.getContentTypeId()
+      })
+      return !ctForThisintent
+    })
+    return badDeriveIntents
+  }
+}
+
+class DeriveEntryToNonExistingCT implements ContentTypeValidation {
+  message (_id: string, intent: Intent) {
+    return `You cannot derive entries to content type "${intent.toRaw().payload.derivation.derivedContentType}" because it does not exist.`
+  }
+  validate (intents: Intent[], contentTypes: ContentType[]) {
+    const deriveIntents = intents.filter((intent) => intent.isEntryDerive())
+
+    const badDeriveIntents = deriveIntents.filter((intent) => {
+      const ctForThisintent = contentTypes.find((ct) => {
+        return ct.id === intent.toRaw().payload.derivation.derivedContentType
+      })
+      return !ctForThisintent
+    })
+    return badDeriveIntents
+  }
+}
+
 const checks: ContentTypeValidation[] = [
   new DuplicateCreate(),
   new EditBeforeCreate(),
@@ -189,7 +223,10 @@ const checks: ContentTypeValidation[] = [
   new AlreadyExistingCreates(),
   new DuplicateDeletes(),
   new EditsAfterDeletes(),
-  new DeleteCtWithEntries()
+  new DeleteCtWithEntries(),
+  new DeriveEntryFromNonExistingCT(),
+  new DeriveEntryToNonExistingCT()
+
 ]
 
 export default function (intents, contentTypes: ContentType[]) {

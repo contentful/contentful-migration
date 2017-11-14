@@ -84,6 +84,10 @@ export default class ComposedIntent implements Intent {
     return this.contentTypeId
   }
 
+  getRelatedContentTypeIds (): string[] {
+    return [this.getContentTypeId()]
+  }
+
   groupsWith (): boolean {
     return false
   }
