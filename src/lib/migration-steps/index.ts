@@ -1,10 +1,13 @@
 'use strict'
+import EntryDerive from '../interfaces/entry-derive'
 
 import * as Bluebird from 'bluebird'
 import actionCreators from './action-creators'
 import * as getFirstExternalCaller from './first-external-caller'
 import Intent from '../intent'
 import DispatchProxy from './dispatch-proxy'
+import { omit } from 'lodash'
+import ContentTransform from '../interfaces/content-transform'
 
 const createInstanceIdManager = () => {
   const instanceCounts = {}
@@ -173,19 +176,19 @@ export async function migration (migrationCreator): Promise<Intent[]> {
     transformEntries: function (transformation) {
       const callsite = getFirstExternalCaller()
       const id = transformation.contentType
-      delete transformation.contentType
+      const stripped = omit(transformation, 'contentType') as ContentTransform
       const instanceId = instanceIdManager.getNew(id)
 
-      dispatch(actionCreators.contentType.transformEntries(id, instanceId, transformation, callsite))
+      dispatch(actionCreators.contentType.transformEntries(id, instanceId, stripped, callsite))
     },
 
     deriveLinkedEntries: function (transformation) {
       const callsite = getFirstExternalCaller()
       const id = transformation.contentType
-      delete transformation.contentType
+      const stripped = omit(transformation, 'contentType') as EntryDerive
       const instanceId = instanceIdManager.getNew(id)
 
-      dispatch(actionCreators.contentType.deriveLinkedEntries(id, instanceId, transformation, callsite))
+      dispatch(actionCreators.contentType.deriveLinkedEntries(id, instanceId, stripped, callsite))
     }
   }
 

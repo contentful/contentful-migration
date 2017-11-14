@@ -18,6 +18,10 @@ export default abstract class Intent implements IntentInterface {
     return this.payload.contentTypeId
   }
 
+  getRelatedContentTypeIds () {
+    return [this.getContentTypeId()]
+  }
+
   getFieldId () {
     return this.payload.fieldId
   }
