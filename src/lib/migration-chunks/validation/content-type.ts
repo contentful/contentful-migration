@@ -1,7 +1,9 @@
+import createValidator from '../../../../test/unit/lib/intent-validator/validate-steps'
 import * as _ from 'lodash'
 import errors from './errors'
 import ContentType from '../../entities/content-type'
-import Intent from '../../intent'
+import Intent from '../../interfaces/intent'
+import { InvalidActionError } from '../../interfaces/errors'
 const ctErrors = errors.contentType
 
 const errorFormatter = function (messageFormatter) {
@@ -23,28 +25,26 @@ const filterIntentsForExistingCts = function (intents: Intent[], contentTypes: C
   return nonExistingCTintents
 }
 
+interface ValidationContext {
+  remote: Set<string>
+  created: Set<string>
+  deleted: Set<string>
+  toBeCreated: Set<string>
+}
+
 interface ContentTypeValidation {
-  message (id: string, intent?: Intent): string
-  validate (intents: Intent[], contentTypes: ContentType[]): any[]
+  validate (intent: Intent, context: ValidationContext): string
 }
 
 class DuplicateCreate implements ContentTypeValidation {
-  message = ctErrors.create.CONTENT_TYPE_ALREADY_CREATED
-  validate (intents: Intent[], contentTypes: ContentType[]) {
-    // Find all create intents
-    const ctCreates = intents.filter((i) => i.isContentTypeCreate())
-    // Filter out the ones that already exist on the API side. They are handled by different validation
-    const nonExistingCreates = filterIntentsForExistingCts(ctCreates, contentTypes)
+  validate (intent: Intent, context: ValidationContext) {
+    if (!intent.isContentTypeCreate()) {
+      return
+    }
 
-    // Group the intents into an object by the content type ID
-    const createGroups = _.groupBy(nonExistingCreates, (intent: Intent) => intent.getContentTypeId())
-    // For every group, drop every first item
-    // The remaining items are duplicate creates
-    const potentialErrors = _.mapValues(createGroups, (createGroup) => _.tail(createGroup))
-    // Strip out all groups that are empty since they aren't error cases
-    const allErrors = _.omitBy(potentialErrors, _.isEmpty)
 
-    return _.flatten(_.values(allErrors))
+
+    return ctErrors.create.CONTENT_TYPE_ALREADY_CREATED
   }
 }
 
@@ -229,14 +229,68 @@ const checks: ContentTypeValidation[] = [
 
 ]
 
-export default function (intents, contentTypes: ContentType[]) {
-  const errors = checks.map((check: ContentTypeValidation) => {
-    const foundItems = check.validate(intents, contentTypes)
-    return errorFormatter((intent: Intent) => {
-      const id = intent.getContentTypeId()
-      return check.message(id, intent)
-    })(foundItems)
-  })
+// export default function (intents, contentTypes: ContentType[]) {
+//   const errors = checks.map((check: ContentTypeValidation) => {
+//     const foundItems = check.validate(intents, contentTypes)
+//     return errorFormatter((intent: Intent) => {
+//       const id = intent.getContentTypeId()
+//       return check.message(id, intent)
+//     })(foundItems)
+//   })
 
-  return _.flatten(errors)
+//   return _.flatten(errors)
+// }
+
+export default function (intents: Intent[], contentTypes: ContentType[]): InvalidActionError[] {
+  const remote = contentTypes.map((ct) => ct.id)
+  const toBeCreated = intents.filter((intent) => intent.isContentTypeCreate()).map((intent) => intent.getContentTypeId())
+
+  let context = {
+    remote: new Set(remote), // all currently (in the current iteration step) existing content types
+    created: new Set(), // all by now (in previous iteration steps) created content types
+    deleted: new Set(), // all by now (in previous iteration steps) deleted content types
+    toBeCreated: new Set(toBeCreated) // all future (in remeining iteration steps) created content types
+  }
+
+  let errors = []
+
+  for (const intent of intents) {
+    let error
+
+    for (const check of checks) {
+      error = check.validate(intent, context)
+
+      if (error) {
+        // proceed with next intent
+        break
+      }
+    }
+
+    if (error) {
+      errors.push({
+        type: 'InvalidAction',
+        message: error,
+        details: { intent }
+      })
+
+      // do not update context
+      continue
+    }
+
+    const contentTypeId = intent.getContentTypeId()
+
+    if (intent.isContentTypeCreate()) {
+      context.created.add(contentTypeId)
+      context.toBeCreated.delete(contentTypeId)
+      context.deleted.delete(contentTypeId)
+    }
+
+    if (intent.isContentTypeDelete()) {
+      context.deleted.add(contentTypeId)
+      context.remote.delete(contentTypeId)
+      context.created.delete(contentTypeId)
+    }
+  }
+
+  return errors
 }
