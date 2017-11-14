@@ -14,16 +14,16 @@ describe('migration-steps validation', function () {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
           invalidProp: 'Totally invalid'
-        });
+        })
 
-        person.somethingElse('Also invalid');
+        person.somethingElse('Also invalid')
 
         const fullName = person.createField('fullName', {
           name: 'Full Name',
           anotherInvalidProp: 'Symbol'
         })
 
-        fullName.bla('a person');
+        fullName.bla('a person')
       })
 
       expect(validationErrors).to.eql([
