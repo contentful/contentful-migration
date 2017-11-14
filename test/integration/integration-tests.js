@@ -41,6 +41,33 @@ test('Gets organizations', (t) => {
     })
 })
 
+test('Gets personal access tokens', (t) => {
+  t.plan(2)
+  return client.getPersonalAccessTokens()
+    .then((response) => {
+      t.ok(response.items, 'items')
+      t.ok(response.sys, 'sys')
+    })
+})
+
+test('Create and revoke a personal access token', (t) => {
+  t.plan(3)
+  return client.createPersonalAccessToken({
+    'name': 'My Token',
+    'scopes': [
+      'content_management_manage'
+    ]
+  })
+    .then((token) => {
+      t.ok(token.sys, 'sys')
+      t.equals(token.name, 'My Token')
+      return token.revoke()
+        .then((revoked) => {
+          t.ok(revoked.sys, 'sys')
+        })
+    })
+})
+
 test('Gets User', (t) => {
   t.plan(2)
   return client.getCurrentUser()

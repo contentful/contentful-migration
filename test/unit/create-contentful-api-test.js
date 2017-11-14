@@ -1,7 +1,7 @@
 import test from 'blue-tape'
 import sinon from 'sinon'
 
-import {spaceMock, setupEntitiesMock, organizationMock, userMock} from './mocks/entities'
+import {spaceMock, setupEntitiesMock, organizationMock, userMock, personalAccessTokenMock} from './mocks/entities'
 import setupHttpMock from './mocks/http'
 import createContentfulApi, {__RewireAPI__ as createContentfulApiRewireApi} from '../../lib/create-contentful-api'
 import {makeGetEntityTest, makeGetCollectionTest, makeEntityMethodFailingTest} from './test-creators/static-entity-methods'
@@ -21,6 +21,7 @@ function teardown () {
   createContentfulApiRewireApi.__ResetDependency__('entities')
 }
 
+// Space tests
 test('API call getSpaces', (t) => {
   makeGetCollectionTest(t, setup, teardown, {
     entityType: 'space',
@@ -49,20 +50,6 @@ test('API call getSpace fails', (t) => {
   })
 })
 
-test('API call getOrganizations', (t) => {
-  makeGetCollectionTest(t, setup, teardown, {
-    entityType: 'organization',
-    mockToReturn: organizationMock,
-    methodToTest: 'getOrganizations'
-  })
-})
-
-test('API call getOrganizations fails', (t) => {
-  makeEntityMethodFailingTest(t, setup, teardown, {
-    methodToTest: 'getOrganizations'
-  })
-})
-
 test('API call createSpace', (t) => {
   t.plan(3)
   const data = {
@@ -87,6 +74,22 @@ test('API call createSpace fails', (t) => {
   })
 })
 
+// org tests
+test('API call getOrganizations', (t) => {
+  makeGetCollectionTest(t, setup, teardown, {
+    entityType: 'organization',
+    mockToReturn: organizationMock,
+    methodToTest: 'getOrganizations'
+  })
+})
+
+test('API call getOrganizations fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getOrganizations'
+  })
+})
+
+// User test
 test('API call getCurrentUser', (t) => {
   makeGetEntityTest(t, setup, teardown, {
     entityType: 'user',
@@ -101,6 +104,53 @@ test('API call getCurrentUser fails', (t) => {
   })
 })
 
+// Personal access token tests
+test('API call getPersonalAccessToken fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getPersonalAccessToken'
+  })
+})
+
+test('API call getPersonalAccessToken', (t) => {
+  makeGetEntityTest(t, setup, teardown, {
+    entityType: 'personalAccessToken',
+    mockToReturn: personalAccessTokenMock,
+    methodToTest: 'getPersonalAccessToken'
+  })
+})
+
+test('API call getPersonalAccessTokens fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getPersonalAccessTokens'
+  })
+})
+
+test('API call getPersonalAccessTokens', (t) => {
+  makeGetCollectionTest(t, setup, teardown, {
+    entityType: 'personalAccessToken',
+    mockToReturn: personalAccessTokenMock,
+    methodToTest: 'getPersonalAccessTokens'
+  })
+})
+
+test('API call createSpace', (t) => {
+  t.plan(2)
+  const data = {
+    sys: { id: 'id', type: 'AccessToken' },
+    name: 'name'
+  }
+  const {api, httpMock, entitiesMock} = setup(Promise.resolve({ data: data }))
+  entitiesMock.personalAccessToken.wrapPersonalAccessToken.returns(data)
+
+  return api.createPersonalAccessToken({name: 'name'}, 'orgid')
+    .then((r) => {
+      t.looseEqual(r, data, 'personal access token is wrapped')
+      t.looseEqual(httpMock.post.args[0][1], {name: 'name'}, 'data is sent')
+      teardown()
+    })
+})
+
+// Raw request tests
 test('API call rawRequest', (t) => {
   const httpMock = sinon.stub().resolves({
     data: {

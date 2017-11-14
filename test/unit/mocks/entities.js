@@ -37,6 +37,17 @@ const userMock = {
   confirmed: true
 }
 
+const personalAccessTokenMock = {
+  sys: Object.assign(cloneDeep(sysMock), {
+    type: 'PersonalAccessToken'
+  }),
+  name: 'My Token',
+  revokeAt: null,
+  scopes: [
+    'content_management_manage'
+  ]
+}
+
 const contentTypeMock = {
   sys: Object.assign(cloneDeep(sysMock), {
     type: 'ContentType'
@@ -211,7 +222,8 @@ const mocks = {
   upload: uploadMock,
   organization: organizationMock,
   uiExtension: uiExtensionMock,
-  user: userMock
+  user: userMock,
+  personalAccessToken: personalAccessTokenMock
 }
 
 function cloneMock (name) {
@@ -284,6 +296,10 @@ function setupEntitiesMock (rewiredModuleApi) {
     },
     user: {
       wrapUser: sinon.stub()
+    },
+    personalAccessToken: {
+      wrapPersonalAccessToken: sinon.stub(),
+      wrapPersonalAccessTokenCollection: sinon.stub()
     }
   }
   rewiredModuleApi.__Rewire__('entities', entitiesMock)
@@ -313,5 +329,6 @@ export {
   organizationMock,
   uiExtensionMock,
   snapShotMock,
-  userMock
+  userMock,
+  personalAccessTokenMock
 }
