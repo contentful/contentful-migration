@@ -1,19 +1,16 @@
-'use strict';
+'use strict'
 
-const { expect } = require('chai');
-const Bluebird = require('bluebird');
+import { expect } from 'chai'
 
-const FieldUpdateValidator = require('../../../../src/lib/intent-validator/field-update').default;
-const ContentTypeUpdateValidator = require('../../../../src/lib/intent-validator/content-type-update').default;
-const validateSteps = require('./validate-steps').bind(null, [
-  FieldUpdateValidator,
-  ContentTypeUpdateValidator
-]);
+import ContentTypeUpdateValidator from '../../../../src/lib/intent-validator/content-type-update'
+import FieldUpdateValidator from '../../../../src/lib/intent-validator/field-update'
+import createValidator from './validate-steps'
+const validateSteps = createValidator([FieldUpdateValidator, ContentTypeUpdateValidator])
 
 describe('migration-steps validation', function () {
   describe('when invoking methods for invalid props', function () {
-    it('returns all the validation errors', Bluebird.coroutine(function * () {
-      const validationErrors = yield validateSteps(function up (migration) {
+    it('returns all the validation errors', async function () {
+      const validationErrors = await validateSteps(function up (migration) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
           invalidProp: 'Totally invalid'
@@ -24,10 +21,10 @@ describe('migration-steps validation', function () {
         const fullName = person.createField('fullName', {
           name: 'Full Name',
           anotherInvalidProp: 'Symbol'
-        });
+        })
 
         fullName.bla('a person');
-      });
+      })
 
       expect(validationErrors).to.eql([
         {
@@ -106,19 +103,19 @@ describe('migration-steps validation', function () {
             }
           }
         }
-      ]);
-    }));
-  });
+      ])
+    })
+  })
 
   describe('when passing the wrong type for a prop', function () {
-    it('returns all the validation errors', Bluebird.coroutine(function * () {
-      const invalidFunction = function () {};
-      const validationErrors = yield validateSteps(function up (migration) {
+    it('returns all the validation errors', async function () {
+      const invalidFunction = function () {}
+      const validationErrors = await validateSteps(function up (migration) {
         const person = migration.createContentType('person', {
           description: ['Array']
-        });
+        })
 
-        person.displayField(1234);
+        person.displayField(1234)
 
         const fullName = person.createField('fullName', {
           name: 'Full Name',
@@ -126,10 +123,10 @@ describe('migration-steps validation', function () {
           omitted: 1,
           localized: invalidFunction,
           required: undefined
-        });
+        })
 
-        fullName.deleted(null);
-      });
+        fullName.deleted(null)
+      })
 
       expect(validationErrors).to.eql([
         {
@@ -268,23 +265,23 @@ describe('migration-steps validation', function () {
             }
           }
         }
-      ]);
-    }));
-  });
+      ])
+    })
+  })
 
   describe('when invoking methods for invalid props that are very close to valid props', function () {
-    it('returns all the validation errors', Bluebird.coroutine(function * () {
-      const validationErrors = yield validateSteps(function up (migration) {
+    it('returns all the validation errors', async function () {
+      const validationErrors = await validateSteps(function up (migration) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
           nmae: 'Totally invalid'
-        });
+        })
 
         person.createField('fullName', {
           name: 'Full Name',
           lodalised: true
-        });
-      });
+        })
+      })
 
       expect(validationErrors).to.eql([
         {
@@ -325,19 +322,19 @@ describe('migration-steps validation', function () {
             }
           }
         }
-      ]);
-    }));
-  });
+      ])
+    })
+  })
 
   describe('when setting an empty description for a content type', function () {
-    it('does not return any errors', Bluebird.coroutine(function * () {
-      const validationErrors = yield validateSteps(function up (migration) {
+    it('does not return any errors', async function () {
+      const validationErrors = await validateSteps(function up (migration) {
         migration.createContentType('person', {
           description: ''
-        });
-      });
+        })
+      })
 
-      expect(validationErrors).to.eql([]);
-    }));
-  });
-});
+      expect(validationErrors).to.eql([])
+    })
+  })
+})

@@ -1,22 +1,22 @@
-'use strict';
+'use strict'
 
-const { expect } = require('chai');
-const Bluebird = require('bluebird');
+import { expect } from 'chai'
 
-const FieldMovementValidator = require('../../../../src/lib/intent-validator/field-movement').default;
-const validateSteps = require('./validate-steps').bind(null, [FieldMovementValidator]);
+import FieldMovementValidator from '../../../../src/lib/intent-validator/field-movement'
+import createValidator from './validate-steps'
+const validateSteps = createValidator([FieldMovementValidator])
 
 describe('field-movement validation', function () {
   describe('when doing an invalid movement', function () {
-    it('returns all validation errors', Bluebird.coroutine(function * () {
-      const validationErrors = yield validateSteps(function up (migration) {
+    it('returns all validation errors', async function () {
+      const validationErrors = await validateSteps(function up (migration) {
         const person = migration.editContentType('person', {
           description: 'A content type for a person',
           name: 'Person'
-        });
+        })
 
-        person.moveField('field').somewhere();
-      });
+        person.moveField('field').somewhere()
+      })
 
       expect(validationErrors).to.eql([
         {
@@ -40,20 +40,20 @@ describe('field-movement validation', function () {
             }
           }
         }
-      ]);
-    }));
-  });
+      ])
+    })
+  })
 
   describe('when moving a field relative to itself', function () {
-    it('returns all validation errors', Bluebird.coroutine(function * () {
-      const validationErrors = yield validateSteps(function up (migration) {
+    it('returns all validation errors', async function () {
+      const validationErrors = await validateSteps(function up (migration) {
         const person = migration.editContentType('person', {
           description: 'A content type for a person',
           name: 'Person'
-        });
+        })
 
-        person.moveField('name').afterField('name');
-      });
+        person.moveField('name').afterField('name')
+      })
 
       expect(validationErrors).to.eql([
         {
@@ -77,20 +77,20 @@ describe('field-movement validation', function () {
             }
           }
         }
-      ]);
-    }));
-  });
+      ])
+    })
+  })
 
   describe('when doing an almost valid movement', function () {
-    it('returns all validation errors', Bluebird.coroutine(function * () {
-      const validationErrors = yield validateSteps(function up (migration) {
+    it('returns all validation errors', async function () {
+      const validationErrors = await validateSteps(function up (migration) {
         const person = migration.editContentType('person', {
           description: 'A content type for a person',
           name: 'Person'
-        });
+        })
 
-        person.moveField('field').toTheTp();
-      });
+        person.moveField('field').toTheTp()
+      })
 
       expect(validationErrors).to.eql([
         {
@@ -114,34 +114,34 @@ describe('field-movement validation', function () {
             }
           }
         }
-      ]);
-    }));
-  });
+      ])
+    })
+  })
 
   describe('when doing a movement with an invalid type', function () {
-    it('does not error on invalid types for toTheTop and toTheBottom', Bluebird.coroutine(function * () {
-      const validationErrors = yield validateSteps(function up (migration) {
+    it('does not error on invalid types for toTheTop and toTheBottom', async function () {
+      const validationErrors = await validateSteps(function up (migration) {
         const person = migration.editContentType('person', {
           description: 'A content type for a person',
           name: 'Person'
-        });
+        })
 
-        person.moveField('field').toTheTop(true);
-        person.moveField('field').toTheBottom('pivot-field');
-      });
+        person.moveField('field').toTheTop(true)
+        person.moveField('field').toTheBottom('pivot-field')
+      })
 
-      expect(validationErrors).to.eql([]);
-    }));
+      expect(validationErrors).to.eql([])
+    })
 
-    it('returns all validation errors', Bluebird.coroutine(function * () {
-      const validationErrors = yield validateSteps(function up (migration) {
+    it('returns all validation errors', async function () {
+      const validationErrors = await validateSteps(function up (migration) {
         const person = migration.editContentType('person', {
           description: 'A content type for a person',
           name: 'Person'
-        });
+        })
 
-        person.moveField('field').afterField(true);
-      });
+        person.moveField('field').afterField(true)
+      })
 
       expect(validationErrors).to.eql([
         {
@@ -165,7 +165,7 @@ describe('field-movement validation', function () {
             }
           }
         }
-      ]);
-    }));
-  });
-});
+      ])
+    })
+  })
+})

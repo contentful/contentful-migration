@@ -1,14 +1,14 @@
 'use strict'
 
-const { expect } = require('chai')
-const Bluebird = require('bluebird')
+import { expect } from 'chai'
 
-const ContentTransformIntentValidator = require('../../../../src/lib/intent-validator/content-transform').default
-const validateSteps = require('./validate-steps').bind(null, [ContentTransformIntentValidator])
+import ContentTransformIntentValidator from '../../../../src/lib/intent-validator/content-transform'
+import createValidator from './validate-steps'
+const validateSteps = createValidator([ContentTransformIntentValidator])
 
 describe('Content transformation', function () {
   describe('when providing the required properties', function () {
-    it('returns no validation errors', Bluebird.coroutine(function* () {
+    it('returns no validation errors', async function () {
       const properties = {
         contentType: 'person',
         from: ['information'],
@@ -17,12 +17,12 @@ describe('Content transformation', function () {
           console.log('transfom!')
         }
       }
-      const validationErrors = yield validateSteps(function up (migration) {
+      const validationErrors = await validateSteps(function up (migration) {
         migration.transformEntries(properties)
       })
 
       expect(validationErrors).to.eql([])
-    }))
+    })
 
     describe('when using the wrong type for the properties', function () {
       it('returns all validation errors', async function () {
@@ -84,7 +84,7 @@ describe('Content transformation', function () {
 
   describe('when providing optional arguments', function () {
     describe('shouldPublish', function () {
-      it('returns no validation errors', Bluebird.coroutine(function* () {
+      it('returns no validation errors', async function () {
         const properties = {
           from: ['information'],
           to: ['address'],
@@ -93,18 +93,18 @@ describe('Content transformation', function () {
             console.log('transfom!')
           }
         }
-        const validationErrors = yield validateSteps(function up (migration) {
+        const validationErrors = await validateSteps(function up (migration) {
           const person = migration.editContentType('person')
 
           person.transformEntries(properties)
         })
 
         expect(validationErrors).to.eql([])
-      }))
+      })
     })
 
     describe('when using an invalid type', function () {
-      it('returns validation errors', Bluebird.coroutine(function* () {
+      it('returns validation errors', async function () {
         const transformationFunc = () => { console.log('transform!') }
         const properties = {
           contentType: 'person',
@@ -113,7 +113,7 @@ describe('Content transformation', function () {
           shouldPublish: 'yes please',
           transformEntryForLocale: transformationFunc
         }
-        const validationErrors = yield validateSteps(function up (migration) {
+        const validationErrors = await validateSteps(function up (migration) {
           migration.transformEntries(properties)
         })
 
@@ -140,12 +140,12 @@ describe('Content transformation', function () {
             type: 'InvalidType'
           }
         ])
-      }))
+      })
     })
   })
 
   describe('when not providing the required properties', function () {
-    it('returns all validation errors', Bluebird.coroutine(function * () {
+    it('returns all validation errors', async function () {
       const properties = {
         contentType: 'person',
         from: ['information'],
@@ -154,7 +154,7 @@ describe('Content transformation', function () {
           console.log('transfom!')
         }
       }
-      const validationErrors = yield validateSteps(function up (migration) {
+      const validationErrors = await validateSteps(function up (migration) {
         migration.transformEntries(properties)
       })
 
@@ -176,7 +176,7 @@ describe('Content transformation', function () {
           }
         }
       ])
-    }))
+    })
   })
 
 })
