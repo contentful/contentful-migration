@@ -143,6 +143,21 @@ const errorCreators: ErrorCreators = {
 
         return `You cannot transform entries for content type "${id}" because ${stringifiedFields} can't be found on it.`
       }
+    },
+    derivation: {
+      NON_EXISTING_SOURCE_FIELDS: (id: string, fields: string[]): string => {
+        const stringifiedFields = fields.map((f) => `"${f}"`).join(', ')
+
+        return `You cannot derive entries from content type "${id}" because source fields ${stringifiedFields} can't be found on it.`
+      },
+      NON_EXISTING_REFERENCE_FIELD: (id: string, field: string): string => {
+        return `You cannot derive entries from content type "${id}" because reference field "${field}" can't be found on it.`
+      },
+      NON_EXISTING_DESTINATION_FIELDS: (id: string, fields: string[]): string => {
+        const stringifiedFields = fields.map((f) => `"${f}"`).join(', ')
+
+        return `You cannot derive entries to content type "${id}" because destination fields ${stringifiedFields} can't be found on it.`
+      }
     }
   },
   generic: {
