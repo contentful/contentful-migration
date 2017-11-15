@@ -55,6 +55,15 @@ const renderFailedValidation = function (errors, renderer) {
   ].join('\n')
 }
 
+class BatchError extends Error {
+  public batch: RequestBatch
+  public errors: Error[]
+  constructor (message: string, batch: RequestBatch, errors: Error[]) {
+    super(message)
+    this.batch = batch
+    this.errors = errors
+  }
+}
 const run = async function () {
   let migrationFunction
   try {
@@ -132,6 +141,7 @@ const run = async function () {
             // TODO: We wanted to make this an async interator
             // So we should not inspect the length but have a property for that
             const numRequests = batch.requests.length
+            const requestErrors = []
             let requestsDone = 0
             for (const request of batch.requests) {
               requestsDone += 1
@@ -139,8 +149,12 @@ const run = async function () {
               task.output = `${request.method} ${request.url} at V${request.headers['X-Contentful-Version']}`
               await makeRequest(request).catch((error) => {
                 const parsed = JSON.parse(error.message)
-                throw new Error(JSON.stringify(parsed.details) || parsed.message)
+                requestErrors.push(Error(JSON.stringify(parsed.details) || parsed.message))
               })
+            }
+            // Finish batch and only then throw all errors in there
+            if (requestErrors.length) {
+              throw new BatchError(`Batch failed`, batch, requestErrors)
             }
           }
         }
@@ -170,6 +184,7 @@ const run = async function () {
     } catch (err) {
       console.log(chalk`🚨  {bold.red Migration unsuccessful}`)
       console.log(chalk`{red ${err.message}}`)
+      console.log(err.errors.map((err) => chalk`{red ${err.message}}\n`))
     }
   } else {
     console.log(chalk`⚠️  {bold.yellow Migration aborted}`)
