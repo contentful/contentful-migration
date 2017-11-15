@@ -6,7 +6,7 @@ interface Intent {
   toActions (): (APIAction|EntityAction)[]
   toRaw (): RawStep
   getContentTypeId (): string
-  getRelatedContentTypeIds(): string[]
+  getRelatedContentTypeIds (): string[]
   getFieldId (): string
   getRawType (): string
 

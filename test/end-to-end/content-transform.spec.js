@@ -8,7 +8,7 @@ const { createDevSpace, deleteDevSpace, getEntries, makeRequest } = require('../
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 
-describe.only('apply content transformation', function () {
+describe('apply content transformation', function () {
   this.timeout(30000);
   let devSpaceId;
   let request;

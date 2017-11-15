@@ -123,6 +123,17 @@ const errorCreators: ErrorCreators = {
       TRANSFORM_BEFORE_CONTENT_TYPE_CREATE: (id) => {
         return `You cannot transform entries for content type "${id}" because it has not yet been created.`
       }
+    },
+    deriveEntries: {
+      CONTENT_TYPE_DOES_NOT_EXIST: (id) => {
+        return `You cannot derive entries for content type "${id}" because it does not exist.`
+      },
+      DERIVE_AFTER_CONTENT_TYPE_DELETE: (id) => {
+        return `You cannot derive entries for content type "${id}" because it was deleted.`
+      },
+      DERIVE_BEFORE_CONTENT_TYPE_CREATE: (id) => {
+        return `You cannot derive entries for content type "${id}" because it has not yet been created.`
+      }
     }
   },
   entry: {

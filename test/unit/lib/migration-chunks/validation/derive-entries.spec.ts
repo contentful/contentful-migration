@@ -3,7 +3,7 @@ import { omit } from 'lodash'
 
 const validateChunks = require('./validate-chunks').default
 
-describe.only('Derive entries chunk validation', function () {
+describe('Derive entries chunk validation', function () {
   describe('when deriving entries of a non existing Content Type', function () {
     it('returns an error', async function () {
       const step = {
@@ -47,7 +47,7 @@ describe.only('Derive entries chunk validation', function () {
             type: 'contentType/deriveEntries'
           }
         },
-        message: 'You cannot derive entries from content type "entry" because it does not exist.',
+        message: 'You cannot derive entries for content type "entry" because it does not exist.',
         type: 'InvalidAction'
       }, {
         details: {
@@ -62,7 +62,7 @@ describe.only('Derive entries chunk validation', function () {
             type: 'contentType/deriveEntries'
           }
         },
-        message: 'You cannot derive entries to content type "author" because it does not exist.',
+        message: 'You cannot derive entries for content type "author" because it does not exist.',
         type: 'InvalidAction'
       }])
     })
@@ -93,11 +93,11 @@ describe.only('Derive entries chunk validation', function () {
         }
       }
 
-      const contentTypes = []
+      const contentTypes = [{ sys: { id: 'entry' }, fields: [{ id: 'name', type: 'Symbol' } ] }]
       const errors = await validateChunks(function up (migration) {
-        const entry = migration.createContentType('entry')
+        const entry = migration.createContentType('author')
 
-        entry.createField('name')
+        entry.createField('firstName')
           .type('Symbol')
 
         migration.deriveLinkedEntries(step)

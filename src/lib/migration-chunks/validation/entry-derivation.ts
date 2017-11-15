@@ -17,12 +17,13 @@ class FieldsExistCheck implements EntryDerivationValidation {
   }
 
   validate (intent: Intent, contentTypes: ContentType[]) {
-    const { from, to } = intent.toRaw().payload.transformation
+    const { from, toReferenceField, derivedFields } = intent.toRaw().payload.derivation
     const contentType = contentTypes.find((ct) => ct.id === intent.getContentTypeId())
     const nonExistingFromFields = from.filter((f) => !contentType.fields.getField(f))
-    const nonExistingToFields = to.filter((f) => !contentType.fields.getField(f))
+    const nonExistingToReferenceFields = [toReferenceField].filter((f) => !contentType.fields.getField(f))
+    const nonExistingDerivedFields = derivedFields.filter((f) => !contentType.fields.getField(f))
 
-    return nonExistingFromFields.concat(nonExistingToFields)
+    return nonExistingFromFields.concat(nonExistingToReferenceFields).concat(nonExistingDerivedFields)
   }
 }
 
