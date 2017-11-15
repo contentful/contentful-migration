@@ -1,6 +1,7 @@
 'use strict'
 
 import { expect } from 'chai'
+import { omit } from 'lodash'
 
 import EntryDeriveIntentValidator from '../../../../src/lib/intent-validator/entry-derive'
 import createValidator from './validate-steps'
@@ -281,7 +282,7 @@ describe('Entry derivation', function () {
               },
               'payload': {
                 'contentTypeId': 'dog',
-                'derivation': properties
+                'derivation': omit(properties, 'contentType')
               }
             }
           }

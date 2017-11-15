@@ -5,6 +5,7 @@ import { expect } from 'chai'
 import ContentTransformIntentValidator from '../../../../src/lib/intent-validator/content-transform'
 import createValidator from './validate-steps'
 const validateSteps = createValidator([ContentTransformIntentValidator])
+import { omit } from 'lodash'
 
 describe('Content transformation', function () {
   describe('when providing the required properties', function () {
@@ -170,7 +171,7 @@ describe('Content transformation', function () {
               },
               'payload': {
                 'contentTypeId': 'person',
-                'transformation': properties
+                'transformation': omit(properties, 'contentType')
               }
             }
           }
