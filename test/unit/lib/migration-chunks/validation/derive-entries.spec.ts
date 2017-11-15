@@ -116,9 +116,41 @@ describe('Derive entries chunk validation', function () {
             type: 'contentType/deriveEntries'
           }
         },
-        message: 'You cannot derive entries for content type "entry" because "authorName", "authorTwitterHandle" can\'t be found on it.',
-        type: 'InvalidEntriesTransformation'
+        message: 'You cannot derive entries from content type "entry" because source fields "authorName", "authorTwitterHandle" can\'t be found on it.',
+        type: 'InvalidEntriesDerivation'
+      }, {
+        details: {
+          step: {
+            meta: {
+              contentTypeInstanceId: 'contentType/entry/0'
+            },
+            payload: {
+              contentTypeId: step.contentType,
+              derivation: omit(step, 'contentType')
+            },
+            type: 'contentType/deriveEntries'
+          }
+        },
+        message: 'You cannot derive entries from content type "entry" because reference field "author" can\'t be found on it.',
+        type: 'InvalidEntriesDerivation'
+      }, {
+        details: {
+          step: {
+            meta: {
+              contentTypeInstanceId: 'contentType/entry/0'
+            },
+            payload: {
+              contentTypeId: step.contentType,
+              derivation: omit(step, 'contentType')
+            },
+            type: 'contentType/deriveEntries'
+          }
+        },
+        message: 'You cannot derive entries to content type "author" because destination fields "lastName", "twitterHandle" can\'t be found on it.',
+        type: 'InvalidEntriesDerivation'
       }])
     })
   })
 })
+
+// add test for different source and target CTs
