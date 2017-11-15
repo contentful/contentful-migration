@@ -14,7 +14,6 @@ import createMigrationParser from '../lib/migration-parser'
 import renderPlan from './lib/plan-messages'
 import renderStepsErrors from './lib/steps-errors'
 import { RequestBatch } from '../lib/offline-api/index'
-import { flatten } from 'lodash'
 import Fetcher from '../lib/fetcher'
 
 const argv = yargs
@@ -122,16 +121,24 @@ const run = async function () {
     console.log(chalk`🚨  {bold.red Migration unsuccessful}`)
     process.exit(1)
   }
-  const requests = flatten(batches.map((batch) => batch.requests))
-  const tasks = requests.map((request) => {
+
+  const tasks = batches.map((batch) => {
     return {
-      title: `${request.method} ${request.url} at V${request.headers['X-Contentful-Version']}`,
-      task: () => {
-        return makeRequest(request).catch((error) => {
-          const parsed = JSON.parse(error.message)
-          throw new Error(JSON.stringify(parsed.details) || parsed.message)
-        })
-      }
+      title: batch.intent.toPlanMessage().heading,
+      task: () => new Listr([
+        {
+          title: 'Making requests',
+          task: async (_ctx, task) => {
+            for (const request of batch.requests) {
+              task.output = `${request.method} ${request.url} at V${request.headers['X-Contentful-Version']}`
+              await makeRequest(request).catch((error) => {
+                const parsed = JSON.parse(error.message)
+                throw new Error(JSON.stringify(parsed.details) || parsed.message)
+              })
+            }
+          }
+        }
+      ])
     }
   })
 
