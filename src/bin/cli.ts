@@ -129,7 +129,13 @@ const run = async function () {
         {
           title: 'Making requests',
           task: async (_ctx, task) => {
+            // TODO: We wanted to make this an async interator
+            // So we should not inspect the length but have a property for that
+            const numRequests = batch.requests.length
+            let requestsDone = 0
             for (const request of batch.requests) {
+              requestsDone += 1
+              task.title = `Making requests (${requestsDone}/${numRequests})`
               task.output = `${request.method} ${request.url} at V${request.headers['X-Contentful-Version']}`
               await makeRequest(request).catch((error) => {
                 const parsed = JSON.parse(error.message)
