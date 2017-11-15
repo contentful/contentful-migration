@@ -26,7 +26,7 @@ chance.mixin({
 
 const APPLICATION_NAME = `contentful.migration-cli;populate-space`;
 const CONTENTFUL_TARGET_SPACE = process.env.CONTENTFUL_TARGET_SPACE;
-const NUMBER_OF_ENTRIES = 500;
+const NUMBER_OF_ENTRIES = parseInt(process.env.ENTRIES, 10) || 500;
 
 if (!CONTENTFUL_TARGET_SPACE) {
   throw new Error('Empty or undefined $CONTENTFUL_TARGET_SPACE env variable');
