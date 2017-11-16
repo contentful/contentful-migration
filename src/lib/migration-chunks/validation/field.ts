@@ -5,6 +5,7 @@ import { ContentType } from '../../entities/content-type'
 
 const fieldErrors = errors.field
 const deriveErrors = errors.entry.derivation
+const transformErrors = errors.entry.transformation
 
 const invalidActionError = (message, intent) => {
   return {
@@ -191,6 +192,27 @@ const checks = {
 
     validationContext.fieldSet.delete(oldId)
     validationContext.fieldSet.add(newId)
+  },
+
+  'contentType/transformEntries': (errors, intent, validationContext) => {
+    const wrapError = (message, intent) => {
+      return {
+        type: 'InvalidEntriesTransformation',
+        message,
+        details: { intent }
+      }
+    }
+
+    const transformation = intent.toRaw().payload.transformation
+
+    const nonExistingSourceFields = transformation.from.filter((f) => !validationContext.fieldSet.has(f))
+    const nonExistingDestinationFields = transformation.to.filter((f) => !validationContext.fieldSet.has(f))
+
+    const nonExistingFields = nonExistingSourceFields.concat(nonExistingDestinationFields)
+
+    if (nonExistingFields.length > 0) {
+      errors.push(wrapError(transformErrors.NON_EXISTING_FIELDS(intent.getContentTypeId(), nonExistingFields), intent))
+    }
   }
 }
 
@@ -227,6 +249,10 @@ export default function (intents: Intent[], contentTypes: ContentType[] = []): V
         continue
       }
 
+      checks[intent.getRawType()](errors, intent, validationContext)
+    }
+
+    if (intent.isContentTransform()) {
       checks[intent.getRawType()](errors, intent, validationContext)
     }
 
