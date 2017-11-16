@@ -88,15 +88,32 @@ Deletes the content type with the provided id and returns `undefined`. Note that
 
 #### `transformEntries(config)`
 
+For the given content type, transforms all entries according to the user-provided `transformEntryForLocale` function. This function will be called for every entry and every locale with the `from` fields and the current locale. It is expected to return an object with the desired target fields and the value OR undefined, in which case this entry locale will be skipped. If `transformEntryForLocale` does return a value, it will be written to the current locale.
+Please also refer to [this example](./examples/12-transform-content.js).
+
 **`config : Object`** – Content transformation definition, with the following properties:
-- **`contentType : string`** _(required)_ – Content type ID.
+- **`contentType : string`** _(required)_ – Content type ID
 - **`from : array`** _(required)_ – Array of the source field IDs
 - **`to : array`** _(required)_ – Array of the target field IDs
 - **`transformEntryForLocale : function (fields, locale): object`** _(required)_ – Transformation function to be applied.
 - **`shouldPublish : boolean`** _(optional)_ – Publish entries after transform (default _true_)
 
-For the given content type, transforms all entries according to the user-provided `transformEntryForLocale` function. This function will be called for every entry and every locale with the `from` fields and the current locale. It is expected to return an object with the desired target field and the value OR undefined, in which case this entry locale will be skipped. If `transformEntryForLocale` does return a value, it will be written to the current locale.
-Please also refer to [this example](./examples/12-transform-content.js).
+#### `deriveLinkedEntries(config)`
+
+For the given content type, derives new entries from existing ones and sets up the new ones as a reference on the existing one according to the user-provided `deriveEntryForLocale` function. This function will be called for every entry and every locale with the `from` fields and the current locale. It is expected to return an object with the desired target fields and the value OR undefined, in which case this entry locale will be skipped. 
+Please also refer to [this example](./examples/15-derive-entry.js).
+
+**`config : Object`** – Content transformation definition, with the following properties:
+- **`contentType : string`** _(required)_ – Source entry content type ID
+- **`derivedContentType : string`** _(required)_ – Target entry content type ID
+- **`from : array`** _(required)_ – Array of the source field IDs
+- **`toReferenceField : string`** _(required)_ – Field ID on the source content type in which to create the reference
+- **`derivedFields : array`** _(required)_ – Array of the field IDs on the target content type
+- **`identityKey: function (fields, locale): string`** _(required)_ - Called once per entry to transform. Returns the ID used for the new entry, which is also used for deduplication so that multiple source entries can link to the same derived entry.
+- **`deriveEntryForLocale : function (fields, locale): object`** _(required)_ – Transformation function to be applied.
+- **`shouldPublish : boolean`** _(optional)_ – Publish entries after deriving (default _true_)
+
+
 
 ### `ContentType`
 
