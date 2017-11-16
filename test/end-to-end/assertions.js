@@ -200,6 +200,14 @@ module.exports = {
         const withoutAnsiCodes = stripAnsi(result.stdout);
         expect(withoutAnsiCodes).to.include(`Transform entries for ${id}`);
       };
+    },
+    entriesDerive: function (id) {
+      return result => {
+        expect(result.stdout).not.to.be.empty();
+
+        const withoutAnsiCodes = stripAnsi(result.stdout);
+        expect(withoutAnsiCodes).to.include(`Derive entries from ${id}`);
+      };
     }
   },
   help: {
