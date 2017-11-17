@@ -35,7 +35,9 @@ class Entry {
   }
 
   setFieldForLocale (id: string, locale: string, value) {
-    this._fields[id][locale] = value
+    const field = this._fields[id] || {}
+    field[locale] = value
+    this._fields[id] = field
   }
 
   get version () {
