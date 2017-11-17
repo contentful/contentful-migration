@@ -144,7 +144,7 @@ const run = async function () {
               task.output = `${request.method} ${request.url} at V${request.headers['X-Contentful-Version']}`
               await makeRequest(request).catch((error) => {
                 const parsed = JSON.parse(error.message)
-                requestErrors.push(Error(JSON.stringify(parsed.details) || parsed.message))
+                requestErrors.push(new Error(JSON.stringify(parsed.details) || parsed.message))
               })
             }
             // Finish batch and only then throw all errors in there

@@ -26,7 +26,7 @@ export default class Fetcher {
     return response.items
   }
 
-  async getContentTypesInChunks (intentList: IntentList) {
+  async getContentTypesInChunks (intentList: IntentList): Promise<APIContentType[]> {
     const ids: string[] = _.uniq(intentList.getIntents().map((intent) => intent.getContentTypeId()))
 
     if (ids.length === 0) {
