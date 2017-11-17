@@ -12,7 +12,7 @@ export default class Fetcher {
   }
 
   async getEntriesInIntents (intentList: IntentList) {
-    const ids: Array<string> = _.uniq(intentList.getIntents().map((intent) => intent.getContentTypeId()))
+    const ids: string[] = _.uniq(intentList.getIntents().map((intent) => intent.getContentTypeId()))
 
     if (ids.length === 0) {
       return []
@@ -27,7 +27,7 @@ export default class Fetcher {
   }
 
   async getContentTypesInChunks (intentList: IntentList) {
-    const ids: Array<string> = _.uniq(intentList.getIntents().map((intent) => intent.getContentTypeId()))
+    const ids: string[] = _.uniq(intentList.getIntents().map((intent) => intent.getContentTypeId()))
 
     if (ids.length === 0) {
       return []
@@ -63,7 +63,7 @@ export default class Fetcher {
     }
 
     const self = this
-    return Bluebird.map(contentTypes, async function (ct: any): Promise<any> {
+    return Bluebird.map(contentTypes, async function (ct: any): Promise<ContentType> {
       if (deletedCtIds.has(ct.id)) {
         const response = await self.makeRequest({
           method: 'GET',

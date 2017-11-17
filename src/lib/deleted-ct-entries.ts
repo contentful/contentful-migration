@@ -12,7 +12,7 @@ export default async function checkEntriesForDeletedCts (intentList: IntentList,
     return contentTypes
   }
 
-  return Bluebird.map(contentTypes, async function (ct: any): Promise<any> {
+  return Bluebird.map(contentTypes, async function (ct: any): Promise<ContentType> {
     if (deletedCtIds.has(ct.id)) {
       const response = await request({
         method: 'GET',
