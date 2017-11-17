@@ -359,7 +359,7 @@ class OfflineAPI {
     return this.requestBatches
   }
 
-  public recordTransformError (error) {
+  public async recordTransformError (error) {
     this.currentTransformErrorsRecorded.push(error)
   }
 
