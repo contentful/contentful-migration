@@ -70,9 +70,6 @@ class EntryDeriveAction extends APIAction {
         }
       }
 
-      // TODO: `setFieldForLocale` does not create the path
-      // to the field object and assigns directly.
-      // So if the field never existed before it fails
       entry.setField(this.referenceField, {})
       for (const locale of locales) {
         entry.setFieldForLocale(this.referenceField, locale, {
