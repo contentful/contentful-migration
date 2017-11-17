@@ -97,7 +97,7 @@ const run = async function () {
   let batches: RequestBatch[]
 
   try {
-    ({ batches } = await migrationParser(migrationFunction))
+    batches = await migrationParser(migrationFunction)
   } catch (e) {
     let message = e.message
 
