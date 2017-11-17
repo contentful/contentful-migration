@@ -60,7 +60,7 @@ const unknownCombinationError = function ({ path, keys }): SimplifiedValidationE
   return { message, path, type, context }
 }
 
-// Receives Array<ValidationError> with this structure:
+// Receives ValidationError[] with this structure:
 // [{
 //   message: '"foo" is not allowed',
 //   path: '0.validations.2.foo',
