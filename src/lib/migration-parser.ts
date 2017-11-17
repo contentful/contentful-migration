@@ -16,7 +16,7 @@ import * as errors from './errors/index'
 import Entry from './entities/entry'
 import OfflineAPI, { RequestBatch } from './offline-api'
 
-const createMigrationParser = function (fetcher): (migrationCreator: (migration: any) => any) => Promise<{batches: RequestBatch[]}> {
+const createMigrationParser = function (fetcher): (migrationCreator: (migration: any) => any) => Promise<RequestBatch[]> {
   return async function migration (migrationCreator) {
     const intents = await buildIntents(migrationCreator)
 
@@ -70,7 +70,7 @@ const createMigrationParser = function (fetcher): (migrationCreator: (migration:
 
     const batches = await api.getRequestBatches()
 
-    return { batches }
+    return batches
   }
 }
 

@@ -32,7 +32,7 @@ describe('the migration', function () {
     const fetcher = new Fetcher(request);
     migrationParser = createMigrationParser(fetcher);
     migrator = co(function * (migration) {
-      const { batches } = yield migrationParser(migration);
+      const batches = yield migrationParser(migration);
       const requests = flatten(batches.map((batch) => batch.requests));
       for (const req of requests) {
         yield request(req);
