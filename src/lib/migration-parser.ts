@@ -1,4 +1,3 @@
-import ContentTransformIntentValidator from './intent-validator/content-transform'
 import APIEntry from './interfaces/api-entry'
 
 import { migration as buildIntents } from './migration-steps'
@@ -9,6 +8,8 @@ import { ContentType } from './entities/content-type'
 import ContentTypeUpdateIntentValidator from './intent-validator/content-type-update'
 import FieldUpdateIntentValidator from './intent-validator/field-update'
 import FieldMovementValidator from './intent-validator/field-movement'
+import EntryDeriveIntentValidator from './intent-validator/entry-derive'
+import ContentTransformIntentValidator from './intent-validator/content-transform'
 import IntentList from './intent-list'
 import * as errors from './errors/index'
 
@@ -25,6 +26,7 @@ const createMigrationParser = function (fetcher): (migrationCreator: (migration:
     intentList.addValidator(new FieldUpdateIntentValidator())
     intentList.addValidator(new FieldMovementValidator())
     intentList.addValidator(new ContentTransformIntentValidator())
+    intentList.addValidator(new EntryDeriveIntentValidator())
 
     intentList.validate()
 
