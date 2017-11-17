@@ -5,14 +5,14 @@ interface ErrorGroup {
 interface ErrorCreators {
   field: {
     [groupIdentifier: string]: ErrorGroup
-  },
+  }
   contentType: {
     [groupIdentifier: string]: ErrorGroup
-  },
-  generic: ErrorGroup,
+  }
   entry: {
     [groupIdentifier: string]: ErrorGroup
   }
+  generic: ErrorGroup
 }
 
 const errorCreators: ErrorCreators = {

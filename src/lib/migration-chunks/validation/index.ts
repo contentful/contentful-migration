@@ -26,7 +26,6 @@ function validateChunks (intentList: IntentList, contentTypes: ContentType[]): v
   if (fieldErrors.length > 0) {
     throw new ErrorCollection(fieldErrors, {payloadValidationError: true})
   }
-
 }
 
 export {
