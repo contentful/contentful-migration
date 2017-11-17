@@ -35,6 +35,11 @@ const argv = yargs
     alias: 'a',
     describe: 'The access token to use\nThis takes precedence over environment variables or .contentfulrc'
   })
+  .option('yes', {
+    alias: 'y',
+    describe: 'Skips any confirmation before applying the migration script',
+    default: false
+  })
   .demandOption(['space-id'], 'Please provide a space ID')
   .help('h')
   .alias('h', 'help')
@@ -128,11 +133,19 @@ const run = async function () {
     }
   })
 
-  const answers = await inquirer.prompt([{
-    type: 'confirm',
-    message: 'Do you want to apply the migration',
-    name: 'applyMigration'
-  }])
+  const confirm = async function (options: { skipConfirmation: boolean }) {
+    if (options.skipConfirmation) {
+      return { applyMigration: true }
+    }
+
+    return inquirer.prompt([{
+      type: 'confirm',
+      message: 'Do you want to apply the migration',
+      name: 'applyMigration'
+    }])
+  }
+
+  const answers = await confirm({ skipConfirmation: argv.yes })
 
   if (answers.applyMigration) {
     try {

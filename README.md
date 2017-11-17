@@ -182,6 +182,14 @@ contentful-migration --space-id $SPACE_ID 06-delete-field.js
 contentful-migration --space-id $SPACE_ID 07-display-field.js
 ```
 
+## Programmatic Usage
+
+To use the CLI without the manual confirmation step (e.g. in a CI environment), you can pass the `--yes` (or just `-y`) flag:
+
+```bash
+contentful-migration --yes --space-id YOUR_TOKEN ./your-migration.js
+```
+
 ## Support
 
 If you have a problem with this tool, please file an [issue](https://github.com/contentful/migration-cli/issues/new) here on Github.
