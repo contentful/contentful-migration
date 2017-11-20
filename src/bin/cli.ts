@@ -11,10 +11,12 @@ const {
   SpaceAccessError
 } = require('../lib/errors')
 import createMigrationParser from '../lib/migration-parser'
-import renderPlan from './lib/plan-messages'
+import { renderPlan, renderValidationErrors, renderRuntimeErrors } from './lib/render-migration'
 import renderStepsErrors from './lib/steps-errors'
+import writeErrorsToLog from './lib/write-errors-to-log'
 import { RequestBatch } from '../lib/offline-api/index'
 import Fetcher from '../lib/fetcher'
+import { ParseResult } from '../lib/migration-parser'
 
 const argv = yargs
   .usage('Parses and runs a migration script on a Contentful space.\n\nUsage: contentful-migration [args] <path-to-script-file>\n\nScript: path to a migration script.')
@@ -41,14 +43,6 @@ const argv = yargs
   .example('contentful-migration', '--space-id abcedef my-migration.js')
   .strict()
   .argv
-
-const renderFailedValidation = function (errors, renderer) {
-  return [
-    chalk`{red.bold Validation failed}\n`,
-    renderer(errors),
-    chalk`🚨  {bold.red Migration unsuccessful}`
-  ].join('\n')
-}
 
 class BatchError extends Error {
   public batch: RequestBatch
@@ -89,42 +83,55 @@ const run = async function () {
   const fetcher = new Fetcher(makeRequest)
   const migrationParser = createMigrationParser(fetcher)
 
-  let batches: RequestBatch[]
+  let parseResult: ParseResult
 
   try {
-    batches = await migrationParser(migrationFunction)
+    parseResult = await migrationParser(migrationFunction)
   } catch (e) {
-    let message = e.message
-
-    if (e.errors) {
-      const errors = e.errors
-      message = renderFailedValidation(errors, renderStepsErrors)
-    } else if (e instanceof SpaceAccessError) {
-      message = [
+    if (e instanceof SpaceAccessError) {
+      const message = [
         chalk`{red.bold ${e.message}}\n`,
         chalk`🚨  {bold.red Migration unsuccessful}`
       ].join('\n')
-    } else {
-      console.log(e)
+      console.log(message)
       process.exit(1)
     }
-    console.log(message)
+    console.log(e)
     process.exit(1)
   }
 
-  const hasErrors = batches.some((batch) => batch.errors.length > 0 || batch.contentTransformErrors.length > 0)
-
-  if (hasErrors) {
-    console.log(chalk`{bold.red The following migration has been planned but cannot be run because it contains errors}\n\n`)
-  } else {
-    console.log(chalk`{bold.green The following migration has been planned}\n`)
-  }
-  renderPlan(batches)
-
-  if (hasErrors) {
-    console.log(chalk`🚨  {bold.red Migration unsuccessful}`)
+  if (parseResult.hasStepsValidationErrors()) {
+    renderStepsErrors(parseResult.stepsValidationErrors)
     process.exit(1)
   }
+
+  if (parseResult.hasPayloadValidationErrors()) {
+    renderStepsErrors(parseResult.payloadValidationErrors)
+    process.exit(1)
+  }
+
+  const migrationName = path.basename(argv.filePath, '.js')
+  const errorsFile = path.join(
+    process.cwd(),
+    `errors-${migrationName}-${Date.now()}.ndjson`
+  )
+
+  const batches = parseResult.batches
+
+  if (parseResult.hasValidationErrors()) {
+    renderValidationErrors(batches)
+    process.exit(1)
+  }
+
+  if (parseResult.hasRuntimeErrors()) {
+    renderRuntimeErrors(batches, errorsFile)
+    await writeErrorsToLog(parseResult.getRuntimeErrors(), errorsFile)
+    process.exit(1)
+  }
+
+  await renderPlan(batches)
+
+  const serverErrorsWritten = []
 
   const tasks = batches.map((batch) => {
     return {
@@ -143,8 +150,17 @@ const run = async function () {
               task.title = `Making requests (${requestsDone}/${numRequests})`
               task.output = `${request.method} ${request.url} at V${request.headers['X-Contentful-Version']}`
               await makeRequest(request).catch((error) => {
+                serverErrorsWritten.push(writeErrorsToLog(error, errorsFile))
                 const parsed = JSON.parse(error.message)
-                requestErrors.push(new Error(JSON.stringify(parsed.details) || parsed.message))
+
+                const errorMessage = {
+                  status: parsed.statusText,
+                  message: parsed.message,
+                  details: parsed.details,
+                  url: parsed.request.url
+                }
+
+                requestErrors.push(new Error(JSON.stringify(errorMessage)))
               })
             }
             // Finish batch and only then throw all errors in there
@@ -170,8 +186,10 @@ const run = async function () {
       return successfulMigration
     } catch (err) {
       console.log(chalk`🚨  {bold.red Migration unsuccessful}`)
-      console.log(chalk`{red ${err.message}}`)
-      console.log(err.errors.map((err) => chalk`{red ${err.message}}\n`))
+      console.log(chalk`{red ${err.message}}\n`)
+      err.errors.forEach((err) => console.log(chalk`{red ${err}}\n\n`))
+      await Promise.all(serverErrorsWritten)
+      console.log(`Please check the errors log for more details: ${errorsFile}`)
     }
   } else {
     console.log(chalk`⚠️  {bold.yellow Migration aborted}`)

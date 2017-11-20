@@ -44,7 +44,7 @@ describe('Entry Action', function () {
       await action.applyTo(api)
       api.stopRecordingRequests()
       const batches = await api.getRequestBatches()
-      expect(batches[0].contentTransformErrors).to.eql([ourError, ourError])
+      expect(batches[0].runtimeErrors).to.eql([ourError, ourError])
     } catch (err) {
       expect.fail()
     }

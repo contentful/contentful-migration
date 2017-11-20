@@ -14,8 +14,8 @@ import APIEntry from '../interfaces/api-entry'
 interface RequestBatch {
   intent: Intent
   requests: Request[]
-  errors: (PayloadValidationError | InvalidActionError)[],
-  contentTransformErrors: Error[]
+  validationErrors: (PayloadValidationError | InvalidActionError)[],
+  runtimeErrors: Error[],
 }
 
 export enum ApiHook {
@@ -95,8 +95,8 @@ class OfflineAPI {
   private entries: Entry[] = null
   private isRecordingRequests: boolean = false
   private currentRequestsRecorded: Request[] = null
-  private currentErrorsRecorded: (PayloadValidationError | InvalidActionError)[] = null
-  private currentTransformErrorsRecorded: Error[]
+  private currentValidationErrorsRecorded: (PayloadValidationError | InvalidActionError)[] = null
+  private currentRuntimeErrorsRecorded: Error[]
   private intent: Intent = null
   private requestBatches: RequestBatch[] = []
   private contentTypeValidators: ContentTypePayloadValidator[] = []
@@ -174,7 +174,7 @@ class OfflineAPI {
     for (const validator of this.contentTypeValidators) {
       if (validator.hooks.includes(ApiHook.SaveContentType)) {
         const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
-        this.currentErrorsRecorded = this.currentErrorsRecorded.concat(errors)
+        this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
       }
     }
 
@@ -198,7 +198,7 @@ class OfflineAPI {
     for (const validator of this.contentTypeValidators) {
       if (validator.hooks.includes(ApiHook.PublishContentType)) {
         const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
-        this.currentErrorsRecorded = this.currentErrorsRecorded.concat(errors)
+        this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
       }
     }
 
@@ -222,7 +222,7 @@ class OfflineAPI {
     for (const validator of this.contentTypeValidators) {
       if (validator.hooks.includes(ApiHook.UnpublishContentType)) {
         const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
-        this.currentErrorsRecorded = this.currentErrorsRecorded.concat(errors)
+        this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
       }
     }
 
@@ -243,7 +243,7 @@ class OfflineAPI {
     for (const validator of this.contentTypeValidators) {
       if (validator.hooks.includes(ApiHook.DeleteContentType)) {
         const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
-        this.currentErrorsRecorded = this.currentErrorsRecorded.concat(errors)
+        this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
       }
     }
   }
@@ -326,8 +326,8 @@ class OfflineAPI {
     }
     this.isRecordingRequests = true
     this.currentRequestsRecorded = []
-    this.currentErrorsRecorded = []
-    this.currentTransformErrorsRecorded = []
+    this.currentValidationErrorsRecorded = []
+    this.currentRuntimeErrorsRecorded = []
     this.intent = intent
   }
 
@@ -340,15 +340,15 @@ class OfflineAPI {
     const batch: RequestBatch = {
       intent: this.intent,
       requests: this.currentRequestsRecorded,
-      errors: compact(this.currentErrorsRecorded),
-      contentTransformErrors: this.currentTransformErrorsRecorded
+      validationErrors: compact(this.currentValidationErrorsRecorded),
+      runtimeErrors: this.currentRuntimeErrorsRecorded
     }
 
     this.requestBatches.push(batch)
 
     this.isRecordingRequests = false
     this.currentRequestsRecorded = []
-    this.currentErrorsRecorded = []
+    this.currentValidationErrorsRecorded = []
     this.intent = null
   }
 
@@ -359,8 +359,8 @@ class OfflineAPI {
     return this.requestBatches
   }
 
-  public async recordTransformError (error) {
-    this.currentTransformErrorsRecorded.push(error)
+  public async recordRuntimeError (error) {
+    this.currentRuntimeErrorsRecorded.push(error)
   }
 
   private assertRecording () {

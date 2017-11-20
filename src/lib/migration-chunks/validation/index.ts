@@ -1,18 +1,18 @@
-import ErrorCollection from '../../errors/error-collection'
 import IntentList from '../../intent-list'
 import contentTypeValidations from './content-type'
 import fieldValidations from './field'
 import checkForDuplicatePropsErrors from './duplicate-props'
 import { ContentType } from '../../entities/content-type'
 import { Intent } from '../../interfaces/intent'
+import { InvalidActionError } from '../../interfaces/errors'
+import ValidationError from '../../interfaces/errors'
 
-// TODO: rename to validateIntents
-function validateChunks (intentList: IntentList, contentTypes: ContentType[]): void {
+function validateIntents (intentList: IntentList, contentTypes: ContentType[]): ValidationError[] | InvalidActionError[] {
   const intents: Intent[] = intentList.getIntents()
   const ctErrors = contentTypeValidations(intents, contentTypes)
 
   if (ctErrors.length > 0) {
-    throw new ErrorCollection(ctErrors, {payloadValidationError: true})
+    return ctErrors
   }
 
   const createCTs = intents.filter((intent) => intent.isContentTypeCreate())
@@ -24,11 +24,13 @@ function validateChunks (intentList: IntentList, contentTypes: ContentType[]): v
   fieldErrors = fieldErrors.concat(checkForDuplicatePropsErrors(intentList))
 
   if (fieldErrors.length > 0) {
-    throw new ErrorCollection(fieldErrors, {payloadValidationError: true})
+    return fieldErrors
   }
+
+  return []
 }
 
 export {
-  validateChunks as default,
-  validateChunks
+  validateIntents as default,
+  validateIntents
 }

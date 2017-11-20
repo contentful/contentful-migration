@@ -32,7 +32,8 @@ describe('the migration', function () {
     const fetcher = new Fetcher(request);
     migrationParser = createMigrationParser(fetcher);
     migrator = co(function * (migration) {
-      const batches = yield migrationParser(migration);
+      const parseResult = yield migrationParser(migration);
+      const batches = parseResult.batches;
       const requests = flatten(batches.map((batch) => batch.requests));
       for (const req of requests) {
         yield request(req);
@@ -376,17 +377,10 @@ describe('the migration', function () {
     ]);
   }));
 
-  it('throws an error when the script is invalid', co(function * () {
-    let result;
+  it('returns an error when the script is invalid', co(function * () {
+    const parseResult = yield migrationParser(invalidScript);
 
-    try {
-      result = yield migrationParser(invalidScript);
-    } catch (err) {
-      expect(err).to.be.an('error');
-      expect(err.message).to.include('Validation failed');
-    }
-
-    expect(result).to.be.undefined();
+    expect(parseResult.payloadValidationErrors).to.have.lengthOf.above(0);
   }));
 
   it('does a simple content transformation ', co(function * () {

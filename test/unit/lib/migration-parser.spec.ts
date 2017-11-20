@@ -81,18 +81,20 @@ describe('Migration parser', function () {
 
       }
 
-      const result = await migrationParser(throws)
+      const parseResult = await migrationParser(throws)
+      const result = parseResult.batches
+
       expect(result.length).to.eql(2)
 
       expect(result[0].requests.length).to.eql(2)
       expect(result[0].requests[0].url).to.eql('/entries/456')
       expect(result[0].requests[1].url).to.eql('/entries/456/published')
-      expect(result[0].contentTransformErrors.length).to.eql(1)
-      expect(result[0].contentTransformErrors).to.eql([fooError])
+      expect(result[0].runtimeErrors.length).to.eql(1)
+      expect(result[0].runtimeErrors).to.eql([fooError])
 
       expect(result[1].requests.length).to.eql(0)
-      expect(result[1].contentTransformErrors.length).to.eql(1)
-      expect(result[1].contentTransformErrors).to.eql([catError])
+      expect(result[1].runtimeErrors.length).to.eql(1)
+      expect(result[1].runtimeErrors).to.eql([catError])
     })
   })
 
@@ -148,12 +150,14 @@ describe('Migration parser', function () {
         })
       }
 
-      const result = await migrationParser(transformFunction)
+      const parseResult = await migrationParser(transformFunction)
+      const result = parseResult.batches
+
       expect(result.length).to.eql(1)
       expect(result[0].requests.length).to.eql(2)
       expect(result[0].requests[0].url).to.eql('/entries/123')
       expect(result[0].requests[1].url).to.eql('/entries/456')
-      expect(result[0].errors).to.eql([])
+      expect(result[0].validationErrors).to.eql([])
     })
   })
 })

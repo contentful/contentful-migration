@@ -47,7 +47,8 @@ class EntryDeriveAction extends APIAction {
           let outputsForCurrentLocale
           try {
             outputsForCurrentLocale = await this.deriveEntryForLocale(inputs, locale)
-          } catch (e) {
+          } catch (err) {
+            await api.recordRuntimeError(err)
             continue
           }
           if (!outputsForCurrentLocale) {

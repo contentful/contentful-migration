@@ -23,18 +23,8 @@ export default function createValidator (validators) {
       stepList.addValidator(new Validator())
     }
 
-    let errors = []
-
-    try {
-      stepList.validate()
-    } catch (err) {
-      if (!err.errors) {
-        throw err
-      }
-      errors = err.errors
-      const stripped = stripCallsites(errors)
-      errors = stripped
-    }
-    return errors
+    let errors = stepList.validate()
+    const stripped = stripCallsites(errors)
+    return stripped
   }
 }
