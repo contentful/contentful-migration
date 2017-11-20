@@ -1,5 +1,6 @@
 import * as path from 'path'
 import * as fs from 'fs'
+import * as util from 'util'
 import * as yargs from 'yargs'
 
 import chalk from 'chalk'
@@ -15,6 +16,8 @@ import renderPlan from './lib/plan-messages'
 import renderStepsErrors from './lib/steps-errors'
 import { RequestBatch } from '../lib/offline-api/index'
 import Fetcher from '../lib/fetcher'
+
+const appendFile = util.promisify(fs.appendFile)
 
 const argv = yargs
   .usage('Parses and runs a migration script on a Contentful space.\n\nUsage: contentful-migration [args] <path-to-script-file>\n\nScript: path to a migration script.')
@@ -126,6 +129,9 @@ const run = async function () {
     process.exit(1)
   }
 
+  const serverErrorsFile = path.join(process.cwd(), `errors-${Date.now()}`)
+  const serverErrorsWritten = []
+
   const tasks = batches.map((batch) => {
     return {
       title: batch.intent.toPlanMessage().heading,
@@ -143,8 +149,17 @@ const run = async function () {
               task.title = `Making requests (${requestsDone}/${numRequests})`
               task.output = `${request.method} ${request.url} at V${request.headers['X-Contentful-Version']}`
               await makeRequest(request).catch((error) => {
+                serverErrorsWritten.push(appendFile(serverErrorsFile, `${error}\n\n`))
                 const parsed = JSON.parse(error.message)
-                requestErrors.push(new Error(JSON.stringify(parsed.details) || parsed.message))
+
+                const errorMessage = {
+                  status: parsed.statusText,
+                  message: parsed.message,
+                  details: parsed.details,
+                  url: parsed.request.url
+                }
+
+                requestErrors.push(new Error(JSON.stringify(errorMessage)))
               })
             }
             // Finish batch and only then throw all errors in there
@@ -170,8 +185,10 @@ const run = async function () {
       return successfulMigration
     } catch (err) {
       console.log(chalk`🚨  {bold.red Migration unsuccessful}`)
-      console.log(chalk`{red ${err.message}}`)
-      console.log(err.errors.map((err) => chalk`{red ${err.message}}\n`))
+      console.log(chalk`{red ${err.message}}\n`)
+      err.errors.forEach((err) => console.log(chalk`{red ${err}}\n\n`))
+      await Promise.all(serverErrorsWritten)
+      console.log('Please check the errors log for more details')
     }
   } else {
     console.log(chalk`⚠️  {bold.yellow Migration aborted}`)
