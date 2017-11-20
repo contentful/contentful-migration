@@ -109,7 +109,7 @@ Please also refer to [this example](./examples/15-derive-entry.js).
 - **`from : array`** _(required)_ – Array of the source field IDs
 - **`toReferenceField : string`** _(required)_ – Field ID on the source content type in which to create the reference
 - **`derivedFields : array`** _(required)_ – Array of the field IDs on the target content type
-- **`identityKey: function (fields, locale): string`** _(required)_ - Called once per entry to transform. Returns the ID used for the new entry, which is also used for deduplication so that multiple source entries can link to the same derived entry.
+- **`identityKey: function (fields): string`** _(required)_ - Called once per entry to transform. Returns the ID used for the new entry, which is also used for deduplication so that multiple source entries can link to the same derived entry.
 - **`deriveEntryForLocale : function (fields, locale): object`** _(required)_ – Transformation function to be applied.
 - **`shouldPublish : boolean`** _(optional)_ – Publish entries after deriving (default _true_)
 
