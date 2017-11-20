@@ -5,7 +5,7 @@ import * as sinon from 'sinon'
 
 import {migration as migrationSteps } from '../../../src/lib/migration-steps'
 import IntentList from '../../../src/lib/intent-list'
-import { fetcher as contentTypesInPlan } from '../../../src/lib/content-types-in-plan'
+import Fetcher from '../../../src/lib/fetcher'
 
 describe('Content Type fetcher', function () {
   it('fetches all the Content Types in the plan', async function () {
@@ -69,7 +69,8 @@ describe('Content Type fetcher', function () {
 
     const intentList = new IntentList(intents)
 
-    const contentTypes = await contentTypesInPlan(intentList, request)
+    const fetcher = new Fetcher(request)
+    const contentTypes = await fetcher.getContentTypesInChunks(intentList)
 
     expect(request).to.have.been.calledWith({
       method: 'GET',
