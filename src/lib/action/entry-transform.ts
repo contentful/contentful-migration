@@ -30,7 +30,7 @@ class EntryTransformAction extends APIAction {
         try {
           outputsForCurrentLocale = await this.transformEntryForLocale(inputs, locale)
         } catch (err) {
-          await api.recordTransformError(err)
+          await api.recordRuntimeError(err)
           continue
         }
         // TODO verify that the toFields actually get written to

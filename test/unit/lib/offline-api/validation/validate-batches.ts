@@ -21,7 +21,7 @@ const validateBatches = async function (runMigration, contentTypes) {
 
   const batches = await api.getRequestBatches()
 
-  return batches.map((batch) => batch.errors)
+  return batches.map((batch) => batch.validationErrors)
 }
 
 export default validateBatches
