@@ -24,19 +24,9 @@ const validateChunks = async function (migration, testCts: any[]) {
     return contentType
   })
 
-  let errors = []
-
-  try {
-    validate(list, existingCts)
-  } catch (err) {
-    if (!err.errors) {
-      throw err
-    }
-    errors = err.errors
-    const stripped = stripCallsites(errors)
-    errors = stripped
-  }
-  return errors
+  let errors = validate(list, existingCts)
+  const stripped = stripCallsites(errors)
+  return stripped
 }
 
 export default validateChunks

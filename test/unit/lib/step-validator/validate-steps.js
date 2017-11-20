@@ -24,17 +24,7 @@ module.exports = Bluebird.coroutine(function * (validators, migration) {
     stepList.addValidator(new Validator());
   }
 
-  let errors = [];
-
-  try {
-    stepList.validate();
-  } catch (err) {
-    if (!err.errors) {
-      throw err;
-    }
-    errors = err.errors;
-    const stripped = stripCallsites(errors);
-    errors = stripped;
-  }
-  return errors;
+  const errors = stepList.validate();
+  const stripped = stripCallsites(errors);
+  return stripped;
 });

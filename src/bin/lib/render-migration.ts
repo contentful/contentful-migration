@@ -19,27 +19,42 @@ const renderBatch = function (batch: RequestBatch) {
 }
 
 const renderPlan = (batches: RequestBatch[]) => {
+  console.log(chalk`{bold.green The following migration has been planned}\n`)
   for (const batch of batches) {
     renderBatch(batch)
 
-    if (batch.errors.length > 0 || batch.contentTransformErrors.length > 0) {
+    if (batch.validationErrors.length > 0) {
       console.log('\n')
     }
 
-    for (const error of batch.errors) {
+    for (const error of batch.validationErrors) {
       console.log(chalk`{red.bold Error: ${error.message}}`)
-    }
-
-    for (const transformError of batch.contentTransformErrors) {
-      console.log(transformError)
-      console.log('\n')
     }
 
     if (batch.intent.shouldPublish()) {
       console.log(chalk`\n{bold.underline Publish Content Type} {bold.yellow ${batch.intent.getContentTypeId()}}`)
     }
-
   }
 }
 
-export default renderPlan
+const renderValidationErrors = (batches: RequestBatch[]) => {
+  console.log(chalk`{bold.red The following migration has been planned but cannot be run because it contains errors}\n\n`)
+  renderPlan(batches)
+  console.log(chalk`🚨  {bold.red Migration unsuccessful}`)
+}
+
+const renderRuntimeErrors = (batches: RequestBatch[], filename: string) => {
+  for (const batch of batches) {
+    renderBatch(batch)
+
+    const errorCount = batch.runtimeErrors.length
+    console.log(chalk`\n{red ${errorCount.toString()} errors while transforming this content. Please check the errors log for details: ${filename}}\n`)
+    console.log(chalk`🚨  {bold.red Migration unsuccessful}`)
+  }
+}
+
+export {
+  renderPlan,
+  renderValidationErrors,
+  renderRuntimeErrors
+}
