@@ -65,10 +65,10 @@ yarn add contentful-management
 
 For browsers, we recommend to download the SDK via npm or yarn to ensure 100% availability.
 
-If you'd like to use a standalone built file you can use the following script tag or download it from [unpkg](https://unpkg.com), under the `dist` directory:
+If you'd like to use a standalone built file you can use the following script tag or download it from [jsDelivr](https://www.jsdelivr.com/package/npm/contentful-management), under the `dist` directory:
 
 ``` html
-<script src="https://unpkg.com/contentful-management@latest/dist/contentful-management.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/contentful-management@latest/dist/contentful-management.browser.min.js"></script>
 ```
 **It's not recommended to use the above URL for production.**
 
@@ -76,7 +76,7 @@ Using `contentful@latest` will always get you the latest version, but you can al
 
 ``` html
 <!-- Avoid using the following url for production. You can not rely on its availability. -->
-<script src="https://unpkg.com/contentful-management@4.0.1/dist/contentful-management.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/contentful-management@4.0.1/dist/contentful-management.browser.min.js"></script>
 ```
 
 The Contentful Management SDK will be accessible via the `contentfulManagement` global variable.
