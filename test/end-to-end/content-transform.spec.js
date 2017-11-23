@@ -108,7 +108,7 @@ describe('apply content transformation', function () {
   it('applies 14-transform-content-error', function (done) {
     cli()
       .run(`--space-id ${devSpaceId} ./examples/14-transform-content-error.js`)
-      .expect(assert.errors.entriesTransform('newsArticle', 'Error: boom'));
-    done();
+      .expect(assert.errors.entriesTransform('newsArticle', '1 errors while transforming this content.'))
+      .end(done);
   });
 });

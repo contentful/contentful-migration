@@ -71,6 +71,7 @@ module.exports = {
         const withoutAnsiCodes = stripAnsi(result.stdout);
         expect(withoutAnsiCodes).to.include(id);
         expect(withoutAnsiCodes).to.include(message);
+        expect(withoutAnsiCodes).to.include('Please check the errors log for details:');
       };
     }
   },
