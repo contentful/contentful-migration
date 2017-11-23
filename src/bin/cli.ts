@@ -20,7 +20,7 @@ const argv = yargs
   .usage('Parses and runs a migration script on a Contentful space.\n\nUsage: contentful-migration [args] <path-to-script-file>\n\nScript: path to a migration script.')
   .demandCommand(1, 'Please provide the file containing the migration script.')
   .check((args) => {
-    const filePath = path.join(process.cwd(), args._[0])
+    const filePath = path.resolve(process.cwd(), args._[0])
     if (fs.existsSync(filePath)) {
       args.filePath = filePath
       return true

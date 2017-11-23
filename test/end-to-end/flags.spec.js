@@ -1,5 +1,7 @@
 'use strict';
 
+const path = require('path');
+
 const assert = require('./assertions');
 const cli = require('./cli');
 
@@ -31,5 +33,29 @@ describe('contentful-migration CLI flags', function () {
       .run(`--yes --space-id ${SOURCE_TEST_SPACE} ./test/end-to-end/migration-scripts/empty-migration.js`)
       .expect(assert.confirmation.noConfirmationMessage())
       .end(done);
+  });
+
+  describe('file path resolution', function () {
+    // Use the Travis build dir for integration tests, fallback to cwd for local tests
+    const buildDir = process.env.TRAVIS_BUILD_DIR || process.cwd();
+
+    it('does not treat absolute script path as relative', function (done) {
+      const scriptPath = path.join(buildDir, 'test/end-to-end/migration-scripts/non-existing-migration.js');
+
+      cli()
+        .run(`--space-id ${SOURCE_TEST_SPACE} ${scriptPath}`)
+        .expect(assert.help.nonExistingMigrationScript(scriptPath))
+        .end(done);
+    });
+
+    it('resolves relative script path to cwd', function (done) {
+      const scriptPath = 'test/end-to-end/migration-scripts/non-existing-migration.js';
+      const resolvedPath = path.join(buildDir, scriptPath);
+
+      cli()
+        .run(`--space-id ${SOURCE_TEST_SPACE} ${scriptPath}`)
+        .expect(assert.help.nonExistingMigrationScript(resolvedPath))
+        .end(done);
+    });
   });
 });

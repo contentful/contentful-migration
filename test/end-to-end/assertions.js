@@ -215,6 +215,15 @@ module.exports = {
         const withoutAnsiCodes = stripAnsi(result.stderr);
         expect(withoutAnsiCodes).to.include(`Please provide the file containing the migration script.`);
       };
+    },
+    nonExistingMigrationScript: function (filePath) {
+      return result => {
+        expect(result.code).to.eql(1);
+        expect(result.stderr).not.to.be.empty();
+
+        const withoutAnsiCodes = stripAnsi(result.stderr);
+        expect(withoutAnsiCodes).to.include(`Cannot find file ${filePath}.`);
+      };
     }
   },
   confirmation: {
