@@ -23,6 +23,7 @@ class EntryTransformAction extends APIAction {
     const locales: string[] = await api.getLocalesForSpace()
     for (const entry of entries) {
       const inputs = _.pick(entry.fields, this.fromFields)
+      let changesForThisEntry = false
       for (const locale of locales) {
         let outputsForCurrentLocale
         try {
@@ -31,6 +32,12 @@ class EntryTransformAction extends APIAction {
           await api.recordRuntimeError(err)
           continue
         }
+
+        if (outputsForCurrentLocale === undefined) {
+          continue
+        }
+        changesForThisEntry = true
+
         // TODO verify that the toFields actually get written to
         // and to no other field
         Object.keys(outputsForCurrentLocale).forEach((fieldId) => {
@@ -40,6 +47,8 @@ class EntryTransformAction extends APIAction {
           entry.setFieldForLocale(fieldId, locale, outputsForCurrentLocale[fieldId])
         })
 
+      }
+      if (changesForThisEntry) {
         await api.saveEntry(entry.id)
         if (this.shouldPublish) {
           await api.publishEntry(entry.id)

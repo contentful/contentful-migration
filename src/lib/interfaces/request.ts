@@ -2,7 +2,9 @@ interface HttpRequest {
   method: 'PUT' | 'POST' | 'DELETE' | 'GET'
   url: string
   headers?: object
-  data?: object
+  data?: {
+    fields?: object
+  }
 }
 
 export {

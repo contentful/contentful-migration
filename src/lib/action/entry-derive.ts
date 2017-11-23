@@ -27,39 +27,67 @@ class EntryDeriveAction extends APIAction {
   async applyTo (api: OfflineAPI) {
     const entries: Entry[] = await api.getEntriesForContentType(this.contentTypeId)
     const locales: string[] = await api.getLocalesForSpace()
+
     for (const entry of entries) {
       const inputs = _.pick(entry.fields, this.fromFields)
       const newEntryId = await this.identityKey(inputs)
       const hasEntry = await api.hasEntry(newEntryId)
+
+      let skipEntry = true
+      let fieldsForTargetEntry = {}
+
+      for (const locale of locales) {
+        let outputsForCurrentLocale
+        try {
+          outputsForCurrentLocale = await this.deriveEntryForLocale(inputs, locale)
+        } catch (err) {
+          await api.recordRuntimeError(err)
+          continue
+        }
+
+        if (outputsForCurrentLocale === undefined) {
+          continue
+        }
+
+        skipEntry = false
+
+        // we collect all the values for the target entry before writing it to the
+        // offline API because we don't yet know if the entry might be skipped
+        // TODO: verify that the derivedFields actually get written to
+        // and to no other field
+        for (const [fieldId, localizedValue] of _.entries(outputsForCurrentLocale)) {
+          if (!fieldsForTargetEntry[fieldId]) {
+            fieldsForTargetEntry[fieldId] = {}
+          }
+          fieldsForTargetEntry[fieldId][locale] = localizedValue
+        }
+      }
+
+      // if derive returned undefined for all locales of this entry, there are no changes
+      // to be made, neither on the source nor the target entry, so we move on to the next
+      if (skipEntry) {
+        continue
+      }
 
       if (!hasEntry) {
         // TODO: How do we handle already existing links?
         // Usually you would not want to derive the contents again
         // But what if the previous round may not have been complete
         // for example one optional field was missing in the previous iteration
+
         const targetEntry = await api.createEntry(this.derivedContentType, newEntryId)
 
-        for (const locale of locales) {
-          let outputsForCurrentLocale
-          try {
-            outputsForCurrentLocale = await this.deriveEntryForLocale(inputs, locale)
-          } catch (err) {
-            await api.recordRuntimeError(err)
-            continue
+        // we are not skipping this source entry and the target entry does not yet exist,
+        // so now is the time to write the collected target entry values to the offline API
+        for (const [fieldId, localizedField] of _.entries(fieldsForTargetEntry)) {
+          if (!targetEntry.fields[fieldId]) {
+            targetEntry.setField(fieldId, {})
           }
-          if (!outputsForCurrentLocale) {
-            // TODO: Figure out how to deal with `undefined`
-            // And how to make these things explicit
-            continue
+
+          for (const [locale, localizedValue] of _.entries(localizedField)) {
+            targetEntry.setFieldForLocale(fieldId, locale, localizedValue)
           }
-          // TODO: verify that the derivedFields actually get written to
-          // and to no other field
-          Object.keys(outputsForCurrentLocale).forEach((fieldId) => {
-            if (!targetEntry.fields[fieldId]) {
-              targetEntry.setField(fieldId, {})
-            }
-            targetEntry.setFieldForLocale(fieldId, locale, outputsForCurrentLocale[fieldId])
-          })
+
         }
         await api.saveEntry(targetEntry.id)
         if (this.shouldPublish) {

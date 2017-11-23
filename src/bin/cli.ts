@@ -118,7 +118,7 @@ const run = async function () {
   const migrationName = path.basename(argv.filePath, '.js')
   const errorsFile = path.join(
     process.cwd(),
-    `errors-${migrationName}-${Date.now()}.ndjson`
+    `errors-${migrationName}-${Date.now()}.log`
   )
 
   const batches = parseResult.batches

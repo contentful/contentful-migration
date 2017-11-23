@@ -49,4 +49,98 @@ describe('Entry Action', function () {
       expect.fail()
     }
   })
+
+  it('skips a locale when the transform returns undefined', async function () {
+    const transformation = (fields, locale) => {
+      if (locale === 'hawaii') {
+        return
+      }
+      return {
+        name:  fields.name[locale] + '!'
+      }
+    }
+
+    const action = new EntryTransformAction('dog', ['name'], transformation)
+    const entries = [
+      new Entry(makeApiEntry({
+        id: '246',
+        contentTypeId: 'dog',
+        version: 1,
+        fields: {
+          name: {
+            'en-US': 'bob',
+            'hawaii': 'haukea'
+          }
+        }
+      })),
+      new Entry(makeApiEntry({
+        id: '123',
+        contentTypeId: 'dog',
+        version: 1,
+        fields: {
+          name: {
+            'en-US': 'jim',
+            'hawaii': 'aloha'
+          }
+        }
+      }))
+    ]
+    const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
+    api.startRecordingRequests(null)
+
+    await action.applyTo(api)
+    api.stopRecordingRequests()
+    const batches = await api.getRequestBatches()
+    expect(batches[0].requests[0].data.fields).to.eql({
+      name: {
+        'en-US': 'bob!',
+        'hawaii': 'haukea'
+      }
+    })
+    expect(batches[0].requests[2].data.fields).to.eql({
+      name: {
+        'en-US': 'jim!',
+        'hawaii': 'aloha'
+      }
+    })
+  })
+
+  it('skips an entry when the transform returns undefined for all its locales', async function () {
+    const transformation = () => {
+      return
+    }
+
+    const action = new EntryTransformAction('dog', ['name'], transformation)
+    const entries = [
+      new Entry(makeApiEntry({
+        id: '246',
+        contentTypeId: 'dog',
+        version: 1,
+        fields: {
+          name: {
+            'en-US': 'bob',
+            'hawaii': 'haukea'
+          }
+        }
+      })),
+      new Entry(makeApiEntry({
+        id: '123',
+        contentTypeId: 'dog',
+        version: 1,
+        fields: {
+          name: {
+            'en-US': 'jim',
+            'hawaii': 'aloha'
+          }
+        }
+      }))
+    ]
+    const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
+    api.startRecordingRequests(null)
+
+    await action.applyTo(api)
+    api.stopRecordingRequests()
+    const batches = await api.getRequestBatches()
+    expect(batches[0].requests).to.eql([])
+  })
 })
