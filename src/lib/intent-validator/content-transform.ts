@@ -19,9 +19,10 @@ class ContentTransformIntentValidator extends SchemaValidator {
 
   get schema () {
     return {
+      contentType: Joi.string().required(),
       from: Joi.array().items(Joi.string()).required(),
       to: Joi.array().items(Joi.string()).required(),
-      transformEntryForLocale: Joi.any(),
+      transformEntryForLocale: Joi.func().required(),
       shouldPublish: Joi.boolean()
     }
   }

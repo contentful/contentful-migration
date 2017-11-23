@@ -10,8 +10,8 @@ module.exports = function (migration) {
       if (currentLocale === 'de-DE') {
         return;
       }
-      const newByLine = `${fromFields.author[currentLocale]} ${fromFields.authorCity[currentLocale]}`;
-      return { byline: newByLine };
+      const newByline = `${fromFields.author[currentLocale]} ${fromFields.authorCity[currentLocale]}`;
+      return { byline: newByline };
     }
   });
 };

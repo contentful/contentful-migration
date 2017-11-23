@@ -1,3 +1,12 @@
+// In this example, we want to turn the dog's owner field into its own entry
+// and link it back to the dog. To do this, we create an "owner"
+// content type and a link field on the "dog" content type.
+// In the identity function, we define the criterion for when a new owner should
+// be created: If the name joined by a hyphen is the same, then the same owner entry is
+// linked.
+// In the deriveLinkedEntries function, we define what values should go into the new
+// owner entries. We don't create any values for the locale 'en-US' on the derived entries.
+
 module.exports = function (migration) {
   const owner = migration.createContentType('owner').name('Owner').description('An owner of a dog');
   owner.createField('firstName').type('Symbol').name('First Name');
