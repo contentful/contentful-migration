@@ -34,7 +34,7 @@ class Entry {
     this._fields[id] = value
   }
 
-  setFieldForLocale (id: string, locale: string, value) {
+  setFieldForLocale (id: string, locale: string, value: any) {
     const field = this._fields[id] || {}
     field[locale] = value
     this._fields[id] = field

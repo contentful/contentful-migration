@@ -77,6 +77,26 @@ describe('Content transformation', function () {
             },
             message: '"string" is not a valid type for the content transformation property "to". Expected "array".',
             type: 'InvalidType'
+          },
+          {
+            details: {
+              step: {
+                meta: {
+                  contentTypeInstanceId: 'contentType/person/0'
+                },
+                payload: {
+                  contentTypeId: 'person',
+                  transformation: {
+                    from: 'information',
+                    to: 'address',
+                    transformEntryForLocale: {}
+                  }
+                },
+                type: 'contentType/transformEntries'
+              }
+            },
+            message: '"object" is not a valid type for the content transformation property "transformEntryForLocale". Expected "function".',
+            type: 'InvalidType'
           }
         ])
       })

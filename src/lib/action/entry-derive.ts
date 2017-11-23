@@ -9,10 +9,6 @@ class EntryDeriveAction extends APIAction {
   private fromFields: string[]
   private referenceField: string
   private derivedContentType: string
-  // TODO: We do not use this here at all
-  // Only for validation before.
-  // Maybe also ensure we use it here
-  // private derivedFields: string[]
   private deriveEntryForLocale: (inputFields: any, locale: string) => Promise<any>
   private identityKey: (fromFields: any) => Promise<string>
   private shouldPublish: boolean
@@ -56,7 +52,7 @@ class EntryDeriveAction extends APIAction {
             // And how to make these things explicit
             continue
           }
-          // TODO: verify that the toFields actually get written to
+          // TODO: verify that the derivedFields actually get written to
           // and to no other field
           Object.keys(outputsForCurrentLocale).forEach((fieldId) => {
             if (!targetEntry.fields[fieldId]) {
