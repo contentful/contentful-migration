@@ -7,6 +7,8 @@ const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 
 describe('04-steps-errors.js', function () {
   it('outputs the correct errors', function (done) {
+    this.timeout(10000);
+
     cli()
       .run(`--space-id ${SOURCE_TEST_SPACE} ./examples/04-steps-errors.js`)
       .expect(assert.errors.contentType.invalidPropertyWithSuggestion('nmae', 'name'))
@@ -20,6 +22,8 @@ describe('04-steps-errors.js', function () {
 
 describe('05-plan-errors.js', function () {
   it('outputs the correct errors', function (done) {
+    this.timeout(10000);
+
     cli()
       .run(`--space-id ${SOURCE_TEST_SPACE} ./examples/05-plan-errors.js`)
       .expect(assert.errors.contentType.duplicateCreate(13, 'person'))

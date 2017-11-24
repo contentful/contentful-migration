@@ -1,13 +1,12 @@
 import { Intent as IntentInterface } from '../interfaces/intent'
 import IntentValidator from '../interfaces/intent-validator'
-import ErrorCollection from '../errors/error-collection'
 import RawStep from '../interfaces/raw-step'
 import ComposedIntent from '../intent/composed-intent'
 import { OfflineAPI } from '../offline-api/index'
 import { APIAction, EntityAction } from '../action/action'
-import { EntryTransformAction } from '../action/entry-transform'
 import { ContentTypeSaveAction } from '../action/content-type-save'
 import { ContentTypePublishAction } from '../action/content-type-publish'
+import ValidationError from '../interfaces/errors'
 
 class IntentList {
   private intents: IntentInterface[]
@@ -21,7 +20,7 @@ class IntentList {
     this.validators.push(validator)
   }
 
-  validate (): void {
+  validate (): ValidationError[] {
     let errors = []
 
     for (const intent of this.getIntents()) {
@@ -34,9 +33,7 @@ class IntentList {
         }
       }
     }
-    if (errors.length) {
-      throw new ErrorCollection(errors)
-    }
+    return errors
   }
 
   toRaw (): RawStep[] {
@@ -101,12 +98,8 @@ class IntentList {
       await api.startRecordingRequests(intent)
 
       for (const action of intent.toActions()) {
-        if (action instanceof APIAction) {
-          await action.applyTo(api)
-          continue
-        }
 
-        if (action instanceof EntryTransformAction) {
+        if (action instanceof APIAction) {
           await action.applyTo(api)
           continue
         }

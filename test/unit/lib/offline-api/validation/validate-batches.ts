@@ -15,13 +15,13 @@ const validateBatches = async function (runMigration, contentTypes) {
     existingCTs.set(contentType.id, contentType)
   }
 
-  const api = new OfflineAPI(existingCTs, [])
+  const api = new OfflineAPI(existingCTs, [], [])
 
   await list.compressed().applyTo(api)
 
   const batches = await api.getRequestBatches()
 
-  return batches.map((batch) => batch.errors)
+  return batches.map((batch) => batch.validationErrors)
 }
 
 export default validateBatches

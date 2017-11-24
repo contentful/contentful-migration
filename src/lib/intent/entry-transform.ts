@@ -8,12 +8,11 @@ export default class EntryTransformIntent extends Intent {
     return true
   }
 
-  groupsWith (other: Intent): boolean {
-    const sameContentType = other.getContentTypeId() === this.getContentTypeId()
-    return other.isContentTransform() && sameContentType
+  endsGroup (): boolean {
+    return true
   }
 
-  endsGroup (): boolean {
+  groupsWith (): boolean {
     return false
   }
 
@@ -22,8 +21,8 @@ export default class EntryTransformIntent extends Intent {
       new EntryTransformAction(
         this.getContentTypeId(),
         this.payload.transformation.from,
-        this.payload.transformation.to,
-        this.payload.transformation.transform
+        this.payload.transformation.transformEntryForLocale,
+        this.payload.transformation.shouldPublish
       )
     ]
   }
@@ -31,8 +30,19 @@ export default class EntryTransformIntent extends Intent {
   toPlanMessage (): PlanMessage {
     return {
       heading: chalk`Transform entries for {bold.yellow ${this.getContentTypeId()}}`,
-      details: [],
+      details: [
+        `from: ${this.payload.transformation.from}`,
+        `to: ${this.payload.transformation.to}`
+      ],
       sections: []
     }
+  }
+
+  shouldSave () {
+    return false
+  }
+
+  shouldPublish () {
+    return false
   }
 }

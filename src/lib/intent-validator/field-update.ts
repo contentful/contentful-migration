@@ -2,6 +2,7 @@ import SchemaValidator from './schema-validator'
 import * as Joi from 'joi'
 
 class FieldUpdateStepValidator extends SchemaValidator {
+  protected article = 'a'
   protected displayName = 'field'
 
   appliesTo (step) {

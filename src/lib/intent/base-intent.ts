@@ -18,6 +18,10 @@ export default abstract class Intent implements IntentInterface {
     return this.payload.contentTypeId
   }
 
+  getRelatedContentTypeIds () {
+    return [this.getContentTypeId()]
+  }
+
   getFieldId () {
     return this.payload.fieldId
   }
@@ -58,6 +62,10 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
+  isEntryDerive () {
+    return false
+  }
+
   isAboutContentType () {
     return (
       this.isContentTypeUpdate() ||
@@ -80,7 +88,18 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
-  abstract groupsWith (other: IntentInterface): boolean
+  groupsWith (other: Intent): boolean {
+    // A content transform does not end the group,
+    // but still could share a content type ID
+    if (other.isContentTransform()) {
+      return false
+    }
+
+    if (other.getContentTypeId() === this.getContentTypeId()) {
+      return true
+    }
+    return false
+  }
 
   abstract endsGroup (): boolean
 

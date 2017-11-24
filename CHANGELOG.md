@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file.
 - Include linter in npm test command
 
 ### Fixed
-- *[steps]* allow migration script to be async
+- _[steps]_ allow migration script to be async
 - Do not allow setting of same property multiple times
 
 ## v0.2.1 - 2017-09-29

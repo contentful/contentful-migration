@@ -1,4 +1,5 @@
 import ContentTransform from './content-transform'
+import EntryDerive from './entry-derive'
 
 interface RawStep {
   type: string
@@ -22,6 +23,7 @@ interface RawStepPayload {
   fieldId?: string
   props?: RawStepProps
   transformation?: ContentTransform
+  derivation?: EntryDerive
   movement?: Movement
 }
 

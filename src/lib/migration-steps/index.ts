@@ -1,10 +1,13 @@
 'use strict'
+import EntryDerive from '../interfaces/entry-derive'
 
 import * as Bluebird from 'bluebird'
 import actionCreators from './action-creators'
 import * as getFirstExternalCaller from './first-external-caller'
 import Intent from '../intent'
 import DispatchProxy from './dispatch-proxy'
+import { omit } from 'lodash'
+import ContentTransform from '../interfaces/content-transform'
 
 const createInstanceIdManager = () => {
   const instanceCounts = {}
@@ -138,12 +141,6 @@ class ContentType extends DispatchProxy {
       newId
     ))
   }
-
-  transformContent (transformation) {
-    const callsite = getFirstExternalCaller()
-
-    this.dispatch(actionCreators.contentType.transformContent(this.id, this.instanceId, transformation, callsite))
-  }
 }
 
 export async function migration (migrationCreator): Promise<Intent[]> {
@@ -174,6 +171,24 @@ export async function migration (migrationCreator): Promise<Intent[]> {
       const callsite = getFirstExternalCaller()
       const instanceId = instanceIdManager.getNew(id)
       dispatch(actionCreators.contentType.delete(id, instanceId, callsite))
+    },
+
+    transformEntries: function (transformation) {
+      const callsite = getFirstExternalCaller()
+      const id = transformation.contentType
+      const stripped = omit(transformation, 'contentType') as ContentTransform
+      const instanceId = instanceIdManager.getNew(id)
+
+      dispatch(actionCreators.contentType.transformEntries(id, instanceId, stripped, callsite))
+    },
+
+    deriveLinkedEntries: function (transformation) {
+      const callsite = getFirstExternalCaller()
+      const id = transformation.contentType
+      const stripped = omit(transformation, 'contentType') as EntryDerive
+      const instanceId = instanceIdManager.getNew(id)
+
+      dispatch(actionCreators.contentType.deriveLinkedEntries(id, instanceId, stripped, callsite))
     }
   }
 

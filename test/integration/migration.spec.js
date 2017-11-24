@@ -1,4 +1,6 @@
+const _ = require('lodash');
 const Bluebird = require('bluebird');
+const Fetcher = require('../../built/lib/fetcher').default;
 const { makeRequest, createDevSpace } = require('../helpers/client');
 const { expect } = require('chai');
 const { flatten } = require('lodash');
@@ -27,9 +29,11 @@ describe('the migration', function () {
     this.timeout(30000);
     const devSpaceId = yield createDevSpace(SOURCE_TEST_SPACE, 'migration test dev space');
     request = makeRequest.bind(null, devSpaceId);
-    migrationParser = createMigrationParser(request);
+    const fetcher = new Fetcher(request);
+    migrationParser = createMigrationParser(fetcher);
     migrator = co(function * (migration) {
-      const batches = yield migrationParser(migration);
+      const parseResult = yield migrationParser(migration);
+      const batches = parseResult.batches;
       const requests = flatten(batches.map((batch) => batch.requests));
       for (const req of requests) {
         yield request(req);
@@ -373,16 +377,103 @@ describe('the migration', function () {
     ]);
   }));
 
-  it('throws an error when the script is invalid', co(function * () {
-    let result;
+  it('returns an error when the script is invalid', co(function * () {
+    const parseResult = yield migrationParser(invalidScript);
 
-    try {
-      result = yield migrationParser(invalidScript);
-    } catch (err) {
-      expect(err).to.be.an('error');
-      expect(err.message).to.include('Validation failed');
-    }
+    expect(parseResult.payloadValidationErrors).to.have.lengthOf.above(0);
+  }));
 
-    expect(result).to.be.undefined();
+  it('does a simple content transformation ', co(function * () {
+    yield request({
+      method: 'PUT',
+      url: '/content_types/blogpost',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1
+      },
+      data: {
+        name: 'blog post',
+        fields: [
+          {
+            name: 'title',
+            id: 'title',
+            type: 'Symbol'
+          },
+          {
+            name: 'category',
+            id: 'category',
+            type: 'Symbol'
+          }
+        ]
+      }
+    });
+    yield request({
+      method: 'PUT',
+      url: '/content_types/blogpost/published',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1,
+        'X-Contentful-Version': 1
+      }
+    });
+
+    yield request({
+      method: 'POST',
+      url: '/entries',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1,
+        'X-Contentful-Content-Type': 'blogpost'
+      },
+      data: {
+        fields: { title: { 'en-US': 'hello!' } }
+      }
+    });
+
+    yield request({
+      method: 'POST',
+      url: '/entries',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1,
+        'X-Contentful-Content-Type': 'blogpost'
+      },
+      data: {
+        fields: { title: { 'en-US': 'hello!' } }
+      }
+    });
+
+    yield migrator(function (migration) {
+      migration.transformEntries({
+        contentType: 'blogpost',
+        from: ['title'],
+        to: ['category'],
+        transformEntryForLocale: (fields, locale) => {
+          return { category: fields.title[locale] };
+        }
+      });
+    });
+
+    const blogEntries = yield request({
+      method: 'GET',
+      url: '/entries?content_type=blogpost',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1
+      }
+    });
+
+    const blogEntriesWithoutSys = blogEntries.items.map(i => _.omit(i, 'sys'));
+
+    const entries = [
+      {
+        fields: {
+          title: { 'en-US': 'hello!' },
+          category: { 'en-US': 'hello!' }
+        }
+      }, {
+        fields: {
+          title: { 'en-US': 'hello!' },
+          category: { 'en-US': 'hello!' }
+        }
+      }
+    ];
+
+    expect(blogEntriesWithoutSys).to.eql(entries);
   }));
 });

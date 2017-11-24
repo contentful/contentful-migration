@@ -4,6 +4,8 @@ import { Intent } from '../../interfaces/intent'
 import { ContentType } from '../../entities/content-type'
 
 const fieldErrors = errors.field
+const deriveErrors = errors.entry.derivation
+const transformErrors = errors.entry.transformation
 
 const invalidActionError = (message, intent) => {
   return {
@@ -190,6 +192,27 @@ const checks = {
 
     validationContext.fieldSet.delete(oldId)
     validationContext.fieldSet.add(newId)
+  },
+
+  'contentType/transformEntries': (errors, intent, validationContext) => {
+    const wrapError = (message, intent) => {
+      return {
+        type: 'InvalidEntriesTransformation',
+        message,
+        details: { intent }
+      }
+    }
+
+    const transformation = intent.toRaw().payload.transformation
+
+    const nonExistingSourceFields = transformation.from.filter((f) => !validationContext.fieldSet.has(f))
+    const nonExistingDestinationFields = transformation.to.filter((f) => !validationContext.fieldSet.has(f))
+
+    const nonExistingFields = nonExistingSourceFields.concat(nonExistingDestinationFields)
+
+    if (nonExistingFields.length > 0) {
+      errors.push(wrapError(transformErrors.NON_EXISTING_FIELDS(intent.getContentTypeId(), nonExistingFields), intent))
+    }
   }
 }
 
@@ -227,6 +250,41 @@ export default function (intents: Intent[], contentTypes: ContentType[] = []): V
       }
 
       checks[intent.getRawType()](errors, intent, validationContext)
+    }
+
+    if (intent.isContentTransform()) {
+      checks[intent.getRawType()](errors, intent, validationContext)
+    }
+
+    // We need to keep track of field creations and removals
+    // So this is the only place we can do this without duplication
+    if (intent.isEntryDerive()) {
+      const wrapError = (message, intent) => {
+        return {
+          type: 'InvalidEntriesDerivation',
+          message,
+          details: { intent }
+        }
+      }
+
+      const derivation = intent.toRaw().payload.derivation
+      const sourceCT = contentTypes.find((ct) => ct.id === intent.getContentTypeId())
+      const destinationCT = contentTypes.find((ct) => ct.id === derivation.derivedContentType)
+      const destinationFields = contentTypeFields[destinationCT.id]
+
+      const nonExistingSourceFields = derivation.from.filter((f) => !fieldSet.has(f))
+      const nonExistingToReferenceField = !fieldSet.has(derivation.toReferenceField)
+      const nonExistingDestinationFields = destinationFields ? derivation.derivedFields.filter((f) => !destinationFields.has(f)) : derivation.derivedFields
+
+      if (nonExistingSourceFields.length > 0) {
+        errors.push(wrapError(deriveErrors.NON_EXISTING_SOURCE_FIELDS(sourceCT.id, nonExistingSourceFields), intent))
+      }
+      if (nonExistingToReferenceField) {
+        errors.push(wrapError(deriveErrors.NON_EXISTING_REFERENCE_FIELD(sourceCT.id, derivation.toReferenceField), intent))
+      }
+      if (nonExistingDestinationFields.length > 0) {
+        errors.push(wrapError(deriveErrors.NON_EXISTING_DESTINATION_FIELDS(destinationCT.id, nonExistingDestinationFields), intent))
+      }
     }
 
     contentTypeFields[contentTypeId] = fieldSet

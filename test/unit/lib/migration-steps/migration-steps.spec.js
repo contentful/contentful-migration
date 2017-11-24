@@ -670,8 +670,8 @@ describe('migration-steps', function () {
         return firstName + ' ' + lastName;
       };
       const plan = yield migration(function (migration) {
-        const author = migration.editContentType('author');
-        author.transformContent({
+        migration.transformEntries({
+          contentType: 'author',
           from: ['firstName', 'lastName'],
           to: ['fullName'],
           transform: transformFunction
@@ -680,7 +680,7 @@ describe('migration-steps', function () {
 
       expect(stripCallsites(plan)).to.eql([
         {
-          type: 'contentType/transformContent',
+          type: 'contentType/transformEntries',
           meta: {
             contentTypeInstanceId: 'contentType/author/0'
           },
