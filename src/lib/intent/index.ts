@@ -8,6 +8,7 @@ import FieldDeleteIntent from './field-delete'
 import FieldCreateIntent from './field-create'
 import ContentTypeCreateIntent from './content-type-create'
 import ContentTypeDeleteIntent from './content-type-delete'
+import EntryDeriveIntent from './entry-derive'
 
 export {
   Intent as default,
@@ -20,5 +21,6 @@ export {
   FieldCreateIntent as FieldCreate,
   ContentTypeCreateIntent as ContentTypeCreate,
   ContentTypeDeleteIntent as ContentTypeDelete,
-  ContentTypeUpdateIntent as ContentTypeUpdate
+  ContentTypeUpdateIntent as ContentTypeUpdate,
+  EntryDeriveIntent as EntryDerive
 }

@@ -6,6 +6,7 @@ interface Intent {
   toActions (): (APIAction|EntityAction)[]
   toRaw (): RawStep
   getContentTypeId (): string
+  getRelatedContentTypeIds (): string[]
   getFieldId (): string
   getRawType (): string
 
@@ -23,6 +24,7 @@ interface Intent {
   isAboutContentType (): boolean
   isAboutField (): boolean
   isContentTransform (): boolean
+  isEntryDerive (): boolean
 
   isComposedIntent (): boolean
 

@@ -1,14 +1,17 @@
 interface ErrorGroup {
-  [identifier: string]: Function
+  [identifier: string]: (id, ...args: any[]) => string
 }
 
 interface ErrorCreators {
   field: {
     [groupIdentifier: string]: ErrorGroup
-  },
+  }
   contentType: {
     [groupIdentifier: string]: ErrorGroup
-  },
+  }
+  entry: {
+    [groupIdentifier: string]: ErrorGroup
+  }
   generic: ErrorGroup
 }
 
@@ -54,7 +57,7 @@ const errorCreators: ErrorCreators = {
       FIELD_ALREADY_MOVED: (id) => {
         return `You cannot move the field with id "${id}" more than once per migration.`
       },
-      CONTENT_TYPE_DOES_NOT_EXIST: (_id, ctId) => {
+      CONTENT_TYPE_DOES_NOT_EXIST: (_, ctId) => {
         return `You cannot move a field on content type "${ctId}" because it does not exist.`
       },
       PIVOT_FIELD_DOES_NOT_EXIST: (id, direction) => {
@@ -108,6 +111,52 @@ const errorCreators: ErrorCreators = {
       },
       HAS_ENTRIES: (id) => {
         return `Content type "${id}" cannot be deleted because it has entries.`
+      }
+    },
+    transformEntries: {
+      CONTENT_TYPE_DOES_NOT_EXIST: (id) => {
+        return `You cannot transform entries for content type "${id}" because it does not exist.`
+      },
+      TRANSFORM_AFTER_CONTENT_TYPE_DELETE: (id) => {
+        return `You cannot transform entries for content type "${id}" because it was deleted.`
+      },
+      TRANSFORM_BEFORE_CONTENT_TYPE_CREATE: (id) => {
+        return `You cannot transform entries for content type "${id}" because it has not yet been created.`
+      }
+    },
+    deriveEntries: {
+      CONTENT_TYPE_DOES_NOT_EXIST: (id) => {
+        return `You cannot derive entries for content type "${id}" because it does not exist.`
+      },
+      DERIVE_AFTER_CONTENT_TYPE_DELETE: (id) => {
+        return `You cannot derive entries for content type "${id}" because it was deleted.`
+      },
+      DERIVE_BEFORE_CONTENT_TYPE_CREATE: (id) => {
+        return `You cannot derive entries for content type "${id}" because it has not yet been created.`
+      }
+    }
+  },
+  entry: {
+    transformation: {
+      NON_EXISTING_FIELDS: (id, fields): string => {
+        const stringifiedFields = fields.map((f) => `"${f}"`).join(', ')
+
+        return `You cannot transform entries for content type "${id}" because ${stringifiedFields} can't be found on it.`
+      }
+    },
+    derivation: {
+      NON_EXISTING_SOURCE_FIELDS: (id: string, fields: string[]): string => {
+        const stringifiedFields = fields.map((f) => `"${f}"`).join(', ')
+
+        return `You cannot derive entries from content type "${id}" because source fields ${stringifiedFields} can't be found on it.`
+      },
+      NON_EXISTING_REFERENCE_FIELD: (id: string, field: string): string => {
+        return `You cannot derive entries from content type "${id}" because reference field "${field}" can't be found on it.`
+      },
+      NON_EXISTING_DESTINATION_FIELDS: (id: string, fields: string[]): string => {
+        const stringifiedFields = fields.map((f) => `"${f}"`).join(', ')
+
+        return `You cannot derive entries to content type "${id}" because destination fields ${stringifiedFields} can't be found on it.`
       }
     }
   },

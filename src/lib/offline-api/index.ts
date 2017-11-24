@@ -9,11 +9,13 @@ import DisplayFieldValidator from './validator/display-field'
 import SchemaValidator from './validator/schema/index'
 import TypeChangeValidator from './validator/type-change'
 import { Intent } from '../interfaces/intent'
+import APIEntry from '../interfaces/api-entry'
 
 interface RequestBatch {
   intent: Intent
   requests: Request[]
-  errors: (PayloadValidationError | InvalidActionError)[]
+  validationErrors: (PayloadValidationError | InvalidActionError)[],
+  runtimeErrors: Error[],
 }
 
 export enum ApiHook {
@@ -39,7 +41,8 @@ const saveEntryRequest = function (entry: Entry): Request {
     method: 'PUT',
     url: `/entries/${entry.id}`,
     headers: {
-      'X-Contentful-Version': entry.version
+      'X-Contentful-Version': entry.version,
+      'X-Contentful-Content-Type': entry.contentTypeId
     },
     data: entry.toApiEntry()
   }
@@ -49,7 +52,8 @@ const publishEntryRequest = function (entry: Entry): Request {
     method: 'PUT',
     url: `/entries/${entry.id}/published`,
     headers: {
-      'X-Contentful-Version': entry.version
+      'X-Contentful-Version': entry.version,
+      'X-Contentful-Content-Type': entry.contentTypeId
     }
   }
 }
@@ -91,12 +95,14 @@ class OfflineAPI {
   private entries: Entry[] = null
   private isRecordingRequests: boolean = false
   private currentRequestsRecorded: Request[] = null
-  private currentErrorsRecorded: (PayloadValidationError | InvalidActionError)[] = null
+  private currentValidationErrorsRecorded: (PayloadValidationError | InvalidActionError)[] = null
+  private currentRuntimeErrorsRecorded: Error[]
   private intent: Intent = null
   private requestBatches: RequestBatch[] = []
   private contentTypeValidators: ContentTypePayloadValidator[] = []
+  private locales: string[] = []
 
-  constructor (contentTypes: Map<String, ContentType> = new Map(), entries: Entry[] = []) {
+  constructor (contentTypes: Map<String, ContentType> = new Map(), entries: Entry[] = [], locales: string[]) {
     this.modifiedContentTypes = contentTypes
 
     // Initialize saved and published state
@@ -121,6 +127,7 @@ class OfflineAPI {
     this.contentTypeValidators.push(new TypeChangeValidator())
 
     this.entries = entries
+    this.locales = locales
   }
 
   async getContentType (id: string): Promise<ContentType> {
@@ -167,7 +174,7 @@ class OfflineAPI {
     for (const validator of this.contentTypeValidators) {
       if (validator.hooks.includes(ApiHook.SaveContentType)) {
         const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
-        this.currentErrorsRecorded = this.currentErrorsRecorded.concat(errors)
+        this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
       }
     }
 
@@ -191,7 +198,7 @@ class OfflineAPI {
     for (const validator of this.contentTypeValidators) {
       if (validator.hooks.includes(ApiHook.PublishContentType)) {
         const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
-        this.currentErrorsRecorded = this.currentErrorsRecorded.concat(errors)
+        this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
       }
     }
 
@@ -215,7 +222,7 @@ class OfflineAPI {
     for (const validator of this.contentTypeValidators) {
       if (validator.hooks.includes(ApiHook.UnpublishContentType)) {
         const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
-        this.currentErrorsRecorded = this.currentErrorsRecorded.concat(errors)
+        this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
       }
     }
 
@@ -236,15 +243,36 @@ class OfflineAPI {
     for (const validator of this.contentTypeValidators) {
       if (validator.hooks.includes(ApiHook.DeleteContentType)) {
         const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
-        this.currentErrorsRecorded = this.currentErrorsRecorded.concat(errors)
+        this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
       }
     }
+  }
+
+  async createEntry (contentTypeId: string, id: string): Promise<Entry> {
+    this.assertRecording()
+
+    const entryData: APIEntry = {
+      sys: {
+        id,
+        version: 0,
+        contentType: {
+          sys: { type: 'Link', linkType: 'ContentType', id: contentTypeId }
+        }
+      },
+      fields: {}
+    }
+
+    const entry = new Entry(entryData)
+
+    await this.entries.push(entry)
+
+    return entry
   }
 
   async saveEntry (id: string) {
     this.assertRecording()
 
-    const hasEntry = this.entries.some((entry) => entry.id === id)
+    const hasEntry = await this.hasEntry(id)
 
     if (!hasEntry) {
       throw new Error(`Cannot save Entry ${id} because it does not exist`)
@@ -258,6 +286,10 @@ class OfflineAPI {
     entry.version = entry.version + 1
 
     return entry
+  }
+
+  async hasEntry (id: string): Promise<boolean> {
+    return this.entries.some((entry) => entry.id === id)
   }
 
   async publishEntry (id: string): Promise<Entry> {
@@ -284,13 +316,18 @@ class OfflineAPI {
     return entries
   }
 
+  async getLocalesForSpace () {
+    return this.locales
+  }
+
   async startRecordingRequests (intent: Intent) {
     if (this.isRecordingRequests) {
       throw new Error('You need to stop recording before starting again')
     }
     this.isRecordingRequests = true
     this.currentRequestsRecorded = []
-    this.currentErrorsRecorded = []
+    this.currentValidationErrorsRecorded = []
+    this.currentRuntimeErrorsRecorded = []
     this.intent = intent
   }
 
@@ -303,14 +340,15 @@ class OfflineAPI {
     const batch: RequestBatch = {
       intent: this.intent,
       requests: this.currentRequestsRecorded,
-      errors: compact(this.currentErrorsRecorded)
+      validationErrors: compact(this.currentValidationErrorsRecorded),
+      runtimeErrors: this.currentRuntimeErrorsRecorded
     }
 
     this.requestBatches.push(batch)
 
     this.isRecordingRequests = false
     this.currentRequestsRecorded = []
-    this.currentErrorsRecorded = []
+    this.currentValidationErrorsRecorded = []
     this.intent = null
   }
 
@@ -319,6 +357,10 @@ class OfflineAPI {
       throw new Error('Cannot get batches while still recording')
     }
     return this.requestBatches
+  }
+
+  public async recordRuntimeError (error) {
+    this.currentRuntimeErrorsRecorded.push(error)
   }
 
   private assertRecording () {

@@ -16,7 +16,7 @@ const buildPayloads = async function (runMigration, contentTypes: APIContentType
     existingCTs.set(contentType.id, contentType)
   }
 
-  const api = new OfflineAPI(existingCTs, [])
+  const api = new OfflineAPI(existingCTs, [], [])
 
   await list.compressed().applyTo(api)
 

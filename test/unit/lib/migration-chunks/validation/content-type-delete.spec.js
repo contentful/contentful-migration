@@ -75,6 +75,36 @@ describe('content type delete validation', function () {
         },
         {
           type: 'InvalidAction',
+          message: 'Content type with id "bar" cannot be deleted more than once.',
+          details: {
+            step: {
+              type: 'contentType/delete',
+              meta: {
+                contentTypeInstanceId: 'contentType/bar/1'
+              },
+              payload: {
+                contentTypeId: 'bar'
+              }
+            }
+          }
+        },
+        {
+          type: 'InvalidAction',
+          message: 'Content type with id "baz" cannot be deleted more than once.',
+          details: {
+            step: {
+              type: 'contentType/delete',
+              meta: {
+                contentTypeInstanceId: 'contentType/baz/1'
+              },
+              payload: {
+                contentTypeId: 'baz'
+              }
+            }
+          }
+        },
+        {
+          type: 'InvalidAction',
           message: 'Content type with id "foo" cannot be deleted more than once.',
           details: {
             step: {
@@ -95,40 +125,10 @@ describe('content type delete validation', function () {
             step: {
               type: 'contentType/delete',
               meta: {
-                contentTypeInstanceId: 'contentType/bar/1'
-              },
-              payload: {
-                contentTypeId: 'bar'
-              }
-            }
-          }
-        },
-        {
-          type: 'InvalidAction',
-          message: 'Content type with id "bar" cannot be deleted more than once.',
-          details: {
-            step: {
-              type: 'contentType/delete',
-              meta: {
                 contentTypeInstanceId: 'contentType/bar/2'
               },
               payload: {
                 contentTypeId: 'bar'
-              }
-            }
-          }
-        },
-        {
-          type: 'InvalidAction',
-          message: 'Content type with id "baz" cannot be deleted more than once.',
-          details: {
-            step: {
-              type: 'contentType/delete',
-              meta: {
-                contentTypeInstanceId: 'contentType/baz/1'
-              },
-              payload: {
-                contentTypeId: 'baz'
               }
             }
           }

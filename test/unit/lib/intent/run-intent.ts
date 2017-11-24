@@ -5,7 +5,7 @@ import { ContentType } from '../../../../src/lib/entities/content-type'
 import { OfflineAPI } from '../../../../src/lib/offline-api/index'
 import { Entry } from '../../../../src/lib/entities/entry'
 
-const runIntent = async function (intent, contentTypes: APIContentType[], entries: APIEntry[]): Promise<OfflineAPI> {
+const runIntent = async function (intent, contentTypes: APIContentType[], entries: APIEntry[], locales: string[] = []): Promise<OfflineAPI> {
   const list = new IntentList([intent])
 
   const existingCTs: Map<String, ContentType> = new Map()
@@ -21,7 +21,7 @@ const runIntent = async function (intent, contentTypes: APIContentType[], entrie
     existingEntries.push(new Entry(apiEntry))
   }
 
-  const api = new OfflineAPI(existingCTs, existingEntries)
+  const api = new OfflineAPI(existingCTs, existingEntries, locales)
 
   await list.compressed().applyTo(api)
 

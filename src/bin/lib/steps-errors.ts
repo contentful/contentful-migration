@@ -1,22 +1,13 @@
-import Intent from '../../lib/intent/base-intent'
 import * as fs from 'fs'
 import * as cardinal from 'cardinal'
 import * as _ from 'lodash'
 import chalk from 'chalk'
+import ValidationError from '../../lib/interfaces/errors'
 
 interface LineContext {
   before: string[]
   line: string
   after: string[]
-}
-
-interface ErrorDetail {
-  intent: Intent
-}
-
-interface Error {
-  message: string
-  details: ErrorDetail
 }
 
 const getLineWithContext = function (lines, lineNumber, context): LineContext {
@@ -33,7 +24,7 @@ const getLineWithContext = function (lines, lineNumber, context): LineContext {
   }
 }
 
-const renderStepsErrors = function (errors: Error[]): string {
+const renderStepsErrors = function (errors: ValidationError[]) {
   const errorsByFile = _.groupBy(errors, (error) => {
     const intent = error.details.intent
     return intent.toRaw().meta.callsite.file
@@ -65,7 +56,9 @@ const renderStepsErrors = function (errors: Error[]): string {
     messages.push(`${fileErrorsMessage}${errorMessages}`)
   }
 
-  return messages.join('\n')
+  console.log(chalk`{red.bold Validation failed}\n\n`)
+  console.log(messages.join('\n'))
+  console.log(chalk`🚨  {bold.red Migration unsuccessful}`)
 }
 
 export default renderStepsErrors

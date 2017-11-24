@@ -1,5 +1,6 @@
 export default interface ContentTransform {
   from: string[],
   to: string[],
-  transform (inputFields: any[]): any[]
+  shouldPublish?: boolean,
+  transformEntryForLocale (inputFields: any, locale: string): any
 }

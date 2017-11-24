@@ -83,6 +83,16 @@ function getDevContentType (spaceId, id) {
   });
 }
 
+function getEntries (spaceId, id) {
+  return makeRequest(spaceId, {
+    method: 'GET',
+    url: `/entries?content_type=${id}`,
+    headers: {
+      'X-Contentful-Beta-Dev-Spaces': 1
+    }
+  });
+}
+
 function deleteDevSpace (spaceId) {
   return makeRequest(spaceId, {
     method: 'DELETE',
@@ -97,5 +107,6 @@ module.exports = {
   makeRequest,
   createDevSpace,
   deleteDevSpace,
-  getDevContentType
+  getDevContentType,
+  getEntries
 };

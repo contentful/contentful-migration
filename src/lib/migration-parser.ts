@@ -4,21 +4,49 @@ import { migration as buildIntents } from './migration-steps'
 import validateChunks from './migration-chunks/validation'
 
 import { ContentType } from './entities/content-type'
-import { fetcher as getContentTypesInChunks } from './content-types-in-plan'
-import { fetcher as getEntriesInIntents } from './fetch-entries'
-import checkEntriesForDeletedCts from './deleted-ct-entries'
 
 import ContentTypeUpdateIntentValidator from './intent-validator/content-type-update'
 import FieldUpdateIntentValidator from './intent-validator/field-update'
 import FieldMovementValidator from './intent-validator/field-movement'
+import EntryDeriveIntentValidator from './intent-validator/entry-derive'
+import ContentTransformIntentValidator from './intent-validator/content-transform'
 import IntentList from './intent-list'
 import * as errors from './errors/index'
-
 import Entry from './entities/entry'
 import OfflineAPI, { RequestBatch } from './offline-api'
+import ValidationError, { InvalidActionError } from './interfaces/errors'
 
-const createMigrationParser = function (makeRequest): (migrationCreator: () => any) => Promise<RequestBatch[]> {
+class ParseResult {
+  public batches: RequestBatch[] = []
+  public stepsValidationErrors: ValidationError[] = []
+  public payloadValidationErrors: InvalidActionError[] | ValidationError[] = []
+
+  hasValidationErrors () {
+    return this.batches.some(batch => batch.validationErrors.length > 0)
+  }
+
+  hasRuntimeErrors () {
+    return this.batches.some(batch => batch.runtimeErrors.length > 0)
+  }
+
+  hasStepsValidationErrors () {
+    return this.stepsValidationErrors.length > 0
+  }
+
+  hasPayloadValidationErrors () {
+    return this.payloadValidationErrors.length > 0
+  }
+
+  getRuntimeErrors () {
+    return this.batches.reduce((errors, batch) => {
+      return errors.concat(batch.runtimeErrors)
+    }, [])
+  }
+}
+
+const createMigrationParser = function (fetcher): (migrationCreator: (migration: any) => any) => Promise<ParseResult> {
   return async function migration (migrationCreator) {
+    const parseResult = new ParseResult()
     const intents = await buildIntents(migrationCreator)
 
     const intentList = new IntentList(intents)
@@ -26,12 +54,19 @@ const createMigrationParser = function (makeRequest): (migrationCreator: () => a
     intentList.addValidator(new ContentTypeUpdateIntentValidator())
     intentList.addValidator(new FieldUpdateIntentValidator())
     intentList.addValidator(new FieldMovementValidator())
+    intentList.addValidator(new ContentTransformIntentValidator())
+    intentList.addValidator(new EntryDeriveIntentValidator())
 
-    intentList.validate()
+    const stepsValidationErrors = intentList.validate()
+
+    if (stepsValidationErrors.length) {
+      parseResult.stepsValidationErrors = stepsValidationErrors
+      return parseResult
+    }
 
     let apiContentTypes
     try {
-      apiContentTypes = await getContentTypesInChunks(intentList, makeRequest)
+      apiContentTypes = await fetcher.getContentTypesInChunks(intentList)
     } catch (error) {
       throw new errors.SpaceAccessError()
     }
@@ -48,7 +83,7 @@ const createMigrationParser = function (makeRequest): (migrationCreator: () => a
 
     let existingEntries: APIEntry[]
     try {
-      existingEntries = await getEntriesInIntents(intentList, makeRequest)
+      existingEntries = await fetcher.getEntriesInIntents(intentList)
     } catch (error) {
       throw new errors.SpaceAccessError()
     }
@@ -57,21 +92,30 @@ const createMigrationParser = function (makeRequest): (migrationCreator: () => a
       return new Entry(apiEntry)
     })
 
-    const ctsWithEntryInfo = await checkEntriesForDeletedCts(intentList, contentTypes, makeRequest)
+    const ctsWithEntryInfo = await fetcher.checkContentTypesForDeletedCts(intentList, contentTypes)
 
-    validateChunks(intentList, ctsWithEntryInfo)
+    const payloadValidationErrors = validateChunks(intentList, ctsWithEntryInfo)
 
-    const api = new OfflineAPI(existingCts, entries)
+    if (payloadValidationErrors.length) {
+      parseResult.payloadValidationErrors = payloadValidationErrors
+      return parseResult
+    }
+
+    const locales = await fetcher.getLocalesForSpace()
+
+    const api = new OfflineAPI(existingCts, entries, locales)
 
     await intentList.compressed().applyTo(api)
 
     const batches = await api.getRequestBatches()
+    parseResult.batches = batches
 
-    return batches
+    return parseResult
   }
 }
 
 export {
   createMigrationParser as default,
-  createMigrationParser
+  createMigrationParser,
+  ParseResult
 }

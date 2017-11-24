@@ -11,10 +11,12 @@ const {
   SpaceAccessError
 } = require('../lib/errors')
 import createMigrationParser from '../lib/migration-parser'
-import renderPlan from './lib/plan-messages'
+import { renderPlan, renderValidationErrors, renderRuntimeErrors } from './lib/render-migration'
 import renderStepsErrors from './lib/steps-errors'
+import writeErrorsToLog from './lib/write-errors-to-log'
 import { RequestBatch } from '../lib/offline-api/index'
-import { flatten } from 'lodash'
+import Fetcher from '../lib/fetcher'
+import { ParseResult } from '../lib/migration-parser'
 
 const argv = yargs
   .usage('Parses and runs a migration script on a Contentful space.\n\nUsage: contentful-migration [args] <path-to-script-file>\n\nScript: path to a migration script.')
@@ -47,14 +49,15 @@ const argv = yargs
   .strict()
   .argv
 
-const renderFailedValidation = function (errors, renderer) {
-  return [
-    chalk`{red.bold Validation failed}\n`,
-    renderer(errors),
-    chalk`🚨  {bold.red Migration unsuccessful}`
-  ].join('\n')
+class BatchError extends Error {
+  public batch: RequestBatch
+  public errors: Error[]
+  constructor (message: string, batch: RequestBatch, errors: Error[]) {
+    super(message)
+    this.batch = batch
+    this.errors = errors
+  }
 }
-
 const run = async function () {
   let migrationFunction
   try {
@@ -82,54 +85,96 @@ const run = async function () {
     return client.rawRequest(requestConfig)
   }
 
-  const migrationParser = createMigrationParser(makeRequest)
+  const fetcher = new Fetcher(makeRequest)
+  const migrationParser = createMigrationParser(fetcher)
 
-  let batches: RequestBatch[]
+  let parseResult: ParseResult
 
   try {
-    batches = await migrationParser(migrationFunction)
+    parseResult = await migrationParser(migrationFunction)
   } catch (e) {
-    let message = e.message
-
-    if (e.errors) {
-      const errors = e.errors
-      message = renderFailedValidation(errors, renderStepsErrors)
-    } else if (e instanceof SpaceAccessError) {
-      message = [
+    if (e instanceof SpaceAccessError) {
+      const message = [
         chalk`{red.bold ${e.message}}\n`,
         chalk`🚨  {bold.red Migration unsuccessful}`
       ].join('\n')
-    } else {
-      console.log(e)
+      console.log(message)
       process.exit(1)
     }
-    console.log(message)
+    console.log(e)
     process.exit(1)
   }
 
-  const hasErrors = batches.some((batch) => batch.errors.length > 0)
-
-  if (hasErrors) {
-    console.log(chalk`{bold.red The following migration has been planned but cannot be run because it contains errors}\n\n`)
-  } else {
-    console.log(chalk`{bold.green The following migration has been planned}\n`)
-  }
-  renderPlan(batches)
-
-  if (hasErrors) {
-    console.log(chalk`🚨  {bold.red Migration unsuccessful}`)
+  if (parseResult.hasStepsValidationErrors()) {
+    renderStepsErrors(parseResult.stepsValidationErrors)
     process.exit(1)
   }
-  const requests = flatten(batches.map((batch) => batch.requests))
-  const tasks = requests.map((request) => {
+
+  if (parseResult.hasPayloadValidationErrors()) {
+    renderStepsErrors(parseResult.payloadValidationErrors)
+    process.exit(1)
+  }
+
+  const migrationName = path.basename(argv.filePath, '.js')
+  const errorsFile = path.join(
+    process.cwd(),
+    `errors-${migrationName}-${Date.now()}.log`
+  )
+
+  const batches = parseResult.batches
+
+  if (parseResult.hasValidationErrors()) {
+    renderValidationErrors(batches)
+    process.exit(1)
+  }
+
+  if (parseResult.hasRuntimeErrors()) {
+    renderRuntimeErrors(batches, errorsFile)
+    await writeErrorsToLog(parseResult.getRuntimeErrors(), errorsFile)
+    process.exit(1)
+  }
+
+  await renderPlan(batches)
+
+  const serverErrorsWritten = []
+
+  const tasks = batches.map((batch) => {
     return {
-      title: `${request.method} ${request.url} at V${request.headers['X-Contentful-Version']}`,
-      task: () => {
-        return makeRequest(request).catch((error) => {
-          const parsed = JSON.parse(error.message)
-          throw new Error(JSON.stringify(parsed.details) || parsed.message)
-        })
-      }
+      title: batch.intent.toPlanMessage().heading,
+      task: () => new Listr([
+        {
+          title: 'Making requests',
+          task: async (_ctx, task) => {
+            // TODO: We wanted to make this an async interator
+            // So we should not inspect the length but have a property for that
+            const numRequests = batch.requests.length
+            const requestErrors = []
+            let requestsDone = 0
+            for (const request of batch.requests) {
+              requestsDone += 1
+              task.title = `Making requests (${requestsDone}/${numRequests})`
+              task.output = `${request.method} ${request.url} at V${request.headers['X-Contentful-Version']}`
+              await makeRequest(request).catch((error) => {
+                serverErrorsWritten.push(writeErrorsToLog(error, errorsFile))
+                const parsed = JSON.parse(error.message)
+
+                const errorMessage = {
+                  status: parsed.statusText,
+                  message: parsed.message,
+                  details: parsed.details,
+                  url: parsed.request.url
+                }
+
+                requestErrors.push(new Error(JSON.stringify(errorMessage)))
+              })
+            }
+            // Finish batch and only then throw all errors in there
+            if (requestErrors.length) {
+              throw new BatchError(`Batch failed`, batch, requestErrors)
+            }
+          }
+        }
+      ])
     }
   })
 
@@ -154,7 +199,10 @@ const run = async function () {
       return successfulMigration
     } catch (err) {
       console.log(chalk`🚨  {bold.red Migration unsuccessful}`)
-      console.log(chalk`{red ${err.message}}`)
+      console.log(chalk`{red ${err.message}}\n`)
+      err.errors.forEach((err) => console.log(chalk`{red ${err}}\n\n`))
+      await Promise.all(serverErrorsWritten)
+      console.log(`Please check the errors log for more details: ${errorsFile}`)
     }
   } else {
     console.log(chalk`⚠️  {bold.yellow Migration aborted}`)
