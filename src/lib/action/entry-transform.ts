@@ -6,11 +6,9 @@ import * as _ from 'lodash'
 class EntryTransformAction extends APIAction {
   private contentTypeId: string
   private fromFields: string[]
-  // private toFields: string[]
   private transformEntryForLocale: Function
   private shouldPublish: boolean
 
-  // constructor (contentTypeId: string, fromFields: string[], toFields: string[], transformation: Function) {
   constructor (contentTypeId: string, fromFields: string[], transformation: Function, shouldPublish: boolean = true) {
     super()
     this.contentTypeId = contentTypeId
