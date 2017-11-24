@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## v0.5.0 - 2017-11-24
+### Added
+- add transformEntries & deriveEntries
+- _[cli]_ add yes flag to skip confirmation
+
+### Fixed
+- _[cli]_ allow absolute script paths
+
 ## v0.4.0 - 2017-11-10
 ### Changed
 - make code work with 13-payload-validations
@@ -8,13 +16,13 @@ All notable changes to this project will be documented in this file.
 - update copy of CONTRIBUTING.md
 - generate external sourcemaps
 - inline executor in test/integration/migration
-- _[contributing]_ Mention typescript
+- *[contributing]* Mention typescript
 - better separation of concerns & types
-- _[e2e]_ payload validations - added comments to example
-- _[e2e]_ payload validations tests
-- _[e2e]_ delete submitted by mistake not relevant example file
-- _[e2e]_ rename misleading tests purpose; added lint ignore config
-- _[e2e]_ added basic tests for payload validation errors
+- *[e2e]* payload validations - added comments to example
+- *[e2e]* payload validations tests
+- *[e2e]* delete submitted by mistake not relevant example file
+- *[e2e]* rename misleading tests purpose; added lint ignore config
+- *[e2e]* added basic tests for payload validation errors
 
 ## v0.3.0 - 2017-10-05
 ### Changed
@@ -22,7 +30,7 @@ All notable changes to this project will be documented in this file.
 - Include linter in npm test command
 
 ### Fixed
-- _[steps]_ allow migration script to be async
+- *[steps]* allow migration script to be async
 - Do not allow setting of same property multiple times
 
 ## v0.2.1 - 2017-09-29
