@@ -1,18 +1,23 @@
 import IntentList from './intent-list'
-import APIContentType from '../lib/interfaces/content-type'
+import APIContentType, { APIEditorInterfaces } from '../lib/interfaces/content-type'
 import { ContentType } from '../lib/entities/content-type'
 import * as _ from 'lodash'
 import * as Bluebird from 'bluebird'
+import APIFetcher from './interfaces/api-fetcher'
 
-export default class Fetcher {
+export default class Fetcher implements APIFetcher {
   private makeRequest: any
 
   constructor (makeRequest) {
     this.makeRequest = makeRequest
   }
 
-  async getEntriesInIntents (intentList: IntentList) {
-    const ids: string[] = _.uniq(intentList.getIntents().map((intent) => intent.getContentTypeId()))
+  async getEntriesInIntents (intentList: IntentList): Promise<Array<Object>> {
+    const ids: string[] = _.uniq(
+      intentList.getIntents()
+      .filter((intent) => intent.isContentTransform() || intent.isEntryDerive())
+      .map((intent) => intent.getContentTypeId())
+    )
 
     if (ids.length === 0) {
       return []
@@ -27,10 +32,13 @@ export default class Fetcher {
   }
 
   async getContentTypesInChunks (intentList: IntentList): Promise<APIContentType[]> {
-    const ids: string[] = _.uniq(intentList.getIntents().reduce((ids, intent) => {
-      const intentIds = intent.getRelatedContentTypeIds()
-      return ids.concat(intentIds)
-    }, []))
+    const ids: string[] = _.uniq(intentList.getIntents()
+      .filter((intent) => !intent.isEditorInterfaceUpdate())
+      .reduce((ids, intent) => {
+        const intentIds = intent.getRelatedContentTypeIds()
+        return ids.concat(intentIds)
+      }, [])
+    )
 
     if (ids.length === 0) {
       return []
@@ -45,7 +53,33 @@ export default class Fetcher {
     return contentTypes
   }
 
-  async getLocalesForSpace () {
+  async getEditorInterfacesInIntents (intentList: IntentList): Promise<Map<string, APIEditorInterfaces>> {
+    const contentTypeIds: string[] = _.uniq(
+      intentList.getIntents()
+        .filter((intent) => intent.isEditorInterfaceUpdate())
+        .reduce((ids, intent) => {
+          const intentIds = intent.getRelatedContentTypeIds()
+          return ids.concat(intentIds)
+        }, [])
+    )
+
+    let editorInterfaces = new Map<string, APIEditorInterfaces>()
+
+    if (contentTypeIds.length === 0) {
+      return editorInterfaces
+    }
+
+    for (let id of contentTypeIds) {
+      const response = await this.makeRequest({
+        method: 'GET',
+        url: `/content_types/${id}/editor_interface`
+      })
+      editorInterfaces.set(id, response)
+    }
+    return editorInterfaces
+  }
+
+  async getLocalesForSpace (): Promise<Array<string>> {
     const response = await this.makeRequest({
       method: 'GET',
       url: `/locales`

@@ -112,6 +112,10 @@ class IntentList {
             const ct = await api.getContentType(entityId)
             await action.applyTo(ct)
           }
+          if (entityType === 'EDITOR_INTERFACE') {
+            const editorInterfaces = await api.getEditorInterfaces(entityId)
+            await action.applyTo(editorInterfaces)
+          }
           continue
         }
       }

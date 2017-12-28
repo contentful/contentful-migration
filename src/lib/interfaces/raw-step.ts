@@ -25,6 +25,12 @@ interface RawStepPayload {
   transformation?: ContentTransform
   derivation?: EntryDerive
   movement?: Movement
+  editorInterface?: EditorInterfaceInfo
+}
+
+interface EditorInterfaceInfo {
+  fieldId: string
+  widgetId: string
 }
 
 interface Movement {
@@ -42,5 +48,6 @@ export {
   RawStepMeta,
   CallSiteInfo,
   RawStepPayload,
-  RawStepProps
+  RawStepProps,
+  EditorInterfaceInfo
 }

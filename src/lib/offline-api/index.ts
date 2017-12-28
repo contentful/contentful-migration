@@ -1,7 +1,7 @@
 import { omit, compact } from 'lodash'
 import FieldDeletionValidator from './validator/field-deletion'
 import { ContentTypePayloadValidator } from './validator/content-type'
-import ContentType from '../entities/content-type'
+import ContentType, { EditorInterfaces } from '../entities/content-type'
 import Request from '../interfaces/request'
 import { Entry } from '../entities/entry'
 import { PayloadValidationError, InvalidActionError } from '../interfaces/errors'
@@ -88,10 +88,22 @@ const deleteRequest = function (ct: ContentType): Request {
   }
 }
 
+const saveEditorInterfacesRequest = function (contentTypeId: string, editorInterfaces: EditorInterfaces): Request {
+  return {
+    method: 'PUT',
+    url: `/content_types/${contentTypeId}/editor_interface`,
+    headers: {
+      'X-Contentful-Version': editorInterfaces.version
+    },
+    data: editorInterfaces.toAPI()
+  }
+}
+
 class OfflineAPI {
   private modifiedContentTypes: Map<String, ContentType> = null
   private savedContentTypes: Map<String, ContentType> = null
   private publishedContentTypes: Map<String, ContentType> = null
+  private editorInterfaces: Map<String, EditorInterfaces> = null
   private entries: Entry[] = null
   private isRecordingRequests: boolean = false
   private currentRequestsRecorded: Request[] = null
@@ -102,7 +114,7 @@ class OfflineAPI {
   private contentTypeValidators: ContentTypePayloadValidator[] = []
   private locales: string[] = []
 
-  constructor (contentTypes: Map<String, ContentType> = new Map(), entries: Entry[] = [], locales: string[]) {
+  constructor (contentTypes: Map<String, ContentType> = new Map(), entries: Entry[] = [], locales: string[], editorInterfacesByContentType: Map<String, EditorInterfaces> = new Map<String, EditorInterfaces>()) {
     this.modifiedContentTypes = contentTypes
 
     // Initialize saved and published state
@@ -115,6 +127,7 @@ class OfflineAPI {
     // and also allows us to implement async iterators
     this.savedContentTypes = new Map()
     this.publishedContentTypes = new Map()
+    this.editorInterfaces = editorInterfacesByContentType
 
     for (const [id, contentType] of contentTypes.entries()) {
       this.savedContentTypes.set(id, contentType.clone())
@@ -132,10 +145,18 @@ class OfflineAPI {
 
   async getContentType (id: string): Promise<ContentType> {
     if (!this.hasContentType(id)) {
-      throw new Error(`Cannot get CT ${id} because it does not exist`)
+      throw new Error(`Cannot get Content Type ${id} because it does not exist`)
     }
 
     return this.modifiedContentTypes.get(id)
+  }
+
+  async getEditorInterfaces (contentTypeId: string): Promise<EditorInterfaces> {
+    if (!this.editorInterfaces.has(contentTypeId)) {
+      throw new Error(`Cannot get editor interfaces for Content Type ${contentTypeId} because it does not exist`)
+    }
+
+    return this.editorInterfaces.get(contentTypeId)
   }
 
   async hasContentType (id: string): Promise<boolean> {
@@ -246,6 +267,17 @@ class OfflineAPI {
         this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
       }
     }
+  }
+
+  async saveEditorInterfaces (contentTypeId: string) {
+    this.assertRecording()
+    if (!this.editorInterfaces.has(contentTypeId)) {
+      throw new Error(`Cannot save editor interfaces for Content Type ${contentTypeId} because they do not exist`)
+    }
+    const editorInterfaces = this.editorInterfaces.get(contentTypeId)
+    this.currentRequestsRecorded.push(saveEditorInterfacesRequest(contentTypeId, editorInterfaces))
+    editorInterfaces.version = editorInterfaces.version + 1
+    return editorInterfaces
   }
 
   async createEntry (contentTypeId: string, id: string): Promise<Entry> {
