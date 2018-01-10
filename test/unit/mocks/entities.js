@@ -24,6 +24,13 @@ const spaceMock = {
   locales: [ 'en-US' ]
 }
 
+const environmentMock = {
+  sys: Object.assign(cloneDeep(sysMock), {
+    type: 'Environment'
+  }),
+  name: 'name'
+}
+
 const userMock = {
   sys: Object.assign(cloneDeep(sysMock), {
     type: 'User'
@@ -245,6 +252,10 @@ function setupEntitiesMock (rewiredModuleApi) {
       wrapSpace: sinon.stub(),
       wrapSpaceCollection: sinon.stub()
     },
+    environment: {
+      wrapEnvironment: sinon.stub(),
+      wrapEnvironmentCollection: sinon.stub()
+    },
     contentType: {
       wrapContentType: sinon.stub(),
       wrapContentTypeCollection: sinon.stub()
@@ -330,5 +341,6 @@ export {
   uiExtensionMock,
   snapShotMock,
   userMock,
-  personalAccessTokenMock
+  personalAccessTokenMock,
+  environmentMock
 }
