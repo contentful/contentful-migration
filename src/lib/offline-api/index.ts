@@ -1,7 +1,7 @@
 import { omit, compact } from 'lodash'
 import FieldDeletionValidator from './validator/field-deletion'
 import { ContentTypePayloadValidator } from './validator/content-type'
-import ContentType, { EditorInterfaces } from '../entities/content-type'
+import { ContentType, EditorInterfaces } from '../entities/content-type'
 import Request from '../interfaces/request'
 import { Entry } from '../entities/entry'
 import { PayloadValidationError, InvalidActionError } from '../interfaces/errors'

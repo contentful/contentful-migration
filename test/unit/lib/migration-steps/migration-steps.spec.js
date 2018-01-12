@@ -9,8 +9,8 @@ const stripCallsites = (steps) => steps.map(stripCallsite);
 
 describe('migration-steps', function () {
   describe('when executing a migration', function () {
-    it('makes a plan', Bluebird.coroutine(function* () {
-      const plan = yield migration(function up(migration) {
+    it('makes a plan', Bluebird.coroutine(function * () {
+      const plan = yield migration(function up (migration) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person'
         });
@@ -161,8 +161,8 @@ describe('migration-steps', function () {
   });
 
   describe('when calling methods for props that do not exist', function () {
-    it('creates the steps anyway', Bluebird.coroutine(function* () {
-      const plan = yield migration(function up(migration) {
+    it('creates the steps anyway', Bluebird.coroutine(function * () {
+      const plan = yield migration(function up (migration) {
         const person = migration.createContentType('person', {
           foo: 'This is an invalid prop'
         });
@@ -253,8 +253,8 @@ describe('migration-steps', function () {
   });
 
   describe('when dealing with multiple instances', function () {
-    it('makes a plan', Bluebird.coroutine(function* () {
-      const plan = yield migration(function up(migration) {
+    it('makes a plan', Bluebird.coroutine(function * () {
+      const plan = yield migration(function up (migration) {
         const person1 = migration.editContentType('person', {
           description: 'A content type for a person'
         });
@@ -391,8 +391,8 @@ describe('migration-steps', function () {
   });
 
   describe('when deleting a content type', function () {
-    it('includes it in the steps', Bluebird.coroutine(function* () {
-      const plan = yield migration(function up(migration) {
+    it('includes it in the steps', Bluebird.coroutine(function * () {
+      const plan = yield migration(function up (migration) {
         migration.deleteContentType('recipe');
       });
 
@@ -411,8 +411,8 @@ describe('migration-steps', function () {
   });
 
   describe('when defining the display field', function () {
-    it('sets the display field', Bluebird.coroutine(function* () {
-      const plan = yield migration(function up(migration) {
+    it('sets the display field', Bluebird.coroutine(function * () {
+      const plan = yield migration(function up (migration) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
           displayField: 'favorite'
@@ -588,8 +588,8 @@ describe('migration-steps', function () {
     }));
   });
   describe('when deleting a field', function () {
-    it('a delete step is included in the plan', Bluebird.coroutine(function* () {
-      const plan = yield migration(function up(migration) {
+    it('a delete step is included in the plan', Bluebird.coroutine(function * () {
+      const plan = yield migration(function up (migration) {
         migration.editContentType('person').deleteField('age');
       });
 
@@ -610,7 +610,7 @@ describe('migration-steps', function () {
   });
 
   describe('when setting a new id and it is ok', function () {
-    it('returns the right steps', Bluebird.coroutine(function* () {
+    it('returns the right steps', Bluebird.coroutine(function * () {
       const plan = yield migration(function (migration) {
         migration
           .editContentType('book')
@@ -636,7 +636,7 @@ describe('migration-steps', function () {
   });
 
   describe('when using Promises within migration scripts', function () {
-    it('returns the right steps', Bluebird.coroutine(function* () {
+    it('returns the right steps', Bluebird.coroutine(function * () {
       const plan = yield migration(function (migration) {
         return Bluebird.delay(1).then(() => migration
           .editContentType('book')
@@ -664,7 +664,7 @@ describe('migration-steps', function () {
   });
 
   describe('when transforming content', function () {
-    it('returns the right steps', Bluebird.coroutine(function* () {
+    it('returns the right steps', Bluebird.coroutine(function * () {
       const transformFunction = function (sourceFields) {
         const [firstName, lastName] = sourceFields;
         return firstName + ' ' + lastName;
@@ -698,7 +698,7 @@ describe('migration-steps', function () {
   });
 
   describe('when updating an editor interface', function () {
-    it('returns the right steps', Bluebird.coroutine(function* () {
+    it('returns the right steps', Bluebird.coroutine(function * () {
       const plan = yield migration(function (migration) {
         migration
           .editContentType('book')

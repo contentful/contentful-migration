@@ -22,7 +22,7 @@ export default class EditorInterfaceUpdateIntent extends Intent {
     return false
   }
   toActions () {
-    // TODO: check for optimizing API calls and saving CT by CT with merged editor interface definition
+    // TODO: check for optimizing API calls and saving multiple editor interfaces changes on the same content type done as 1 single API call instead of multiple.
     return [
       new UpdateEditorInterfaceAction(
         this.payload.contentTypeId,

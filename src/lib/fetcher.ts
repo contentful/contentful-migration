@@ -1,5 +1,5 @@
 import IntentList from './intent-list'
-import APIContentType, { APIEditorInterfaces } from '../lib/interfaces/content-type'
+import { APIContentType, APIEditorInterfaces } from '../lib/interfaces/content-type'
 import { ContentType } from '../lib/entities/content-type'
 import * as _ from 'lodash'
 import * as Bluebird from 'bluebird'
@@ -12,7 +12,7 @@ export default class Fetcher implements APIFetcher {
     this.makeRequest = makeRequest
   }
 
-  async getEntriesInIntents (intentList: IntentList): Promise<Array<Object>> {
+  async getEntriesInIntents (intentList: IntentList): Promise<Object[]> {
     const ids: string[] = _.uniq(
       intentList.getIntents()
       .filter((intent) => intent.isContentTransform() || intent.isEntryDerive())
@@ -32,6 +32,8 @@ export default class Fetcher implements APIFetcher {
   }
 
   async getContentTypesInChunks (intentList: IntentList): Promise<APIContentType[]> {
+    // Excluding editor interface intents here since, API-wise, editor interfaces don't require
+    // to know the full details about the associated content type.
     const ids: string[] = _.uniq(intentList.getIntents()
       .filter((intent) => !intent.isEditorInterfaceUpdate())
       .reduce((ids, intent) => {
@@ -70,16 +72,12 @@ export default class Fetcher implements APIFetcher {
     }
 
     for (let id of contentTypeIds) {
-      const response = await this.makeRequest({
-        method: 'GET',
-        url: `/content_types/${id}/editor_interface`
-      })
-      editorInterfaces.set(id, response)
+      await this._fetchEditorInterface(id, editorInterfaces)
     }
     return editorInterfaces
   }
 
-  async getLocalesForSpace (): Promise<Array<string>> {
+  async getLocalesForSpace (): Promise<string[]> {
     const response = await this.makeRequest({
       method: 'GET',
       url: `/locales`
@@ -114,5 +112,27 @@ export default class Fetcher implements APIFetcher {
 
       return ct
     })
+  }
+
+  private async _fetchEditorInterface (id: string, editorInterfaces: Map<string, APIEditorInterfaces>) {
+    try {
+      const response = await this.makeRequest({
+        method: 'GET',
+        url: `/content_types/${id}/editor_interface`
+      })
+      editorInterfaces.set(id, response)
+    } catch (error) {
+      if (error.name === 'NotFound') {  // TODO: expose status codes and use that instead.
+        // Initialize a default structure for newly created content types.
+        editorInterfaces.set(id, {
+          sys: {
+            version: 1
+          },
+          controls: []
+        })
+      } else {
+        throw error
+      }
+    }
   }
 }

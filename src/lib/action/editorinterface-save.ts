@@ -1,5 +1,5 @@
-import { APIAction } from './action';
-import { OfflineAPI } from '../offline-api/index';
+import { APIAction } from './action'
+import { OfflineAPI } from '../offline-api/index'
 
 class SaveEditorInterfaceAction extends APIAction {
   protected contentTypeId: string
@@ -10,7 +10,7 @@ class SaveEditorInterfaceAction extends APIAction {
   }
 
   async applyTo (api: OfflineAPI) {
-    api.saveEditorInterfaces(this.contentTypeId)
+    await api.saveEditorInterfaces(this.contentTypeId)
   }
 }
 

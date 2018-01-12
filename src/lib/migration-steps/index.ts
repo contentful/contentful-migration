@@ -67,7 +67,7 @@ class ContentType extends DispatchProxy {
     })
   }
 
-  public dispatch?(step: Intent): void
+  public dispatch? (step: Intent): void
 
   createField (id, init) {
     const callsite = getFirstExternalCaller()

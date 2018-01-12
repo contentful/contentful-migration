@@ -82,7 +82,7 @@ const createMigrationParser = function (fetcher: APIFetcher): (migrationCreator:
     try {
       apiEditorInterfaces = await fetcher.getEditorInterfacesInIntents(intentList)
     } catch (error) {
-      throw new errors.SpaceAccessError()
+      throw new errors.EditorInterfacesFetchingError()
     }
 
     const existingEditorInterfaces: Map<String, EditorInterfaces> = new Map()

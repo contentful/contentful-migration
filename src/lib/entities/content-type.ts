@@ -103,11 +103,15 @@ class EditorInterfaces {
   }
 
   toAPI (): object {
-    let result = new Array<APIEditorInterface>()
-    this._controls.forEach((widgetId, fieldId) => result.push({
-      fieldId,
-      widgetId
-    }))
+    let result: APIEditorInterface[] = []
+    let widgetId: string
+    let fieldId: string
+    for ([fieldId, widgetId] of this._controls.entries()) {
+      result.push({
+        fieldId,
+        widgetId
+      })
+    }
     return {
       controls: result
     }

@@ -1,5 +1,5 @@
 import { EditorInterfaces } from '../entities/content-type'
-import { EntityAction } from './action';
+import { EntityAction } from './action'
 
 class UpdateEditorInterfaceAction extends EntityAction {
   protected contentTypeId: string

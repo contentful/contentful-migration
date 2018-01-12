@@ -2,8 +2,6 @@ import { Intent as IntentInterface } from '../interfaces/intent'
 import { RawStep, RawStepMeta, RawStepPayload } from '../interfaces/raw-step'
 import { APIAction, EntityAction } from '../action/action'
 import { PlanMessage } from '../interfaces/plan-message'
-import { ContentTypeSaveAction } from '../action/content-type-save';
-import { ContentTypePublishAction } from '../action/content-type-publish';
 
 export default abstract class Intent implements IntentInterface {
   protected type: string
@@ -119,20 +117,6 @@ export default abstract class Intent implements IntentInterface {
     }
 
     return true
-  }
-
-  /**
-   * @returns The API action to perform on save. Defaults to saving the Content Type.
-   */
-  getSaveAction (): APIAction {
-    return new ContentTypeSaveAction(this.getContentTypeId())
-  }
-
-  /**
-   * @returns The API action to perform on publish. Defaults to publishing the Content Type.
-   */
-  getPublishAction (): APIAction {
-    return new ContentTypePublishAction(this.getContentTypeId())
   }
 
   toRaw (): RawStep {

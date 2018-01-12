@@ -258,7 +258,7 @@ Changes the field's ID.
 Changes the editor interface of given field's ID.
 
 `fieldId : string` – The ID of the field.
-`newId : string` – The new widget ID for the field.
+`widgetId : string` – The new widget ID for the field.
 
 ### Field
 

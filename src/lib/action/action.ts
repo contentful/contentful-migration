@@ -1,4 +1,4 @@
-import ContentType, { EditorInterfaces } from '../entities/content-type'
+import { ContentType, EditorInterfaces } from '../entities/content-type'
 import Entry from '../entities/entry'
 import OfflineApi from '../offline-api/index'
 
