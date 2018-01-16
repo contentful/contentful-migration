@@ -191,8 +191,8 @@ Creates a field with provided `id`.
 **`opts : Object`** – Field definition, with the following options:
 - **`name : string`** _(required)_ – Field name.
 - **`type : string`** _(required)_ – Field type, amongst the following values:
-  - `Symbol`
-  - `Text`
+  - `Symbol` (Short text)
+  - `Text` (Long text)
   - `Integer`
   - `Number`
   - `Date`
