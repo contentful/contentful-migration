@@ -182,6 +182,8 @@ For the complete version of this migration, please refer to [this example](./exa
 
 ### Content type
 
+For a comprehensive guide to content modelling, please refer to [this guide](https://www.contentful.com/developers/docs/concepts/data-model/).
+
 #### `createField(id[, opts])` : [Field](#field)
 
 Creates a field with provided `id`.
@@ -191,8 +193,8 @@ Creates a field with provided `id`.
 **`opts : Object`** – Field definition, with the following options:
 - **`name : string`** _(required)_ – Field name.
 - **`type : string`** _(required)_ – Field type, amongst the following values:
-  - `Symbol`
-  - `Text`
+  - `Symbol` (Short text)
+  - `Text` (Long text)
   - `Integer`
   - `Number`
   - `Date`
