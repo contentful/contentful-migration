@@ -22,7 +22,7 @@ describe('04-steps-errors.js', function () {
 
 describe('05-plan-errors.js', function () {
   it('outputs the correct errors', function (done) {
-    this.timeout(10000);
+    this.timeout(20000);
 
     cli()
       .run(`--space-id ${SOURCE_TEST_SPACE} ./examples/05-plan-errors.js`)

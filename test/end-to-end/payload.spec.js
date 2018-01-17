@@ -7,7 +7,7 @@ const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 
 describe('invalid payload errors', function () {
   it('outputs the validation errors', function (done) {
-    this.timeout(5000);
+    this.timeout(20000);
     cli()
       .run(`--space-id ${SOURCE_TEST_SPACE} ./examples/13-payload-validations.js`)
       .expect(assert.validations.contentType.requiredProperty('name'))
