@@ -63,8 +63,8 @@ const run = async function () {
   try {
     migrationFunction = require(argv.filePath)
   } catch (e) {
-    console.log(chalk`{red.bold The ${argv.filePath} script could not be parsed, as it seems to contain syntax errors.}\n`)
-    console.log(e)
+    console.error(chalk`{red.bold The ${argv.filePath} script could not be parsed, as it seems to contain syntax errors.}\n`)
+    console.error(e)
     return
   }
 
@@ -98,10 +98,10 @@ const run = async function () {
         chalk`{red.bold ${e.message}}\n`,
         chalk`🚨  {bold.red Migration unsuccessful}`
       ].join('\n')
-      console.log(message)
+      console.error(message)
       process.exit(1)
     }
-    console.log(e)
+    console.error(e)
     process.exit(1)
   }
 
@@ -198,14 +198,14 @@ const run = async function () {
       console.log(chalk`🎉  {bold.green Migration successful}`)
       return successfulMigration
     } catch (err) {
-      console.log(chalk`🚨  {bold.red Migration unsuccessful}`)
-      console.log(chalk`{red ${err.message}}\n`)
-      err.errors.forEach((err) => console.log(chalk`{red ${err}}\n\n`))
+      console.error(chalk`🚨  {bold.red Migration unsuccessful}`)
+      console.error(chalk`{red ${err.message}}\n`)
+      err.errors.forEach((err) => console.error(chalk`{red ${err}}\n\n`))
       await Promise.all(serverErrorsWritten)
-      console.log(`Please check the errors log for more details: ${errorsFile}`)
+      console.error(`Please check the errors log for more details: ${errorsFile}`)
     }
   } else {
-    console.log(chalk`⚠️  {bold.yellow Migration aborted}`)
+    console.warn(chalk`⚠️  {bold.yellow Migration aborted}`)
   }
 }
 
