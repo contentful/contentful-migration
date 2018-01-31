@@ -1,4 +1,6 @@
 import test from 'blue-tape'
+import delay from 'delay'
+
 import {localeTests} from './locale-integration'
 import {contentTypeReadOnlyTests, contentTypeWriteTests} from './content-type-integration'
 import {entryReadOnlyTests, entryWriteTests} from './entry-integration'
@@ -150,6 +152,61 @@ test('Create space for tests which create, change and delete data', (t) => {
       roleTests(t, space)
       apiKeyTests(t, space)
       uiExtensionTests(t, space)
+      test.onFinish(() => space.delete())
+    })
+})
+
+function waitForEnvironmentToBeReady (space, environment) {
+  return space.getEnvironment(environment.sys.id)
+    .then((env) => {
+      if (env.sys.status.sys.id !== 'ready') {
+        console.log(`Environment ${environment.sys.id} is not ready yet. Waiting 1000ms...`)
+        return delay(1000)
+          .then(() => waitForEnvironmentToBeReady(space, env))
+      }
+      return env
+    })
+}
+
+test('Create space with an environment for tests which create, change and delete data', (t) => {
+  return client.createSpace({
+    name: 'CMA JS SDK tests'
+  }, organization)
+  // When running these tests locally, create a specific space, uncomment and
+  // use the line below to avoid running into the 10 space per hour creation limit.
+  // Also comment the test.onFinish line below to avoid removing the space.
+  // The below line also uses double quotes on purpose so it breaks the linter
+  // in case someone forgets to comment this line again.
+  // client.getSpace('gauywn1xskhq')
+    .then((space) => {
+      return space.createLocale({
+        name: 'German (Germany)',
+        code: 'de-DE'
+      })
+        .then(() => {
+          return space.createEnvironment({
+            name: 'Testing Environment'
+          })
+        })
+        .then((environment) => {
+          return waitForEnvironmentToBeReady(space, environment)
+        })
+        .then((environment) => ({
+          environment,
+          space
+        }))
+        .catch((err) => {
+          console.error(err)
+          t.fail('Environment creation failed.')
+        })
+    })
+    .then(({environment, space}) => {
+      localeTests(t, environment)
+      contentTypeWriteTests(t, environment)
+      entryWriteTests(t, environment)
+      assetWriteTests(t, environment)
+      uiExtensionTests(t, environment)
+      // test.onFinish(() => environment.delete())
       test.onFinish(() => space.delete())
     })
 })
