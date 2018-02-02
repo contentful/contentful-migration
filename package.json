@@ -76,7 +76,6 @@
     "kind-of": "^5.0.2",
     "listr": "^0.12.0",
     "lodash": "^4.17.4",
-    "uuid": "^3.1.0",
     "yargs": "^8.0.2"
   },
   "devDependencies": {
@@ -112,7 +111,8 @@
     "ts-node": "^3.3.0",
     "tslint": "^5.7.0",
     "tslint-config-standard": "^6.0.1",
-    "typescript": "^2.5.3"
+    "typescript": "^2.5.3",
+    "uuid": "^3.2.1"
   },
   "bin": {
     "contentful-migration": "./bin/contentful-migration"

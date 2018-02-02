@@ -32,6 +32,10 @@ const argv = yargs
   .option('space-id', {
     alias: 's',
     describe: 'ID of the space to run the migration script on'
+  }).option('environment-id', {
+    alias: 'e',
+    describe: 'ID of the environment within the space to run the migration script on',
+    default: 'master'
   })
   .option('access-token', {
     alias: 'a',
@@ -70,10 +74,12 @@ const run = async function () {
   }
 
   const spaceId = argv.spaceId
+  const environmentId = argv.environmentId
 
   const config = {
     accessToken: argv.accessToken,
-    spaceId
+    spaceId,
+    environmentId
   }
 
   const clientConfig = Object.assign({
@@ -82,8 +88,10 @@ const run = async function () {
 
   const client = createManagementClient(clientConfig)
   const makeRequest = function (requestConfig) {
-    requestConfig.url = path.join(config.spaceId, requestConfig.url)
-    return client.rawRequest(requestConfig)
+    const config = Object.assign({}, requestConfig, {
+      url: path.join(spaceId, 'environments', environmentId, requestConfig.url)
+    })
+    return client.rawRequest(config)
   }
 
   const fetcher = new Fetcher(makeRequest)
