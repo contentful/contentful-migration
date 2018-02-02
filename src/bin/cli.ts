@@ -39,6 +39,7 @@ const argv = yargs
   })
   .option('yes', {
     alias: 'y',
+    boolean: true,
     describe: 'Skips any confirmation before applying the migration script',
     default: false
   })
