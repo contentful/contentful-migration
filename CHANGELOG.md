@@ -1,13 +1,22 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## v0.5.1 - 2018-02-05
+### Changed
+- _[e2e]_ increase timeouts
+- _[readme]_ Added link to Content modelling guide under Content type section
+- _[readme]_ Added description to Symbol and Text in createField
+
+### Fixed
+- interpret yes flag as boolean
+
 ## v0.5.0 - 2017-11-24
 ### Added
 - add transformEntries & deriveEntries
-- _[cli]_ add yes flag to skip confirmation
+- *[cli]* add yes flag to skip confirmation
 
 ### Fixed
-- _[cli]_ allow absolute script paths
+- *[cli]* allow absolute script paths
 
 ## v0.4.0 - 2017-11-10
 ### Changed
