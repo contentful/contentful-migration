@@ -32,7 +32,7 @@ const renderPlan = (batches: RequestBatch[]) => {
     }
 
     if (batch.intent.shouldPublish()) {
-      console.error(chalk`\n{bold.underline Publish Content Type} {bold.yellow ${batch.intent.getContentTypeId()}}`)
+      console.log(chalk`\n{bold.underline Publish Content Type} {bold.yellow ${batch.intent.getContentTypeId()}}`)
     }
   }
 }
