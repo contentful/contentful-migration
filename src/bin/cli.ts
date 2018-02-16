@@ -1,6 +1,7 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import * as yargs from 'yargs'
+import * as globby from 'globby'
 
 import chalk from 'chalk'
 import * as inquirer from 'inquirer'
@@ -20,14 +21,17 @@ import { ParseResult } from '../lib/migration-parser'
 
 const argv = yargs
   .usage('Parses and runs a migration script on a Contentful space.\n\nUsage: contentful-migration [args] <path-to-script-file>\n\nScript: path to a migration script.')
-  .demandCommand(1, 'Please provide the file containing the migration script.')
-  .check((args) => {
-    const filePath = path.resolve(process.cwd(), args._[0])
-    if (fs.existsSync(filePath)) {
-      args.filePath = filePath
-      return true
+  .command(['single <filePath>', '$0'], 'Run a single migration script', {}, runSingle)
+  .command('batch <directory|glob>', 'Run a set of migration scripts in filename order', {}, runBatch)
+  .coerce('filePath', (filePath) => {
+    filePath = path.resolve(process.cwd(), filePath)
+    if (!fs.existsSync(filePath)) {
+      throw new Error(chalk`{bold.red Cannot find file ${filePath}}`)
     }
-    throw new Error(`Cannot find file ${filePath}.`)
+    if (fs.statSync(filePath).isDirectory()) {
+      throw new Error(chalk`{bold.red Cannot load migration file ${filePath}: is a directory.\n  Did you mean to run in 'batch' mode?}`)
+    }
+    return filePath
   })
   .option('space-id', {
     alias: 's',
@@ -63,16 +67,23 @@ class BatchError extends Error {
     this.errors = errors
   }
 }
-const run = async function () {
-  let migrationFunction
-  try {
-    migrationFunction = require(argv.filePath)
-  } catch (e) {
-    console.log(chalk`{red.bold The ${argv.filePath} script could not be parsed, as it seems to contain syntax errors.}\n`)
-    console.log(e)
-    return
+
+async function runSingle (argv) {
+
+  const migrationFunction = loadMigrationFunction(argv.filePath)
+
+  const spaceId = argv.spaceId
+
+  const config = {
+    accessToken: argv.accessToken,
+    spaceId
   }
 
+  execMigration(migrationFunction, config)
+}
+
+async function runBatch (argv) {
+  console.log('Batch!', argv)
   const spaceId = argv.spaceId
   const environmentId = argv.environmentId
 
@@ -81,6 +92,38 @@ const run = async function () {
     spaceId,
     environmentId
   }
+
+  let migrationFunctions = []
+  let glob
+  if (argv.directory) {
+    const stats = fs.statSync(argv.directory)
+    if (stats.isDirectory()) {
+      const extensions = ['js', 'ts']
+      glob = path.join(argv.directory, `[0-9]*@(${extensions.join('|')})`)
+    }
+  }
+  if (!glob) {
+    glob = argv.glob
+  }
+  const files = await globby(glob)
+  files.sort()
+
+  migrationFunctions.push(...files.map(f => loadMigrationFunction(path.resolve(process.cwd(), f))))
+
+  if (migrationFunctions.length === 0) {
+    console.log(chalk`{bold.yellow No migrations found in ${glob}}`)
+  } else {
+    console.log(chalk`{bold.cyan ${migrationFunctions.length.toString()} migrations to be performed:}`)
+    console.log(`${migrationFunctions.map((f, i) => (`  ${i + 1}: ${path.basename(f.filePath)}`)).join('\n')}`)
+    for (let i = 0; i < migrationFunctions.length; i++) {
+      const migration = migrationFunctions[i]
+      console.log(chalk`{bold.cyan Migration ${(i + 1).toString()} of ${migrationFunctions.length.toString()}: ${path.basename(migration.filePath)}}`)
+      await execMigration(migrationFunctions[i], config)
+    }
+  }
+}
+
+async function execMigration (migrationFunction, config) {
 
   const clientConfig = Object.assign({
     application: `contentful.migration-cli/${version}`
@@ -124,7 +167,7 @@ const run = async function () {
     process.exit(1)
   }
 
-  const migrationName = path.basename(argv.filePath, '.js')
+  const migrationName = path.basename(migrationFunction.filePath)
   const errorsFile = path.join(
     process.cwd(),
     `errors-${migrationName}-${Date.now()}.log`
@@ -144,7 +187,6 @@ const run = async function () {
   }
 
   await renderPlan(batches)
-
   const serverErrorsWritten = []
 
   const tasks = batches.map((batch) => {
@@ -218,4 +260,14 @@ const run = async function () {
   }
 }
 
-export default run
+function loadMigrationFunction (filePath) {
+  try {
+    const ret = require(filePath)
+    ret.filePath = filePath
+    return ret
+  } catch (e) {
+    console.log(chalk`{red.bold The ${filePath} script could not be parsed, as it seems to contain syntax errors.}\n`)
+    console.log(e)
+    process.exit(1)
+  }
+}
