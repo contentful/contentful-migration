@@ -18,6 +18,7 @@ import writeErrorsToLog from './lib/write-errors-to-log'
 import { RequestBatch } from '../lib/offline-api/index'
 import Fetcher from '../lib/fetcher'
 import { ParseResult } from '../lib/migration-parser'
+import { MigrationHistory } from '../lib/entities/migration-history'
 
 const argv = yargs
   .usage('Parses and runs a migration script on a Contentful space.\n\nUsage: contentful-migration [args] <path-to-script-file>\n\nScript: path to a migration script.')
@@ -137,7 +138,34 @@ async function execMigration (migrationFunction, config) {
     return client.rawRequest(config)
   }
 
+  const migrationName = path.basename(migrationFunction.filePath)
+  const errorsFile = path.join(
+    process.cwd(),
+    `errors-${migrationName}-${Date.now()}.log`
+  )
+
   const fetcher = new Fetcher(makeRequest)
+
+  const history = await fetcher.getMigrationHistory()
+  let thisMigrationHistory = history.filter(m => m.migrationName == migrationName && m.completed).pop()
+  if (thisMigrationHistory) {
+    console.log(chalk`{gray Migration previously completed at ${new Date(thisMigrationHistory.completed).toString()}}`)
+    if (!argv.force) {
+      return
+    }
+    console.log(chalk`  {gray Re-running migration anyways due to "--force" parameter}`)
+  } else {
+    thisMigrationHistory = history.filter(m => m.migrationName == migrationName).pop()
+    if (thisMigrationHistory) {
+      console.log(chalk`⚠️  {bold.yellow Migration failed before completion at ${new Date(thisMigrationHistory.completed).toString()}}`)
+      if (!argv.force) {
+        console.log(chalk`  {bold.yellow Please manually inspect the data model for errors and then re-run using "--force"}`)
+        return
+      }
+      console.log(chalk`  {gray Re-running migration anyways due to "--force" parameter}`)
+    }
+  }
+
   const migrationParser = createMigrationParser(fetcher)
 
   let parseResult: ParseResult
@@ -166,12 +194,6 @@ async function execMigration (migrationFunction, config) {
     renderStepsErrors(parseResult.payloadValidationErrors)
     process.exit(1)
   }
-
-  const migrationName = path.basename(migrationFunction.filePath)
-  const errorsFile = path.join(
-    process.cwd(),
-    `errors-${migrationName}-${Date.now()}.log`
-  )
 
   const batches = parseResult.batches
 
@@ -226,6 +248,30 @@ async function execMigration (migrationFunction, config) {
           }
         }
       ])
+    }
+  })
+
+  const space = await client.getSpace(config.spaceId)
+
+  tasks.splice(0, 0, {
+    title: `Insert Migration "${migrationName}" into History`,
+    task: async () => {
+      await MigrationHistory.getOrCreateContentType(space)
+
+      thisMigrationHistory = new MigrationHistory(migrationName)
+      const resp = await space.createEntry('migrationHistory', thisMigrationHistory.update({}))
+      thisMigrationHistory.id = resp.sys.id
+      history.push(thisMigrationHistory)
+    }
+  })
+
+  tasks.push({
+    title: 'Mark migration as completed',
+    task: async () => {
+      thisMigrationHistory.completed = Date.now()
+      const entry = await space.getEntry(thisMigrationHistory.id)
+      thisMigrationHistory.update(entry)
+      await entry.update()
     }
   })
 

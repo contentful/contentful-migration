@@ -1,6 +1,7 @@
 import IntentList from './intent-list'
 import APIContentType from '../lib/interfaces/content-type'
 import { ContentType } from '../lib/entities/content-type'
+import { MigrationHistory } from '../lib/entities/migration-history'
 import * as _ from 'lodash'
 import * as Bluebird from 'bluebird'
 
@@ -80,5 +81,29 @@ export default class Fetcher {
 
       return ct
     })
+  }
+
+  async getMigrationHistory (): Promise<MigrationHistory[]> {
+
+    try {
+      const response = await this.makeRequest({
+        method: 'GET',
+        url: '/entries?content_type=migrationHistory'
+      })
+      return response.items.map(item => new MigrationHistory(item.sys.id, item.fields))
+    }catch(e) {
+      if (e.name != 'InvalidQuery') {
+        throw(e)
+      }
+      const msg = JSON.parse(e.message)
+
+      const errors = msg.details && msg.details.errors
+      if (errors && errors.length > 0 && errors[0].name == 'unknownContentType') {
+        // No migration history
+        return []
+      } else {
+        throw(e)
+      }
+    }
   }
 }
