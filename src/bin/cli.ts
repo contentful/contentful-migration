@@ -52,6 +52,11 @@ const argv = yargs
     describe: 'Skips any confirmation before applying the migration script',
     default: false
   })
+  .option('force', {
+    boolean: true,
+    describe: 'Re-runs any migrations that previously errored or have already completed.',
+    default: false
+  })
   .demandOption(['space-id'], 'Please provide a space ID')
   .help('h')
   .alias('h', 'help')
