@@ -157,7 +157,7 @@ async function execMigration (migrationFunction, config) {
   } else {
     thisMigrationHistory = history.filter(m => m.migrationName == migrationName).pop()
     if (thisMigrationHistory) {
-      console.log(chalk`⚠️  {bold.yellow Migration failed before completion at ${new Date(thisMigrationHistory.completed).toString()}}`)
+      console.log(chalk`⚠️  {bold.yellow Migration failed before completion at ${new Date(thisMigrationHistory.started).toString()}}`)
       if (!argv.force) {
         console.log(chalk`  {bold.yellow Please manually inspect the data model for errors and then re-run using "--force"}`)
         return
