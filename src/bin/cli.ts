@@ -259,6 +259,7 @@ async function execMigration (migrationFunction, config) {
       await MigrationHistory.getOrCreateContentType(space)
 
       thisMigrationHistory = new MigrationHistory(migrationName)
+      thisMigrationHistory.detail = batches
       const resp = await space.createEntry('migrationHistory', thisMigrationHistory.update({}))
       thisMigrationHistory.id = resp.sys.id
       history.push(thisMigrationHistory)
