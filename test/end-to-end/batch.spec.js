@@ -12,7 +12,7 @@ const { createDevSpace, deleteDevSpace, getDevContentType, getEntries, createEnt
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 
-describe('run all migrations examples', function () {
+describe('run batch examples', function () {
   this.timeout(30000);
   let devSpaceId;
   let tmpDir;
@@ -43,7 +43,7 @@ describe('run all migrations examples', function () {
 
   it('applies all migrations when given a directory', function (done) {
     cli()
-      .run(`--space-id ${devSpaceId} -y ${tmpDir}`)
+      .run(`--space-id ${devSpaceId} -y -p batch ${tmpDir}`)
       .expect(assert.plans.contentType.create('dog', { name: 'angry dog' }))
       .expect(assert.plans.field.create('goodboys', { type: 'Number', name: 'number of times he has been called a good boy' }))
       .end(co(function * () {
@@ -69,7 +69,7 @@ describe('run all migrations examples', function () {
     fs.copyFileSync('./examples/03-long-example.js', path.join(tmpDir, '03-long-example.js'));
 
     cli()
-      .run(`--space-id ${devSpaceId} -y ${tmpDir}`)
+      .run(`--space-id ${devSpaceId} -y -p batch ${tmpDir}`)
       .expect(assert.history.previouslyCompleted())
       .expect(assert.plans.contentType.create('person', { name: 'Person' }))
       .end(co(function * () {
@@ -101,7 +101,7 @@ describe('run all migrations examples', function () {
       }
     }).then(() => {
       cli()
-        .run(`--space-id ${devSpaceId} -y ${tmpDir}`)
+        .run(`--space-id ${devSpaceId} -y -p batch ${tmpDir}`)
         .expect(assert.history.failedBeforeCompletion(failedDate))
         .end(co(function * () {
           const migrationHistoryEntries = yield getEntries(devSpaceId, 'migrationHistory');

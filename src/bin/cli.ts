@@ -22,7 +22,12 @@ import { MigrationHistory } from '../lib/entities/migration-history'
 
 const argv = yargs
   .usage('Parses and runs a migration script on a Contentful space.\n\nUsage: contentful-migration [args] <path-to-script-file>\n\nScript: path to a migration script.')
-  .command(['single <filePath>', '$0'], 'Run a single migration script', {}, runSingle)
+  .command({
+    command: 'single <filePath>',
+    aliases: ['* <filePath>'],
+    desc: 'Run a single migration script',
+    handler: runSingle
+  })
   .command('batch <directory|glob>', 'Run a set of migration scripts in filename order', {}, runBatch)
   .coerce('filePath', (filePath) => {
     filePath = path.resolve(process.cwd(), filePath)
@@ -55,6 +60,12 @@ const argv = yargs
   .option('force', {
     boolean: true,
     describe: 'Re-runs any migrations that previously errored or have already completed.',
+    default: false
+  })
+  .option('persist', {
+    alias: 'p',
+    boolean: true,
+    describe: 'Persists the fact that this migration ran in a History content-type in the Contentful space',
     default: false
   })
   .demandOption(['space-id'], 'Please provide a space ID')
@@ -152,7 +163,7 @@ async function execMigration (migrationFunction, config) {
   const fetcher = new Fetcher(makeRequest)
 
   const history = await fetcher.getMigrationHistory()
-  let thisMigrationHistory = history.filter(m => m.migrationName == migrationName && m.completed).pop()
+  let thisMigrationHistory = history.filter(m => m.migrationName === migrationName && m.completed).pop()
   if (thisMigrationHistory) {
     console.log(chalk`{gray Migration previously completed at ${new Date(thisMigrationHistory.completed).toString()}}`)
     if (!argv.force) {
@@ -160,7 +171,7 @@ async function execMigration (migrationFunction, config) {
     }
     console.log(chalk`  {gray Re-running migration anyways due to "--force" parameter}`)
   } else {
-    thisMigrationHistory = history.filter(m => m.migrationName == migrationName).pop()
+    thisMigrationHistory = history.filter(m => m.migrationName === migrationName).pop()
     if (thisMigrationHistory) {
       console.log(chalk`⚠️  {bold.yellow Migration failed before completion at ${new Date(thisMigrationHistory.started).toString()}}`)
       if (!argv.force) {
@@ -258,28 +269,30 @@ async function execMigration (migrationFunction, config) {
 
   const space = await client.getSpace(config.spaceId)
 
-  tasks.splice(0, 0, {
-    title: `Insert Migration "${migrationName}" into History`,
-    task: async () => {
-      await MigrationHistory.getOrCreateContentType(space)
+  if (argv.persist) {
+    tasks.splice(0, 0, {
+      title: `Insert Migration "${migrationName}" into History`,
+      task: async () => {
+        await MigrationHistory.getOrCreateContentType(space)
 
-      thisMigrationHistory = new MigrationHistory(migrationName)
-      thisMigrationHistory.detail = batches
-      const resp = await space.createEntry('migrationHistory', thisMigrationHistory.update({}))
-      thisMigrationHistory.id = resp.sys.id
-      history.push(thisMigrationHistory)
-    }
-  })
+        thisMigrationHistory = new MigrationHistory(migrationName)
+        thisMigrationHistory.detail = batches
+        const resp = await space.createEntry('migrationHistory', thisMigrationHistory.update({}))
+        thisMigrationHistory.id = resp.sys.id
+        history.push(thisMigrationHistory)
+      }
+    })
 
-  tasks.push({
-    title: 'Mark migration as completed',
-    task: async () => {
-      thisMigrationHistory.completed = Date.now()
-      const entry = await space.getEntry(thisMigrationHistory.id)
-      thisMigrationHistory.update(entry)
-      await entry.update()
-    }
-  })
+    tasks.push({
+      title: 'Mark migration as completed',
+      task: async () => {
+        thisMigrationHistory.completed = Date.now()
+        const entry = await space.getEntry(thisMigrationHistory.id)
+        thisMigrationHistory.update(entry)
+        await entry.update()
+      }
+    })
+  }
 
   const confirm = async function (options: { skipConfirmation: boolean }) {
     if (options.skipConfirmation) {
