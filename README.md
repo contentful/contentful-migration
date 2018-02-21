@@ -286,6 +286,32 @@ To use the CLI without the manual confirmation step (e.g. in a CI environment), 
 contentful-migration --yes --space-id YOUR_TOKEN ./your-migration.js
 ```
 
+## Writing Migrations in Typescript
+
+You can use Typescript to write your migration files using `ts-node`!  First `npm install --save ts-node typescript`,
+then run your migration with ts-node:
+
+```
+node_modules/.bin/ts-node node_modules/.bin/contentful-migration -s $CONTENTFUL_SPACE_ID -a $CONTENTFUL_MANAGEMENT_TOKEN my_migration.ts
+```
+
+An example Typescript migration:
+```typescript
+import Migration from 'contentful-migration-cli'
+
+// typecast to 'Migration' to ensure you get type hints in your editor
+export = function (migration: Migration) {
+  const dog = migration.createContentType('dog', {
+    name: 'Dog'
+  })
+
+  const name = dog.createField('name')
+  name.name('Name')
+    .type('Symbol')
+    .required(true)
+}
+```
+
 ## Support
 
 If you have a problem with this tool, please file an [issue](https://github.com/contentful/migration-cli/issues/new) here on Github.
