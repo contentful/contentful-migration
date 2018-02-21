@@ -86,7 +86,6 @@ class BatchError extends Error {
 }
 
 async function runSingle (argv) {
-
   const migrationFunction = loadMigrationFunction(argv.filePath)
 
   const spaceId = argv.spaceId
@@ -100,7 +99,6 @@ async function runSingle (argv) {
 }
 
 async function runBatch (argv) {
-  console.log('Batch!', argv)
   const spaceId = argv.spaceId
   const environmentId = argv.environmentId
 
@@ -287,9 +285,10 @@ async function execMigration (migrationFunction, config) {
       title: 'Mark migration as completed',
       task: async () => {
         thisMigrationHistory.completed = Date.now()
-        const entry = await space.getEntry(thisMigrationHistory.id)
+        let entry = await space.getEntry(thisMigrationHistory.id)
         thisMigrationHistory.update(entry)
-        await entry.update()
+        entry = await entry.update()
+        entry = await entry.publish()
       }
     })
   }
