@@ -56,7 +56,7 @@
   ],
   "dependencies": {
     "@contentful/axios": "^0.18.0",
-    "contentful-sdk-core": "^5.0.0",
+    "contentful-sdk-core": "^5.0.4",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
