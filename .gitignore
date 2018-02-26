@@ -15,7 +15,6 @@ results
 node_modules
 npm-debug.log
 /coverage
-/package-lock.json
 .envrc
 /.nyc_output
 /coverage.lcov
