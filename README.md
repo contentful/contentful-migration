@@ -4,7 +4,7 @@
 
 [![npm](https://img.shields.io/npm/v/contentful-management.svg)](https://www.npmjs.com/package/contentful-management)
 [![Build Status](https://travis-ci.org/contentful/contentful-management.js.svg?branch=master)](https://travis-ci.org/contentful/contentful-management.js)
-[![Coverage Status](https://coveralls.io/repos/github/contentful/contentful-management.js/badge.svg?branch=master)](https://coveralls.io/github/contentful/contentful-management.js?branch=master)
+[![codecov](https://codecov.io/gh/contentful/contentful-management.js/branch/master/graph/badge.svg)](https://codecov.io/gh/contentful/contentful-management.js)
 [![Dependency Status](https://david-dm.org/contentful/contentful-management.js.svg)](https://david-dm.org/contentful/contentful-management.js)
 [![devDependency Status](https://david-dm.org/contentful/contentful-management.js/dev-status.svg)](https://david-dm.org/contentful/contentful-management.js#info=devDependencies)
 

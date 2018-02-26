@@ -9,8 +9,7 @@ node_js:
   - "4.7"
 script: npm run test:ci
 after_success:
-  - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
-  - export $(cat .to_export_back) &> /dev/null
+  - codecov
   - npm run semantic-release
 addons:
   sauce_connect: true
