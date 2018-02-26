@@ -81,7 +81,7 @@ test('Gets User', (t) => {
 
 test('Gets space', (t) => {
   t.plan(2)
-  return client.getSpace('cfexampleapi')
+  return client.getSpace('ezs1swce23xe')
     .then((response) => {
       t.ok(response.sys, 'sys')
       t.ok(response.name, 'name')
@@ -115,7 +115,7 @@ test('Creates, updates and deletes a space', (t) => {
 })
 
 test('Gets space for read only tests', (t) => {
-  return client.getSpace('cfexampleapi')
+  return client.getSpace('ezs1swce23xe')
     .then((space) => {
       contentTypeReadOnlyTests(t, space)
       entryReadOnlyTests(t, space)
