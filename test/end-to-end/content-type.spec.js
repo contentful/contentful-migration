@@ -6,26 +6,28 @@ const co = Bluebird.coroutine;
 const { expect } = require('chai');
 const assert = require('./assertions');
 const cli = require('./cli');
-const { createDevSpace, deleteDevSpace, getDevContentType } = require('../helpers/client');
+const { createDevEnvironment, deleteDevEnvironment, getDevContentType } = require('../helpers/client');
+const uuid = require('uuid');
 
+const ENVIRONMENT_ID = uuid.v4();
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 
 describe('apply content-type migration examples', function () {
   this.timeout(30000);
-  let devSpaceId;
+  let environmentId;
 
   before(co(function * () {
     this.timeout(30000);
-    devSpaceId = yield createDevSpace(SOURCE_TEST_SPACE, 'migration test dev space');
+    environmentId = yield createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
   }));
 
   after(co(function * () {
-    yield deleteDevSpace(devSpaceId);
+    yield deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId);
   }));
 
   it('aborts 01-angry-dog migration', function (done) {
     cli()
-      .run(`--space-id ${devSpaceId} ./examples/01-angry-dog.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/01-angry-dog.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('n\n')
       .expect(assert.plans.contentType.create('dog', { name: 'angry dog' }))
       .expect(assert.plans.actions.abort())
@@ -33,12 +35,12 @@ describe('apply content-type migration examples', function () {
   });
   it('applies 01-angry-dog migration', function (done) {
     cli()
-      .run(`--space-id ${devSpaceId} ./examples/01-angry-dog.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/01-angry-dog.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
       .expect(assert.plans.contentType.create('dog', { name: 'angry dog' }))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
-        const contentType = yield getDevContentType(devSpaceId, 'dog');
+        const contentType = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'dog');
         expect(contentType.name).to.eql('angry dog');
         expect(contentType.description).to.eql('super angry');
         expect(contentType.fields.length).to.eql(1);
@@ -48,7 +50,7 @@ describe('apply content-type migration examples', function () {
 
   it('aborts 02-friendly-dog migration', function (done) {
     cli()
-      .run(`--space-id ${devSpaceId} ./examples/02-friendly-dog.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/02-friendly-dog.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('n\n')
       .expect(assert.plans.contentType.update('dog'))
       .expect(assert.plans.actions.abort())
@@ -56,13 +58,13 @@ describe('apply content-type migration examples', function () {
   });
   it('applies 02-friendly-dog migration', function (done) {
     cli()
-      .run(`--space-id ${devSpaceId} ./examples/02-friendly-dog.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/02-friendly-dog.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('Y\n')
       .expect(assert.plans.contentType.update('dog'))
       .expect(assert.plans.field.create('goodboys', { type: 'Number', name: 'number of times he has been called a good boy' }))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
-        const contentType = yield getDevContentType(devSpaceId, 'dog');
+        const contentType = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'dog');
         expect(contentType.name).to.eql('Friendly dog');
         expect(contentType.description).to.eql('Who\'s a good boy? He is!');
         expect(contentType.fields.length).to.eql(2);
@@ -72,7 +74,7 @@ describe('apply content-type migration examples', function () {
 
   it('aborts 03-long-example migration', function (done) {
     cli()
-      .run(`--space-id ${devSpaceId} ./examples/03-long-example.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/03-long-example.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('n\n')
       .expect(assert.plans.contentType.create('person', { name: 'Person' }))
       .expect(assert.plans.contentType.create('animal', { name: 'Animal' }))
@@ -83,7 +85,7 @@ describe('apply content-type migration examples', function () {
   });
   it('applies 03-long-example migration', function (done) {
     cli()
-      .run(`--space-id ${devSpaceId} ./examples/03-long-example.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/03-long-example.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('Y\n')
       .expect(assert.plans.contentType.create('person', { name: 'Person' }))
       .expect(assert.plans.field.create('age', { type: 'Number', name: 'Age', required: true }))
@@ -97,8 +99,8 @@ describe('apply content-type migration examples', function () {
       .expect(assert.plans.field.create('name', { type: 'Symbol', name: 'The name of the animal', required: true, localized: true }))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
-        const contentTypePerson = yield getDevContentType(devSpaceId, 'person');
-        const contentTypeAnimal = yield getDevContentType(devSpaceId, 'animal');
+        const contentTypePerson = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'person');
+        const contentTypeAnimal = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'animal');
 
         expect(contentTypePerson.name).to.eql('Person');
         expect(contentTypePerson.description).to.eql('A content type for a person');
@@ -112,14 +114,14 @@ describe('apply content-type migration examples', function () {
 
   it('applies delete-content-type migration', function (done) {
     cli()
-      .run(`--space-id ${devSpaceId} ./examples/delete-content-type.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/delete-content-type.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('Y\n')
       .expect(assert.plans.contentType.delete('dog'))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
         let result;
         try {
-          result = yield getDevContentType(devSpaceId, 'dog');
+          result = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'dog');
         } catch (err) {
           expect(err.name).to.eql('NotFound');
         }

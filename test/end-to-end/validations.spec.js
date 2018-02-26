@@ -6,26 +6,28 @@ const co = Bluebird.coroutine;
 const { expect } = require('chai');
 const assert = require('./assertions');
 const cli = require('./cli');
-const { createDevSpace, deleteDevSpace, getDevContentType } = require('../helpers/client');
+const { createDevEnvironment, deleteDevEnvironment, getDevContentType } = require('../helpers/client');
+const uuid = require('uuid');
 
+const ENVIRONMENT_ID = uuid.v4();
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 
 describe('apply validations migration examples', function () {
   this.timeout(30000);
-  let devSpaceId;
+  let environmentId;
 
   before(co(function * () {
     this.timeout(30000);
-    devSpaceId = yield createDevSpace(SOURCE_TEST_SPACE, 'migration test dev space');
+    environmentId = yield createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
   }));
 
   after(co(function * () {
-    yield deleteDevSpace(devSpaceId);
+    yield deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId);
   }));
 
   it('aborts 09-validate-validations migration', function (done) {
     cli()
-      .run(`--space-id ${devSpaceId} ./examples/09-validate-validations.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/09-validate-validations.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('n\n')
       .expect(assert.plans.contentType.create('dieatary-food'))
       .expect(assert.plans.actions.abort())
@@ -62,14 +64,14 @@ describe('apply validations migration examples', function () {
     ];
 
     cli()
-      .run(`--space-id ${devSpaceId} ./examples/09-validate-validations.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/09-validate-validations.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
       .expect(assert.plans.contentType.create('dieatary-food', { name: 'Dieatary Food', description: 'Food with up to 500 calories' }))
       .expect(assert.plans.field.create('name', { type: 'Symbol', name: 'name of the food', validations: [{ unique: true }] }))
       .expect(assert.plans.field.create('calories', { type: 'Number', name: 'amount of calories the food contains', validations: [{ range: { 'max': 500 } }] }))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
-        const contentType = yield getDevContentType(devSpaceId, 'dieatary-food');
+        const contentType = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'dieatary-food');
         expect(contentType.fields).to.eql(expectedFields);
         done();
       }));

@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const Bluebird = require('bluebird');
 const Fetcher = require('../../built/lib/fetcher').default;
-const { makeRequest, createDevSpace } = require('../helpers/client');
+const { makeRequest, createDevEnvironment, deleteDevEnvironment } = require('../helpers/client');
 const { expect } = require('chai');
 const { flatten } = require('lodash');
 const createDog = require('../../examples/01-angry-dog');
@@ -16,6 +16,9 @@ const fieldMove = require('../../examples/08-move-field');
 
 const { createMigrationParser } = require('../../built/lib/migration-parser');
 const co = Bluebird.coroutine;
+const uuid = require('uuid');
+
+const ENVIRONMENT_ID = uuid.v4();
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 
@@ -27,8 +30,8 @@ describe('the migration', function () {
 
   before(co(function * () {
     this.timeout(30000);
-    const devSpaceId = yield createDevSpace(SOURCE_TEST_SPACE, 'migration test dev space');
-    request = makeRequest.bind(null, devSpaceId);
+    yield createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
+    request = makeRequest.bind(null, SOURCE_TEST_SPACE, ENVIRONMENT_ID);
     const fetcher = new Fetcher(request);
     migrationParser = createMigrationParser(fetcher);
     migrator = co(function * (migration) {
@@ -42,13 +45,7 @@ describe('the migration', function () {
   }));
 
   after(co(function * () {
-    yield request({
-      method: 'DELETE',
-      url: '',
-      headers: {
-        'X-Contentful-Beta-Dev-Spaces': 1
-      }
-    });
+    yield deleteDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
   }));
 
 
