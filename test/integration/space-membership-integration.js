@@ -1,5 +1,8 @@
 import generateRandomId from './generate-random-id'
 
+// This is a fake user, it actually does not exist.
+const email = 'js-sdk-tests@contentful.com'
+
 export default function spaceMembershipTests (t, space) {
   t.test('Gets spaceMemberships', (t) => {
     t.plan(2)
@@ -12,7 +15,6 @@ export default function spaceMembershipTests (t, space) {
 
   t.test('Create spaceMembership with id', (t) => {
     const id = generateRandomId('spaceMembership')
-    const email = generateRandomId('js-cma-sdk-tests') + '@contentful.com'
     return space.getRoles()
       .then((roles) => {
         return space.createSpaceMembershipWithId(id, {
@@ -30,7 +32,6 @@ export default function spaceMembershipTests (t, space) {
   })
 
   t.test('Create spaceMembership', (t) => {
-    const email = generateRandomId('js-cma-sdk-tests') + '@contentful.com'
     return space.getRoles()
       .then((roles) => {
         return space.createSpaceMembership({

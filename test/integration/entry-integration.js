@@ -246,24 +246,24 @@ export function entryReadOnlyTests (t, space) {
 
   /**
    * This test checks if entries can be ordered by two properties. The first
-   * property (in this case version) takes priority. The test checks if two
-   * entries with the same version are ordered by the second property, id.
-   * It also checks if the entry which comes before these two has a lower version.
+   * property (in this case content type id) takes priority. The test checks if two
+   * entries with the same content type are ordered by the second property, id.
+   * It also checks if the entry which comes before these has a lower id.
    *
-   * It's a slightly fragile test as it can break if any of the entries are
-   * updated and republished.
+   * It's a slightly fragile test as it can break if entries are added or deleted
+   * from the space.
    */
   t.test('Gets entries by creation order and id order', (t) => {
-    t.plan(5)
+    t.plan(2)
     return space.getEntries({
-      order: 'sys.version,sys.id'
+      order: 'sys.contentType.sys.id,sys.id'
     })
       .then((response) => {
-        t.ok(response.items[3].sys.version < response.items[4].sys.version, 'version of entry with index 4 is higher than the one of index 3')
-        t.equal(response.items[4].sys.version, response.items[5].sys.version, 'entries of indexes 4 and 5 have the same version')
-        t.equal(response.items[4].sys.version, 11, 'version for entry with index 4')
-        t.equal(response.items[5].sys.version, 11, 'version for entry with index 5')
-        t.ok(response.items[4].sys.id < response.items[5].sys.id, 'the entries with the same version are ordered by id')
+        const contentTypeOrder = response.items
+          .map((item) => item.sys.contentType.sys.id)
+          .filter((value, index, self) => self.indexOf(value) === index)
+        t.deepEqual(contentTypeOrder, ['1t9IbcfdCk6m04uISSsaIK', 'cat', 'dog', 'human'], 'orders')
+        t.ok(response.items[0].sys.id < response.items[1].sys.id, 'id of entry with index 1 is higher than the one of index 0 since they share content type')
       })
   })
 }
