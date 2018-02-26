@@ -6,7 +6,7 @@
   "main": "./dist/contentful-management.node.js",
   "module": "./dist/es-modules/contentful-management.js",
   "engines": {
-    "node": ">=4.7"
+    "node": ">=6"
   },
   "repository": {
     "type": "git",
