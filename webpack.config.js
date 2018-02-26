@@ -36,6 +36,7 @@ if (PROD) {
 const baseFileName = `contentful-management`
 
 const baseBundleConfig = {
+  mode: PROD ? 'production' : 'development',
   context: path.join(__dirname, 'lib'),
   entry: ['./contentful-management.js'],
   output: {
@@ -44,7 +45,7 @@ const baseBundleConfig = {
     library: 'contentfulManagement'
   },
   module: {
-    loaders: []
+    rules: []
   },
   devtool: PROD ? false : 'source-map',
   plugins,
@@ -68,7 +69,7 @@ const defaultBabelLoader = {
 
 // Browsers
 const browserBundle = clone(baseBundleConfig)
-browserBundle.module.loaders = [
+browserBundle.module.rules = [
   Object.assign({}, defaultBabelLoader, {
     options: Object.assign({}, defaultBabelLoader.options, {
       forceEnv: 'browser'
@@ -79,7 +80,7 @@ browserBundle.output.filename = `${baseFileName}.browser${PROD ? '.min' : ''}.js
 
 // Legacy browsers like IE11
 const legacyBundle = clone(baseBundleConfig)
-legacyBundle.module.loaders = [
+legacyBundle.module.rules = [
   Object.assign({}, defaultBabelLoader, {
     options: Object.assign({}, defaultBabelLoader.options, {
       forceEnv: 'legacy'
@@ -99,7 +100,7 @@ legacyBundle.output.filename = `${baseFileName}.legacy${PROD ? '.min' : ''}.js`
 
 // Node
 const nodeBundle = clone(baseBundleConfig)
-nodeBundle.module.loaders = [
+nodeBundle.module.rules = [
   Object.assign({}, defaultBabelLoader, {
     options: Object.assign({}, defaultBabelLoader.options, {
       forceEnv: 'node'
