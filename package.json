@@ -1,6 +1,6 @@
 {
   "name": "contentful-management",
-  "version": "0.0.0-determined-by-semantic-release",
+  "version": "5.0.0-beta0",
   "description": "Client for Contentful's Content Management API",
   "homepage": "https://www.contentful.com/developers/documentation/content-management-api/",
   "main": "./dist/contentful-management.node.js",
@@ -118,7 +118,7 @@
   "bundlesize": [
     {
       "path": "./dist/contentful-management.browser.js",
-      "maxSize": "55Kb"
+      "maxSize": "56Kb"
     },
     {
       "path": "./dist/contentful-management.browser.min.js",
