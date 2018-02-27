@@ -1,11 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## v0.6.0 - 2018-02-27
+### Added
+- make cli env aware
+
+### Changed
+- add package-lock.json
+
 ## v0.5.1 - 2018-02-05
 ### Changed
-- _[e2e]_ increase timeouts
-- _[readme]_ Added link to Content modelling guide under Content type section
-- _[readme]_ Added description to Symbol and Text in createField
+- *[e2e]* increase timeouts
+- *[readme]* Added link to Content modelling guide under Content type section
+- *[readme]* Added description to Symbol and Text in createField
 
 ### Fixed
 - interpret yes flag as boolean
