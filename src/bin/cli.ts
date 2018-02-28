@@ -89,10 +89,12 @@ async function runSingle (argv) {
   const migrationFunction = loadMigrationFunction(argv.filePath)
 
   const spaceId = argv.spaceId
+  const environmentId = argv.environmentId
 
   const config = {
     accessToken: argv.accessToken,
-    spaceId
+    spaceId,
+    environmentId
   }
 
   execMigration(migrationFunction, config)
