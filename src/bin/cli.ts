@@ -146,10 +146,10 @@ async function execMigration (migrationFunction, config) {
 
   const client = createManagementClient(clientConfig)
   const makeRequest = function (requestConfig) {
-    const config = Object.assign({}, requestConfig, {
-      url: path.join(spaceId, 'environments', environmentId, requestConfig.url)
+    const cfg = Object.assign({}, requestConfig, {
+      url: path.join(config.spaceId, 'environments', config.environmentId, requestConfig.url)
     })
-    return client.rawRequest(config)
+    return client.rawRequest(cfg)
   }
 
   const migrationName = path.basename(migrationFunction.filePath)
