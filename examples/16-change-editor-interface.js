@@ -4,12 +4,6 @@ module.exports = function (migration) {
     name: 'Blog post',
     description: 'super angry'
   });
-
-  blogPost.createField('title', {
-    name: 'Title',
-    type: 'Symbol',
-    required: true
-  });
   blogPost.createField('slug', {
     name: 'URL Slug',
     type: 'Symbol',
