@@ -29,7 +29,7 @@ const createInstanceIdManager = () => {
   }
 }
 
-class Movement extends DispatchProxy {}
+class Movement extends DispatchProxy { }
 
 class Field extends DispatchProxy {
   public id: string
@@ -140,6 +140,18 @@ class ContentType extends DispatchProxy {
       callsite,
       newId
     ))
+  }
+
+  changeEditorInterface (fieldId, widgetId) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.contentType.changeEditorInterface(
+      this.id,
+      this.instanceId,
+      callsite,
+      fieldId,
+      widgetId
+    ))
+    return this
   }
 }
 

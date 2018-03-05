@@ -28,8 +28,23 @@ interface APIContentType {
   displayField?: string
 }
 
+interface APIEditorInterface {
+  fieldId: string,
+  widgetId: string,
+  settings?: object
+}
+
+interface APIEditorInterfaces {
+  sys: {
+    version: number
+  }
+  controls: APIEditorInterface[]
+}
+
 export {
   APIContentType as default,
   APIContentType,
-  Field
+  Field,
+  APIEditorInterfaces,
+  APIEditorInterface
 }

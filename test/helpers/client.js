@@ -71,6 +71,13 @@ function getDevContentType (spaceId, environmentId, id) {
   });
 }
 
+function getDevEditorInterface (spaceId, environmentId, id) {
+  return makeRequest(spaceId, environmentId, {
+    method: 'GET',
+    url: `/content_types/${id}/editor_interface`
+  });
+}
+
 function getEntries (spaceId, environmentId, id) {
   return makeRequest(spaceId, environmentId, {
     method: 'GET',
@@ -90,5 +97,6 @@ module.exports = {
   createDevEnvironment,
   deleteDevEnvironment,
   getDevContentType,
-  getEntries
+  getEntries,
+  getDevEditorInterface
 };

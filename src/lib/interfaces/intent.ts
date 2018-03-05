@@ -3,7 +3,7 @@ import RawStep from './raw-step'
 import { PlanMessage } from './plan-message'
 
 interface Intent {
-  toActions (): (APIAction|EntityAction)[]
+  toActions (): (APIAction | EntityAction)[]
   toRaw (): RawStep
   getContentTypeId (): string
   getRelatedContentTypeIds (): string[]
@@ -25,6 +25,7 @@ interface Intent {
   isAboutField (): boolean
   isContentTransform (): boolean
   isEntryDerive (): boolean
+  isEditorInterfaceUpdate (): boolean
 
   isComposedIntent (): boolean
 

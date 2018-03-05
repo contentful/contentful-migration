@@ -1,4 +1,4 @@
-import { APIContentType, Field } from '../interfaces/content-type'
+import { APIContentType, Field, APIEditorInterface, APIEditorInterfaces } from '../interfaces/content-type'
 import { cloneDeep, find, filter, findIndex, pull } from 'lodash'
 
 class Fields {
@@ -75,6 +75,46 @@ class Fields {
 
   toRaw (): Field[] {
     return cloneDeep(this.fields)
+  }
+}
+
+class EditorInterfaces {
+  private _version: number
+  private _controls: Map<string, string>
+
+  constructor (apiEditorInterfaces: APIEditorInterfaces) {
+    this._version = apiEditorInterfaces.sys.version
+    this._controls = new Map<string, string>()
+    apiEditorInterfaces.controls.forEach((ei: APIEditorInterface) => {
+      this._controls.set(ei.fieldId, ei.widgetId)
+    })
+  }
+
+  get version () {
+    return this._version
+  }
+
+  set version (version: number) {
+    this._version = version
+  }
+
+  update (fieldId: string, widgetId: string) {
+    this._controls.set(fieldId, widgetId)
+  }
+
+  toAPI (): object {
+    let result: APIEditorInterface[] = []
+    let widgetId: string
+    let fieldId: string
+    for ([fieldId, widgetId] of this._controls.entries()) {
+      result.push({
+        fieldId,
+        widgetId
+      })
+    }
+    return {
+      controls: result
+    }
   }
 }
 
@@ -162,5 +202,6 @@ export {
   ContentType as default,
   ContentType,
   Fields,
-  Field
+  Field,
+  EditorInterfaces
 }
