@@ -6,7 +6,7 @@ import {wrapEnvironment, wrapEnvironmentCollection, __RewireAPI__ as environment
 const httpMock = {
   httpClientParams: {},
   defaults: {
-    baseURL: 'http://foo.bar'
+    baseURL: 'http://foo.bar/'
   },
   cloneWithNewParams: sinon.stub()
 }
