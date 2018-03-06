@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import * as util from 'util'
+import * as util from 'bluebird'
 
 const appendFile = util.promisify(fs.appendFile)
 
