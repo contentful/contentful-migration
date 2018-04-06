@@ -1,5 +1,6 @@
 import IntentList from './intent-list'
 import { APIContentType, APIEditorInterfaces } from '../lib/interfaces/content-type'
+import APIEntry from '../lib/interfaces/api-entry'
 import { ContentType } from '../lib/entities/content-type'
 import * as _ from 'lodash'
 import * as Bluebird from 'bluebird'
@@ -23,12 +24,24 @@ export default class Fetcher implements APIFetcher {
       return []
     }
 
-    const response = await this.makeRequest({
-      method: 'GET',
-      url: `/entries?sys.contentType.sys.id[in]=${ids.join(',')}`
-    })
+    let entries: APIEntry[] = []
+    let skip: number = 0
 
-    return response.items
+    while (true) {
+      const response = await this.makeRequest({
+        method: 'GET',
+        url: `/entries?sys.contentType.sys.id[in]=${ids.join(',')}&skip=${skip}`
+      })
+
+      entries = entries.concat(response.items)
+      skip += response.items.length
+
+      if (skip >= response.total) {
+        break
+      }
+    }
+
+    return entries
   }
 
   async getContentTypesInChunks (intentList: IntentList): Promise<APIContentType[]> {
