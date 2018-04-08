@@ -5,7 +5,7 @@ import { OfflineAPI } from '../../../../src/lib/offline-api/index'
 import { migration } from '../../../../src/lib/migration-steps'
 
 const buildPayloads = async function (runMigration, contentTypes: APIContentType[]) {
-  const intents = await migration(runMigration)
+  const intents = await migration(runMigration, () => {}, {})
   const list = new IntentList(intents)
 
   const existingCTs: Map<String, ContentType> = new Map()

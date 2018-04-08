@@ -6,7 +6,7 @@ import IntentList from '../../../../src/lib/intent-list'
 import { Intent } from '../../../../src/lib/interfaces/intent'
 
 const composedIntent = async function (migration): Promise<Intent[]> {
-  const intents = await migrationSteps(migration)
+  const intents = await migrationSteps(migration, () => {}, {})
   const list = new IntentList(intents)
 
   return list.compressed().getIntents()

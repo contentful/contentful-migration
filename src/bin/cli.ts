@@ -15,8 +15,8 @@ import { renderPlan, renderValidationErrors, renderRuntimeErrors } from './lib/r
 import renderStepsErrors from './lib/steps-errors'
 import writeErrorsToLog from './lib/write-errors-to-log'
 import { RequestBatch } from '../lib/offline-api/index'
-import Fetcher from '../lib/fetcher'
 import { ParseResult } from '../lib/migration-parser'
+import { getConfig } from './lib/config'
 
 const argv = yargs
   .usage('Parses and runs a migration script on a Contentful space.\n\nUsage: contentful-migration [args] <path-to-script-file>\n\nScript: path to a migration script.')
@@ -75,16 +75,9 @@ const run = async function () {
 
   const spaceId = argv.spaceId
   const environmentId = argv.environmentId
-
-  const config = {
-    accessToken: argv.accessToken,
-    spaceId,
-    environmentId
-  }
-
   const clientConfig = Object.assign({
     application: `contentful.migration-cli/${version}`
-  }, config)
+  }, getConfig(argv))
 
   const client = createManagementClient(clientConfig)
   const makeRequest = function (requestConfig) {
@@ -94,8 +87,7 @@ const run = async function () {
     return client.rawRequest(config)
   }
 
-  const fetcher = new Fetcher(makeRequest)
-  const migrationParser = createMigrationParser(fetcher)
+  const migrationParser = createMigrationParser(makeRequest, clientConfig)
 
   let parseResult: ParseResult
 

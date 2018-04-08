@@ -13,9 +13,10 @@ import ContentTransformIntentValidator from './intent-validator/content-transfor
 import IntentList from './intent-list'
 import * as errors from './errors/index'
 import Entry from './entities/entry'
+import Fetcher from './fetcher'
 import OfflineAPI, { RequestBatch } from './offline-api'
 import ValidationError, { InvalidActionError } from './interfaces/errors'
-import APIFetcher from './interfaces/api-fetcher'
+import { ClientConfig } from '../bin/lib/config'
 
 class ParseResult {
   public batches: RequestBatch[] = []
@@ -45,10 +46,11 @@ class ParseResult {
   }
 }
 
-const createMigrationParser = function (fetcher: APIFetcher): (migrationCreator: (migration: any) => any) => Promise<ParseResult> {
+const createMigrationParser = function (makeRequest: Function, config: ClientConfig): (migrationCreator: (migration: any) => any) => Promise<ParseResult> {
   return async function migration (migrationCreator) {
+    const fetcher = new Fetcher(makeRequest)
     const parseResult = new ParseResult()
-    const intents = await buildIntents(migrationCreator)
+    const intents = await buildIntents(migrationCreator, makeRequest, config)
 
     const intentList = new IntentList(intents)
 

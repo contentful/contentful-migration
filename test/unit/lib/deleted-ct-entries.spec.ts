@@ -12,7 +12,7 @@ describe('Entries fetcher', function () {
     const intents = await migrationSteps(function up (migration) {
       migration.deleteContentType('foo')
       migration.deleteContentType('bar')
-    })
+    }, () => {}, {})
 
     const request = sinon.stub()
     request

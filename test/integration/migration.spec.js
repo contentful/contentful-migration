@@ -1,6 +1,5 @@
 const _ = require('lodash');
 const Bluebird = require('bluebird');
-const Fetcher = require('../../built/lib/fetcher').default;
 const { makeRequest, createDevEnvironment, deleteDevEnvironment } = require('../helpers/client');
 const { expect } = require('chai');
 const { flatten } = require('lodash');
@@ -33,8 +32,7 @@ describe('the migration', function () {
     this.timeout(30000);
     yield createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
     request = makeRequest.bind(null, SOURCE_TEST_SPACE, ENVIRONMENT_ID);
-    const fetcher = new Fetcher(request);
-    migrationParser = createMigrationParser(fetcher);
+    migrationParser = createMigrationParser(request);
     migrator = co(function * (migration) {
       const parseResult = yield migrationParser(migration);
       const batches = parseResult.batches;

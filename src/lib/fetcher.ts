@@ -1,18 +1,19 @@
 import IntentList from './intent-list'
 import { APIContentType, APIEditorInterfaces } from '../lib/interfaces/content-type'
+import APIEntry from '../lib/interfaces/api-entry'
 import { ContentType } from '../lib/entities/content-type'
 import * as _ from 'lodash'
 import * as Bluebird from 'bluebird'
 import APIFetcher from './interfaces/api-fetcher'
 
 export default class Fetcher implements APIFetcher {
-  private makeRequest: any
+  private makeRequest: Function
 
-  constructor (makeRequest) {
+  constructor (makeRequest: Function) {
     this.makeRequest = makeRequest
   }
 
-  async getEntriesInIntents (intentList: IntentList): Promise<Object[]> {
+  async getEntriesInIntents (intentList: IntentList): Promise<APIEntry[]> {
     const ids: string[] = _.uniq(
       intentList.getIntents()
       .filter((intent) => intent.isContentTransform() || intent.isEntryDerive())
