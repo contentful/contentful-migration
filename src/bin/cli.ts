@@ -268,18 +268,25 @@ async function execMigration (migrationFunction, config) {
   })
 
   const space = await client.getSpace(config.spaceId)
+  const environment = await space.getEnvironment(config.environmentId)
 
   if (argv.persist) {
     tasks.splice(0, 0, {
       title: `Insert Migration "${migrationName}" into History`,
       task: async () => {
-        await MigrationHistory.getOrCreateContentType(space)
+        try {
+          const result = await MigrationHistory.getOrCreateContentType(environment)
+          console.log('result:', result)
 
-        thisMigrationHistory = new MigrationHistory(migrationName)
-        thisMigrationHistory.detail = batches
-        const resp = await space.createEntry('migrationHistory', thisMigrationHistory.update({}))
-        thisMigrationHistory.id = resp.sys.id
-        history.push(thisMigrationHistory)
+          thisMigrationHistory = new MigrationHistory(migrationName)
+          thisMigrationHistory.detail = batches
+          const resp = await environment.createEntry('migrationHistory', thisMigrationHistory.update({}))
+          thisMigrationHistory.id = resp.sys.id
+          history.push(thisMigrationHistory)
+        } catch (err) {
+          console.error('An error occurred!', err)
+          throw err
+        }
       }
     })
 
@@ -287,7 +294,7 @@ async function execMigration (migrationFunction, config) {
       title: 'Mark migration as completed',
       task: async () => {
         thisMigrationHistory.completed = Date.now()
-        let entry = await space.getEntry(thisMigrationHistory.id)
+        let entry = await environment.getEntry(thisMigrationHistory.id)
         thisMigrationHistory.update(entry)
         entry = await entry.update()
         entry = await entry.publish()
