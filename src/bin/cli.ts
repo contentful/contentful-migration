@@ -274,19 +274,13 @@ async function execMigration (migrationFunction, config) {
     tasks.splice(0, 0, {
       title: `Insert Migration "${migrationName}" into History`,
       task: async () => {
-        try {
-          const result = await MigrationHistory.getOrCreateContentType(environment)
-          console.log('result:', result)
+        await MigrationHistory.getOrCreateContentType(environment)
 
-          thisMigrationHistory = new MigrationHistory(migrationName)
-          thisMigrationHistory.detail = batches
-          const resp = await environment.createEntry('migrationHistory', thisMigrationHistory.update({}))
-          thisMigrationHistory.id = resp.sys.id
-          history.push(thisMigrationHistory)
-        } catch (err) {
-          console.error('An error occurred!', err)
-          throw err
-        }
+        thisMigrationHistory = new MigrationHistory(migrationName)
+        thisMigrationHistory.detail = batches
+        const resp = await environment.createEntry('migrationHistory', thisMigrationHistory.update({}))
+        thisMigrationHistory.id = resp.sys.id
+        history.push(thisMigrationHistory)
       }
     })
 
