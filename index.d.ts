@@ -9,8 +9,6 @@ export interface Movement {
 type FieldType = 'Symbol' | 'Text' | 'Integer' | 'Number' | 'Date' | 'Boolean' | 'Object' | 'Location' | 'Array' | 'Link'
 
 export interface IFieldOptions {
-  id?: string
-
   newId?: string
 
   /** (required) – Field name. */
