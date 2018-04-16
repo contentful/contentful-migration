@@ -10,7 +10,7 @@ node_js:
 script: npm run test:ci
 after_success:
   - codecov
-  - npm run semantic-release
+  - ./node_modules/.bin/travis-deploy-once "npm run semantic-release"
 addons:
   sauce_connect: true
 branches:
