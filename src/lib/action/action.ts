@@ -1,4 +1,4 @@
-import ContentType from '../entities/content-type'
+import { ContentType, EditorInterfaces } from '../entities/content-type'
 import Entry from '../entities/entry'
 import OfflineApi from '../offline-api/index'
 
@@ -12,7 +12,7 @@ abstract class EntityAction {
   abstract getEntityId (): string
   // For Entries, we could add `getEntityQuery` or something like that
   // So that we do not need to know Entry IDs to transform them
-  abstract applyTo (entity: ContentType|Entry): Promise<void>
+  abstract applyTo (entity: ContentType | Entry | EditorInterfaces): Promise<void>
 }
 
 export {

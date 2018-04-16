@@ -75,6 +75,23 @@ const actionCreators = {
         derivation,
         contentTypeId: id
       }
+    }),
+    changeEditorInterface: (id, instanceId, callsite, fieldId, widgetId): Intents.EditorInterfaceUpdateIntent => new Intents.EditorInterfaceUpdateIntent({
+      type: 'contentType/changeEditorInterface',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id,
+        editorInterface: {
+          fieldId,
+          widgetId
+        }
+      }
     })
   },
   field: {

@@ -2,6 +2,7 @@
 
 const { expect } = require('chai')
 import createMigrationParser from '../../../src/lib/migration-parser'
+import { APIEditorInterfaces } from '../../../src/lib/interfaces/content-type'
 
 describe('Migration parser', function () {
   describe('when transforming content', function () {
@@ -43,6 +44,9 @@ describe('Migration parser', function () {
               fields: { name: { 'en-US': 'Puss' } }
             }
           ]
+        },
+        getEditorInterfacesInIntents: () => {
+          return new Map<string, APIEditorInterfaces>()
         },
         checkContentTypesForDeletedCts: (_, contentTypes) => {
           return contentTypes
@@ -126,6 +130,9 @@ describe('Migration parser', function () {
               fields: { name: { 'en-US': 'Rose' } }
             }
           ]
+        },
+        getEditorInterfacesInIntents: () => {
+          return new Map<string, APIEditorInterfaces>()
         },
         checkContentTypesForDeletedCts: (_, contentTypes) => {
           return contentTypes
