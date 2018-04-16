@@ -62,7 +62,7 @@ const argv = yargs
     describe: 'Re-runs any migrations that previously errored or have already completed.',
     default: false
   })
-  .option('persist', {
+  .option('persist-to-space', {
     alias: 'p',
     boolean: true,
     describe: 'Persists the fact that this migration ran in a History content-type in the Contentful space',
