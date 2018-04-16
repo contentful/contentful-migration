@@ -406,5 +406,19 @@ module.exports = {
         };
       }
     }
+  },
+  history: {
+    previouslyCompleted: function (date) {
+      return result => {
+        const withoutAnsiCodes = stripAnsi(result.stdout);
+        expect(withoutAnsiCodes).to.include(`Migration previously completed at ${date || ''}`);
+      };
+    },
+    failedBeforeCompletion: function (date) {
+      return result => {
+        const withoutAnsiCodes = stripAnsi(result.stdout);
+        expect(withoutAnsiCodes).to.include(`Migration failed before completion at ${date || ''}`);
+      };
+    }
   }
 };

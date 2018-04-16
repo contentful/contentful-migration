@@ -85,6 +85,14 @@ function getEntries (spaceId, environmentId, id) {
   });
 }
 
+function createEntry (spaceId, environmentId, contentTypeId, data) {
+  return makeRequest(spaceId, {
+    method: 'POST',
+    url: `/entries`,
+    data: data
+  });
+}
+
 function deleteDevEnvironment (spaceId, environmentId) {
   return makeRequest(spaceId, environmentId, {
     method: 'DELETE',
@@ -98,5 +106,6 @@ module.exports = {
   deleteDevEnvironment,
   getDevContentType,
   getEntries,
+  createEntry,
   getDevEditorInterface
 };

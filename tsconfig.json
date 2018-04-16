@@ -11,6 +11,7 @@
       "esnext"
     ],
     "sourceMap": true,
+    "declaration": false,
     "typeRoots": [
       "./typings",
       "./node_modules/@types"

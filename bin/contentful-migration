@@ -1,5 +1,4 @@
 #!/usr/bin/env node
 
-const run = require('../built/bin/cli').default;
+require('../built/bin/cli');
 
-run();
