@@ -270,7 +270,7 @@ async function execMigration (migrationFunction, config) {
   const space = await client.getSpace(config.spaceId)
   const environment = await space.getEnvironment(config.environmentId)
 
-  if (argv.persist) {
+  if (argv.persistToSpace) {
     tasks.splice(0, 0, {
       title: `Insert Migration "${migrationName}" into History`,
       task: async () => {
