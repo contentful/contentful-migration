@@ -29,6 +29,7 @@ const argv = yargs
     }
     throw new Error(`Cannot find file ${filePath}.`)
   })
+  .version(version || 'Version only available on installed package')
   .option('space-id', {
     alias: 's',
     describe: 'ID of the space to run the migration script on'
