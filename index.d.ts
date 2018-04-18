@@ -71,7 +71,7 @@ export interface IValidation {
   /** Takes an array of content type ids and validates that the link points to an entry of that content type. */
   linkContentType?: string[],
   /** Takes an array of values and validates that the field value is in this array. */
-  in?: string[],
+  in?: any[],
   /** Takes a MIME type group name and validates that the link points to an asset of this group. */
   linkMimetypeGroup?: LinkMimetype[],
   /** Takes min and/or max parameters and validates the size of the array (number of objects in it). */
@@ -119,6 +119,14 @@ export interface ContentType {
 
   /** Changes the field's ID. */
   changeFieldId (oldId: string, newId: string): void
+
+  /**
+   * Changes the editor interface of given field's ID.
+   * 
+   * @param fieldId The ID of the field.
+   * @param widgetId The new widget ID for the field.
+   */
+  changeEditorInterface (fieldId: string, widgetId: string): void
 }
 
 export interface IContentTypeOptions {
