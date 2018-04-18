@@ -222,6 +222,9 @@ class OfflineAPI {
         this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
       }
     }
+    // When publishing a contentType the version of its editor interface increases also
+    const ei = this.editorInterfaces.get(id)
+    ei.version += 1
 
     return ct
   }
