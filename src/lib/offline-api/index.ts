@@ -280,7 +280,7 @@ class OfflineAPI {
     }
     const editorInterfaces = this.editorInterfaces.get(contentTypeId)
     this.currentRequestsRecorded.push(saveEditorInterfacesRequest(contentTypeId, editorInterfaces))
-    editorInterfaces.version += 1
+    editorInterfaces.version = editorInterfaces.version + 1
     return editorInterfaces
   }
 
