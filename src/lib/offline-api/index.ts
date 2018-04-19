@@ -214,7 +214,6 @@ class OfflineAPI {
     await this.modifiedContentTypes.set(id, ct)
     await this.savedContentTypes.set(id, ct.clone())
     await this.publishedContentTypes.set(id, ct.clone())
-    
     if (this.editorInterfaces.has(id)) {
       const editorInterfaces = this.editorInterfaces.get(id)
       editorInterfaces.version = editorInterfaces.version + 1
