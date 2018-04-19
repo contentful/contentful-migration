@@ -139,7 +139,7 @@ export default class Fetcher implements APIFetcher {
         // Initialize a default structure for newly created content types.
         editorInterfaces.set(id, {
           sys: {
-            version: 1
+            version: 0
           },
           controls: []
         })

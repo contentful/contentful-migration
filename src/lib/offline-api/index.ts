@@ -211,10 +211,14 @@ class OfflineAPI {
 
     // Mutate version bump
     ct.version = ct.version + 1
-
     await this.modifiedContentTypes.set(id, ct)
     await this.savedContentTypes.set(id, ct.clone())
     await this.publishedContentTypes.set(id, ct.clone())
+    
+    if (this.editorInterfaces.has(id)) {
+      const editorInterfaces = this.editorInterfaces.get(id)
+      editorInterfaces.version = editorInterfaces.version + 1
+    }
 
     for (const validator of this.contentTypeValidators) {
       if (validator.hooks.includes(ApiHook.PublishContentType)) {
@@ -222,9 +226,6 @@ class OfflineAPI {
         this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
       }
     }
-    // When publishing a contentType the version of its editor interface increases also
-    const ei = this.editorInterfaces.get(id)
-    ei.version += 1
 
     return ct
   }
@@ -279,7 +280,7 @@ class OfflineAPI {
     }
     const editorInterfaces = this.editorInterfaces.get(contentTypeId)
     this.currentRequestsRecorded.push(saveEditorInterfacesRequest(contentTypeId, editorInterfaces))
-    editorInterfaces.version = editorInterfaces.version + 1
+    editorInterfaces.version += 1
     return editorInterfaces
   }
 

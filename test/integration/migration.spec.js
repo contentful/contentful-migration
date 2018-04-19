@@ -14,6 +14,7 @@ const fieldValidation = require('../../examples/09-validate-validations');
 const displayField = require('../../examples/07-display-field');
 const fieldMove = require('../../examples/08-move-field');
 const changeEditorInterface = require('../../examples/16-change-editor-interface');
+const changeEditorInterfaceWithExistingContentType = require('../../examples/17-change-editor-interface-for-existing-content-type');
 
 const { createMigrationParser } = require('../../built/lib/migration-parser');
 const co = Bluebird.coroutine;
@@ -46,7 +47,7 @@ describe('the migration', function () {
   }));
 
   after(co(function * () {
-    yield deleteDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
+     // yield deleteDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
   }));
 
   it('creates a content type', co(function * () {
@@ -485,6 +486,21 @@ describe('the migration', function () {
       {
         fieldId: 'slug',
         widgetId: 'slugEditor'
+      }
+    ]);
+  }));
+
+  it('changes the editor interface with an existing contentType', co(function * () {
+    yield migrator(changeEditorInterfaceWithExistingContentType);
+
+    const editorInterfaces = yield request({
+      method: 'GET',
+      url: '/content_types/blogPost/editor_interface'
+    });
+    expect(editorInterfaces.controls).to.eql([
+      {
+        fieldId: 'slug',
+        widgetId: 'singleLine'
       }
     ]);
   }));
