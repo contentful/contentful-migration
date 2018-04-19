@@ -47,7 +47,7 @@ describe('the migration', function () {
   }));
 
   after(co(function * () {
-     // yield deleteDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
+    yield deleteDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
   }));
 
   it('creates a content type', co(function * () {
