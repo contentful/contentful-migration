@@ -15,10 +15,33 @@ npm install -g contentful-migration-cli
 
 ## Usage
 
+### Usage as a cli
+
 ![Usage demo](examples/demo.gif)
 
 ```sh
 contentful-migration --space-id <space id to use> <path to migration description file>
+```
+
+In your migration description file, export a function that accepts the `migration` object as its argument. For example:
+
+```javascript
+module.exports = function (migration) {
+  const dog = migration.createContentType('dog');
+  const name = dog.createField('name');
+  name.type('Symbol').required(true);
+};
+```
+### Usage as a library
+
+```javascript
+const runMigration = require('contentful-migration-cli/built/bin/cli')
+const options = {
+  fielPath: '<migration-file-path>',
+  spaceId: '<space-id>',
+  accessToken: '<access-token>'
+}
+runMigration(options)
 ```
 
 In your migration description file, export a function that accepts the `migration` object as its argument. For example:
