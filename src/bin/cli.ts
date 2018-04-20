@@ -37,11 +37,12 @@ const run = async function (argv) {
 
   const spaceId = argv.spaceId
   const environmentId = argv.environmentId
-
+  const application = argv.managementApplication
   const config = {
     accessToken: argv.accessToken,
     spaceId,
-    environmentId
+    environmentId,
+    application
   }
 
   const clientConfig = Object.assign({
