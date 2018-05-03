@@ -24,12 +24,24 @@ export default class Fetcher implements APIFetcher {
       return []
     }
 
-    const response = await this.makeRequest({
-      method: 'GET',
-      url: `/entries?sys.contentType.sys.id[in]=${ids.join(',')}`
-    })
+    let entries: APIEntry[] = []
+    let skip: number = 0
 
-    return response.items
+    while (true) {
+      const response = await this.makeRequest({
+        method: 'GET',
+        url: `/entries?sys.contentType.sys.id[in]=${ids.join(',')}&skip=${skip}`
+      })
+
+      entries = entries.concat(response.items)
+      skip += response.items.length
+
+      if (skip >= response.total) {
+        break
+      }
+    }
+
+    return entries
   }
 
   async getContentTypesInChunks (intentList: IntentList): Promise<APIContentType[]> {
@@ -127,7 +139,7 @@ export default class Fetcher implements APIFetcher {
         // Initialize a default structure for newly created content types.
         editorInterfaces.set(id, {
           sys: {
-            version: 1
+            version: 0
           },
           controls: []
         })
