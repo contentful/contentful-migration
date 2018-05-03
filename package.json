@@ -1,5 +1,5 @@
 {
-  "name": "contentful-migration-cli",
+  "name": "contentful-migration",
   "version": "0.7.0",
   "description": "Migration tooling for contentful",
   "author": "Contentful GmbH",
