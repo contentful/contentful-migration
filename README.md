@@ -1,4 +1,4 @@
-🚚  Contentful migrations
+🚚 Contentful migrations
 ===============
 
 [![Build Status](https://travis-ci.org/contentful/migration-cli.svg?branch=master)](https://travis-ci.org/contentful/migration-cli) [![codecov](https://codecov.io/gh/contentful/migration-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/contentful/migration-cli)
@@ -10,7 +10,7 @@ This CLI is currently available in **Beta**.
 ## Installation
 
 ```js
-npm install -g contentful-migration-cli
+npm install -g contentful-migration
 ```
 
 ## Usage
@@ -35,7 +35,7 @@ module.exports = function (migration, context) {
 ### Usage as a library
 
 ```javascript
-const runMigration = require('contentful-migration-cli/built/bin/cli')
+const runMigration = require('contentful-migration/built/bin/cli')
 const options = {
   fielPath: '<migration-file-path>',
   spaceId: '<space-id>',
