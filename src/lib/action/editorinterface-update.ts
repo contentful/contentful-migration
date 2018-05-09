@@ -1,13 +1,14 @@
 import { EditorInterfaces } from '../entities/content-type'
+import { APIEditorInterfaceSettings } from '../interfaces/content-type'
 import { EntityAction } from './action'
 
 class UpdateEditorInterfaceAction extends EntityAction {
   protected contentTypeId: string
   protected fieldId: string
   private _widgetId: string
-  private _settings?: object
+  private _settings?: APIEditorInterfaceSettings
 
-  constructor (contentTypeId: string, fieldId: string, widgetId: string, settings?: object) {
+  constructor (contentTypeId: string, fieldId: string, widgetId: string, settings?: APIEditorInterfaceSettings) {
     super()
     this.contentTypeId = contentTypeId
     this.fieldId = fieldId
