@@ -716,7 +716,8 @@ describe('migration-steps', function () {
             contentTypeId: 'book',
             editorInterface: {
               fieldId: 'title',
-              widgetId: 'markdown'
+              widgetId: 'markdown',
+              settings: {}
             }
           }
         },
@@ -729,7 +730,8 @@ describe('migration-steps', function () {
             contentTypeId: 'book',
             editorInterface: {
               fieldId: 'desc',
-              widgetId: 'singleLine'
+              widgetId: 'singleLine',
+              settings: {}
             }
           }
         }]);

@@ -142,14 +142,15 @@ class ContentType extends DispatchProxy {
     ))
   }
 
-  changeEditorInterface (fieldId, widgetId) {
+  changeEditorInterface (fieldId, widgetId, settings) {
     const callsite = getFirstExternalCaller()
     this.dispatch(actionCreators.contentType.changeEditorInterface(
       this.id,
       this.instanceId,
       callsite,
       fieldId,
-      widgetId
+      widgetId,
+      settings
     ))
     return this
   }

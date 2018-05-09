@@ -5,12 +5,14 @@ class UpdateEditorInterfaceAction extends EntityAction {
   protected contentTypeId: string
   protected fieldId: string
   private _widgetId: string
+  private _settings?: object
 
-  constructor (contentTypeId: string, fieldId: string, widgetId: string) {
+  constructor (contentTypeId: string, fieldId: string, widgetId: string, settings?: object) {
     super()
     this.contentTypeId = contentTypeId
     this.fieldId = fieldId
     this._widgetId = widgetId
+    this._settings = settings
   }
 
   getEntityType (): string {
@@ -27,7 +29,7 @@ class UpdateEditorInterfaceAction extends EntityAction {
   }
 
   async applyTo (editorInterfaces: EditorInterfaces) {
-    editorInterfaces.update(this.getFieldId(), this._widgetId)
+    editorInterfaces.update(this.getFieldId(), this._widgetId, this._settings)
   }
 }
 

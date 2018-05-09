@@ -15,6 +15,7 @@ const displayField = require('../../examples/07-display-field');
 const fieldMove = require('../../examples/08-move-field');
 const changeEditorInterface = require('../../examples/16-change-editor-interface');
 const changeEditorInterfaceWithExistingContentType = require('../../examples/17-change-editor-interface-for-existing-content-type');
+const changeEditorInterfaceWithExistingContentTypeAddingHelpText = require('../../examples/18-change-editor-interface-for-existing-content-type-adding-help-text');
 
 const { createMigrationParser } = require('../../built/lib/migration-parser');
 const co = Bluebird.coroutine;
@@ -501,6 +502,24 @@ describe('the migration', function () {
       {
         fieldId: 'slug',
         widgetId: 'singleLine'
+      }
+    ]);
+  }));
+
+  it('changes the editor interface with an existing contentType adding help text', co(function * () {
+    yield migrator(changeEditorInterfaceWithExistingContentTypeAddingHelpText);
+
+    const editorInterfaces = yield request({
+      method: 'GET',
+      url: '/content_types/blogPost/editor_interface'
+    });
+    expect(editorInterfaces.controls).to.eql([
+      {
+        fieldId: 'slug',
+        widgetId: 'slugEditor',
+        settings: {
+          helpText: 'This is the slug for the entry, it will be used for the URL'
+        }
       }
     ]);
   }));

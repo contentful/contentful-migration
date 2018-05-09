@@ -76,7 +76,7 @@ const actionCreators = {
         contentTypeId: id
       }
     }),
-    changeEditorInterface: (id, instanceId, callsite, fieldId, widgetId): Intents.EditorInterfaceUpdateIntent => new Intents.EditorInterfaceUpdateIntent({
+    changeEditorInterface: (id, instanceId, callsite, fieldId, widgetId, settings = {}): Intents.EditorInterfaceUpdateIntent => new Intents.EditorInterfaceUpdateIntent({
       type: 'contentType/changeEditorInterface',
       meta: {
         contentTypeInstanceId: `contentType/${id}/${instanceId}`,
@@ -89,7 +89,8 @@ const actionCreators = {
         contentTypeId: id,
         editorInterface: {
           fieldId,
-          widgetId
+          widgetId,
+          settings
         }
       }
     })
