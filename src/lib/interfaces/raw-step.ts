@@ -1,5 +1,6 @@
 import ContentTransform from './content-transform'
 import EntryDerive from './entry-derive'
+import { APIEditorInterfaceSettings } from './content-type'
 
 interface RawStep {
   type: string
@@ -31,6 +32,7 @@ interface RawStepPayload {
 interface EditorInterfaceInfo {
   fieldId: string
   widgetId: string
+  settings?: APIEditorInterfaceSettings
 }
 
 interface Movement {

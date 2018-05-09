@@ -27,7 +27,8 @@ export default class EditorInterfaceUpdateIntent extends Intent {
       new UpdateEditorInterfaceAction(
         this.payload.contentTypeId,
         this.payload.editorInterface.fieldId,
-        this.payload.editorInterface.widgetId
+        this.payload.editorInterface.widgetId,
+        this.payload.editorInterface.settings
       ),
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]

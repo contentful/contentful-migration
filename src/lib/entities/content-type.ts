@@ -1,5 +1,5 @@
-import { APIContentType, Field, APIEditorInterface, APIEditorInterfaces } from '../interfaces/content-type'
-import { cloneDeep, find, filter, findIndex, pull } from 'lodash'
+import { APIContentType, Field, APIEditorInterfaceControl, APIEditorInterfaces, APIEditorInterfaceSettings } from '../interfaces/content-type'
+import { cloneDeep, find, filter, findIndex, pull, forEach } from 'lodash'
 
 class Fields {
   private _fields: Field[]
@@ -80,14 +80,11 @@ class Fields {
 
 class EditorInterfaces {
   private _version: number
-  private _controls: Map<string, string>
+  private _controls: APIEditorInterfaceControl[]
 
   constructor (apiEditorInterfaces: APIEditorInterfaces) {
     this._version = apiEditorInterfaces.sys.version
-    this._controls = new Map<string, string>()
-    apiEditorInterfaces.controls.forEach((ei: APIEditorInterface) => {
-      this._controls.set(ei.fieldId, ei.widgetId)
-    })
+    this._controls = apiEditorInterfaces.controls
   }
 
   get version () {
@@ -98,20 +95,39 @@ class EditorInterfaces {
     this._version = version
   }
 
-  update (fieldId: string, widgetId: string) {
-    this._controls.set(fieldId, widgetId)
+  update (fieldId: string, widgetId: string, settings?: APIEditorInterfaceSettings) {
+    let control: APIEditorInterfaceControl = find(this._controls, (c) => {
+      return c.fieldId === fieldId
+    })
+
+    if (!control) {
+      control = {
+        fieldId: fieldId,
+        widgetId: widgetId
+      }
+      control.fieldId = fieldId
+      this._controls.push(control)
+    }
+
+    control.widgetId = widgetId
+
+    if (settings) {
+      forEach(settings, (v: any, k: string) => {
+        control.settings = control.settings || {}
+        control.settings[k] = v
+      })
+    }
   }
 
   toAPI (): object {
-    let result: APIEditorInterface[] = []
-    let widgetId: string
-    let fieldId: string
-    for ([fieldId, widgetId] of this._controls.entries()) {
+    let result: APIEditorInterfaceControl[] = []
+    forEach(this._controls, (c) => {
       result.push({
-        fieldId,
-        widgetId
+        fieldId: c.fieldId,
+        widgetId: c.widgetId,
+        settings: c.settings
       })
-    }
+    })
     return {
       controls: result
     }
