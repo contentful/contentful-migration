@@ -32,6 +32,7 @@ interface APIEditorInterfaceSettings {
   helpText?: string,
   trueLabel?: boolean,
   falseLabel?: boolean,
+  bulkEditing?: boolean,
   stars?: number,
   format?: string,
   ampm?: string
