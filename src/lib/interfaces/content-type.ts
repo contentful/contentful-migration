@@ -30,8 +30,8 @@ interface APIContentType {
 
 interface APIEditorInterfaceSettings {
   helpText?: string,
-  trueLabel?: boolean,
-  falseLabel?: boolean,
+  trueLabel?: string,
+  falseLabel?: string,
   bulkEditing?: boolean,
   stars?: number,
   format?: string,
