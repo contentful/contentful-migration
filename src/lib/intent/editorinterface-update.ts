@@ -34,12 +34,22 @@ export default class EditorInterfaceUpdateIntent extends Intent {
     ]
   }
   toPlanMessage (): PlanMessage {
+    const { fieldId, settings } = this.payload.editorInterface
+    let createDetails = [chalk`{italic widgetId}: "${this.payload.editorInterface.widgetId}"`]
+
+    Object.keys(this.payload.editorInterface.settings).forEach(settingName =>
+      createDetails.push(chalk`{italic ${settingName}}: "${settings[settingName]}"`)
+    )
+
     return {
       heading: chalk`Update editor interface for Content Type {bold.yellow ${this.getContentTypeId()}}`,
-      details: [
-        chalk`Field {italic ${this.payload.editorInterface.fieldId}}: ${this.payload.editorInterface.widgetId}`
-      ],
-      sections: []
+      details: [],
+      sections: [
+        {
+          heading: chalk`Update field {yellow ${fieldId}}`,
+          details: createDetails
+        }
+      ]
     }
   }
 }
