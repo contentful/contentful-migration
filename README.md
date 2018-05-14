@@ -1,4 +1,4 @@
-🚚  Contentful migrations
+🚚 Contentful migrations
 ===============
 
 [![Build Status](https://travis-ci.org/contentful/migration-cli.svg?branch=master)](https://travis-ci.org/contentful/migration-cli) [![codecov](https://codecov.io/gh/contentful/migration-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/contentful/migration-cli)
@@ -10,15 +10,38 @@ This CLI is currently available in **Beta**.
 ## Installation
 
 ```js
-npm install -g contentful-migration-cli
+npm install -g contentful-migration
 ```
 
 ## Usage
+
+### Usage as a cli
 
 ![Usage demo](examples/demo.gif)
 
 ```sh
 contentful-migration --space-id <space id to use> <path to migration description file>
+```
+
+In your migration description file, export a function that accepts the `migration` object as its argument. For example:
+
+```javascript
+module.exports = function (migration) {
+  const dog = migration.createContentType('dog');
+  const name = dog.createField('name');
+  name.type('Symbol').required(true);
+};
+```
+### Usage as a library
+
+```javascript
+const runMigration = require('contentful-migration/built/bin/cli')
+const options = {
+  fielPath: '<migration-file-path>',
+  spaceId: '<space-id>',
+  accessToken: '<access-token>'
+}
+runMigration(options)
 ```
 
 In your migration description file, export a function that accepts the `migration` object as its argument. For example:
@@ -244,14 +267,31 @@ Edits the field of provided `id`.
 Shorthand method to omit a field, publish its content type, and then delete the field.
 This implies that associated content for the field will be lost.
 
-`id : string` – The ID of the field to delete.
+**`id : string`** – The ID of the field to delete.
 
 #### `changeFieldId (currentId, newId)` : void
 
 Changes the field's ID.
 
-`currentId : string` – The current ID of the field.
-`newId : string` – The new ID for the field.
+**`currentId : string`** – The current ID of the field.
+**`newId : string`** – The new ID for the field.
+
+#### `changeEditorInterface (fieldId, widgetId[, settings])` : void
+
+Changes the editor interface of given field's ID.
+
+**`fieldId : string`** – The ID of the field.
+
+**`widgetId : string`** – The new widget ID for the field. See the [editor interface documentation](https://www.contentful.com/developers/docs/concepts/editor-interfaces/) for a list of available widgets.
+
+**`settings : Object`** – Widget settings, with the following options:
+
+- **`helpText : string`** – This help text will show up below the field.
+- **`trueLabel : string`** _(only for fields of type boolean)_ – Shows this text next to the radio button that sets this value to `true`. Defaults to “Yes”.
+- **`falseLabel : string`** _(only for fields of type boolean)_ – Shows this text next to the radio button that sets this value to `false`. Defaults to “No”.
+- **`stars : number`** _(only for fields of type rating)_ – Number of stars to select from. Defaults to 5.
+- **`format : string`** _(only for fields of type datePicker)_ – One of “dateonly”, “time”, “timeZ” (default). Specifies whether to show the clock and/or timezone inputs.
+- **`ampm : string`** _(only for fields of type datePicker)_ – Specifies which type of clock to use. Must be one of the stringss “12” or “24” (default).
 
 ### Field
 

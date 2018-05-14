@@ -1,5 +1,5 @@
-import { APIContentType, Field } from '../interfaces/content-type'
-import { cloneDeep, find, filter, findIndex, pull } from 'lodash'
+import { APIContentType, Field, APIEditorInterfaceControl, APIEditorInterfaces, APIEditorInterfaceSettings } from '../interfaces/content-type'
+import { cloneDeep, find, filter, findIndex, pull, forEach } from 'lodash'
 
 class Fields {
   private _fields: Field[]
@@ -75,6 +75,62 @@ class Fields {
 
   toRaw (): Field[] {
     return cloneDeep(this.fields)
+  }
+}
+
+class EditorInterfaces {
+  private _version: number
+  private _controls: APIEditorInterfaceControl[]
+
+  constructor (apiEditorInterfaces: APIEditorInterfaces) {
+    this._version = apiEditorInterfaces.sys.version
+    this._controls = apiEditorInterfaces.controls
+  }
+
+  get version () {
+    return this._version
+  }
+
+  set version (version: number) {
+    this._version = version
+  }
+
+  update (fieldId: string, widgetId: string, settings?: APIEditorInterfaceSettings) {
+    let control: APIEditorInterfaceControl = find(this._controls, (c) => {
+      return c.fieldId === fieldId
+    })
+
+    if (!control) {
+      control = {
+        fieldId: fieldId,
+        widgetId: widgetId
+      }
+      control.fieldId = fieldId
+      this._controls.push(control)
+    }
+
+    control.widgetId = widgetId
+
+    if (settings) {
+      forEach(settings, (v: any, k: string) => {
+        control.settings = control.settings || {}
+        control.settings[k] = v
+      })
+    }
+  }
+
+  toAPI (): object {
+    let result: APIEditorInterfaceControl[] = []
+    forEach(this._controls, (c) => {
+      result.push({
+        fieldId: c.fieldId,
+        widgetId: c.widgetId,
+        settings: c.settings
+      })
+    })
+    return {
+      controls: result
+    }
   }
 }
 
@@ -162,5 +218,6 @@ export {
   ContentType as default,
   ContentType,
   Fields,
-  Field
+  Field,
+  EditorInterfaces
 }

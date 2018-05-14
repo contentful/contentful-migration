@@ -36,6 +36,9 @@ export default class ComposedIntent implements Intent {
   }
 
   // TODO: adjust interface so we don't have to implement all this
+  isEditorInterfaceUpdate (): boolean {
+    return false
+  }
   getFieldId (): string {
     return null
   }

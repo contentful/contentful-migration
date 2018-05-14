@@ -11,102 +11,92 @@ const config = {
   application: `contentful.migration-cli.e2e-test/${packageVersion}`
 };
 
+
 const client = createManagementClient(config);
 
-const makeRequest = function (spaceId, requestConfig) {
-  requestConfig.url = path.join(spaceId, requestConfig.url);
+const makeRequest = function (spaceId, environmentId, requestConfig) {
+  requestConfig.url = path.join(spaceId, 'environments', environmentId, requestConfig.url);
   return client.rawRequest(requestConfig);
 };
 
-const waitForJobCompletion = Bluebird.coroutine(function * (makeRequest, spaceId, jobId) {
+const waitForJobCompletion = Bluebird.coroutine(function * (makeRequest, spaceId, environmentId) {
   while (true) {
     try {
-      const devSpaceJob = yield makeRequest(spaceId, {
+      const environmentJob = yield makeRequest(spaceId, environmentId, {
         method: 'GET',
-        url: `/dev_space_jobs/${jobId}`,
-        headers: {
-          'X-Contentful-Beta-Dev-Spaces': 1
-        }
+        url: ``
       });
 
-      const status = devSpaceJob.status.value;
-
+      const status = environmentJob.sys.status.sys.id;
       if (status === 'failed') {
-        throw new Error('Could not create dev space');
+        throw new Error('Could not create dev env');
       }
 
-      if (status === 'done') {
+      if (status === 'ready') {
         return;
       }
 
       yield Bluebird.delay(1000);
     } catch (error) {
-      console.log('Space copy job failed');
+      console.log('Env job failed');
       console.log(JSON.stringify(error));
       throw error;
     }
   }
 });
 
-const createDevSpace = Bluebird.coroutine(function * (spaceId, name) {
+const createDevEnvironment = Bluebird.coroutine(function * (spaceId, environmentId) {
   try {
-    const devSpaceJob = yield makeRequest(spaceId, {
-      method: 'POST',
-      url: '/dev_space_jobs',
-      headers: {
-        'X-Contentful-Beta-Dev-Spaces': 1
-      },
+    yield makeRequest(spaceId, environmentId, {
+      method: 'PUT',
+      url: '',
       data: {
-        name
+        name: environmentId
       }
     });
 
-    const jobId = devSpaceJob.sys.id;
-
-    yield waitForJobCompletion(makeRequest, spaceId, jobId);
-
-    return devSpaceJob.devSpace.sys.id;
+    yield waitForJobCompletion(makeRequest, spaceId, environmentId);
   } catch (error) {
-    console.log('Could not initiate dev space job');
+    console.log('Could not initiate dev env job');
     console.log(JSON.stringify(error));
     throw error;
   }
+  return environmentId;
 });
 
-function getDevContentType (spaceId, id) {
-  return makeRequest(spaceId, {
+function getDevContentType (spaceId, environmentId, id) {
+  return makeRequest(spaceId, environmentId, {
     method: 'GET',
-    url: `/content_types/${id}`,
-    headers: {
-      'X-Contentful-Beta-Dev-Spaces': 1
-    }
+    url: `/content_types/${id}`
   });
 }
 
-function getEntries (spaceId, id) {
-  return makeRequest(spaceId, {
+function getDevEditorInterface (spaceId, environmentId, id) {
+  return makeRequest(spaceId, environmentId, {
     method: 'GET',
-    url: `/entries?content_type=${id}`,
-    headers: {
-      'X-Contentful-Beta-Dev-Spaces': 1
-    }
+    url: `/content_types/${id}/editor_interface`
   });
 }
 
-function deleteDevSpace (spaceId) {
-  return makeRequest(spaceId, {
+function getEntries (spaceId, environmentId, id) {
+  return makeRequest(spaceId, environmentId, {
+    method: 'GET',
+    url: `/entries?content_type=${id}`
+  });
+}
+
+function deleteDevEnvironment (spaceId, environmentId) {
+  return makeRequest(spaceId, environmentId, {
     method: 'DELETE',
-    url: '',
-    headers: {
-      'X-Contentful-Beta-Dev-Spaces': 1
-    }
+    url: ''
   });
 }
 
 module.exports = {
   makeRequest,
-  createDevSpace,
-  deleteDevSpace,
+  createDevEnvironment,
+  deleteDevEnvironment,
   getDevContentType,
-  getEntries
+  getEntries,
+  getDevEditorInterface
 };

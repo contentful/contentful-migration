@@ -66,6 +66,10 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
+  isEditorInterfaceUpdate () {
+    return false
+  }
+
   isAboutContentType () {
     return (
       this.isContentTypeUpdate() ||
@@ -127,6 +131,6 @@ export default abstract class Intent implements IntentInterface {
     return this.type
   }
 
-  abstract toActions (): (APIAction|EntityAction)[]
+  abstract toActions (): (APIAction | EntityAction)[]
   abstract toPlanMessage (): PlanMessage
 }

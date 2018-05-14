@@ -28,8 +28,34 @@ interface APIContentType {
   displayField?: string
 }
 
+interface APIEditorInterfaceSettings {
+  helpText?: string,
+  trueLabel?: string,
+  falseLabel?: string,
+  bulkEditing?: boolean,
+  stars?: number,
+  format?: string,
+  ampm?: string
+}
+
+interface APIEditorInterfaceControl {
+  fieldId: string,
+  widgetId: string,
+  settings?: APIEditorInterfaceSettings
+}
+
+interface APIEditorInterfaces {
+  sys: {
+    version: number
+  }
+  controls: APIEditorInterfaceControl[]
+}
+
 export {
   APIContentType as default,
   APIContentType,
-  Field
+  Field,
+  APIEditorInterfaces,
+  APIEditorInterfaceControl,
+  APIEditorInterfaceSettings
 }

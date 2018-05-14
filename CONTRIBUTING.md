@@ -14,9 +14,9 @@ Don't worry if this is your first time with Typescript. The language reads like 
 
 ## Hints about integration tests
 
-In order to run integration tests, you need to specify:
+In order to run integration tests, you need:
 
-* a source space the tests are run against (`CONTENTFUL_INTEGRATION_SOURCE_SPACE`)
+* a source space the tests are run against (`CONTENTFUL_INTEGRATION_SOURCE_SPACE`) and is called `Migrations CLI Test`
 * a management token for the defined space (`CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN`)
 
 ```sh
@@ -24,3 +24,4 @@ CONTENTFUL_INTEGRATION_SOURCE_SPACE=<spaceId> \
 CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN=CFPAT-xxx \
 npm test
 ```
+

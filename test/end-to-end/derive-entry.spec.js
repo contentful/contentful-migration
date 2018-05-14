@@ -4,19 +4,21 @@ const { expect } = require('chai');
 const _ = require('lodash');
 const assert = require('./assertions');
 const cli = require('./cli');
-const { createDevSpace, deleteDevSpace, getEntries, makeRequest } = require('../helpers/client');
+const { createDevEnvironment, deleteDevEnvironment, getEntries, makeRequest } = require('../helpers/client');
+const uuid = require('uuid');
 
+const ENVIRONMENT_ID = uuid.v4();
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 
 describe('apply derive entry transformation', function () {
   this.timeout(30000);
-  let devSpaceId;
+  let environmentId;
   let request;
 
   before(async function () {
     this.timeout(30000);
-    devSpaceId = await createDevSpace(SOURCE_TEST_SPACE, 'migration test dev space');
-    request = makeRequest.bind(null, devSpaceId);
+    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
+    request = makeRequest.bind(null, SOURCE_TEST_SPACE, environmentId);
     await request({
       method: 'PUT',
       url: '/content_types/dog',
@@ -37,7 +39,6 @@ describe('apply derive entry transformation', function () {
       method: 'PUT',
       url: '/content_types/dog/published',
       headers: {
-        'X-Contentful-Beta-Dev-Spaces': 1,
         'X-Contentful-Version': 1
       }
     });
@@ -46,7 +47,6 @@ describe('apply derive entry transformation', function () {
       method: 'POST',
       url: '/entries',
       headers: {
-        'X-Contentful-Beta-Dev-Spaces': 1,
         'X-Contentful-Content-Type': 'dog'
       },
       data: {
@@ -61,7 +61,6 @@ describe('apply derive entry transformation', function () {
       method: 'POST',
       url: '/entries',
       headers: {
-        'X-Contentful-Beta-Dev-Spaces': 1,
         'X-Contentful-Content-Type': 'dog'
       },
       data: {
@@ -75,12 +74,12 @@ describe('apply derive entry transformation', function () {
   });
 
   after(async function () {
-    await deleteDevSpace(devSpaceId);
+    await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId);
   });
 
   it('aborts 15-derive-entry', function (done) {
     cli()
-      .run(`--space-id ${devSpaceId} ./examples/15-derive-entry.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/15-derive-entry.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('n\n')
       .expect(assert.plans.entriesDerive('dog'))
       .expect(assert.plans.actions.abort())
@@ -89,14 +88,14 @@ describe('apply derive entry transformation', function () {
 
   it('applies 15-derive-entry', function (done) {
     cli()
-      .run(`--space-id ${devSpaceId} ./examples/15-derive-entry.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/15-derive-entry.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
       .expect(assert.plans.actions.apply())
       .end(async function () {
         const sortFn = (entry) => entry.fields.name['en-US'];
 
-        const dogs = await getEntries(devSpaceId, 'dog');
-        const owners = await getEntries(devSpaceId, 'owner');
+        const dogs = await getEntries(SOURCE_TEST_SPACE, environmentId, 'dog');
+        const owners = await getEntries(SOURCE_TEST_SPACE, environmentId, 'owner');
         const dogsEntriesWithoutSys = _.sortBy(dogs.items.map(i => _.omit(i, 'sys')), sortFn);
         const ownersEntriesWithoutSys = owners.items.map(i => _.omit(i, 'sys'));
 

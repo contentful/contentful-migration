@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const Bluebird = require('bluebird');
 const Fetcher = require('../../built/lib/fetcher').default;
-const { makeRequest, createDevSpace } = require('../helpers/client');
+const { makeRequest, createDevEnvironment, deleteDevEnvironment } = require('../helpers/client');
 const { expect } = require('chai');
 const { flatten } = require('lodash');
 const createDog = require('../../examples/01-angry-dog');
@@ -13,9 +13,15 @@ const deleteContentType = require('../../examples/delete-content-type');
 const fieldValidation = require('../../examples/09-validate-validations');
 const displayField = require('../../examples/07-display-field');
 const fieldMove = require('../../examples/08-move-field');
+const changeEditorInterface = require('../../examples/16-change-editor-interface');
+const changeEditorInterfaceWithExistingContentType = require('../../examples/17-change-editor-interface-for-existing-content-type');
+const changeEditorInterfaceWithExistingContentTypeAddingHelpText = require('../../examples/18-change-editor-interface-for-existing-content-type-adding-help-text');
 
 const { createMigrationParser } = require('../../built/lib/migration-parser');
 const co = Bluebird.coroutine;
+const uuid = require('uuid');
+
+const ENVIRONMENT_ID = uuid.v4();
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 
@@ -27,8 +33,8 @@ describe('the migration', function () {
 
   before(co(function * () {
     this.timeout(30000);
-    const devSpaceId = yield createDevSpace(SOURCE_TEST_SPACE, 'migration test dev space');
-    request = makeRequest.bind(null, devSpaceId);
+    yield createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
+    request = makeRequest.bind(null, SOURCE_TEST_SPACE, ENVIRONMENT_ID);
     const fetcher = new Fetcher(request);
     migrationParser = createMigrationParser(fetcher);
     migrator = co(function * (migration) {
@@ -42,15 +48,8 @@ describe('the migration', function () {
   }));
 
   after(co(function * () {
-    yield request({
-      method: 'DELETE',
-      url: '',
-      headers: {
-        'X-Contentful-Beta-Dev-Spaces': 1
-      }
-    });
+    yield deleteDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
   }));
-
 
   it('creates a content type', co(function * () {
     yield migrator(createDog);
@@ -475,5 +474,53 @@ describe('the migration', function () {
     ];
 
     expect(blogEntriesWithoutSys).to.eql(entries);
+  }));
+
+  it('changes the editor interface', co(function * () {
+    yield migrator(changeEditorInterface);
+
+    const editorInterfaces = yield request({
+      method: 'GET',
+      url: '/content_types/blogPost/editor_interface'
+    });
+    expect(editorInterfaces.controls).to.eql([
+      {
+        fieldId: 'slug',
+        widgetId: 'slugEditor'
+      }
+    ]);
+  }));
+
+  it('changes the editor interface with an existing contentType', co(function * () {
+    yield migrator(changeEditorInterfaceWithExistingContentType);
+
+    const editorInterfaces = yield request({
+      method: 'GET',
+      url: '/content_types/blogPost/editor_interface'
+    });
+    expect(editorInterfaces.controls).to.eql([
+      {
+        fieldId: 'slug',
+        widgetId: 'singleLine'
+      }
+    ]);
+  }));
+
+  it('changes the editor interface with an existing contentType adding help text', co(function * () {
+    yield migrator(changeEditorInterfaceWithExistingContentTypeAddingHelpText);
+
+    const editorInterfaces = yield request({
+      method: 'GET',
+      url: '/content_types/blogPost/editor_interface'
+    });
+    expect(editorInterfaces.controls).to.eql([
+      {
+        fieldId: 'slug',
+        widgetId: 'slugEditor',
+        settings: {
+          helpText: 'This is the slug for the entry, it will be used for the URL'
+        }
+      }
+    ]);
   }));
 });
