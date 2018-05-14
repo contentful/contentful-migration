@@ -36,7 +36,7 @@ const run = async function (argv) {
   }
 
   const spaceId = argv.spaceId
-  const environmentId = argv.environmentId
+  const environmentId = argv.environmentId || 'master'
   const application = argv.managementApplication || `contentful.migration-cli/${version}`
   const config = {
     accessToken: argv.accessToken,
