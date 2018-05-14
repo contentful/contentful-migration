@@ -69,7 +69,7 @@
     "chalk": "^2.2.0",
     "contentful-management": "^4.0.3",
     "didyoumean2": "^1.3.0",
-    "hoek": "^4.2.0",
+    "hoek": "^4.2.1",
     "https-proxy-agent": "^2.1.0",
     "inquirer": "^3.2.3",
     "joi": "^10.6.0",
