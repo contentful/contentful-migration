@@ -188,6 +188,12 @@ const apiKeyMock = {
   })
 }
 
+const previewApiKeyMock = {
+  sys: Object.assign(cloneDeep(sysMock), {
+    type: 'ApiKey'
+  })
+}
+
 const organizationMock = {
   sys: Object.assign(cloneDeep(sysMock), {
     type: 'Organization'
@@ -225,6 +231,7 @@ const mocks = {
   spaceMembership: spaceMembershipMock,
   role: roleMock,
   apiKey: apiKeyMock,
+  previewApiKey: previewApiKeyMock,
   error: errorMock,
   upload: uploadMock,
   organization: organizationMock,
@@ -288,6 +295,10 @@ function setupEntitiesMock (rewiredModuleApi) {
       wrapApiKey: sinon.stub(),
       wrapApiKeyCollection: sinon.stub()
     },
+    previewApiKey: {
+      wrapPreviewApiKey: sinon.stub(),
+      wrapPreviewApiKeyCollection: sinon.stub()
+    },
     editorInterface: {
       wrapEditorInterface: sinon.stub()
     },
@@ -332,6 +343,7 @@ export {
   spaceMembershipMock,
   roleMock,
   apiKeyMock,
+  previewApiKeyMock,
   errorMock,
   cloneMock,
   mockCollection,
