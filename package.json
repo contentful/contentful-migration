@@ -58,7 +58,7 @@
   "dependencies": {
     "@contentful/axios": "^0.18.0",
     "contentful-sdk-core": "^6.0.0-beta1",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.10"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -78,7 +78,7 @@
     "core-js": "^2.5.1",
     "cz-conventional-changelog": "^2.0.0",
     "delay": "^2.0.0",
-    "eslint": "^4.2.0",
+    "eslint": "^4.19.1",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-node": "^6.0.1",

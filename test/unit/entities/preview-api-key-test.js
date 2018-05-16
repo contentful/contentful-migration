@@ -4,7 +4,7 @@ import setupHttpMock from '../mocks/http'
 import {wrapPreviewApiKey, wrapPreviewApiKeyCollection} from '../../../lib/entities/preview-api-key'
 import {
   entityWrappedTest,
-  entityCollectionWrappedTest,
+  entityCollectionWrappedTest
 } from '../test-creators/instance-entity-methods'
 
 function setup (promise) {
