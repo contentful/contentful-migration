@@ -24,7 +24,7 @@ test('Environment is wrapped', (t) => {
   const wrappedEnvironment = wrapEnvironment(httpMock, environmentMock)
   t.looseEqual(wrappedEnvironment.toPlainObject(), environmentMock)
   t.equal(httpMock.cloneWithNewParams.args[0][0].baseURL, 'http://foo.bar/environments/id', 'adjust the baseURL to match environments')
-  t.equal(httpMock.cloneWithNewParams.args[1][0].baseURL, 'http://foo.bar/', 'adjust the baseURL to match environments')
+  t.equal(httpMock.cloneWithNewParams.args[1][0].space, 'id', 'adjust the baseURL to match environments')
   teardown()
   t.end()
 })

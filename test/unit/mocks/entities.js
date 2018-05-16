@@ -26,7 +26,8 @@ const spaceMock = {
 
 const environmentMock = {
   sys: Object.assign(cloneDeep(sysMock), {
-    type: 'Environment'
+    type: 'Environment',
+    space: spaceMock
   }),
   name: 'name'
 }
