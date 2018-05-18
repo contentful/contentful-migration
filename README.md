@@ -1,7 +1,7 @@
 🚚 Contentful migrations
 ===============
 
-[![Build Status](https://travis-ci.org/contentful/migration-cli.svg?branch=master)](https://travis-ci.org/contentful/migration-cli) [![codecov](https://codecov.io/gh/contentful/migration-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/contentful/migration-cli)
+[![Build Status](https://travis-ci.org/contentful/contentful-migration.svg?branch=master)](https://travis-ci.org/contentful/contentful-migration) [![codecov](https://codecov.io/gh/contentful/contentful-migration/branch/master/graph/badge.svg)](https://codecov.io/gh/contentful/contentful-migration)
 
 Describe and execute changes to your content model and transform entry content.
 
