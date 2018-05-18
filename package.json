@@ -5,6 +5,7 @@
   "homepage": "https://www.contentful.com/developers/documentation/content-management-api/",
   "main": "./dist/contentful-management.node.js",
   "module": "./dist/es-modules/contentful-management.js",
+  "browser": "./dist/contentful-management.browser.js",
   "engines": {
     "node": ">=6"
   },
