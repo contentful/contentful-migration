@@ -96,10 +96,10 @@
   - Derives a new entry and sets up a reference to it on the source entry
 - Fields
   - Create a field
-  - edit a field
-  - delete a field
-  - rename a field
-  - change editorInterface
+  - Edit a field
+  - Delete a field
+  - Rename a field
+  - Change editorInterface
 
 ## Pre-requisites && Installation
 

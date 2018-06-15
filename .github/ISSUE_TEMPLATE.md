@@ -55,7 +55,7 @@ Providing context helps us come up with a most relevant solution.
 Include as many relevant details about the environment you experienced the bug in
 -->
 
--   **Language Version**: <!-- output of `node -v` -->
+-   **Node Version**: <!-- output of `node -v` -->
 -   **Package Manager Version**: <!-- output of `npm -v` -->
 -   **Operating System**: <!-- output of `uname -a` (UNIX), or version and 32 or 64-bit (Windows) -->
 -   **Package Version**: <!-- e.g. v6.0.0 -->
