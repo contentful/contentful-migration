@@ -88,6 +88,19 @@
 
 ## Core Features
 
+- Content type
+  - Edit Content type
+  - Create a Content type
+- Entries
+  - Tranform Entries for a Given Content type
+  - Derives a new entry and sets up a reference to it on the source entry
+- Fields
+  - Create a field
+  - edit a field
+  - delete a field
+  - rename a field
+  - change editorInterface
+
 ## Pre-requisites && Installation
 
 ### Pre-requisites
