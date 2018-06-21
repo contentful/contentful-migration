@@ -110,7 +110,7 @@
 ### Installation
 
 ```js
-npm install -g contentful-migration
+npm install contentful-migration
 ```
 
 ## Usage
