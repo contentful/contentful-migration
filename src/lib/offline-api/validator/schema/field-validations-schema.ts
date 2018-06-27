@@ -18,7 +18,7 @@ const rangeValidation = validation('range', range('number'))
 
 const regexp = validation('regexp', Joi.object({
   pattern: Joi.string(),
-  flags: Joi.string()
+  flags: Joi.string().allow(null).optional()
 }))
 
 const unique = validation('unique', Joi.boolean())

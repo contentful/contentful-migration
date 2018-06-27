@@ -696,4 +696,45 @@ describe('migration-steps', function () {
       ]);
     }));
   });
+
+  describe('when updating an editor interface', function () {
+    it('returns the right steps', Bluebird.coroutine(function * () {
+      const plan = yield migration(function (migration) {
+        migration
+          .editContentType('book')
+          .changeEditorInterface('title', 'markdown')
+          .changeEditorInterface('desc', 'singleLine');
+      });
+
+      expect(stripCallsites(plan)).to.eql([
+        {
+          type: 'contentType/changeEditorInterface',
+          meta: {
+            contentTypeInstanceId: 'contentType/book/0'
+          },
+          payload: {
+            contentTypeId: 'book',
+            editorInterface: {
+              fieldId: 'title',
+              widgetId: 'markdown',
+              settings: {}
+            }
+          }
+        },
+        {
+          type: 'contentType/changeEditorInterface',
+          meta: {
+            contentTypeInstanceId: 'contentType/book/0'
+          },
+          payload: {
+            contentTypeId: 'book',
+            editorInterface: {
+              fieldId: 'desc',
+              widgetId: 'singleLine',
+              settings: {}
+            }
+          }
+        }]);
+    }));
+  });
 });

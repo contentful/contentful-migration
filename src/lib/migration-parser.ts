@@ -3,7 +3,7 @@ import APIEntry from './interfaces/api-entry'
 import { migration as buildIntents } from './migration-steps'
 import validateChunks from './migration-chunks/validation'
 
-import { ContentType } from './entities/content-type'
+import { ContentType, EditorInterfaces } from './entities/content-type'
 
 import ContentTypeUpdateIntentValidator from './intent-validator/content-type-update'
 import FieldUpdateIntentValidator from './intent-validator/field-update'
@@ -13,8 +13,10 @@ import ContentTransformIntentValidator from './intent-validator/content-transfor
 import IntentList from './intent-list'
 import * as errors from './errors/index'
 import Entry from './entities/entry'
+import Fetcher from './fetcher'
 import OfflineAPI, { RequestBatch } from './offline-api'
 import ValidationError, { InvalidActionError } from './interfaces/errors'
+import { ClientConfig } from '../bin/lib/config'
 
 class ParseResult {
   public batches: RequestBatch[] = []
@@ -44,10 +46,11 @@ class ParseResult {
   }
 }
 
-const createMigrationParser = function (fetcher): (migrationCreator: (migration: any) => any) => Promise<ParseResult> {
+const createMigrationParser = function (makeRequest: Function, config: ClientConfig): (migrationCreator: (migration: any) => any) => Promise<ParseResult> {
   return async function migration (migrationCreator) {
+    const fetcher = new Fetcher(makeRequest)
     const parseResult = new ParseResult()
-    const intents = await buildIntents(migrationCreator)
+    const intents = await buildIntents(migrationCreator, makeRequest, config)
 
     const intentList = new IntentList(intents)
 
@@ -77,6 +80,19 @@ const createMigrationParser = function (fetcher): (migrationCreator: (migration:
       existingCts.set(contentType.id, contentType)
     }
 
+    let apiEditorInterfaces
+    try {
+      apiEditorInterfaces = await fetcher.getEditorInterfacesInIntents(intentList)
+    } catch (error) {
+      throw new errors.EditorInterfacesFetchingError()
+    }
+
+    const existingEditorInterfaces: Map<String, EditorInterfaces> = new Map()
+    for (const [contentTypeId, apiEi] of apiEditorInterfaces) {
+      const editorInterfaces = new EditorInterfaces(apiEi)
+      existingEditorInterfaces.set(contentTypeId, editorInterfaces)
+    }
+
     const contentTypes: ContentType[] = apiContentTypes.map((apiCt) => {
       return new ContentType(apiCt)
     })
@@ -103,7 +119,7 @@ const createMigrationParser = function (fetcher): (migrationCreator: (migration:
 
     const locales = await fetcher.getLocalesForSpace()
 
-    const api = new OfflineAPI(existingCts, entries, locales)
+    const api = new OfflineAPI(existingCts, entries, locales, existingEditorInterfaces)
 
     await intentList.compressed().applyTo(api)
 

@@ -15,7 +15,7 @@ const stripCallsites = (errors) => {
 
 export default function createValidator (validators) {
   return async function (migration) {
-    const steps = await createSteps(migration)
+    const steps = await createSteps(migration, () => {}, {})
 
     const stepList = new IntentList(steps)
 

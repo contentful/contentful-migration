@@ -1,36 +1,59 @@
 import IntentList from './intent-list'
-import APIContentType from '../lib/interfaces/content-type'
+import { APIContentType, APIEditorInterfaces } from '../lib/interfaces/content-type'
+import APIEntry from '../lib/interfaces/api-entry'
 import { ContentType } from '../lib/entities/content-type'
 import * as _ from 'lodash'
 import * as Bluebird from 'bluebird'
+import APIFetcher from './interfaces/api-fetcher'
 
-export default class Fetcher {
-  private makeRequest: any
+export default class Fetcher implements APIFetcher {
+  private makeRequest: Function
 
-  constructor (makeRequest) {
+  constructor (makeRequest: Function) {
     this.makeRequest = makeRequest
   }
 
-  async getEntriesInIntents (intentList: IntentList) {
-    const ids: string[] = _.uniq(intentList.getIntents().map((intent) => intent.getContentTypeId()))
+  async getEntriesInIntents (intentList: IntentList): Promise<APIEntry[]> {
+    const ids: string[] = _.uniq(
+      intentList.getIntents()
+      .filter((intent) => intent.isContentTransform() || intent.isEntryDerive())
+      .map((intent) => intent.getContentTypeId())
+    )
 
     if (ids.length === 0) {
       return []
     }
 
-    const response = await this.makeRequest({
-      method: 'GET',
-      url: `/entries?sys.contentType.sys.id[in]=${ids.join(',')}`
-    })
+    let entries: APIEntry[] = []
+    let skip: number = 0
 
-    return response.items
+    while (true) {
+      const response = await this.makeRequest({
+        method: 'GET',
+        url: `/entries?sys.contentType.sys.id[in]=${ids.join(',')}&skip=${skip}`
+      })
+
+      entries = entries.concat(response.items)
+      skip += response.items.length
+
+      if (skip >= response.total) {
+        break
+      }
+    }
+
+    return entries
   }
 
   async getContentTypesInChunks (intentList: IntentList): Promise<APIContentType[]> {
-    const ids: string[] = _.uniq(intentList.getIntents().reduce((ids, intent) => {
-      const intentIds = intent.getRelatedContentTypeIds()
-      return ids.concat(intentIds)
-    }, []))
+    // Excluding editor interface intents here since, API-wise, editor interfaces don't require
+    // to know the full details about the associated content type.
+    const ids: string[] = _.uniq(intentList.getIntents()
+      .filter((intent) => !intent.isEditorInterfaceUpdate())
+      .reduce((ids, intent) => {
+        const intentIds = intent.getRelatedContentTypeIds()
+        return ids.concat(intentIds)
+      }, [])
+    )
 
     if (ids.length === 0) {
       return []
@@ -45,7 +68,29 @@ export default class Fetcher {
     return contentTypes
   }
 
-  async getLocalesForSpace () {
+  async getEditorInterfacesInIntents (intentList: IntentList): Promise<Map<string, APIEditorInterfaces>> {
+    const contentTypeIds: string[] = _.uniq(
+      intentList.getIntents()
+        .filter((intent) => intent.isEditorInterfaceUpdate())
+        .reduce((ids, intent) => {
+          const intentIds = intent.getRelatedContentTypeIds()
+          return ids.concat(intentIds)
+        }, [])
+    )
+
+    let editorInterfaces = new Map<string, APIEditorInterfaces>()
+
+    if (contentTypeIds.length === 0) {
+      return editorInterfaces
+    }
+
+    for (let id of contentTypeIds) {
+      await this._fetchEditorInterface(id, editorInterfaces)
+    }
+    return editorInterfaces
+  }
+
+  async getLocalesForSpace (): Promise<string[]> {
     const response = await this.makeRequest({
       method: 'GET',
       url: `/locales`
@@ -80,5 +125,27 @@ export default class Fetcher {
 
       return ct
     })
+  }
+
+  private async _fetchEditorInterface (id: string, editorInterfaces: Map<string, APIEditorInterfaces>) {
+    try {
+      const response = await this.makeRequest({
+        method: 'GET',
+        url: `/content_types/${id}/editor_interface`
+      })
+      editorInterfaces.set(id, response)
+    } catch (error) {
+      if (error.name === 'NotFound') {  // TODO: expose status codes and use that instead.
+        // Initialize a default structure for newly created content types.
+        editorInterfaces.set(id, {
+          sys: {
+            version: 0
+          },
+          controls: []
+        })
+      } else {
+        throw error
+      }
+    }
   }
 }

@@ -232,18 +232,6 @@ const checks: ContentTypeValidation[] = [
   new DeleteCtWithEntries()
 ]
 
-// export default function (intents, contentTypes: ContentType[]) {
-//   const errors = checks.map((check: ContentTypeValidation) => {
-//     const foundItems = check.validate(intents, contentTypes)
-//     return errorFormatter((intent: Intent) => {
-//       const id = intent.getContentTypeId()
-//       return check.message(id, intent)
-//     })(foundItems)
-//   })
-
-//   return _.flatten(errors)
-// }
-
 export default function (intents: Intent[], contentTypes: ContentType[]): InvalidActionError[] {
   const remote = contentTypes.map((ct) => ct.id)
   const toBeCreated = intents.filter((intent) => intent.isContentTypeCreate()).map((intent) => intent.getContentTypeId())
@@ -252,7 +240,7 @@ export default function (intents: Intent[], contentTypes: ContentType[]): Invali
     remote: new Set(remote), // all currently (in the current iteration step) existing content types
     created: new Set(), // all by now (in previous iteration steps) created content types
     deleted: new Set(), // all by now (in previous iteration steps) deleted content types
-    toBeCreated: new Set(toBeCreated), // all future (in remeining iteration steps) created content types
+    toBeCreated: new Set(toBeCreated), // all future (in remaining iteration steps) created content types
     remoteContentTypes: contentTypes
   }
 

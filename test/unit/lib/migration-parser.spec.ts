@@ -2,55 +2,61 @@
 
 const { expect } = require('chai')
 import createMigrationParser from '../../../src/lib/migration-parser'
+// import { APIEditorInterfaces } from '../../../src/lib/interfaces/content-type'
 
 describe('Migration parser', function () {
   describe('when transforming content', function () {
     it('returns all collected errors', async function () {
-      const fakeFetcher = {
-        getContentTypesInChunks: () => {
-          return [
-            {
-              sys: { id: 'foo' },
-              fields: [{ name: 'name', type: 'Symbol', id: 'name' }]
-            },
-            {
-              sys: { id: 'cat' },
-              fields: [{ name: 'name', type: 'Symbol', id: 'name' }]
-            }
-          ]
-        },
-        getEntriesInIntents: () => {
-          return [
-            {
-              sys: {
-                contentType: { sys: { id: 'foo' } },
-                id: '123'
+      const fakeMakeRequest = (config) => {
+        if (config.url === '/content_types?sys.id[in]=foo,cat') {
+          return {
+            items: [
+              {
+                sys: { id: 'foo' },
+                fields: [{ name: 'name', type: 'Symbol', id: 'name' }]
               },
-              fields: { name: { 'en-US': 'Mary' } }
-            },
-            {
-              sys: {
-                contentType: { sys: { id: 'foo' } },
-                id: '456'
+              {
+                sys: { id: 'cat' },
+                fields: [{ name: 'name', type: 'Symbol', id: 'name' }]
+              }
+            ]
+          }
+        }
+
+        if (config.url === '/entries?sys.contentType.sys.id[in]=foo,cat') {
+          return {
+            items: [
+              {
+                sys: {
+                  contentType: { sys: { id: 'foo' } },
+                  id: '123'
+                },
+                fields: { name: { 'en-US': 'Mary' } }
               },
-              fields: { name: { 'en-US': 'Rose' } }
-            },
-            {
-              sys: {
-                contentType: { sys: { id: 'cat' } },
-                id: '123'
+              {
+                sys: {
+                  contentType: { sys: { id: 'foo' } },
+                  id: '456'
+                },
+                fields: { name: { 'en-US': 'Rose' } }
               },
-              fields: { name: { 'en-US': 'Puss' } }
-            }
-          ]
-        },
-        checkContentTypesForDeletedCts: (_, contentTypes) => {
-          return contentTypes
-        },
-        getLocalesForSpace: () => ['en-US']
+              {
+                sys: {
+                  contentType: { sys: { id: 'cat' } },
+                  id: '123'
+                },
+                fields: { name: { 'en-US': 'Puss' } }
+              }
+            ]
+          }
+        }
+
+        if (config.url === '/locales') {
+          return {items: [{code: 'en-US'}]}
+        }
       }
 
-      const migrationParser = createMigrationParser(fakeFetcher)
+      const migrationParser = createMigrationParser(fakeMakeRequest, {})
 
       // make this something that throws the second time
       const fooError = new Error('bang')
@@ -100,40 +106,46 @@ describe('Migration parser', function () {
 
   describe('when shouldPublish is false', function () {
     it('does not produce publish requests', async function () {
-      const fakeFetcher = {
-        getContentTypesInChunks: () => {
-          return [
-            {
-              sys: { id: 'foo' },
-              fields: [{ name: 'name', type: 'Symbol', id: 'name' }]
-            }
-          ]
-        },
-        getEntriesInIntents: () => {
-          return [
-            {
-              sys: {
-                contentType: { sys: { id: 'foo' } },
-                id: '123'
+      const fakeMakeRequest = (config) => {
+        console.log(config.url)
+        if (config.url === '/content_types?sys.id[in]=foo') {
+          return {
+            items: [
+              {
+                sys: { id: 'foo' },
+                fields: [{ name: 'name', type: 'Symbol', id: 'name' }]
+              }
+            ]
+          }
+        }
+
+        if (config.url === '/entries?sys.contentType.sys.id[in]=foo') {
+          return {
+            items: [
+              {
+                sys: {
+                  contentType: { sys: { id: 'foo' } },
+                  id: '123'
+                },
+                fields: { name: { 'en-US': 'Mary' } }
               },
-              fields: { name: { 'en-US': 'Mary' } }
-            },
-            {
-              sys: {
-                contentType: { sys: { id: 'foo' } },
-                id: '456'
-              },
-              fields: { name: { 'en-US': 'Rose' } }
-            }
-          ]
-        },
-        checkContentTypesForDeletedCts: (_, contentTypes) => {
-          return contentTypes
-        },
-        getLocalesForSpace: () => ['en-US']
+              {
+                sys: {
+                  contentType: { sys: { id: 'foo' } },
+                  id: '456'
+                },
+                fields: { name: { 'en-US': 'Rose' } }
+              }
+            ]
+          }
+        }
+
+        if (config.url === '/locales') {
+          return {items: [{code: 'en-US'}]}
+        }
       }
 
-      const migrationParser = createMigrationParser(fakeFetcher)
+      const migrationParser = createMigrationParser(fakeMakeRequest, {})
 
       // make this something that throws the second time
       const transformFunction = (migration) => {

@@ -5,13 +5,72 @@ import { migration as buildIntents } from '../../../src/lib/migration-steps'
 import IntentList from '../../../src/lib/intent-list'
 import Fetcher from '../../../src/lib/fetcher'
 import { ContentType } from '../../../src/lib/entities/content-type'
+import { APIEditorInterfaces } from '../../../src/lib/interfaces/content-type';
 
 describe('Fetcher', function () {
+  it('fetches all required Entries in the plan', async function () {
+    const intents = await buildIntents(function up (migration) {
+      migration.transformEntries({
+        contentType: 'newsArticle',
+        from: ['author', 'authorCity'],
+        to: ['byline'],
+        transformEntryForLocale: function (fromFields, currentLocale) {
+          if (currentLocale === 'de-DE') {
+            return
+          }
+          const newByline = `${fromFields.author[currentLocale]} ${fromFields.authorCity[currentLocale]}`
+          return { byline: newByline }
+        }
+      })
+    })
+
+    const request = sinon.stub()
+    request
+      .withArgs({
+        method: 'GET',
+        url: '/entries?sys.contentType.sys.id[in]=newsArticle&skip=0'
+      })
+      .resolves({
+        skip: 0,
+        limit: 4,
+        total: 6,
+        items: ['item1', 'item2', 'item3', 'item4']
+      })
+    request
+      .withArgs({
+        method: 'GET',
+        url: '/entries?sys.contentType.sys.id[in]=newsArticle&skip=4'
+      })
+      .resolves({
+        skip: 4,
+        limit: 4,
+        total: 6,
+        items: ['item5', 'item6']
+      })
+
+    const intentList = new IntentList(intents)
+
+    const fetcher = new Fetcher(request)
+    const entries = await fetcher.getEntriesInIntents(intentList)
+
+    expect(request).to.have.been.calledWith({
+      method: 'GET',
+      url: '/entries?sys.contentType.sys.id[in]=newsArticle&skip=0'
+    })
+    expect(request).to.have.been.calledWith({
+      method: 'GET',
+      url: '/entries?sys.contentType.sys.id[in]=newsArticle&skip=4'
+    })
+
+    const result = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6']
+    expect(entries).to.eql(result)
+  })
+
   it('adds entries info to content types', async function () {
     const intents = await buildIntents(function up (migration) {
       migration.deleteContentType('foo')
       migration.deleteContentType('bar')
-    })
+    }, () => {}, {})
 
     const request = sinon.stub()
     request
@@ -80,7 +139,7 @@ describe('Fetcher', function () {
 
       migration.deleteContentType('dog')
       migration.deleteContentType('plant')
-    })
+    }, () => {}, {})
 
     const request = sinon.stub()
 
@@ -178,7 +237,7 @@ describe('Fetcher', function () {
           }
         }
       })
-    })
+    }, () => {}, {})
 
     const request = sinon.stub()
 
@@ -221,5 +280,87 @@ describe('Fetcher', function () {
       method: 'GET',
       url: '/content_types?sys.id[in]=dog,owner'
     })
+  })
+
+  it('fetches all required Editor Interfaces in the plan', async function () {
+    const intents = await buildIntents(function up (migration) {
+      const foo = migration.editContentType('foo')
+      foo.changeEditorInterface('title', 'singleLine')
+      const bar = migration.editContentType('bar')
+      bar.changeEditorInterface('desc', 'markdown')
+    }, () => {}, {})
+
+    const request = sinon.stub()
+    request
+      .withArgs({
+        method: 'GET',
+        url: '/content_types/foo/editor_interface'
+      })
+      .resolves({
+        sys: {
+          version: 1
+        },
+        controls: [
+          {
+            fieldId: 'title',
+            widgetId: 'multiline'
+          }
+        ]
+      })
+    request
+      .withArgs({
+        method: 'GET',
+        url: '/content_types/bar/editor_interface'
+      })
+      .resolves({
+        sys: {
+          version: 2
+        },
+        controls: [
+          {
+            fieldId: 'desc',
+            widgetId: 'singleLine'
+          }
+        ]
+      })
+
+    const intentList = new IntentList(intents)
+
+    const fetcher = new Fetcher(request)
+    const editorInterfaces = await fetcher.getEditorInterfacesInIntents(intentList)
+
+    expect(request).to.have.been.calledWith({
+      method: 'GET',
+      url: '/content_types/foo/editor_interface'
+    })
+    expect(request).to.have.been.calledWith({
+      method: 'GET',
+      url: '/content_types/bar/editor_interface'
+    })
+
+    const result = new Map<String, APIEditorInterfaces>()
+    result.set('foo', {
+      sys: {
+        version: 1
+      },
+      controls: [
+        {
+          fieldId: 'title',
+          widgetId: 'multiline'
+        }
+      ]
+    })
+    result.set('bar', {
+      sys: {
+        version: 2
+      },
+      controls: [
+        {
+          fieldId: 'desc',
+          widgetId: 'singleLine'
+        }
+      ]
+    })
+    expect(editorInterfaces).to.eql(result)
   })
 })

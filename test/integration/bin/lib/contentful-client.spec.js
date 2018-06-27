@@ -4,6 +4,7 @@ const { expect } = require('chai');
 const HttpsProxyAgent = require('https-proxy-agent');
 
 const rewire = require('rewire');
+const { getConfig } = rewire('../../../../built/bin/lib/config');
 const contentfulClient = rewire('../../../../built/bin/lib/contentful-client');
 const { createManagementClient } = contentfulClient;
 
@@ -22,7 +23,10 @@ describe('contentful-client', function () {
   });
 
   it('can read the space', function () {
-    const client = createManagementClient({ application: 'contentful.migration-cli.integration-test/0.0.0' });
+    const clientConfig = Object.assign({
+      application: `contentful.migration-cli/0.0.0`
+    }, getConfig());
+    const client = createManagementClient(clientConfig);
     return client.getSpace(SOURCE_TEST_SPACE).then((space) => {
       expect(space.name).to.eql('Migrations CLI Test');
     });
@@ -36,16 +40,6 @@ describe('contentful-client', function () {
       expect(params.httpsAgent.options.host).to.eql('myproxy.com');
       expect(params.httpsAgent.options.port).to.eql(1337);
       expect(params.httpsAgent.options.auth).to.eql('user:pass');
-    });
-
-    createManagementClient({ application: 'contentful.migration-cli.integration-test/0.0.0' });
-  });
-
-  it('prefers env access token over contentfulrc', function () {
-    process.env.CONTENTFUL_MANAGEMENT_ACCESS_TOKEN = 'foomybar';
-
-    contentfulClient.__set__('createClient', (params) => {
-      expect(params.accessToken).to.eql('foomybar');
     });
 
     createManagementClient({ application: 'contentful.migration-cli.integration-test/0.0.0' });

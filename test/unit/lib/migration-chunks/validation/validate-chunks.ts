@@ -14,7 +14,7 @@ const stripCallsites = (errors) => {
 }
 
 const validateChunks = async function (migration, testCts: any[]) {
-  const intents = await migrationSteps(migration)
+  const intents = await migrationSteps(migration, () => {}, {})
   const list = new IntentList(intents)
 
   const existingCts: ContentType[] = testCts.map((ct) => {

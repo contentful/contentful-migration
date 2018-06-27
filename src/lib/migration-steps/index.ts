@@ -8,6 +8,7 @@ import Intent from '../intent'
 import DispatchProxy from './dispatch-proxy'
 import { omit } from 'lodash'
 import ContentTransform from '../interfaces/content-transform'
+import { ClientConfig } from '../../bin/lib/config'
 
 const createInstanceIdManager = () => {
   const instanceCounts = {}
@@ -29,7 +30,7 @@ const createInstanceIdManager = () => {
   }
 }
 
-class Movement extends DispatchProxy {}
+class Movement extends DispatchProxy { }
 
 class Field extends DispatchProxy {
   public id: string
@@ -141,9 +142,22 @@ class ContentType extends DispatchProxy {
       newId
     ))
   }
+
+  changeEditorInterface (fieldId, widgetId, settings) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.contentType.changeEditorInterface(
+      this.id,
+      this.instanceId,
+      callsite,
+      fieldId,
+      widgetId,
+      settings
+    ))
+    return this
+  }
 }
 
-export async function migration (migrationCreator): Promise<Intent[]> {
+export async function migration (migrationCreator: Function, makeRequest: Function, config: ClientConfig): Promise<Intent[]> {
   const actions: Intent[] = []
   const instanceIdManager = createInstanceIdManager()
 
@@ -194,7 +208,7 @@ export async function migration (migrationCreator): Promise<Intent[]> {
 
   // Create the migration
   await Bluebird.try(function () {
-    return migrationCreator(migration)
+    return migrationCreator(migration, Object.assign({makeRequest}, config))
   })
 
   return actions
