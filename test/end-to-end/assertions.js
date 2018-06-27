@@ -118,7 +118,7 @@ module.exports = {
           expect(result.stdout).not.to.be.empty();
           const withoutAnsiCodes = stripAnsi(result.stdout);
           expect(withoutAnsiCodes).to.include(`Update editor interface for Content Type ${contentTypeId}`);
-          expect(withoutAnsiCodes).to.include(`Field ${fieldId}: ${widgetId}`);
+          expect(withoutAnsiCodes).to.include(`widgetId: "${widgetId}"`);
         };
       }
     },

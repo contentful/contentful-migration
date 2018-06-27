@@ -36,10 +36,16 @@ const run = async function (argv) {
   }
 
   const spaceId = argv.spaceId
-  const environmentId = argv.environmentId
-  const clientConfig = Object.assign({
-    application: argv.managementApplication || `contentful.migration-cli/${version}`
-  }, getConfig(argv))
+  const environmentId = argv.environmentId || 'master'
+  const application = argv.managementApplication || `contentful.migration-cli/${version}`
+  const config = {
+    accessToken: argv.accessToken,
+    spaceId,
+    environmentId,
+    application
+  }
+
+  const clientConfig = Object.assign({}, config)
 
   const client = createManagementClient(clientConfig)
   const makeRequest = function (requestConfig) {

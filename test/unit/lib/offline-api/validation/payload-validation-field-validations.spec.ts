@@ -131,5 +131,22 @@ describe('payload validation', function () {
         []
       ])
     })
+
+    it('allows null values for optional validation properties', async function () {
+      const errors = await validateBatches(function up (migration) {
+        const person = migration.createContentType('person')
+          .name('Person')
+          .description('A Person')
+
+        person.createField('fullName')
+          .name('Full Name')
+          .type('Symbol')
+          .validations([{ regexp: { pattern: '^[A-Za-z\s]+$', flags: null } }])
+      }, [])
+
+      expect(errors).to.eql([
+        []
+      ])
+    })
   })
 })
