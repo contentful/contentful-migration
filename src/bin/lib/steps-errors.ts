@@ -56,9 +56,9 @@ const renderStepsErrors = function (errors: ValidationError[]) {
     messages.push(`${fileErrorsMessage}${errorMessages}`)
   }
 
-  console.log(chalk`{red.bold Validation failed}\n\n`)
-  console.log(messages.join('\n'))
-  console.log(chalk`🚨  {bold.red Migration unsuccessful}`)
+  console.error(chalk`{red.bold Validation failed}\n\n`)
+  console.error(messages.join('\n'))
+  console.error(chalk`🚨  {bold.red Migration unsuccessful}`)
 }
 
 export default renderStepsErrors

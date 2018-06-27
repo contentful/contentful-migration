@@ -28,7 +28,7 @@ const renderPlan = (batches: RequestBatch[]) => {
     }
 
     for (const error of batch.validationErrors) {
-      console.log(chalk`{red.bold Error: ${error.message}}`)
+      console.error(chalk`{red.bold Error: ${error.message}}`)
     }
 
     if (batch.intent.shouldPublish()) {
@@ -38,9 +38,9 @@ const renderPlan = (batches: RequestBatch[]) => {
 }
 
 const renderValidationErrors = (batches: RequestBatch[]) => {
-  console.log(chalk`{bold.red The following migration has been planned but cannot be run because it contains errors}\n\n`)
+  console.error(chalk`{bold.red The following migration has been planned but cannot be run because it contains errors}\n\n`)
   renderPlan(batches)
-  console.log(chalk`🚨  {bold.red Migration unsuccessful}`)
+  console.error(chalk`🚨  {bold.red Migration unsuccessful}`)
 }
 
 const renderRuntimeErrors = (batches: RequestBatch[], filename: string) => {
@@ -48,8 +48,8 @@ const renderRuntimeErrors = (batches: RequestBatch[], filename: string) => {
     renderBatch(batch)
 
     const errorCount = batch.runtimeErrors.length
-    console.log(chalk`\n{red ${errorCount.toString()} errors while transforming this content. Please check the errors log for details: ${filename}}\n`)
-    console.log(chalk`🚨  {bold.red Migration unsuccessful}`)
+    console.error(chalk`\n{red ${errorCount.toString()} errors while transforming this content. Please check the errors log for details: ${filename}}\n`)
+    console.error(chalk`🚨  {bold.red Migration unsuccessful}`)
   }
 }
 
