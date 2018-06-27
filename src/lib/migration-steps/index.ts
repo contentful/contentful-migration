@@ -8,6 +8,7 @@ import Intent from '../intent'
 import DispatchProxy from './dispatch-proxy'
 import { omit } from 'lodash'
 import ContentTransform from '../interfaces/content-transform'
+import { ClientConfig } from '../../bin/lib/config'
 
 const createInstanceIdManager = () => {
   const instanceCounts = {}
@@ -156,7 +157,7 @@ class ContentType extends DispatchProxy {
   }
 }
 
-export async function migration (migrationCreator): Promise<Intent[]> {
+export async function migration (migrationCreator: Function, makeRequest: Function, config: ClientConfig): Promise<Intent[]> {
   const actions: Intent[] = []
   const instanceIdManager = createInstanceIdManager()
 
@@ -207,7 +208,7 @@ export async function migration (migrationCreator): Promise<Intent[]> {
 
   // Create the migration
   await Bluebird.try(function () {
-    return migrationCreator(migration)
+    return migrationCreator(migration, Object.assign({makeRequest}, config))
   })
 
   return actions

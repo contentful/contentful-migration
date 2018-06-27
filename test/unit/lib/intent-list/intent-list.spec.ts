@@ -34,7 +34,7 @@ describe('Intent List', function () {
       address.createField('houseExtension', {
         type: 'Symbol'
       })
-    })
+    }, () => {}, {})
     const intentList = new IntentList(intents)
     expect(intentList.getIntents().length).to.equal(15)
   })
@@ -57,7 +57,7 @@ describe('Intent List', function () {
 
       person.editField('fullName').localized(true)
       fullName.required(true)
-    })
+    }, () => {}, {})
 
     const intentList = new IntentList(intents)
     const compressedList = intentList.compressed()

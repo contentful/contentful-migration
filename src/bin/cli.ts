@@ -13,8 +13,8 @@ import { renderPlan, renderValidationErrors, renderRuntimeErrors } from './lib/r
 import renderStepsErrors from './lib/steps-errors'
 import writeErrorsToLog from './lib/write-errors-to-log'
 import { RequestBatch } from '../lib/offline-api/index'
-import Fetcher from '../lib/fetcher'
 import { ParseResult } from '../lib/migration-parser'
+import { getConfig } from './lib/config'
 
 class BatchError extends Error {
   public batch: RequestBatch
@@ -35,28 +35,19 @@ const run = async function (argv) {
     return
   }
 
-  const spaceId = argv.spaceId
-  const environmentId = argv.environmentId || 'master'
   const application = argv.managementApplication || `contentful.migration-cli/${version}`
-  const config = {
-    accessToken: argv.accessToken,
-    spaceId,
-    environmentId,
-    application
-  }
 
-  const clientConfig = Object.assign({}, config)
+  const clientConfig = Object.assign({application}, getConfig(argv))
 
   const client = createManagementClient(clientConfig)
   const makeRequest = function (requestConfig) {
     const config = Object.assign({}, requestConfig, {
-      url: path.join(spaceId, 'environments', environmentId, requestConfig.url)
+      url: path.join(clientConfig.spaceId, 'environments', clientConfig.environmentId, requestConfig.url)
     })
     return client.rawRequest(config)
   }
 
-  const fetcher = new Fetcher(makeRequest)
-  const migrationParser = createMigrationParser(fetcher)
+  const migrationParser = createMigrationParser(makeRequest, clientConfig)
 
   let parseResult: ParseResult
 

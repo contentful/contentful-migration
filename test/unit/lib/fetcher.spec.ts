@@ -70,7 +70,7 @@ describe('Fetcher', function () {
     const intents = await buildIntents(function up (migration) {
       migration.deleteContentType('foo')
       migration.deleteContentType('bar')
-    })
+    }, () => {}, {})
 
     const request = sinon.stub()
     request
@@ -139,7 +139,7 @@ describe('Fetcher', function () {
 
       migration.deleteContentType('dog')
       migration.deleteContentType('plant')
-    })
+    }, () => {}, {})
 
     const request = sinon.stub()
 
@@ -237,7 +237,7 @@ describe('Fetcher', function () {
           }
         }
       })
-    })
+    }, () => {}, {})
 
     const request = sinon.stub()
 
@@ -288,7 +288,7 @@ describe('Fetcher', function () {
       foo.changeEditorInterface('title', 'singleLine')
       const bar = migration.editContentType('bar')
       bar.changeEditorInterface('desc', 'markdown')
-    })
+    }, () => {}, {})
 
     const request = sinon.stub()
     request

@@ -32,7 +32,7 @@ describe('Content Type fetcher', function () {
 
       migration.deleteContentType('dog')
       migration.deleteContentType('plant')
-    })
+    }, () => {}, {})
 
     const request = sinon.stub()
 
