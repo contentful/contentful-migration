@@ -268,6 +268,34 @@ The derive function is expected to return an object with the desired target fiel
 
 - **`shouldPublish : boolean`** _(optional)_ – If `true`, both the source and the derived entries will be published. If `false`, both will remain in draft state (default `true`)
 
+##### `deriveLinkedEntries(config)` Example
+
+```javascript
+migration.deriveLinkedEntries({
+    contentType: 'dog',
+    derivedContentType: 'owner',
+    from: ['owner'],
+    toReferenceField: 'ownerRef',
+    derivedFields: ['firstName', 'lastName'],
+    identityKey: async (fromFields) => {
+      return fromFields.owner['en-US'].toLowerCase().replace(' ', '-');
+    },
+    shouldPublish: true,
+    deriveEntryForLocale: async (inputFields, locale) => {
+      if (locale !== 'en-US') {
+        return;
+      }
+      const [firstName, lastName] = inputFields.owner[locale].split(' ');
+      return {
+        firstName,
+        lastName
+      };
+    }
+  });
+```
+
+For the complete version of this migration, please refer to [this example](./examples/15-derive-entry.js).
+
 ### `context`
 
 There may be cases where you want to use Contentful API features that are not supported by the `migration` object. For these cases you have access to the internal configuration of the running migration in a `context` object.
@@ -308,35 +336,6 @@ The space ID that was set for the current migration.
 
 The access token that was set for the current migration.
 
-### Example
-
-##### `deriveLinkedEntries` Example
-
-```javascript
-migration.deriveLinkedEntries({
-    contentType: 'dog',
-    derivedContentType: 'owner',
-    from: ['owner'],
-    toReferenceField: 'ownerRef',
-    derivedFields: ['firstName', 'lastName'],
-    identityKey: async (fromFields) => {
-      return fromFields.owner['en-US'].toLowerCase().replace(' ', '-');
-    },
-    shouldPublish: true,
-    deriveEntryForLocale: async (inputFields, locale) => {
-      if (locale !== 'en-US') {
-        return;
-      }
-      const [firstName, lastName] = inputFields.owner[locale].split(' ');
-      return {
-        firstName,
-        lastName
-      };
-    }
-  });
-```
-
-For the complete version of this migration, please refer to [this example](./examples/15-derive-entry.js).
 
 ### Content type
 
