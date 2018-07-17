@@ -9,18 +9,18 @@ module.exports = {
       invalidPropertyWithSuggestion: function (invalid, valid) {
         return result => {
           expect(result.code).to.eql(1);
-          expect(result.stdout).not.to.be.empty();
+          expect(result.stderr).not.to.be.empty();
 
-          const withoutAnsiCodes = stripAnsi(result.stdout);
+          const withoutAnsiCodes = stripAnsi(result.stderr);
           expect(withoutAnsiCodes).to.include(`"${invalid}" is not a valid property name for a field. Did you mean "${valid}"?`);
         };
       },
       invalidTypeForProperty (property, invalid, valid) {
         return result => {
           expect(result.code).to.eql(1);
-          expect(result.stdout).not.to.be.empty();
+          expect(result.stderr).not.to.be.empty();
 
-          const withoutAnsiCodes = stripAnsi(result.stdout);
+          const withoutAnsiCodes = stripAnsi(result.stderr);
           expect(withoutAnsiCodes).to.include(`"${invalid}" is not a valid type for the field property "${property}". Expected "${valid}"`);
         };
       }
@@ -29,36 +29,36 @@ module.exports = {
       invalidPropertyWithSuggestion: function (invalid, valid) {
         return result => {
           expect(result.code).to.eql(1);
-          expect(result.stdout).not.to.be.empty();
+          expect(result.stderr).not.to.be.empty();
 
-          const withoutAnsiCodes = stripAnsi(result.stdout);
+          const withoutAnsiCodes = stripAnsi(result.stderr);
           expect(withoutAnsiCodes).to.include(`"${invalid}" is not a valid property name for a content type. Did you mean "${valid}"?`);
         };
       },
       duplicateCreate: function (line, id) {
         return result => {
           expect(result.code).to.eql(1);
-          expect(result.stdout).not.to.be.empty();
+          expect(result.stderr).not.to.be.empty();
 
-          const withoutAnsiCodes = stripAnsi(result.stdout);
+          const withoutAnsiCodes = stripAnsi(result.stderr);
           expect(withoutAnsiCodes).to.include(`Line ${line}: Content type with id "${id}" cannot be created more than once.`);
         };
       },
       invalidProperty: function (line, invalid) {
         return result => {
           expect(result.code).to.eql(1);
-          expect(result.stdout).not.to.be.empty();
+          expect(result.stderr).not.to.be.empty();
 
-          const withoutAnsiCodes = stripAnsi(result.stdout);
+          const withoutAnsiCodes = stripAnsi(result.stderr);
           expect(withoutAnsiCodes).to.include(`Line ${line}: You cannot set a property on content type "${invalid}" because it does not exist.`);
         };
       },
       alreadyExist: function (line, id) {
         return result => {
           expect(result.code).to.eql(1);
-          expect(result.stdout).not.to.be.empty();
+          expect(result.stderr).not.to.be.empty();
 
-          const withoutAnsiCodes = stripAnsi(result.stdout);
+          const withoutAnsiCodes = stripAnsi(result.stderr);
           expect(withoutAnsiCodes).to.include(`Line ${line}: Content type with id "${id}" already exists.`);
         };
       }
@@ -66,9 +66,10 @@ module.exports = {
     entriesTransform: function (id, message) {
       return result => {
         expect(result.code).to.eql(1);
+        expect(result.stderr).not.to.be.empty();
         expect(result.stdout).not.to.be.empty();
 
-        const withoutAnsiCodes = stripAnsi(result.stdout);
+        const withoutAnsiCodes = stripAnsi(`${result.stdout} ${result.stderr}`);
         expect(withoutAnsiCodes).to.include(id);
         expect(withoutAnsiCodes).to.include(message);
         expect(withoutAnsiCodes).to.include('Please check the errors log for details:');
@@ -186,11 +187,11 @@ module.exports = {
       abort: function () {
         return result => {
           expect(result.stdout).not.to.be.empty();
-
           const withoutAnsiCodes = stripAnsi(result.stdout);
+          const errorWithoutAnsiCodes = stripAnsi(result.stderr);
           expect(withoutAnsiCodes).to.include(`The following migration has been planned`);
           expect(withoutAnsiCodes).to.include(`? Do you want to apply the migration No`);
-          expect(withoutAnsiCodes).to.include(`Migration aborted`);
+          expect(errorWithoutAnsiCodes).to.include(`Migration aborted`);
         };
       },
       apply: function () {
@@ -305,8 +306,9 @@ module.exports = {
         return result => {
           expect(result.code).to.eql(1);
           expect(result.stdout).not.to.be.empty();
+          expect(result.stderr).not.to.be.empty();
 
-          const withoutAnsiCodes = stripAnsi(result.stdout);
+          const withoutAnsiCodes = stripAnsi(`${result.stdout} ${result.stderr}`);
           expect(withoutAnsiCodes).to.include(`Error: The property "${path}" is required on a content type.`);
         };
       },
@@ -314,8 +316,9 @@ module.exports = {
         return result => {
           expect(result.code).to.eql(1);
           expect(result.stdout).not.to.be.empty();
+          expect(result.stderr).not.to.be.empty();
 
-          const withoutAnsiCodes = stripAnsi(result.stdout);
+          const withoutAnsiCodes = stripAnsi(`${result.stdout} ${result.stderr}`);
           expect(withoutAnsiCodes).to.include(`Error: Cannot set "${displayField}" as displayField on content type "${ctId}" because it does not exist`);
         };
       },
@@ -323,8 +326,9 @@ module.exports = {
         return result => {
           expect(result.code).to.eql(1);
           expect(result.stdout).not.to.be.empty();
+          expect(result.stderr).not.to.be.empty();
 
-          const withoutAnsiCodes = stripAnsi(result.stdout);
+          const withoutAnsiCodes = stripAnsi(`${result.stdout} ${result.stderr}`);
           expect(withoutAnsiCodes).to.include(`Error: Cannot delete field "${displayField}" on content type "${ctId}" because it is set as the display field`);
         };
       }
@@ -334,8 +338,9 @@ module.exports = {
         return result => {
           expect(result.code).to.eql(1);
           expect(result.stdout).not.to.be.empty();
+          expect(result.stderr).not.to.be.empty();
 
-          const withoutAnsiCodes = stripAnsi(result.stdout);
+          const withoutAnsiCodes = stripAnsi(`${result.stdout} ${result.stderr}`);
           expect(withoutAnsiCodes).to.include(`Error: The property "${prop}" is required on the field "${id}".`);
         };
       },
@@ -344,8 +349,9 @@ module.exports = {
           const oneOf = '["Symbol", "Text", "Integer", "Number", "Date", "Boolean", "Object", "Link", "Array", "Location"]';
           expect(result.code).to.eql(1);
           expect(result.stdout).not.to.be.empty();
+          expect(result.stderr).not.to.be.empty();
 
-          const withoutAnsiCodes = stripAnsi(result.stdout);
+          const withoutAnsiCodes = stripAnsi(`${result.stdout} ${result.stderr}`);
           expect(withoutAnsiCodes).to.include(`Error: The property "${prop}" on the field "${id}" must be one of ${oneOf}.`);
         };
       },
@@ -353,8 +359,9 @@ module.exports = {
         return result => {
           expect(result.code).to.eql(1);
           expect(result.stdout).not.to.be.empty();
+          expect(result.stderr).not.to.be.empty();
 
-          const withoutAnsiCodes = stripAnsi(result.stdout);
+          const withoutAnsiCodes = stripAnsi(`${result.stdout} ${result.stderr}`);
           expect(withoutAnsiCodes).to.include(`Error: Cannot set "deleted" to "true" on field "${fieldId}" on content type "${ctId}". It needs to be omitted first. Consider using "deleteField".`);
         };
       },
@@ -362,8 +369,9 @@ module.exports = {
         return result => {
           expect(result.code).to.eql(1);
           expect(result.stdout).not.to.be.empty();
+          expect(result.stderr).not.to.be.empty();
 
-          const withoutAnsiCodes = stripAnsi(result.stdout);
+          const withoutAnsiCodes = stripAnsi(`${result.stdout} ${result.stderr}`);
           expect(withoutAnsiCodes).to.include(`Error: Cannot change the type of field "${fieldId}" on content type "${ctId}" from "${parentFieldType}" to "${fieldType}". Field types cannot be changed.`);
         };
       },
@@ -371,8 +379,9 @@ module.exports = {
         return result => {
           expect(result.code).to.eql(1);
           expect(result.stdout).not.to.be.empty();
+          expect(result.stderr).not.to.be.empty();
 
-          const withoutAnsiCodes = stripAnsi(result.stdout);
+          const withoutAnsiCodes = stripAnsi(`${result.stdout} ${result.stderr}`);
           expect(withoutAnsiCodes).to.include(`Error: The new ID "${newId}" for the field "${fieldId}" does not match the requirements. IDs must be between 1 and 64 characters long, start with a letter, and contain only alphanumeric characters as well as underscores.`);
         };
       }
@@ -382,8 +391,9 @@ module.exports = {
         return result => {
           expect(result.code).to.eql(1);
           expect(result.stdout).not.to.be.empty();
+          expect(result.stderr).not.to.be.empty();
 
-          const withoutAnsiCodes = stripAnsi(result.stdout);
+          const withoutAnsiCodes = stripAnsi(`${result.stdout} ${result.stderr}`);
           expect(withoutAnsiCodes).to.include(`Error: A field can't have duplicates in the validations array. Duplicate: "${JSON.stringify(duplicatedValue)}"`);
         };
       },
@@ -391,8 +401,9 @@ module.exports = {
         return result => {
           expect(result.code).to.eql(1);
           expect(result.stdout).not.to.be.empty();
+          expect(result.stderr).not.to.be.empty();
 
-          const withoutAnsiCodes = stripAnsi(result.stdout);
+          const withoutAnsiCodes = stripAnsi(`${result.stdout} ${result.stderr}`);
           expect(withoutAnsiCodes).to.include(`Error: A field can't have "${propName}" as a validation.`);
         };
       },
@@ -400,8 +411,9 @@ module.exports = {
         return result => {
           expect(result.code).to.eql(1);
           expect(result.stdout).not.to.be.empty();
+          expect(result.stderr).not.to.be.empty();
 
-          const withoutAnsiCodes = stripAnsi(result.stdout);
+          const withoutAnsiCodes = stripAnsi(`${result.stdout} ${result.stderr}`);
           expect(withoutAnsiCodes).to.include(`Error: "${propName}" validation expected to be "${expectedType}", but got "${actualType}"`);
         };
       }
