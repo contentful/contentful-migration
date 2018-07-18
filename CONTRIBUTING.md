@@ -36,7 +36,7 @@ Both of these test environments are setup to deal with Babel and code transpilin
 
 - `npm test` runs all three kinds of tests and generates a coverage report
 - `npm run test:unit` runs Node.js unit tests without coverage. `npm run test:cover` to run Node.js unit tests with coverage. `npm run test:debug` runs babel-node in debug mode (same as running `node debug`).
-- `npm run test:integration` runs the integration tests against the Contentful CDA API
+- `npm run test:integration` runs the integration tests against the Contentful CDA API. Note: these are tricky to run locally since they currently run against a real contentful org. Focus on unit tests during development as integration tests will be run as part of CI/CD.
 - `npm run test:browser-local` runs both the unit and integration tests using Karma against local browsers.
 - `npm run test:ci` runs tests in CI
 - `npm run test:browser-remote` runs both the unit and integration tests using Karma against Sauce Labs. This is only usable in the CI environment, as it expects the credentials and connection tunnel to be present.
