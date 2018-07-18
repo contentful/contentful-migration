@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
-
+## v0.1.0 - 2018-07-18
+### Added
+- Pass "makeRequest" and config to migration script 
+### Changed
+- Imporove usage as library
+- Improve docs
 ## v0.6.0 - 2018-02-27
 ### Added
 - make cli env aware
