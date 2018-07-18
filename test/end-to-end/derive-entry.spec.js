@@ -5,9 +5,8 @@ const _ = require('lodash');
 const assert = require('./assertions');
 const cli = require('./cli');
 const { createDevEnvironment, deleteDevEnvironment, getEntries, makeRequest } = require('../helpers/client');
-const uuid = require('uuid');
 
-const ENVIRONMENT_ID = uuid.v4();
+const ENVIRONMENT_ID = process.env.TEST_ENVIRONMENT;
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 
 describe('apply derive entry transformation', function () {

@@ -25,7 +25,7 @@
     "clean": "rimraf built",
     "build": "npm run clean && tsc -p .",
     "prepare": "npm run build",
-    "test": "npm run build && npm run test-unit && npm run test-integration && npm run test-e2e && npm run lint",
+    "test": "NOCK_RECORD=1 npm run build && npm run test-unit && npm run test-integration && npm run test-e2e && npm run lint",
     "test-watch": "npm run test-unit -- --watch",
     "test-unit": "NODE_ENV=test mocha --compilers ts-node/register --recursive test/unit/lib/ ",
     "test-integration": "NODE_ENV=test mocha --require test/integration/setup.js 'test/integration/**/*.spec.js'",
@@ -36,7 +36,7 @@
     "cover": "nyc --no-clean -s npm run test-unit && nyc --no-clean -s npm run test-integration && nyc --no-clean -s npm run test-e2e && nyc report",
     "coverage": "npm run build && npm run cover && nyc report --reporter=text-lcov > coverage.lcov",
     "coverage-report": "npm run coverage && codecov && rm -rf ./nyc_output && rm coverage.lcov",
-    "lint": "eslint 'examples/**/*.js' 'test/**/*.js' 'src/**/*.js' && tslint --project tsconfig.json --config tslint.json"
+    "lint": "eslint 'examples/**/*.js' 'test/**/*.js' 'src/**/*.js' --ignore-path './test/end-to-end/fixtures/contentful-migration.js' && tslint --project tsconfig.json --config tslint.json"
   },
   "nyc": {
     "per-file": true,
@@ -101,6 +101,7 @@
     "eslint-plugin-standard": "^3.0.1",
     "mocha": "^5.2.0",
     "nixt": "^0.5.0",
+    "nock": "^9.4.2",
     "nyc": "^11.2.1",
     "rewire": "^2.5.2",
     "rimraf": "^2.6.2",
