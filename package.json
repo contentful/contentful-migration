@@ -43,12 +43,8 @@
     "test:prepush": "npm run build && npm run test:unit && npm run test:size",
     "browser-coverage": "npm run test:cover && opener coverage/lcov-report/index.html",
     "presemantic-release": "npm run build",
-    "postpublish": "npm run docs:publish && npm run clean",
     "semantic-release": "semantic-release",
-    "devdep:build": "pushd ../contentful-sdk-core && npm run build && popd",
-    "devdep:clean": "pushd ../contentful-sdk-core && npm run clean && popd",
-    "devdep:install": "npm run devdep:build && rm -rf node_modules/contentful-sdk-core && npm install ../contentful-sdk-core && npm run devdep:clean",
-    "devdep:uninstall": "npm run devdep:clean && rimraf node_modules/contentful-sdk-core",
+    "postpublish": "npm run docs:publish && npm run clean",
     "precommit": "npm run lint",
     "prepush": "npm run test:prepush"
   },
