@@ -186,6 +186,7 @@ module.exports = {
     actions: {
       abort: function () {
         return result => {
+          console.log(result.stdout)
           expect(result.stdout).not.to.be.empty();
           const withoutAnsiCodes = stripAnsi(result.stdout);
           const errorWithoutAnsiCodes = stripAnsi(result.stderr);
@@ -208,7 +209,6 @@ module.exports = {
     entriesTransform: function (id) {
       return result => {
         expect(result.stdout).not.to.be.empty();
-
         const withoutAnsiCodes = stripAnsi(result.stdout);
         expect(withoutAnsiCodes).to.include(`Transform entries for ${id}`);
       };
