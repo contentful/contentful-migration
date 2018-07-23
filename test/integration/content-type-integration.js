@@ -34,35 +34,41 @@ export function contentTypeReadOnlyTests (t, space) {
 
 export function contentTypeWriteTests (t, space) {
   t.test('Create, update, publish, getEditorInterface, unpublish and delete content type', (t) => {
-    t.plan(10)
+    t.plan(12)
     return space.createContentType({name: 'testentity'})
-      .then((contentType) => {
+      .then((contentType) => { // create contentType
         t.ok(contentType.isDraft(), 'contentType is in draft')
         t.equals(contentType.sys.type, 'ContentType', 'type')
         t.equals(contentType.name, 'testentity', 'name')
-        return contentType.publish()
+        return contentType.publish() // publish
           .then((publishedContentType) => {
             t.ok(publishedContentType.isPublished(), 'contentType is published')
             publishedContentType.fields = [
-              {id: 'field', name: 'field', type: 'Text'}
+              {id: 'field', name: 'field', type: 'Text'},
+              {id: 'field2delete', name: 'field2delete', type: 'Text'}
             ]
-            return publishedContentType.update()
+            return publishedContentType.update() // update with fields
               .then((updatedContentType) => {
                 t.ok(updatedContentType.isUpdated(), 'contentType is updated')
                 t.equals(updatedContentType.fields[0].id, 'field', 'field id')
-                t.ok(updatedContentType.getEditorInterface, 'updatedContentType.getEditorInterface')
-                return updatedContentType.publish()
-                  .then((publishedContentType) => {
-                    return publishedContentType.getEditorInterface()
-                      .then((editorInterface) => {
-                        t.ok(editorInterface.controls, 'editor interface controls')
-                        t.ok(editorInterface.sys, 'editor interface sys')
-                        return editorInterface.update()
+                t.equals(updatedContentType.fields[1].id, 'field2delete', 'field2delete id')
+                return updatedContentType.omitAndDeleteField('field2delete') // omit and delete field
+                  .then((deletedFieldContentType) => {
+                    t.equal(deletedFieldContentType.fields.filter(field => field.id === 'field2delete').length, 0, 'field should be deleted')
+                    t.ok(deletedFieldContentType.getEditorInterface, 'updatedContentType.getEditorInterface')
+                    return deletedFieldContentType.publish() // publish changes
+                      .then((publishedContentType) => {
+                        return publishedContentType.getEditorInterface() // get editorInterface
                           .then((editorInterface) => {
-                            return updatedContentType.unpublish()
-                              .then((unpublishedContentType) => {
-                                t.ok(unpublishedContentType.isDraft(), 'contentType is back in draft')
-                                return unpublishedContentType.delete()
+                            t.ok(editorInterface.controls, 'editor interface controls')
+                            t.ok(editorInterface.sys, 'editor interface sys')
+                            return editorInterface.update() // update editor interface
+                              .then((editorInterface) => {
+                                return updatedContentType.unpublish() // unpublish contentType
+                                  .then((unpublishedContentType) => {
+                                    t.ok(unpublishedContentType.isDraft(), 'contentType is back in draft')
+                                    return unpublishedContentType.delete() // delete contentType
+                                  })
                               })
                           })
                       })
