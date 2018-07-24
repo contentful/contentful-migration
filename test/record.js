@@ -11,7 +11,7 @@ module.exports = function (name, options) {
   // `hasFixture` indicates whether the test has fixtures we should read,
   // or doesn't, so we should record and save them.
   // the environment variable `NOCK_RECORD` can be used to force a new recording.
-  let hasFixture = false;
+  let hasFixture = process.env.NOCK_RECORD === 1;
   return {
     // starts recording, or ensure the fixtures exist
     before: function () {
@@ -38,7 +38,6 @@ module.exports = function (name, options) {
         const decodedFixtures = fixtures.map(fixture => {
           if (fixture.indexOf('gzip') !== -1) {
             const matches = fixture.match(/reply\(\d{3},\s*"([a-f0-9]+)"/);
-            console.log(matches[1])
             if (matches) {
               const gzipped = matches[1];
               const response = Buffer.from(gzipped, 'hex');
@@ -52,7 +51,8 @@ module.exports = function (name, options) {
             return fixture;
           }
         });
-        const text = "const nock = require('nock');\n" + decodedFixtures.join('\n');
+        const text =
+          "const nock = require('nock');\n" + decodedFixtures.join('\n');
         fs.writeFile(fp, text, done);
       } else {
         done();

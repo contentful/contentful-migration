@@ -186,7 +186,6 @@ module.exports = {
     actions: {
       abort: function () {
         return result => {
-          console.log(result.stdout)
           expect(result.stdout).not.to.be.empty();
           const withoutAnsiCodes = stripAnsi(result.stdout);
           const errorWithoutAnsiCodes = stripAnsi(result.stderr);
