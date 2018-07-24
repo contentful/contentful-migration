@@ -8,7 +8,7 @@ const assert = require('./assertions');
 const cli = require('./cli');
 const { createDevEnvironment, deleteDevEnvironment, getDevContentType } = require('../helpers/client');
 
-const ENVIRONMENT_ID = process.env.TEST_ENVIRONMENT;
+const ENVIRONMENT_ID = 'env5';
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 
 describe('apply field migration examples', function () {

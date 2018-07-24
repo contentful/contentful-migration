@@ -6,8 +6,9 @@ const assert = require('./assertions');
 const cli = require('./cli');
 const { createDevEnvironment, deleteDevEnvironment, getEntries, makeRequest } = require('../helpers/client');
 
-const ENVIRONMENT_ID = process.env.TEST_ENVIRONMENT;
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
+
+const ENVIRONMENT_ID = 'env1';
 const record = require('../record');
 
 const recorder = record('contentful-migration-e2e');
