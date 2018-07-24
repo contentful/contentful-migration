@@ -1,6 +1,6 @@
 {
   "name": "contentful-management",
-  "version": "0.0.0-placeholder",
+  "version": "5.2.1",
   "description": "Client for Contentful's Content Management API",
   "homepage": "https://www.contentful.com/developers/documentation/content-management-api/",
   "main": "./dist/contentful-management.node.js",
