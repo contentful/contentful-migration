@@ -6,7 +6,7 @@ const zlib = require('zlib');
 module.exports = function (name, options) {
   // options tell us where to store our fixtures
   options = options || {};
-  const fixtureFolder = options.fixtureFoldr || 'fixtures';
+  const fixtureFolder = options.fixtureFolder || 'fixtures';
   const fp = path.resolve(__dirname, path.join(fixtureFolder, name + '.js'));
   // `hasFixture` indicates whether the test has fixtures we should read,
   // or doesn't, so we should record and save them.
