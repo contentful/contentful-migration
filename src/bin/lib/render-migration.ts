@@ -19,8 +19,8 @@ const renderBatch = function (batch: RequestBatch) {
 }
 
 const renderPlan = (batches: RequestBatch[], envrionment: string) => {
-  console.log(chalk`{bold.underline Environment}: {bold.yellow ${envrionment}}\n`)
   console.log(chalk`{bold.green The following migration has been planned}\n`)
+  console.log(chalk`{bold.underline Environment}: {bold.yellow ${envrionment}}\n`)
   for (const batch of batches) {
     renderBatch(batch)
 
