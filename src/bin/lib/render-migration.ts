@@ -18,8 +18,9 @@ const renderBatch = function (batch: RequestBatch) {
   console.log(message.join('\n'))
 }
 
-const renderPlan = (batches: RequestBatch[]) => {
+const renderPlan = (batches: RequestBatch[], environment: string) => {
   console.log(chalk`{bold.green The following migration has been planned}\n`)
+  console.log(chalk`{bold.underline Environment}: {bold.yellow ${environment}}\n`)
   for (const batch of batches) {
     renderBatch(batch)
 
@@ -37,9 +38,9 @@ const renderPlan = (batches: RequestBatch[]) => {
   }
 }
 
-const renderValidationErrors = (batches: RequestBatch[]) => {
+const renderValidationErrors = (batches: RequestBatch[], environment: string) => {
   console.error(chalk`{bold.red The following migration has been planned but cannot be run because it contains errors}\n\n`)
-  renderPlan(batches)
+  renderPlan(batches, environment)
   console.error(chalk`🚨  {bold.red Migration unsuccessful}`)
 }
 

@@ -89,7 +89,7 @@ const run = async function (argv) {
   const batches = parseResult.batches
 
   if (parseResult.hasValidationErrors()) {
-    renderValidationErrors(batches)
+    renderValidationErrors(batches, argv.environmentId)
     process.exit(1)
   }
 
@@ -99,7 +99,7 @@ const run = async function (argv) {
     process.exit(1)
   }
 
-  await renderPlan(batches)
+  await renderPlan(batches, argv.environmentId)
 
   const serverErrorsWritten = []
 

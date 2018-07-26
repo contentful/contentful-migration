@@ -29,7 +29,7 @@ function getEnvConfig (): ClientConfig {
     {}
 }
 
-function getArgvConfig ({spaceId, environmentId, accessToken}): ClientConfig {
+function getArgvConfig ({spaceId, environmentId = 'master', accessToken}): ClientConfig {
   const config = {
     spaceId,
     environmentId,
