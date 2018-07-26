@@ -5,16 +5,10 @@ const _ = require('lodash');
 const assert = require('./assertions');
 const cli = require('./cli');
 const { createDevEnvironment, deleteDevEnvironment, getEntries, makeRequest } = require('../helpers/client');
-
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 
-const ENVIRONMENT_ID = 'env1';
-const record = require('../record');
-
-const recorder = record('contentful-migration-e2e');
-
-before(recorder.before);
-after(recorder.after);
+const uuid = require('uuid');
+const ENVIRONMENT_ID = uuid.v4();
 
 describe('apply content transformation', function () {
   this.timeout(30000);

@@ -8,7 +8,9 @@ const assert = require('./assertions');
 const cli = require('./cli');
 const { createDevEnvironment, deleteDevEnvironment, getDevContentType } = require('../helpers/client');
 
-const ENVIRONMENT_ID = 'env5';
+const uuid = require('uuid');
+const ENVIRONMENT_ID = uuid.v4();
+
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 
 describe('apply validations migration examples', function () {
