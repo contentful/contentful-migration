@@ -36,8 +36,12 @@ const run = async function (argv) {
   }
 
   const application = argv.managementApplication || `contentful.migration-cli/${version}`
+  const feature = argv.managementFeature || `migration-library`
 
-  const clientConfig = Object.assign({application}, getConfig(argv))
+  const clientConfig = Object.assign({
+    application,
+    feature
+  }, getConfig(argv))
 
   const client = createManagementClient(clientConfig)
   const makeRequest = function (requestConfig) {

@@ -18,9 +18,15 @@ const changeEditorInterfaceWithExistingContentTypeAddingHelpText = require('../.
 
 const { createMigrationParser } = require('../../built/lib/migration-parser');
 const co = Bluebird.coroutine;
-const uuid = require('uuid');
 
-const ENVIRONMENT_ID = uuid.v4();
+const record = require('../record');
+
+const recorder = record('contentful-migration-integration');
+
+before(recorder.before);
+after(recorder.after);
+
+const ENVIRONMENT_ID = 'env-integration';
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 

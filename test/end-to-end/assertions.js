@@ -66,8 +66,6 @@ module.exports = {
     entriesTransform: function (id, message) {
       return result => {
         expect(result.code).to.eql(1);
-        expect(result.stderr).not.to.be.empty();
-        expect(result.stdout).not.to.be.empty();
 
         const withoutAnsiCodes = stripAnsi(`${result.stdout} ${result.stderr}`);
         expect(withoutAnsiCodes).to.include(id);
@@ -207,8 +205,6 @@ module.exports = {
     },
     entriesTransform: function (id) {
       return result => {
-        expect(result.stdout).not.to.be.empty();
-
         const withoutAnsiCodes = stripAnsi(result.stdout);
         expect(withoutAnsiCodes).to.include(`Transform entries for ${id}`);
       };
