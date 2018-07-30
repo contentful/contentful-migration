@@ -301,7 +301,6 @@ module.exports = {
       requiredProperty: function (path) {
         return result => {
           expect(result.code).to.eql(1);
-          expect(result.stdout).not.to.be.empty();
           expect(result.stderr).not.to.be.empty();
 
           const withoutAnsiCodes = stripAnsi(`${result.stdout} ${result.stderr}`);
