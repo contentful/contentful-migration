@@ -108,7 +108,7 @@ const createRun = ({ shouldThrow }) => async function run (argv) {
   const batches = parseResult.batches
 
   if (parseResult.hasValidationErrors()) {
-    renderValidationErrors(batches)
+    renderValidationErrors(batches, argv.environmentId)
     terminate(new ManyError('Validation Errors', parseResult.getValidationErrors()))
   }
 
@@ -118,7 +118,7 @@ const createRun = ({ shouldThrow }) => async function run (argv) {
     terminate(new ManyError('Runtime Errors', parseResult.getRuntimeErrors()))
   }
 
-  await renderPlan(batches)
+  await renderPlan(batches, argv.environmentId)
 
   const serverErrorsWritten = []
 
