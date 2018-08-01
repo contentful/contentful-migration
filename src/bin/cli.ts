@@ -15,6 +15,15 @@ import writeErrorsToLog from './lib/write-errors-to-log'
 import { RequestBatch } from '../lib/offline-api/index'
 import { ParseResult } from '../lib/migration-parser'
 import { getConfig } from './lib/config'
+import ValidationError from '../lib/interfaces/errors'
+
+class ManyError extends Error {
+  public errors: (Error | ValidationError)[]
+  constructor (message: string, errors: (Error | ValidationError)[]) {
+    super(message)
+    this.errors = errors
+  }
+}
 
 class BatchError extends Error {
   public batch: RequestBatch
@@ -25,8 +34,18 @@ class BatchError extends Error {
     this.errors = errors
   }
 }
-const run = async function (argv) {
+
+const makeTerminatingFunction = ({ shouldThrow }) => (error: Error) => {
+  if (shouldThrow) {
+    throw error
+  } else {
+    process.exit(1)
+  }
+}
+
+const createRun = ({ shouldThrow }) => async function run (argv) {
   let migrationFunction
+  const terminate = makeTerminatingFunction({ shouldThrow })
   try {
     migrationFunction = require(argv.filePath)
   } catch (e) {
@@ -64,20 +83,20 @@ const run = async function (argv) {
         chalk`🚨  {bold.red Migration unsuccessful}`
       ].join('\n')
       console.error(message)
-      process.exit(1)
+      terminate(new Error(message))
     }
     console.error(e)
-    process.exit(1)
+    terminate(e)
   }
 
   if (parseResult.hasStepsValidationErrors()) {
     renderStepsErrors(parseResult.stepsValidationErrors)
-    process.exit(1)
+    terminate(new ManyError('Step Validation Errors', parseResult.stepsValidationErrors))
   }
 
   if (parseResult.hasPayloadValidationErrors()) {
     renderStepsErrors(parseResult.payloadValidationErrors)
-    process.exit(1)
+    terminate(new ManyError('Payload Validation Errors', parseResult.payloadValidationErrors))
   }
 
   const migrationName = path.basename(argv.filePath, '.js')
@@ -90,13 +109,13 @@ const run = async function (argv) {
 
   if (parseResult.hasValidationErrors()) {
     renderValidationErrors(batches, argv.environmentId)
-    process.exit(1)
+    terminate(new ManyError('Validation Errors', parseResult.getValidationErrors()))
   }
 
   if (parseResult.hasRuntimeErrors()) {
     renderRuntimeErrors(batches, errorsFile)
     await writeErrorsToLog(parseResult.getRuntimeErrors(), errorsFile)
-    process.exit(1)
+    terminate(new ManyError('Runtime Errors', parseResult.getRuntimeErrors()))
   }
 
   await renderPlan(batches, argv.environmentId)
@@ -174,4 +193,5 @@ const run = async function (argv) {
   }
 }
 
-export default run
+export const runMigration = createRun({ shouldThrow: true })
+export default createRun({ shouldThrow: false })

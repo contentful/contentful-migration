@@ -5,6 +5,11 @@ const { expect } = require('chai');
 
 module.exports = {
   errors: {
+    recovery: result => {
+      const withoutAnsiCodes = stripAnsi(result.stdout);
+      expect(withoutAnsiCodes).to.include('Catching Error');
+      expect(withoutAnsiCodes).to.include('Cleaning Up');
+    },
     field: {
       invalidPropertyWithSuggestion: function (invalid, valid) {
         return result => {

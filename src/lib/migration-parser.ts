@@ -44,6 +44,12 @@ class ParseResult {
       return errors.concat(batch.runtimeErrors)
     }, [])
   }
+
+  getValidationErrors () {
+    return this.batches.reduce((errors, batch) => {
+      return errors.concat(batch.validationErrors)
+    }, [])
+  }
 }
 
 const createMigrationParser = function (makeRequest: Function, config: ClientConfig): (migrationCreator: (migration: any) => any) => Promise<ParseResult> {
