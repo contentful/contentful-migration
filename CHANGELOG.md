@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+#### 0.11.1 (2018-08-02)
+
+##### Fixed
+
+*  Add support for throwing instead of process.exit(1) on errors ([#118](https://github.com/contentful/migration-cli/pull/118)) ([0b673830](https://github.com/contentful/migration-cli/commit/0b6738301550a5064936e1b0acc1d78934cf3166))
+
 ## 0.11.0 (2018-07-30)
 
 ##### Added
