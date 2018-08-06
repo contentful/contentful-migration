@@ -9,7 +9,7 @@ export function localeTests (t, space) {
   })
 
   t.test('Creates, gets, updates and deletes a locale', (t) => {
-    t.plan(3)
+    t.plan(4)
     return space.createLocale({
       name: 'German (Austria)',
       code: 'de-AT'
@@ -22,9 +22,11 @@ export function localeTests (t, space) {
               .then((locale) => {
                 t.equals(locale.code, 'de-AT', 'locale code after getting')
                 locale.name = 'Deutsch (Österreich)'
+                locale.fallbackCode = 'en-US'
                 return locale.update()
                   .then((updatedLocale) => {
                     t.equals(updatedLocale.name, 'Deutsch (Österreich)', 'locale name after update')
+                    t.equals(updatedLocale.fallbackCode, 'en-US', 'locale fallbackCode after update')
                     return updatedLocale.delete()
                   })
               }))
