@@ -187,6 +187,7 @@ const createRun = ({ shouldThrow }) => async function run (argv) {
       err.errors.forEach((err) => console.error(chalk`{red ${err}}\n\n`))
       await Promise.all(serverErrorsWritten)
       console.error(`Please check the errors log for more details: ${errorsFile}`)
+      terminate(err)
     }
   } else {
     console.warn(chalk`⚠️  {bold.yellow Migration aborted}`)
