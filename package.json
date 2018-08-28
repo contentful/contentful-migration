@@ -38,6 +38,13 @@
     "coverage-report": "npm run coverage && codecov && rm -rf ./nyc_output && rm coverage.lcov",
     "lint": "eslint 'examples/**/*.js' 'test/**/*.js' 'src/**/*.js' && tslint --project tsconfig.json --config tslint.json"
   },
+  "files": [
+    "README.md",
+    "CHANGELOG.md",
+    "bin",
+    "built",
+    "docs"
+  ],
   "nyc": {
     "per-file": true,
     "include": [
