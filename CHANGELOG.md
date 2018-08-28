@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+#### 0.12.0 (2018-08-28)
+
+##### New Features
+
+* **proxy:**  add proxy and raw-proxy config ([551058bf](https://github.com/contentful/migration-cli/commit/551058bf0a4df1d340eab32c3f1586becfcf883d))
+
 #### 0.11.1 (2018-08-02)
 
 ##### Fixed
