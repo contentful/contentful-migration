@@ -28,6 +28,15 @@ export default yargs
     alias: 'a',
     describe: 'The access token to use\nThis takes precedence over environment variables or .contentfulrc'
   })
+  .option('proxy', {
+    describe: 'Proxy configuration in HTTP auth format: [http|https]://host:port or [http|https]://user:password@host:port',
+    type: 'string'
+  })
+  .option('raw-proxy', {
+    describe: 'Pass proxy config to Axios instead of creating a custom httpsAgent',
+    type: 'boolean',
+    default: false
+  })
   .option('yes', {
     alias: 'y',
     boolean: true,

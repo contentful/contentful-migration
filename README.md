@@ -65,7 +65,11 @@
       - [`transformEntries(config)`](#transformentriesconfig)
         - [`transformEntries` Example](#transformentries-example)
       - [`deriveLinkedEntries(config)`](#derivelinkedentriesconfig)
-        - [`deriveLinkedEntries` Example](#derivelinkedentries-example)
+        - [`deriveLinkedEntries(config)` Example](#derivelinkedentriesconfig-example)
+    - [`context`](#context)
+      - [`makeRequest(config)`](#makerequestconfig)
+      - [`spaceId` : `string`](#spaceid--string)
+      - [`accessToken` : `string`](#accesstoken--string)
     - [Content type](#content-type)
       - [`createField(id[, opts])` : [Field](#field)](#createfieldid-opts--fieldfield)
       - [`editField(id[, opts])` : [Field](#field)](#editfieldid-opts--fieldfield)
@@ -75,6 +79,7 @@
     - [Field](#field)
   - [Validation errors](#validation-errors)
   - [Example migrations](#example-migrations)
+  - [Troubleshooting](#troubleshooting)
   - [Reach out to us](#reach-out-to-us)
     - [You have questions about how to use this library?](#you-have-questions-about-how-to-use-this-library)
     - [You found a bug or want to propose a feature?](#you-found-a-bug-or-want-to-propose-a-feature)
@@ -492,6 +497,17 @@ export = function (migration: Migration) {
     .type('Symbol')
     .required(true)
 }
+
+## Troubleshooting
+
+*  Unable to connect to Contentful through your Proxy? Try to set the `rawProxy` option to `true`.
+
+```javascript
+runMigration({
+  proxy: 'https://cat:dog@example.com:1234',
+  rawProxy: true,
+  ...
+})
 ```
 
 ## Reach out to us

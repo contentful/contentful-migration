@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+#### 0.12.1 (2018-08-28)
+
+##### Build System / Dependencies
+
+* **npm:**  exclude irrelevant files from releases ([abea0955](https://github.com/contentful/migration-cli/commit/abea09550d933e81c83ff70f3aaa8803a3e1f005))
+
+##### Documentation Changes
+
+* **changelog:**  update changelog ([e7c6e95b](https://github.com/contentful/migration-cli/commit/e7c6e95b391fe046dc556256a1880d05cbb60164))
+
+#### 0.12.0 (2018-08-28)
+
+##### New Features
+
+* **proxy:**  add proxy and raw-proxy config ([551058bf](https://github.com/contentful/migration-cli/commit/551058bf0a4df1d340eab32c3f1586becfcf883d))
+
 #### 0.11.1 (2018-08-02)
 
 ##### Fixed
