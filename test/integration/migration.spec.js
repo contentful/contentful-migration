@@ -200,16 +200,18 @@ describe('the migration', function () {
       {
         id: 'calories',
         name: 'amount of calories the food contains',
-        type: 'Number',
+        type: 'Link',
+        linkType: 'Asset',
         required: false,
         disabled: false,
         localized: false,
         omitted: false,
-        validations: [{
-          range: {
-            max: 500
+        validations: [
+          { assetImageDimensions:
+            {width: {min: 1199, max: null},
+            height: { min: null, max: null }}
           }
-        }]
+        ]
       }
     ]);
   }));
