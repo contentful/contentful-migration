@@ -10,7 +10,8 @@ module.exports = function (migration) {
     .validations([{ unique: true }]);
 
   food.createField('calories')
-    .type('Number')
+    .type('Link')
+    .linkType('Asset')
     .name('amount of calories the food contains')
-    .validations([{ range: { max: 500 } }]);
+    .validations([{ assetImageDimensions: {width: {min: 1199, max: null}, height: { min: null, max: null }}}]);
 };
