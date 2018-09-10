@@ -7,14 +7,14 @@ module.exports = function (migration) {
   dog.createField('assetTest', {
     type: 'Link',
     name: 'AssetTestName',
-    linkType: "Asset",
+    linkType: 'Asset',
     validations: [
-      {"assetImageDimensions": {
-        "width": {
-          "min": 1100
+      { 'assetImageDimensions': {
+        'width': {
+          'min': 1100
         }
       }
-    }
+      }
     ]
-  })
+  });
 };
