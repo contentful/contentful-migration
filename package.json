@@ -107,7 +107,7 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
     "mocha": "^5.2.0",
-    "nixt": "^0.5.0",
+    "nixt": "^0.5.1",
     "nock": "^9.4.2",
     "nyc": "^11.2.1",
     "rewire": "^2.5.2",
