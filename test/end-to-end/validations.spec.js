@@ -74,4 +74,11 @@ describe('apply validations migration examples', function () {
         done();
       }));
   });
+
+  it.only('attempts to apply 19-bad-validations migration and fails', function(done) {
+    cli()
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/19-bad-validations.js`)
+      .stderr(/The property "validations.0.assetImageDimensions.width.max" is required on the field "assetTest"./)
+      .end(done);
+  })
 });
