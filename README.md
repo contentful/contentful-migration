@@ -484,10 +484,10 @@ node_modules/.bin/ts-node node_modules/.bin/contentful-migration -s $CONTENTFUL_
 
 An example Typescript migration:
 ```typescript
-import Migration from 'contentful-migration'
+import { MigrationFunction } from 'contentful-migration'
 
-// typecast to 'Migration' to ensure you get type hints in your editor
-export = function (migration: Migration) {
+// typecast to 'MigrationFunction' to ensure you get type hints in your editor
+export = function (migration, { makeRequest, spaceId, accessToken }) {
   const dog = migration.createContentType('dog', {
     name: 'Dog'
   })
@@ -496,7 +496,12 @@ export = function (migration: Migration) {
   name.name('Name')
     .type('Symbol')
     .required(true)
-}
+} as MigrationFunction
+```
+
+Here's how it looks inside VS Code:
+
+![typescript migration in vscode](docs/screenshots/typescript-migration-vscode.png)
 
 ## Troubleshooting
 
@@ -508,7 +513,7 @@ runMigration({
   rawProxy: true,
   ...
 })
-```
+
 
 ## Reach out to us
 

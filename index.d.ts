@@ -1,3 +1,4 @@
+import * as axios from '@contentful/axios'
 
 export interface Movement {
   toTheTop()
@@ -9,8 +10,6 @@ export interface Movement {
 type FieldType = 'Symbol' | 'Text' | 'Integer' | 'Number' | 'Date' | 'Boolean' | 'Object' | 'Location' | 'Array' | 'Link'
 
 export interface IFieldOptions {
-  id?: string
-
   newId?: string
 
   /** (required) – Field name. */
@@ -73,7 +72,7 @@ export interface IValidation {
   /** Takes an array of content type ids and validates that the link points to an entry of that content type. */
   linkContentType?: string[],
   /** Takes an array of values and validates that the field value is in this array. */
-  in?: string[],
+  in?: any[],
   /** Takes a MIME type group name and validates that the link points to an asset of this group. */
   linkMimetypeGroup?: LinkMimetype[],
   /** Takes min and/or max parameters and validates the size of the array (number of objects in it). */
@@ -95,6 +94,24 @@ export interface IValidation {
 
   /** Other validations */
   [validation: string]: any
+}
+
+export interface IEditorInterfaceOptions {
+
+  /** This help text will show up below the field. */
+  helpText?: string
+  /** (only for fields of type boolean) Shows this text next to the radio button that sets this value to true. Defaults to “Yes”. */
+  trueLabel?: string
+  /** (only for fields of type boolean) Shows this text next to the radio button that sets this value to false. Defaults to “No”. */
+  falseLabel?: string 
+  /** (only for fields of type rating) Number of stars to select from. Defaults to 5. */
+  stars?: number
+  /** (only for fields of type datePicker) – One of "dateonly", "time", "timeZ" (default). Specifies whether to show the clock and/or timezone inputs. */
+  format?: 'dateonly' | 'time' | 'timeZ'
+  /** string (only for fields of type datePicker) – Specifies which type of clock to use. Must be one of the strings "12" or "24" (default). */
+  ampm?: '12' | '24'
+  /** (only for References, many) Select whether to enable Bulk Editing mode */
+  bulkEditing?: boolean
 }
 
 export interface ContentType {
@@ -121,6 +138,15 @@ export interface ContentType {
 
   /** Changes the field's ID. */
   changeFieldId (oldId: string, newId: string): void
+
+  /**
+   * Changes the editor interface of given field's ID.
+   * 
+   * @param fieldId The ID of the field.
+   * @param widgetId The new widget ID for the field.
+   * @param settings Widget settings
+   */
+  changeEditorInterface (fieldId: string, widgetId: string, settings?: IEditorInterfaceOptions): void
 }
 
 export interface IContentTypeOptions {
@@ -245,3 +271,24 @@ export default interface Migration {
    */
   deriveLinkedEntries (transformation: IDeriveLinkedEntriesConfig): void
 }
+
+export interface ClientConfig {
+  accessToken?: string
+  spaceId?: string
+  environmentId?: string
+}
+
+export type MakeRequest = (requestConfig: axios.AxiosRequestConfig) => axios.AxiosResponse['data']
+
+export type MigrationContext = ClientConfig & {
+  /**
+   * Makes a raw request to the API using Axios.
+   * The URL should be relative, `spaceId` and `environment` will be automatically prepended.
+   */
+  makeRequest: MakeRequest
+}
+
+/**
+ * The shape of the migration function that should be exported.
+ */
+export type MigrationFunction = (migration: Migration, context?: MigrationContext) => void
