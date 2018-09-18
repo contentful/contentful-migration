@@ -59,8 +59,8 @@
     - [Configuration](#configuration)
     - [Chaining vs Object notation](#chaining-vs-object-notation)
     - [`migration`](#migration)
-      - [`createContentType(id[, opts])` : [ContentType](#contenttype)](#createcontenttypeid-opts--contenttypecontenttype)
-      - [`editContentType(id[, opts])` : [ContentType](#contenttype)](#editcontenttypeid-opts--contenttypecontenttype)
+      - [`createContentType(id[, opts])` : [ContentType](#content-type)](#createcontenttypeid-opts--contenttypecontenttype)
+      - [`editContentType(id[, opts])` : [ContentType](#content-type)](#editcontenttypeid-opts--contenttypecontenttype)
       - [`deleteContentType(id)`](#deletecontenttypeid)
       - [`transformEntries(config)`](#transformentriesconfig)
         - [`transformEntries` Example](#transformentries-example)
@@ -188,7 +188,7 @@ All methods described below can be used in two flavors:
 
 The main interface for creating and editing content types.
 
-#### `createContentType(id[, opts])` : [ContentType](#contenttype)
+#### `createContentType(id[, opts])` : [ContentType](#content-type)
 
 Creates a content type with provided `id` and returns a reference to the newly created content type.
 
@@ -200,7 +200,7 @@ Creates a content type with provided `id` and returns a reference to the newly c
 - **`description : string`** – Description of the content type.
 - **`displayField : string`** – ID of the field to use as the display field for the content type.
 
-#### `editContentType(id[, opts])` : [ContentType](#contenttype)
+#### `editContentType(id[, opts])` : [ContentType](#content-type)
 
 Edits an existing content type of provided `id` and returns a reference to the content type.
 Uses the same options as [`createContentType`](#createcontenttypeid--string-opts--object--contenttype).
