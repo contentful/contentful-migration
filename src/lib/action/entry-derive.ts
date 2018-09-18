@@ -94,7 +94,7 @@ class EntryDeriveAction extends APIAction {
           await api.publishEntry(targetEntry.id)
         }
       }
-
+      debugger
       entry.setField(this.referenceField, {})
       for (const locale of locales) {
         entry.setFieldForLocale(this.referenceField, locale, {
