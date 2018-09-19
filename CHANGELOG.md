@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+#### 0.12.2 (2018-09-19)
+
+##### New Features
+
+* **types:** Enable writing migration files in Typescript ([51cc078f](https://github.com/contentful/contentful-migration/commit/51cc078fb8969cb221c6f010c420a505f647a22b))
+
 #### 0.12.1 (2018-08-28)
 
 ##### Build System / Dependencies
