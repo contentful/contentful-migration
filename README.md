@@ -513,6 +513,7 @@ runMigration({
   rawProxy: true,
   ...
 })
+```
 
 
 ## Reach out to us
