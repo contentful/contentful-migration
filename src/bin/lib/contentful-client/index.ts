@@ -16,7 +16,6 @@ function createManagementClient (params) {
     params.httpsAgent = httpsAgent
     delete params.proxy
   }
-
   return createClient(params)
 }
 

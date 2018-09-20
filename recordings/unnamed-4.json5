@@ -1,0 +1,99 @@
+{
+    meta: {
+        createdAt: '2018-09-20T09:17:30.000Z',
+        host: '',
+    },
+    req: {
+        url: 'https://api.contentful.com:443/spaces/bohepdihyxin/environments/content-transform-env/content_types/newsArticle/published',
+        method: 'PUT',
+        headers: {
+            accept: 'application/json, text/plain, */*',
+            'content-type': 'application/vnd.contentful.management.v1+json',
+            'x-contentful-version': '1',
+        },
+        body: '',
+    },
+    res: {
+        status: 200,
+        headers: {
+            'access-control-allow-headers': [
+                'Accept,Accept-Language,Authorization,Cache-Control,Content-Length,Content-Range,Content-Type,DNT,Destination,Expires,If-Match,If-Modified-Since,If-None-Match,Keep-Alive,Last-Modified,Origin,Pragma,Range,User-Agent,X-Http-Method-Override,X-Mx-ReqToken,X-Requested-With,X-Contentful-Version,X-Contentful-Content-Type,X-Contentful-Organization,X-Contentful-Skip-Transformation,X-Contentful-User-Agent,X-Contentful-Enable-Alpha-Feature',
+            ],
+            'access-control-allow-methods': [
+                'DELETE,GET,HEAD,POST,PUT,OPTIONS',
+            ],
+            'access-control-allow-origin': [
+                '*',
+            ],
+            'access-control-expose-headers': [
+                'Etag',
+            ],
+            'access-control-max-age': [
+                '1728000',
+            ],
+            'cf-space-id': [
+                'bohepdihyxin',
+            ],
+            'content-encoding': [
+                'gzip',
+            ],
+            'content-type': [
+                'application/vnd.contentful.management.v1+json',
+            ],
+            'contentful-api': [
+                'cma',
+            ],
+            date: [
+                'Thu, 20 Sep 2018 09:17:30 GMT',
+            ],
+            etag: [
+                'W/"e22344d23376298ed69761adf6daf560"',
+            ],
+            server: [
+                'Contentful',
+            ],
+            'strict-transport-security': [
+                'max-age=15768000',
+            ],
+            'x-content-type-options': [
+                'nosniff',
+            ],
+            'x-contentful-ratelimit-hour-limit': [
+                '36000',
+            ],
+            'x-contentful-ratelimit-hour-remaining': [
+                '35956',
+            ],
+            'x-contentful-ratelimit-reset': [
+                '0',
+            ],
+            'x-contentful-ratelimit-second-limit': [
+                '10',
+            ],
+            'x-contentful-ratelimit-second-remaining': [
+                '9',
+            ],
+            'x-contentful-request-id': [
+                '83f3201a95e46432570a2489fdf2c272',
+            ],
+            'content-length': [
+                '468',
+            ],
+            connection: [
+                'Close',
+            ],
+            'set-cookie': [
+                'visid_incap_673446=Q7/qQXJbRKCyGAFOrpljO6plo1sAAAAAQUIPAAAAAAC7Ik42qAugifWLU0Zz1Xcp; expires=Fri, 20 Sep 2019 09:11:18 GMT; path=/; Domain=.contentful.com',
+                'nlbi_673446=eD5FK/wtBAm62+oP6lKYhQAAAADzUd9E9B95NsJrTy20Sg3O; path=/; Domain=.contentful.com',
+                'incap_ses_876_673446=HmWkXtx7BHbaABxg1y0oDKplo1sAAAAAUdkW58JP0vJpFe80R+6aeg==; path=/; Domain=.contentful.com',
+            ],
+            'x-iinfo': [
+                '13-369287973-369287986 NNNN CT(0 0 0) RT(1537435049973 33) q(0 0 0 -1) r(4 4) U5',
+            ],
+            'x-cdn': [
+                'Incapsula',
+            ],
+        },
+        body: 'H4sIAAAAAAAAA9VUO0/DMBDe+ysiz6RKUiFot1LoBAipgBCIwUlcetSxg+0UAup/x3YSN5S0YixT4rv77vHd46vneUiWEo28L/1rHjlOiHtuaa2FKnNjgC6BLdGRRVk51e/bWjezXlpKSA0k5guSp7AoP4ChGrm233Vliyo7Rt7lWChIaOPERZ1wpghTNlCNSQTBiqRjZUJEQXjqB0M/Cm6D4Sg8GUXD/mlw/NgYF3m6x3gQ9KNh6IwJW4HgLNMB91JSZZ1UqflKYCbnXGS+xrdJ+AtzF62QnQzV1Z6VezP6S6g7ScTvHg0Gy8fzh2v8Or3OYvYCxfHV6g53d6sm8yByWREhgTPNSlTPxRyEVDdFTEEudo7HVsfzxnzCCz1oQrsLa3dOtWPQdnk6CHZc8veOplCPl107lILMKS6nQKhZU1ZQauUMZ3bTzTp6uLWPKCUyEZCrinAHmBsP5pg82dGtTop2VO0HLtSCbybOud+WN7M7K7OYUzehiPIEU/gkJsc5ppI09wUJ8laA6FCsNEDvu07TZvXsELpkHNMOBM9A6WPShGgfp85yJqDKTYoNY1VJP3X/pKy41Id8c7tdl7blh1eO7tVzb937BtTaYCfUBgAA',
+    },
+}

@@ -8,7 +8,13 @@ const { createManagementClient } = require('../../built/bin/lib/contentful-clien
 
 const config = {
   accessToken: process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN,
-  application: `contentful.migration-cli.e2e-test/${packageVersion}`
+  application: `contentful.migration-cli.e2e-test/${packageVersion}`,
+  proxy: {
+    host: 'localhost',
+    port: 3333,
+    isHttps: false
+  },
+  rawProxy: true
 };
 
 

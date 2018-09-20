@@ -7,14 +7,12 @@ const cli = require('./cli');
 const { createDevEnvironment, deleteDevEnvironment, getEntries, makeRequest } = require('../helpers/client');
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 
-const uuid = require('uuid');
-const ENVIRONMENT_ID = uuid.v4();
+const ENVIRONMENT_ID = 'content-transform-env';
 
 describe('apply content transformation', function () {
   this.timeout(30000);
   let environmentId;
   let request;
-
   before(async function () {
     this.timeout(30000);
     environmentId = await createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
@@ -65,14 +63,13 @@ describe('apply content transformation', function () {
       }
     });
   });
-
   after(async function () {
     await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId);
   });
 
-  it('aborts 12-transform-content', function (done) {
+  it.only('aborts 12-transform-content', function (done) {
     cli()
-      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/12-transform-content.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --proxy 'http://localhost:3333' -rp --environment-id ${environmentId} ./examples/12-transform-content.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('n\n')
       .expect(assert.plans.entriesTransform('newsArticle'))
       .expect(assert.plans.actions.abort())
@@ -81,7 +78,7 @@ describe('apply content transformation', function () {
 
   it('applies 12-transform-content', function (done) {
     cli()
-      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/12-transform-content.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --proxy http://localhost:3333 --raw-proxy true --environment-id ${environmentId} ./examples/12-transform-content.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
       .expect(assert.plans.actions.apply())
       .end(async function () {
@@ -104,7 +101,7 @@ describe('apply content transformation', function () {
 
   it('applies 14-transform-content-error', function (done) {
     cli()
-      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/14-transform-content-error.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --proxy http://localhost:3333 --raw-proxy true  --environment-id ${environmentId} ./examples/14-transform-content-error.js`)
       .expect(assert.errors.entriesTransform('newsArticle', '1 errors while transforming this content.'))
       .end(done);
   });
