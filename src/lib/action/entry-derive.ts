@@ -1,6 +1,7 @@
 import EntryDerive from '../interfaces/entry-derive'
 import { APIAction } from './action'
 import { OfflineAPI } from '../offline-api'
+import { ContentType } from '../entities/content-type'
 import Entry from '../entities/entry'
 import * as _ from 'lodash'
 
@@ -27,6 +28,7 @@ class EntryDeriveAction extends APIAction {
   async applyTo (api: OfflineAPI) {
     const entries: Entry[] = await api.getEntriesForContentType(this.contentTypeId)
     const locales: string[] = await api.getLocalesForSpace()
+    const sourceContentType: ContentType = await api.getContentType(this.contentTypeId)
 
     for (const entry of entries) {
       const inputs = _.pick(entry.fields, this.fromFields)
@@ -74,7 +76,6 @@ class EntryDeriveAction extends APIAction {
         // Usually you would not want to derive the contents again
         // But what if the previous round may not have been complete
         // for example one optional field was missing in the previous iteration
-
         const targetEntry = await api.createEntry(this.derivedContentType, newEntryId)
 
         // we are not skipping this source entry and the target entry does not yet exist,
@@ -94,16 +95,16 @@ class EntryDeriveAction extends APIAction {
           await api.publishEntry(targetEntry.id)
         }
       }
-
+      const field = sourceContentType.fields.getField(this.referenceField)
       entry.setField(this.referenceField, {})
       for (const locale of locales) {
-        entry.setFieldForLocale(this.referenceField, locale, {
-          sys: {
-            type: 'Link',
-            linkType: 'Entry',
-            id: newEntryId
-          }
-        })
+        const sys = {
+          type: 'Link',
+          linkType: 'Entry',
+          id: newEntryId
+        }
+        const fieldValue = (field.type === 'Array') ? [{sys}] : {sys}
+        entry.setFieldForLocale(this.referenceField, locale, fieldValue)
       }
 
       await api.saveEntry(entry.id)
