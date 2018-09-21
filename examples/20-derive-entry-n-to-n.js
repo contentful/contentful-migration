@@ -15,8 +15,7 @@ module.exports = function (migration) {
   owner.displayField('firstName');
 
   const dog = migration.editContentType('dog');
-  dog.createField('ownersRef').type('Array').items({type: 'Link'}).name('The Owner');
-
+  dog.createField('ownersRef').type('Array').items({type: 'Link', linkType: 'Entry'}).name('The Owner');
   migration.deriveLinkedEntries({
     contentType: 'dog',
     derivedContentType: 'owner',
@@ -24,6 +23,7 @@ module.exports = function (migration) {
     toReferenceField: 'ownersRef',
     derivedFields: ['firstName', 'lastName'],
     identityKey: async (fromFields) => {
+      debugger
       return fromFields.owner['en-US'].toLowerCase().replace(' ', '-');
     },
     shouldPublish: true,
@@ -41,5 +41,4 @@ module.exports = function (migration) {
   });
 
   dog.deleteField('owner');
-  dog.changeFieldId('ownersRef', 'owners');
 };
