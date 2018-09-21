@@ -98,7 +98,7 @@ class EntryDeriveAction extends APIAction {
       const field = sourceContentType.fields.getField(this.referenceField)
       entry.setField(this.referenceField, {})
       for (const locale of locales) {
-        const sys =  {
+        const sys = {
           type: 'Link',
           linkType: 'Entry',
           id: newEntryId
