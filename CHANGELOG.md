@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+#### 0.12.3 (2018-09-21)
+
+##### Bug Fixes
+
+* **types:**  Improve IValidation.in ([fd45d926](https://github.com/contentful/contentful-migration/commit/fd45d9262e28cd1fb0ff5f32e3406793f1be2f49))
+
 #### 0.12.2 (2018-09-19)
 
 ##### New Features
