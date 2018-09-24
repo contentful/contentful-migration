@@ -1,10 +1,10 @@
 {
     meta: {
-        createdAt: '2018-09-20T09:17:30.000Z',
+        createdAt: '2018-09-24T14:10:09.972Z',
         host: '',
     },
     req: {
-        url: 'https://api.contentful.com:443/spaces/bohepdihyxin/environments/content-transform-env/content_types/newsArticle/published',
+        url: 'https://api.contentful.com:443/spaces/bohepdihyxin/environments/env1/content_types/newsArticle/published',
         method: 'PUT',
         headers: {
             accept: 'application/json, text/plain, */*',
@@ -44,10 +44,10 @@
                 'cma',
             ],
             date: [
-                'Thu, 20 Sep 2018 09:17:30 GMT',
+                'Mon, 24 Sep 2018 14:10:10 GMT',
             ],
             etag: [
-                'W/"e22344d23376298ed69761adf6daf560"',
+                'W/"831834559bb54382da927330a5bc6ff1"',
             ],
             server: [
                 'Contentful',
@@ -62,7 +62,7 @@
                 '36000',
             ],
             'x-contentful-ratelimit-hour-remaining': [
-                '35956',
+                '35856',
             ],
             'x-contentful-ratelimit-reset': [
                 '0',
@@ -74,26 +74,26 @@
                 '9',
             ],
             'x-contentful-request-id': [
-                '83f3201a95e46432570a2489fdf2c272',
+                '13e0affc609df925d1a9f7cc18a5afad',
             ],
             'content-length': [
-                '468',
+                '460',
             ],
             connection: [
                 'Close',
             ],
             'set-cookie': [
-                'visid_incap_673446=Q7/qQXJbRKCyGAFOrpljO6plo1sAAAAAQUIPAAAAAAC7Ik42qAugifWLU0Zz1Xcp; expires=Fri, 20 Sep 2019 09:11:18 GMT; path=/; Domain=.contentful.com',
-                'nlbi_673446=eD5FK/wtBAm62+oP6lKYhQAAAADzUd9E9B95NsJrTy20Sg3O; path=/; Domain=.contentful.com',
-                'incap_ses_876_673446=HmWkXtx7BHbaABxg1y0oDKplo1sAAAAAUdkW58JP0vJpFe80R+6aeg==; path=/; Domain=.contentful.com',
+                'visid_incap_673446=mjfjh8rXQiGCMo/hqJBAj0LwqFsAAAAAQUIPAAAAAABv4PW5hsrKjdRLSF8dwzqO; expires=Tue, 24 Sep 2019 09:10:54 GMT; path=/; Domain=.contentful.com',
+                'nlbi_673446=bv76IQD6nx7ghbCO6lKYhQAAAADLYNxrRUcLcskVDSKU9A5C; path=/; Domain=.contentful.com',
+                'incap_ses_876_673446=OWw8RCPUHFoMjp9s1y0oDELwqFsAAAAAZ1JE6i0yCUQiqEbvHxcOjA==; path=/; Domain=.contentful.com',
             ],
             'x-iinfo': [
-                '13-369287973-369287986 NNNN CT(0 0 0) RT(1537435049973 33) q(0 0 0 -1) r(4 4) U5',
+                '14-583033961-583033972 NNNN CT(0 0 0) RT(1537798209933 16) q(0 0 0 -1) r(4 4) U5',
             ],
             'x-cdn': [
                 'Incapsula',
             ],
         },
-        body: 'H4sIAAAAAAAAA9VUO0/DMBDe+ysiz6RKUiFot1LoBAipgBCIwUlcetSxg+0UAup/x3YSN5S0YixT4rv77vHd46vneUiWEo28L/1rHjlOiHtuaa2FKnNjgC6BLdGRRVk51e/bWjezXlpKSA0k5guSp7AoP4ChGrm233Vliyo7Rt7lWChIaOPERZ1wpghTNlCNSQTBiqRjZUJEQXjqB0M/Cm6D4Sg8GUXD/mlw/NgYF3m6x3gQ9KNh6IwJW4HgLNMB91JSZZ1UqflKYCbnXGS+xrdJ+AtzF62QnQzV1Z6VezP6S6g7ScTvHg0Gy8fzh2v8Or3OYvYCxfHV6g53d6sm8yByWREhgTPNSlTPxRyEVDdFTEEudo7HVsfzxnzCCz1oQrsLa3dOtWPQdnk6CHZc8veOplCPl107lILMKS6nQKhZU1ZQauUMZ3bTzTp6uLWPKCUyEZCrinAHmBsP5pg82dGtTop2VO0HLtSCbybOud+WN7M7K7OYUzehiPIEU/gkJsc5ppI09wUJ8laA6FCsNEDvu07TZvXsELpkHNMOBM9A6WPShGgfp85yJqDKTYoNY1VJP3X/pKy41Id8c7tdl7blh1eO7tVzb937BtTaYCfUBgAA',
+        body: 'H4sIAAAAAAAAA9VUS1ODMBC+91cwOasDbR1tb1rtSR1nfIxTp4cAqawNCSYBRaf/3SRAipV2PNYTZPfb97f71fM8JEuJxt6X/jWPDEfEPTe0FqHKzADQFbAlOrBWVk71+77W3VkvLSXExiTkCcliSMoPYKi2XNnvqsKiCsfIuzwTCiLaOHFRJ5wpwpQNVNtEgmBF4jNlQvT94PTQHx32h/fBcBz4Y390dDIKZg04z+Id4MA/8kdDByasAMFZqgPubEmVtUYH7Zr/0qjLVoTOhtTFnZc7E/hLqAdJxO+RDAbL2cXTDX6d3qQhe4H8+Lp4wN3DqXu3F7kUREjgTHelX9NgAUKq2zykIJOtbLADHrgBZw18wnPNK6HdBbU7p9rCq22e9qI7LvlH16ZA08tuGYpBZhSXUyDUbCXLKbVyhlO72Gb7PNxaPxQTGQnIVNVwZ7AwHszteLbUrS6IdlStA85VwteMc+435Q1378o05NQxFFEeYQqfxOS4wFSS5pwgQd5yEB2KQhvo9dZp2qzmzkKXjEPaYcFTUPp2NCHat6iznAmocp1i07GqpJ+6f1JWWOq7vT7Vbkqb8v0rR89q3lv1vgHbXhutwwYAAA==',
     },
 }

@@ -209,8 +209,10 @@ module.exports = {
       }
     },
     entriesTransform: function (id) {
+      debugger
       return result => {
         const withoutAnsiCodes = stripAnsi(result.stdout);
+        console.log(result.stdout)
         expect(withoutAnsiCodes).to.include(`Transform entries for ${id}`);
       };
     },

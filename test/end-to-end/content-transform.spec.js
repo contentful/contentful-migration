@@ -7,7 +7,7 @@ const cli = require('./cli');
 const { createDevEnvironment, deleteDevEnvironment, getEntries, makeRequest } = require('../helpers/client');
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 
-const ENVIRONMENT_ID = 'content-transform-env';
+const ENVIRONMENT_ID = 'env1';
 
 describe('apply content transformation', function () {
   this.timeout(30000);
@@ -50,8 +50,8 @@ describe('apply content transformation', function () {
     });
 
     await request({
-      method: 'POST',
-      url: '/entries',
+      method: 'PUT',
+      url: '/entries/jane-austen',
       headers: {
         'X-Contentful-Content-Type': 'newsArticle'
       },
@@ -64,19 +64,19 @@ describe('apply content transformation', function () {
     });
   });
   after(async function () {
-    await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId);
+    //await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId);
   });
 
   it.only('aborts 12-transform-content', function (done) {
     cli()
-      .run(`--space-id ${SOURCE_TEST_SPACE} --proxy 'http://localhost:3333' -rp --environment-id ${environmentId} ./examples/12-transform-content.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --proxy http://localhost:3333 --raw-proxy --environment-id ${environmentId} ./examples/12-transform-content.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('n\n')
       .expect(assert.plans.entriesTransform('newsArticle'))
       .expect(assert.plans.actions.abort())
       .end(done);
   });
 
-  it('applies 12-transform-content', function (done) {
+  it.only('applies 12-transform-content', function (done) {
     cli()
       .run(`--space-id ${SOURCE_TEST_SPACE} --proxy http://localhost:3333 --raw-proxy true --environment-id ${environmentId} ./examples/12-transform-content.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')

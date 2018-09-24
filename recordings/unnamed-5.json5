@@ -1,11 +1,11 @@
 {
     meta: {
-        createdAt: '2018-09-20T09:17:30.542Z',
+        createdAt: '2018-09-24T14:40:29.763Z',
         host: '',
     },
     req: {
-        url: 'https://api.contentful.com:443/spaces/bohepdihyxin/environments/content-transform-env/entries',
-        method: 'POST',
+        url: 'https://api.contentful.com:443/spaces/bohepdihyxin/environments/env1/entries/jane-austen',
+        method: 'PUT',
         headers: {
             accept: 'application/json, text/plain, */*',
             'content-type': 'application/vnd.contentful.management.v1+json',
@@ -41,10 +41,10 @@
                 'cma',
             ],
             date: [
-                'Thu, 20 Sep 2018 09:17:30 GMT',
+                'Mon, 24 Sep 2018 14:40:30 GMT',
             ],
             etag: [
-                '"109da32aecf2ccd5567c9b47c853d302"',
+                '"0fa5f2556b4bb0eb6a974378b9c2cc0e"',
             ],
             server: [
                 'Contentful',
@@ -59,7 +59,7 @@
                 '36000',
             ],
             'x-contentful-ratelimit-hour-remaining': [
-                '35955',
+                '35819',
             ],
             'x-contentful-ratelimit-reset': [
                 '0',
@@ -68,32 +68,29 @@
                 '10',
             ],
             'x-contentful-ratelimit-second-remaining': [
-                '8',
+                '9',
             ],
             'x-contentful-request-id': [
-                '59b75d70112c13a449aad97b3e2733af',
+                '9b2c57a7a00fa5acb8b54d095fe3837a',
+            ],
+            'content-length': [
+                '972',
             ],
             connection: [
                 'Close',
             ],
             'set-cookie': [
-                'visid_incap_673446=bKDyRXNEQkK4uI31oUsLU6plo1sAAAAAQUIPAAAAAAAv/rLBgpgq5LrAalVA6mCs; expires=Fri, 20 Sep 2019 09:10:50 GMT; path=/; Domain=.contentful.com',
-                'nlbi_673446=2tHjUUV2pU/sfw4G6lKYhQAAAAD8fahM2/cykLckhu0ZfjPw; path=/; Domain=.contentful.com',
-                'incap_ses_876_673446=e0eEe2KnMjDwAhxg1y0oDKplo1sAAAAAJOFz6dc1qa+sjXjwQZTY6g==; path=/; Domain=.contentful.com',
+                'visid_incap_673446=vYjy1DJnT3m9H40x+3wUV173qFsAAAAAQUIPAAAAAAAlPXA1yFar8CEnXxox2cnJ; expires=Tue, 24 Sep 2019 09:11:22 GMT; path=/; Domain=.contentful.com',
+                'nlbi_673446=JIgLXB4zHwTN/qdp6lKYhQAAAAAaKK6XAs4+odNM7X8DMMNC; path=/; Domain=.contentful.com',
+                'incap_ses_876_673446=2zIZdF78LU+KarFs1y0oDF73qFsAAAAARFooFEJVGYjeFnFsKWN+qw==; path=/; Domain=.contentful.com',
             ],
             'x-iinfo': [
-                '11-213655250-213655267 NNNN CT(0 0 0) RT(1537435050524 20) q(0 0 0 -1) r(4 4) U5',
+                '4-146590794-146590798 NNNN CT(89 89 0) RT(1537800029742 30) q(0 0 2 -1) r(7 7) U5',
             ],
             'x-cdn': [
                 'Incapsula',
             ],
-            'content-encoding': [
-                'gzip',
-            ],
-            'transfer-encoding': [
-                'chunked',
-            ],
         },
-        body: 'H4sIAAAAAAAA/81TTW/CMAy991dUOa9T+ZiA3oAxadOAQ0GbuIXWQAY4VZJ2ixD/fSlNWQdoQuKyU2K/Z/vlWdk5rkukliRwd+aaBwmN4BieoIeE0klOIK8M1+TuJ78x8cRi4aFLBWRxnp7zFSQxW+kvhsSC+8O5L7iW1xxP6jjUPRmFz+O3AaV6GPKl7XcUMEAldJmMBFAFcVflSN2vtT2/49X9id8Jaq2g4d+3m61ZSU6T+HoyYMYExy2g+tOXQnrEURmmpwRFueBi65n6qhPX2DeojLxok31tT9+8qakEcb6oRmM9e3wf0Y+n0XaOS5Y+DLMpvazFmvkvtGQgJONoymqlU8U+7Ijb9PUrvc5kInzKrlAs2sCJNsfqIwsGm7jy12iqVlxUZQF60zDv9kIR3G4qzTzy64VFTZ8pfbEuVJAZibysymc7e+cbfNUNKOgDAAA=',
+        body: 'ewogICJzeXMiOiB7CiAgICAic3BhY2UiOiB7CiAgICAgICJzeXMiOiB7CiAgICAgICAgInR5cGUiOiAiTGluayIsCiAgICAgICAgImxpbmtUeXBlIjogIlNwYWNlIiwKICAgICAgICAiaWQiOiAiYm9oZXBkaWh5eGluIgogICAgICB9CiAgICB9LAogICAgImlkIjogImphbmUtYXVzdGVuIiwKICAgICJ0eXBlIjogIkVudHJ5IiwKICAgICJjcmVhdGVkQXQiOiAiMjAxOC0wOS0yNFQxNDo0MDozMC4zMTRaIiwKICAgICJ1cGRhdGVkQXQiOiAiMjAxOC0wOS0yNFQxNDo0MDozMC4zMTRaIiwKICAgICJlbnZpcm9ubWVudCI6IHsKICAgICAgInN5cyI6IHsKICAgICAgICAiaWQiOiAiZW52MSIsCiAgICAgICAgInR5cGUiOiAiTGluayIsCiAgICAgICAgImxpbmtUeXBlIjogIkVudmlyb25tZW50IgogICAgICB9CiAgICB9LAogICAgImNyZWF0ZWRCeSI6IHsKICAgICAgInN5cyI6IHsKICAgICAgICAidHlwZSI6ICJMaW5rIiwKICAgICAgICAibGlua1R5cGUiOiAiVXNlciIsCiAgICAgICAgImlkIjogIjMza1pEWE5hakZObWJuZ2l1NU12VWEiCiAgICAgIH0KICAgIH0sCiAgICAidXBkYXRlZEJ5IjogewogICAgICAic3lzIjogewogICAgICAgICJ0eXBlIjogIkxpbmsiLAogICAgICAgICJsaW5rVHlwZSI6ICJVc2VyIiwKICAgICAgICAiaWQiOiAiMzNrWkRYTmFqRk5tYm5naXU1TXZVYSIKICAgICAgfQogICAgfSwKICAgICJ2ZXJzaW9uIjogMSwKICAgICJjb250ZW50VHlwZSI6IHsKICAgICAgInN5cyI6IHsKICAgICAgICAidHlwZSI6ICJMaW5rIiwKICAgICAgICAibGlua1R5cGUiOiAiQ29udGVudFR5cGUiLAogICAgICAgICJpZCI6ICJuZXdzQXJ0aWNsZSIKICAgICAgfQogICAgfQogIH0sCiAgImZpZWxkcyI6IHsKICAgICJhdXRob3IiOiB7CiAgICAgICJlbi1VUyI6ICJKYW5lIEF1c3RlbiIKICAgIH0sCiAgICAiYXV0aG9yQ2l0eSI6IHsKICAgICAgImVuLVVTIjogIlN0ZXZlbnRvbiIKICAgIH0KICB9Cn0K',
     },
 }
