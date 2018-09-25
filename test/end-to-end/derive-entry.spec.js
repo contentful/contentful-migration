@@ -80,7 +80,7 @@ describe('apply derive entry transformation', function () {
 
   it('aborts 15-derive-entry', function (done) {
     cli()
-      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/15-derive-entry.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/15-derive-entry-n-to-1.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('n\n')
       .expect(assert.plans.entriesDerive('dog'))
       .expect(assert.plans.actions.abort())
@@ -89,7 +89,7 @@ describe('apply derive entry transformation', function () {
 
   it('applies 15-derive-entry', function (done) {
     cli()
-      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/15-derive-entry.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/15-derive-entry-n-to-1.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
       .expect(assert.plans.actions.apply())
       .end(async function () {
