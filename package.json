@@ -1,6 +1,6 @@
 {
   "name": "contentful-migration",
-  "version": "0.12.3",
+  "version": "0.0.0-development",
   "description": "Migration tooling for contentful",
   "author": "Contentful GmbH",
   "license": "MIT",
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/contentful/migration-cli.git"
+    "url": "https://github.com/contentful/contentful-migration"
   },
   "scripts": {
     "clean": "rimraf built",
@@ -36,7 +36,9 @@
     "cover": "nyc --no-clean -s npm run test-unit && nyc --no-clean -s npm run test-integration && nyc --no-clean -s npm run test-e2e && nyc report",
     "coverage": "npm run build && npm run cover && nyc report --reporter=text-lcov > coverage.lcov",
     "coverage-report": "npm run coverage && codecov && rm -rf ./nyc_output && rm coverage.lcov",
-    "lint": "eslint 'examples/**/*.js' 'test/**/*.js' 'src/**/*.js' && tslint --project tsconfig.json --config tslint.json"
+    "lint": "eslint 'examples/**/*.js' 'test/**/*.js' 'src/**/*.js' && tslint --project tsconfig.json --config tslint.json",
+    "semantic-release": "semantic-release",
+    "travis-deploy-once": "travis-deploy-once"
   },
   "files": [
     "README.md",
@@ -122,7 +124,9 @@
     "tslint-config-standard": "^6.0.1",
     "typescript": "^2.5.3",
     "uuid": "^3.3.2",
-    "zlib": "^1.0.5"
+    "zlib": "^1.0.5",
+    "semantic-release": "^15.9.16",
+    "travis-deploy-once": "^5.0.8"
   },
   "bin": {
     "contentful-migration": "./bin/contentful-migration"
