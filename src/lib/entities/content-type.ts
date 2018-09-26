@@ -95,6 +95,25 @@ class EditorInterfaces {
     this._version = version
   }
 
+  reset (fieldId: string) {
+    let controlIndex: number = findIndex(this._controls, (c) => {
+      return c.fieldId === fieldId
+    })
+    if (controlIndex !== -1) {
+      this._controls.slice(controlIndex, 1)
+    }
+  }
+
+  copy (fromFieldId: string, toFieldId: string) {
+    let control: APIEditorInterfaceControl = find(this._controls, (c) => {
+      return c.fieldId === fromFieldId
+    })
+
+    if (control) {
+      this.update(toFieldId, control.widgetId, control.settings)
+    }
+  }
+
   update (fieldId: string, widgetId: string, settings?: APIEditorInterfaceSettings) {
     let control: APIEditorInterfaceControl = find(this._controls, (c) => {
       return c.fieldId === fieldId
