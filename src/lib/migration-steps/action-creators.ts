@@ -76,7 +76,7 @@ const actionCreators = {
         contentTypeId: id
       }
     }),
-    changeEditorInterface: (id, instanceId, callsite, fieldId, widgetId, settings = {}): Intents.EditorInterfaceUpdateIntent => new Intents.EditorInterfaceUpdateIntent({
+    changeEditorInterface: (id, instanceId, callsite, fieldId, widgetId, settings = {}): Intents.EditorInterfaceUpdate => new Intents.EditorInterfaceUpdate({
       type: 'contentType/changeEditorInterface',
       meta: {
         contentTypeInstanceId: `contentType/${id}/${instanceId}`,
@@ -91,6 +91,39 @@ const actionCreators = {
           fieldId,
           widgetId,
           settings
+        }
+      }
+    }),
+    copyEditorInterface: (id, instanceId, callsite, sourceFieldId, destinationFieldId): Intents.EditorInterfaceCopy => new Intents.EditorInterfaceCopy({
+      type: 'contentType/copyEditorInterface',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id,
+        editorInterfaceCopy: {
+          source: sourceFieldId,
+          destination: destinationFieldId
+        }
+      }
+    }),
+    restEditorInterface: (id, instanceId, callsite, fieldId): Intents.EditorInterfaceReset => new Intents.EditorInterfaceReset({
+      type: 'contentType/resetEditorInterface',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id,
+        editorInterfaceReset: {
+          fieldId
         }
       }
     })

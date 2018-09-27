@@ -10,6 +10,8 @@ import ContentTypeCreateIntent from './content-type-create'
 import ContentTypeDeleteIntent from './content-type-delete'
 import EntryDeriveIntent from './entry-derive'
 import EditorInterfaceUpdateIntent from './editorinterface-update'
+import EditorInterfaceCopyIntent from './editorinterface-copy'
+import EditorInterfaceResetIntent from './editorinterface-reset'
 
 export {
   Intent as default,
@@ -24,5 +26,7 @@ export {
   ContentTypeDeleteIntent as ContentTypeDelete,
   ContentTypeUpdateIntent as ContentTypeUpdate,
   EntryDeriveIntent as EntryDerive,
-  EditorInterfaceUpdateIntent as EditorInterfaceUpdateIntent
+  EditorInterfaceUpdateIntent as EditorInterfaceUpdate,
+  EditorInterfaceCopyIntent as EditorInterfaceCopy,
+  EditorInterfaceResetIntent as EditorInterfaceReset
 }
