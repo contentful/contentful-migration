@@ -26,6 +26,8 @@ interface RawStepPayload {
   transformation?: ContentTransform
   derivation?: EntryDerive
   movement?: Movement
+  editorInterfaceCopy?: EditorInterfaceCopy
+  editorInterfaceReset?: EditorInterfaceReset
   editorInterface?: EditorInterfaceInfo
 }
 
@@ -38,6 +40,15 @@ interface EditorInterfaceInfo {
 interface Movement {
   pivot?: string
   direction?: string
+}
+
+interface EditorInterfaceCopy {
+  source?: string
+  destination?: string
+}
+
+interface EditorInterfaceReset {
+  fieldId: string
 }
 
 interface RawStepProps {

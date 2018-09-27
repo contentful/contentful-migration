@@ -1,16 +1,16 @@
 import Intent from './base-intent'
 import { PlanMessage } from '../interfaces/plan-message'
-import { ResetEditorInterfaceAction } from '../action/editorinterface-reset'
+import { CopyEditorInterfaceAction } from '../action/editorinterface-copy'
 import chalk from 'chalk'
 import { SaveEditorInterfaceAction } from '../action/editorinterface-save'
 
-export default class EditorInterfaceResetIntent extends Intent {
-  isEditorInterfaceReset () {
+export default class EditorInterfaceCopyIntent extends Intent {
+  isEditorInterfaceCopy () {
     return true
   }
   groupsWith (other: Intent): boolean {
     const sameContentType = other.getContentTypeId() === this.getContentTypeId()
-    return other.isEditorInterfaceReset() && sameContentType
+    return other.isEditorInterfaceCopy() && sameContentType
   }
   endsGroup (): boolean {
     return true
@@ -22,18 +22,19 @@ export default class EditorInterfaceResetIntent extends Intent {
     return false
   }
   toActions () {
-    // TODO: check for optimizing API calls and saving multiple editor interfaces changes on the same content type done as 1 single API call instead of multiple.
     return [
-      new ResetEditorInterfaceAction(
+      new CopyEditorInterfaceAction(
         this.payload.contentTypeId,
-        this.payload.editorInterfaceReset.fieldId
+        this.payload.editorInterfaceCopy.source,
+        this.payload.editorInterfaceCopy.destination
       ),
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]
   }
   toPlanMessage (): PlanMessage {
+    const {source, destination} = this.payload.editorInterfaceCopy
     return {
-      heading: chalk`Reset editor interface for Content Type {bold.yellow ${this.getContentTypeId()}}`,
+      heading: chalk`Copy editor interface for Content Type {bold.yellow ${this.getContentTypeId()}} from field ${source} to field ${destination}`,
       details: [],
       sections: []
     }

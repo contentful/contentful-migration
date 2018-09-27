@@ -70,6 +70,14 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
+  isEditorInterfaceReset () {
+    return false
+  }
+
+  isEditorInterfaceCopy () {
+    return false
+  }
+
   isAboutContentType () {
     return (
       this.isContentTypeUpdate() ||
