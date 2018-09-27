@@ -149,7 +149,9 @@ describe('FieldRenameIntent', function () {
 
       const api = await runIntent(intent, contentTypes, entries, [], editorInterfacesByContentType)
       console.log(Object.keys(api))
-      expect(true).to.eq(false)
+      const requestBatches = await api.getRequestBatches()
+      expect(requestBatches[0].requests.length).to.eq(3)
+      expect(requestBatches[0].requests[2].data).to.eq({controls: [{fieldId: 'bites', widgetId: 'dropdown', settings: undefined}]})
     })
   })
 })

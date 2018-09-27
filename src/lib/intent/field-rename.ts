@@ -48,15 +48,16 @@ export default class FieldRenameIntent extends Intent {
       new ContentTypeSaveAction(ctId),
       new ContentTypePublishAction(ctId),
 
-      new CopyEditorInterfaceAction(
-        ctId,
-        this.getFieldId(),
-        this.getNewId()
-      ),
       new FieldRenameAction(
         ctId,
         this.getFieldId(),
         { newId: this.getNewId() }
+      ),
+
+      new CopyEditorInterfaceAction(
+        ctId,
+        this.getFieldId(),
+        this.getNewId()
       ),
 
       new ResetEditorInterfaceAction(

@@ -27,7 +27,7 @@ class CopyEditorInterfaceAction extends EntityAction {
   }
 
   getToFieldId (): string {
-    return this.fromFieldId
+    return this.toFieldId
   }
 
   async applyTo (editorInterfaces: EditorInterfaces) {

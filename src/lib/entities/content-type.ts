@@ -100,7 +100,7 @@ class EditorInterfaces {
       return c.fieldId === fieldId
     })
     if (controlIndex !== -1) {
-      this._controls.slice(controlIndex, 1)
+      this._controls.splice(controlIndex, 1)
     }
   }
 
@@ -108,7 +108,6 @@ class EditorInterfaces {
     let control: APIEditorInterfaceControl = find(this._controls, (c) => {
       return c.fieldId === fromFieldId
     })
-
     if (control) {
       this.update(toFieldId, control.widgetId, control.settings)
     }
