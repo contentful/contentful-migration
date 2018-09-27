@@ -95,8 +95,14 @@ describe('FieldRenameIntent', function () {
 
     it('keeps the editor interface when renaming a field', async function () {
 
-      const editorInterfacesByContentType:Map<String, EditorInterfaces> = new Map()
-      editorInterfacesByContentType.set('dog', {controls: [{ widgetId: 'dropdown', fieldId: 'bits'}]})
+      const editorInterfacesByContentType: Map<String, EditorInterfaces> = new Map()
+      const ei = new EditorInterfaces({
+        sys: {
+          version: 1
+        },
+        controls: [{ widgetId: 'dropdown', fieldId: 'bits' }]
+      })
+      editorInterfacesByContentType.set('dog', ei)
       const entries = [
         makeApiEntry({
           id: 'bello',
@@ -142,6 +148,7 @@ describe('FieldRenameIntent', function () {
       }]
 
       const api = await runIntent(intent, contentTypes, entries, [], editorInterfacesByContentType)
+      console.log(Object.keys(api))
       expect(true).to.eq(false)
     })
   })
