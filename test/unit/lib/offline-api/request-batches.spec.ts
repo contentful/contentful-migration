@@ -227,7 +227,6 @@ describe('Payload builder', function () {
       ]
 
       const requests = await buildPayloads(migration, existingCts)
-
       expect(requests).to.eql([[{
         url: '/content_types/book',
         method: 'PUT',
@@ -250,7 +249,8 @@ describe('Payload builder', function () {
         headers: {
           'X-Contentful-Version': 2
         }
-      }], [{
+      }
+      ], [{
         url: '/content_types/book',
         method: 'PUT',
         headers: {
@@ -272,6 +272,15 @@ describe('Payload builder', function () {
         method: 'PUT',
         headers: {
           'X-Contentful-Version': 4
+        }
+      }, {
+        url: '/content_types/book/editor_interface',
+        method: 'PUT',
+        headers: {
+          'X-Contentful-Version': 3
+        },
+        data: {
+          controls: []
         }
       }], [{
         url: '/content_types/book',

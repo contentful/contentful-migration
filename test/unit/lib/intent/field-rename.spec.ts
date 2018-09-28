@@ -30,6 +30,14 @@ describe('FieldRenameIntent', function () {
         ]
       }]
 
+      const editorInterfacesByContentType: Map<String, EditorInterfaces> = new Map()
+      const ei = new EditorInterfaces({
+        sys: {
+          version: 1
+        },
+        controls: [{ widgetId: 'dropdown', fieldId: 'bits' }]
+      })
+      editorInterfacesByContentType.set('dog', ei)
       const entries = [
         makeApiEntry({
           id: 'bello',
@@ -57,7 +65,7 @@ describe('FieldRenameIntent', function () {
         })
       ]
 
-      const api = await runIntent(intent, contentTypes, entries)
+      const api = await runIntent(intent, contentTypes, entries, [], editorInterfacesByContentType)
 
       const allEntries = await api.getEntriesForContentType('dog')
       const rawEntries = allEntries.map((entry) => entry.toApiEntry())
@@ -148,10 +156,9 @@ describe('FieldRenameIntent', function () {
       }]
 
       const api = await runIntent(intent, contentTypes, entries, [], editorInterfacesByContentType)
-      console.log(Object.keys(api))
       const requestBatches = await api.getRequestBatches()
       expect(requestBatches[0].requests.length).to.eq(3)
-      expect(requestBatches[0].requests[2].data).to.eq({controls: [{fieldId: 'bites', widgetId: 'dropdown', settings: undefined}]})
+      expect(requestBatches[0].requests[2].data).to.deep.include({controls: [{fieldId: 'bites', widgetId: 'dropdown', settings: undefined}]})
     })
   })
 })

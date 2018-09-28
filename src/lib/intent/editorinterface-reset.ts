@@ -10,10 +10,14 @@ export default class EditorInterfaceResetIntent extends Intent {
   }
   groupsWith (other: Intent): boolean {
     const sameContentType = other.getContentTypeId() === this.getContentTypeId()
-    return other.isEditorInterfaceReset() && sameContentType
+    return (
+        other.isEditorInterfaceCopy() ||
+        other.isEditorInterfaceReset() ||
+        other.isEditorInterfaceUpdate()) &&
+        sameContentType
   }
   endsGroup (): boolean {
-    return true
+    return false
   }
   shouldSave (): boolean {
     return false
@@ -22,7 +26,6 @@ export default class EditorInterfaceResetIntent extends Intent {
     return false
   }
   toActions () {
-    // TODO: check for optimizing API calls and saving multiple editor interfaces changes on the same content type done as 1 single API call instead of multiple.
     return [
       new ResetEditorInterfaceAction(
         this.payload.contentTypeId,

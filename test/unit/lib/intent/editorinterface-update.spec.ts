@@ -28,22 +28,27 @@ describe('EditorInterfaceUpdateIntent', function () {
         ct.changeEditorInterface('name', 'markdown')
           .changeEditorInterface('description', 'singleLine')
       })
-
       const message1: PlanMessage = intents[1].toPlanMessage()
       expect(message1).to.eql({
         heading: chalk`Update editor interface for Content Type {bold.yellow test}`,
-        details: [
-          chalk`Field {italic name}: markdown`
-        ],
-        sections: []
+        details: [],
+        sections: [{
+          details: [
+            chalk`{italic widgetId}: "markdown"`
+          ],
+          heading: chalk`Update field {yellow name}`
+        }]
       })
       const message2: PlanMessage = intents[2].toPlanMessage()
       expect(message2).to.eql({
         heading: chalk`Update editor interface for Content Type {bold.yellow test}`,
-        details: [
-          chalk`Field {italic description}: singleLine`
-        ],
-        sections: []
+        details: [],
+        sections: [{
+          details: [
+            chalk`{italic widgetId}: "singleLine"`
+          ],
+          heading: chalk`Update field {yellow description}`
+        }]
       })
     })
   })
