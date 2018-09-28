@@ -10,10 +10,14 @@ export default class EditorInterfaceUpdateIntent extends Intent {
   }
   groupsWith (other: Intent): boolean {
     const sameContentType = other.getContentTypeId() === this.getContentTypeId()
-    return other.isEditorInterfaceUpdate() && sameContentType
+    return (
+        other.isEditorInterfaceCopy() ||
+        other.isEditorInterfaceReset() ||
+        other.isEditorInterfaceUpdate()) &&
+        sameContentType
   }
   endsGroup (): boolean {
-    return true
+    return false
   }
   shouldSave (): boolean {
     return false
