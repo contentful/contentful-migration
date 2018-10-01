@@ -5,7 +5,7 @@ import { migration as buildIntents } from '../../../src/lib/migration-steps'
 import IntentList from '../../../src/lib/intent-list'
 import Fetcher from '../../../src/lib/fetcher'
 import { ContentType } from '../../../src/lib/entities/content-type'
-import { APIEditorInterfaces } from '../../../src/lib/interfaces/content-type';
+import { APIEditorInterfaces } from '../../../src/lib/interfaces/content-type'
 
 describe('Fetcher', function () {
   it('fetches all required Entries in the plan', async function () {
@@ -22,7 +22,7 @@ describe('Fetcher', function () {
           return { byline: newByline }
         }
       })
-    })
+    }, null, null)
 
     const request = sinon.stub()
     request
