@@ -26,6 +26,8 @@ interface Intent {
   isContentTransform (): boolean
   isEntryDerive (): boolean
   isEditorInterfaceUpdate (): boolean
+  isEditorInterfaceReset (): boolean
+  isEditorInterfaceCopy (): boolean
 
   isComposedIntent (): boolean
 
