@@ -1,9 +1,9 @@
 import { migration as migrationSteps } from '../../../../src/lib/migration-steps'
 import { expect } from 'chai'
-import chalk from 'chalk'
 import { PlanMessage } from '../../../../src/lib/interfaces/plan-message'
 import IntentList from '../../../../src/lib/intent-list'
 import { Intent } from '../../../../src/lib/interfaces/intent'
+import chalk from 'chalk'
 
 const composedIntent = async function (migration): Promise<Intent[]> {
   const intents = await migrationSteps(migration, () => {}, {})
@@ -11,29 +11,26 @@ const composedIntent = async function (migration): Promise<Intent[]> {
 
   return list.compressed().getIntents()
 }
-
-describe('EditorInterfaceUpdateIntent', function () {
-  describe('when updating the editor interface of a field part of a content type', function () {
-    it('updates the editor interface', async function () {
+describe('EditorInterfaceResetIntent', function () {
+  describe('when reseting one editorInterface', function () {
+    it('resets the editor interface', async function () {
       const intents = await composedIntent((migration) => {
         const ct = migration.createContentType('test')
         ct.name('Test CT')
         ct.description('This is a test CT')
 
         const name = ct.createField('name')
-        name.type('Symbol')
+        name.type('Text')
         const desc = ct.createField('description')
         desc.type('Text')
 
-        ct.changeEditorInterface('name', 'markdown')
-          .changeEditorInterface('description', 'singleLine')
+        ct.resetEditorInterface('name')
       })
-      const message1: PlanMessage = intents[1].toPlanMessage()
-      expect(message1).to.eql({
-        heading: chalk`Update editor interface for Content Type {bold.yellow test}`,
-        details: [],
-        sections: []
-      })
+      const message: PlanMessage = intents[1].toPlanMessage()
+      expect(message.heading).to.eq(
+        chalk`Reset editor interface for Content Type {bold.yellow test}`
+      )
     })
   })
 })
+

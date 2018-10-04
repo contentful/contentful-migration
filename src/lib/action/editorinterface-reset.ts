@@ -12,7 +12,6 @@ class ResetEditorInterfaceAction extends EntityAction {
   }
 
   getEntityType (): string {
-    // TODO: enums
     return 'EDITOR_INTERFACE'
   }
 

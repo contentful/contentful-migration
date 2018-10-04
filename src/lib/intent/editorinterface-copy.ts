@@ -13,8 +13,8 @@ export default class EditorInterfaceCopyIntent extends Intent {
     return (
         other.isEditorInterfaceCopy() ||
         other.isEditorInterfaceReset() ||
-        other.isEditorInterfaceUpdate()) &&
-        sameContentType
+        other.isEditorInterfaceUpdate()
+    ) && sameContentType
   }
   endsGroup (): boolean {
     return false
@@ -38,7 +38,7 @@ export default class EditorInterfaceCopyIntent extends Intent {
   toPlanMessage (): PlanMessage {
     const {source, destination} = this.payload.editorInterfaceCopy
     return {
-      heading: chalk`Copy editor interface for Content Type {bold.yellow ${this.getContentTypeId()}} from field ${source} to field ${destination}`,
+      heading: chalk`Copy editor interface for Content Type {bold.yellow ${this.getContentTypeId()}} from field {italic ${source}} to field {italic ${destination}}`,
       details: [],
       sections: []
     }

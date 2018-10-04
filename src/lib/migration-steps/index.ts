@@ -155,6 +155,29 @@ class ContentType extends DispatchProxy {
     ))
     return this
   }
+
+  copyEditorInterface (sourceFieldId, destinationFieldId) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.contentType.copyEditorInterface(
+      this.id,
+      this.instanceId,
+      callsite,
+      sourceFieldId,
+      destinationFieldId
+    ))
+    return this
+  }
+
+  resetEditorInterface (fieldId) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.contentType.resetEditorInterface(
+      this.id,
+      this.instanceId,
+      callsite,
+      fieldId
+    ))
+    return this
+  }
 }
 
 export async function migration (migrationCreator: Function, makeRequest: Function, config: ClientConfig): Promise<Intent[]> {
