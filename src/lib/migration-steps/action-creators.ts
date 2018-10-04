@@ -111,7 +111,7 @@ const actionCreators = {
         }
       }
     }),
-    restEditorInterface: (id, instanceId, callsite, fieldId): Intents.EditorInterfaceReset => new Intents.EditorInterfaceReset({
+    resetEditorInterface: (id, instanceId, callsite, fieldId): Intents.EditorInterfaceReset => new Intents.EditorInterfaceReset({
       type: 'contentType/resetEditorInterface',
       meta: {
         contentTypeInstanceId: `contentType/${id}/${instanceId}`,

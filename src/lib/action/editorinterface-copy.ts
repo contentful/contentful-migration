@@ -3,18 +3,17 @@ import { EntityAction } from './action'
 
 class CopyEditorInterfaceAction extends EntityAction {
   protected contentTypeId: string
-  protected fromFieldId: string
-  protected toFieldId: string
+  protected sourceFieldId: string
+  protected destinationFieldId: string
 
-  constructor (contentTypeId: string, fromFieldId: string, toFieldId: string) {
+  constructor (contentTypeId: string, sourceFieldId: string, destinationFieldId: string) {
     super()
     this.contentTypeId = contentTypeId
-    this.fromFieldId = fromFieldId
-    this.toFieldId = toFieldId
+    this.sourceFieldId = sourceFieldId
+    this.destinationFieldId = destinationFieldId
   }
 
   getEntityType (): string {
-    // TODO: enums
     return 'EDITOR_INTERFACE'
   }
 
@@ -22,16 +21,16 @@ class CopyEditorInterfaceAction extends EntityAction {
     return this.contentTypeId
   }
 
-  getFromFieldId (): string {
-    return this.fromFieldId
+  getSourceFieldId (): string {
+    return this.sourceFieldId
   }
 
-  getToFieldId (): string {
-    return this.toFieldId
+  getDestinationFieldId (): string {
+    return this.destinationFieldId
   }
 
   async applyTo (editorInterfaces: EditorInterfaces) {
-    editorInterfaces.copy(this.getFromFieldId(), this.getToFieldId())
+    editorInterfaces.copy(this.getSourceFieldId(), this.getDestinationFieldId())
   }
 }
 

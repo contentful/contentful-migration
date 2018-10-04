@@ -17,7 +17,7 @@ export default class EditorInterfaceUpdateIntent extends Intent {
         sameContentType
   }
   endsGroup (): boolean {
-    return true
+    return false
   }
   shouldSave (): boolean {
     return false

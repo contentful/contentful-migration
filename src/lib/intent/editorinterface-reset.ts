@@ -13,9 +13,10 @@ export default class EditorInterfaceResetIntent extends Intent {
     return (
         other.isEditorInterfaceCopy() ||
         other.isEditorInterfaceReset() ||
-        other.isEditorInterfaceUpdate()) &&
-        sameContentType
+        other.isEditorInterfaceUpdate()
+    ) && sameContentType
   }
+
   endsGroup (): boolean {
     return false
   }
