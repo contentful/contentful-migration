@@ -39,6 +39,12 @@ export default class ComposedIntent implements Intent {
   isEditorInterfaceUpdate (): boolean {
     return false
   }
+  isEditorInterfaceReset (): boolean {
+    return false
+  }
+  isEditorInterfaceCopy (): boolean {
+    return false
+  }
   getFieldId (): string {
     return null
   }
