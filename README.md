@@ -59,8 +59,8 @@
     - [Configuration](#configuration)
     - [Chaining vs Object notation](#chaining-vs-object-notation)
     - [`migration`](#migration)
-      - [`createContentType(id[, opts])` : [ContentType](#content-type)](#createcontenttypeid-opts--contenttypecontenttype)
-      - [`editContentType(id[, opts])` : [ContentType](#content-type)](#editcontenttypeid-opts--contenttypecontenttype)
+      - [`createContentType(id[, opts])` : [ContentType](#content-type)](#createcontenttypeid-opts--contenttypecontent-type)
+      - [`editContentType(id[, opts])` : [ContentType](#content-type)](#editcontenttypeid-opts--contenttypecontent-type)
       - [`deleteContentType(id)`](#deletecontenttypeid)
       - [`transformEntries(config)`](#transformentriesconfig)
         - [`transformEntries` Example](#transformentries-example)
@@ -76,9 +76,12 @@
       - [`deleteField(id)` : void](#deletefieldid--void)
       - [`changeFieldId (currentId, newId)` : void](#changefieldid-currentid-newid--void)
       - [`changeEditorInterface (fieldId, widgetId[, settings])` : void](#changeeditorinterface-fieldid-widgetid-settings--void)
+      - [`resetEditorInterface (fieldId)` : void](#reseteditorinterface-fieldid--void)
+      - [`copyEditorInterface (sourceFieldId, destinationFieldId)` : void](#copyeditorinterface-sourcefieldid-destinationfieldid--void)
     - [Field](#field)
   - [Validation errors](#validation-errors)
   - [Example migrations](#example-migrations)
+  - [Writing Migrations in Typescript](#writing-migrations-in-typescript)
   - [Troubleshooting](#troubleshooting)
   - [Reach out to us](#reach-out-to-us)
     - [You have questions about how to use this library?](#you-have-questions-about-how-to-use-this-library)
@@ -105,6 +108,8 @@
   - Delete a field
   - Rename a field
   - Change editorInterface
+  - Reset editorInterface
+  - Copy editorInterface
 
 ## Pre-requisites && Installation
 
@@ -436,6 +441,15 @@ Changes the editor interface of given field's ID.
 - **`stars : number`** _(only for fields of type rating)_ – Number of stars to select from. Defaults to 5.
 - **`format : string`** _(only for fields of type datePicker)_ – One of “dateonly”, “time”, “timeZ” (default). Specifies whether to show the clock and/or timezone inputs.
 - **`ampm : string`** _(only for fields of type datePicker)_ – Specifies which type of clock to use. Must be one of the stringss “12” or “24” (default).
+
+#### `resetEditorInterface (fieldId)` : void
+
+**`fieldId : string`** – The ID of the field.
+
+#### `copyEditorInterface (sourceFieldId, destinationFieldId)` : void
+
+**`sourceFieldId : string`** – The ID of the field to copy the editorinterface setting from.
+**`destinationFieldId : string`** – The ID of the field to apply the copied editorinterface setting to.
 
 ### Field
 
