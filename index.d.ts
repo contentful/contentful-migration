@@ -147,6 +147,22 @@ export interface ContentType {
    * @param settings Widget settings
    */
   changeEditorInterface (fieldId: string, widgetId: string, settings?: IEditorInterfaceOptions): void
+
+  /**
+   * Resets the editor interface of given field's ID.
+   * 
+   * @param fieldId The ID of the field.
+   */
+  resetEditorInterface (fieldId: string): void
+
+  /**
+   * copies the editor interface setting from a field to another field in the same content type.
+   * 
+   * @param sourceFieldId The ID of the field to copy the editorinterface setting from.
+   * @param destinationFieldId The ID of the field to apply the copied editorinterface setting to.
+   */
+  copyEditorInterface (sourceFieldId: string, destinationFieldId: string): void
+
 }
 
 export interface IContentTypeOptions {
