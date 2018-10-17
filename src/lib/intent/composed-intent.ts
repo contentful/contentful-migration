@@ -88,6 +88,10 @@ export default class ComposedIntent implements Intent {
   isEntryDerive (): boolean {
     return false
   }
+  
+  isEntryTransformToType (): boolean {
+    return false
+  }
 
   getContentTypeId (): string {
     return this.contentTypeId

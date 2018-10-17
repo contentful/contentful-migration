@@ -66,6 +66,10 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
+  isEntryTransformToType() {
+    return false
+  }
+
   isEditorInterfaceUpdate () {
     return false
   }

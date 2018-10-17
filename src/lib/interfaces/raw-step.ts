@@ -1,6 +1,7 @@
 import ContentTransform from './content-transform'
 import EntryDerive from './entry-derive'
 import { APIEditorInterfaceSettings } from './content-type'
+import TransformEntryToType from './entry-transform-to-type';
 
 interface RawStep {
   type: string
@@ -26,6 +27,7 @@ interface RawStepPayload {
   transformation?: ContentTransform
   derivation?: EntryDerive
   movement?: Movement
+  entryTransformationToType?: TransformEntryToType
   editorInterfaceCopy?: EditorInterfaceCopy
   editorInterfaceReset?: EditorInterfaceReset
   editorInterface?: EditorInterfaceInfo

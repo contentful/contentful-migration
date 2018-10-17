@@ -16,7 +16,7 @@ export default class Fetcher implements APIFetcher {
   async getEntriesInIntents (intentList: IntentList): Promise<APIEntry[]> {
     const ids: string[] = _.uniq(
       intentList.getIntents()
-      .filter((intent) => intent.isContentTransform() || intent.isEntryDerive())
+      .filter((intent) => intent.isContentTransform() || intent.isEntryDerive() || intent.isEntryTransformToType())
       .map((intent) => intent.getContentTypeId())
     )
 
