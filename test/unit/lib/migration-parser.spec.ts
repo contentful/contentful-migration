@@ -2,7 +2,6 @@
 
 const { expect } = require('chai')
 import createMigrationParser from '../../../src/lib/migration-parser'
-// import { APIEditorInterfaces } from '../../../src/lib/interfaces/content-type'
 
 describe('Migration parser', function () {
   describe('when transforming content', function () {
@@ -19,12 +18,14 @@ describe('Migration parser', function () {
                 sys: { id: 'cat' },
                 fields: [{ name: 'name', type: 'Symbol', id: 'name' }]
               }
-            ]
+            ],
+            total: 2
           }
         }
 
-        if (config.url === '/entries?sys.contentType.sys.id[in]=foo,cat') {
+        if (config.url.indexOf('/entries?sys.contentType.sys.id[in]=foo,cat') !== -1) {
           return {
+            total: 2,
             items: [
               {
                 sys: {
@@ -55,7 +56,6 @@ describe('Migration parser', function () {
           return {items: [{code: 'en-US'}]}
         }
       }
-
       const migrationParser = createMigrationParser(fakeMakeRequest, {})
 
       // make this something that throws the second time
@@ -110,6 +110,7 @@ describe('Migration parser', function () {
         console.log(config.url)
         if (config.url === '/content_types?sys.id[in]=foo') {
           return {
+            total: 1,
             items: [
               {
                 sys: { id: 'foo' },
@@ -119,8 +120,9 @@ describe('Migration parser', function () {
           }
         }
 
-        if (config.url === '/entries?sys.contentType.sys.id[in]=foo') {
+        if (config.url === '/entries?sys.contentType.sys.id[in]=foo&skip=0') {
           return {
+            total: 2,
             items: [
               {
                 sys: {

@@ -10,7 +10,16 @@ class SaveEditorInterfaceAction extends APIAction {
   }
 
   async applyTo (api: OfflineAPI) {
-    await api.saveEditorInterfaces(this.contentTypeId)
+    try {
+      await api.saveEditorInterfaces(this.contentTypeId)
+    } catch {
+      // TODO: Maybe a better handling
+      // What the heck are you doing?
+      // When fetching the editor interfaces
+      // the offline API will always create an editor interface
+      // for the content type if it does not exist.
+      // So we shouldn't throw at the first place maybe ?
+    }
   }
 }
 
