@@ -103,7 +103,6 @@ class IntentList {
           await action.applyTo(api)
           continue
         }
-
         if (action instanceof EntityAction) {
           const entityType = action.getEntityType()
           const entityId = action.getEntityId()
@@ -113,8 +112,12 @@ class IntentList {
             await action.applyTo(ct)
           }
           if (entityType === 'EDITOR_INTERFACE') {
-            const editorInterfaces = await api.getEditorInterfaces(entityId)
-            await action.applyTo(editorInterfaces)
+            try {
+              const editorInterfaces = await api.getEditorInterfaces(entityId)
+              await action.applyTo(editorInterfaces)
+            } catch {
+              // TODO: maybe a better handling
+            }
           }
           continue
         }
