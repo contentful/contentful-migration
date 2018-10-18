@@ -1,17 +1,20 @@
 import { cloneDeep } from 'lodash'
 import APIEntry from '../interfaces/api-entry'
+import { isNullOrUndefined } from 'util';
 
 class Entry {
   private _id: string
   private _contentTypeId: string
   private _version: number
   private _fields: object
+  private _isPublished: boolean
 
   constructor (entry: APIEntry) {
     this._id = entry.sys.id
     this._fields = entry.fields
     this._version = entry.sys.version
     this._contentTypeId = entry.sys.contentType.sys.id
+    this._isPublished = !isNullOrUndefined(entry.sys.publishedVersion)
   }
 
   get id () {
@@ -46,6 +49,14 @@ class Entry {
 
   set version (version: number) {
     this._version = version
+  }
+
+  get isPublished () {
+    return this._isPublished
+  }
+
+  set isPublished (published: boolean) {
+    this._isPublished = published
   }
 
   toApiEntry (): APIEntry {

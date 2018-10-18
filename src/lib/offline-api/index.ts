@@ -362,6 +362,7 @@ class OfflineAPI {
 
     // Mutate version bump
     entry.version = entry.version + 1
+    entry.isPublished = true
 
     return entry
   }
@@ -373,13 +374,16 @@ class OfflineAPI {
 
     if (!hasEntry) {
       throw new Error(`Cannot unpublish Entry ${id} because it does not exist`)
-    }    // Store clone as a request
+    }
+
     const entry = this.entries.find((entry) => entry.id === id)
 
+    // Store clone as a request
     this.currentRequestsRecorded.push(unpublishEntryRequest(entry.clone()))
 
     // Mutate version bump
     entry.version = entry.version + 1
+    entry.isPublished = false
 
     return entry
   }
