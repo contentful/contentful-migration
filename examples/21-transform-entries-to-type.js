@@ -1,3 +1,5 @@
+const MurmurHash3 = require("imurmurhash")
+
 // Basic example: create new content type.
 module.exports = function (migration) {
 
@@ -21,8 +23,13 @@ module.exports = function (migration) {
     targetContentType: 'copycat',
     from: ['woofs'],
     to: ['woofs'],
+    shouldPublish: false,
+    link: false,
+    unlink: false,
+    removeOldEntries: false,
     identityKey: function(fields) {
-      return fields.woofs['en-US'].toString().toLowerCase().replace(' ', '-')
+      const value = fields.woofs['en-US'].toString()
+      return MurmurHash3(value).result()
     },
     transformEntryForLocale: function (fromFields, currentLocale) {
       return {
