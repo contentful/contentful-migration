@@ -97,6 +97,7 @@ class EntryTransformToTypeAction extends APIAction {
       }
 
       if(this.removeOldEntries) {
+        await api.unpublishEntry(entry.id);
         await api.deleteEntry(entry.id);
       }
     }

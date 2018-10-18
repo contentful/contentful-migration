@@ -47,6 +47,7 @@ const saveEntryRequest = function (entry: Entry): Request {
     data: entry.toApiEntry()
   }
 }
+
 const publishEntryRequest = function (entry: Entry): Request {
   return {
     method: 'PUT',
@@ -54,6 +55,16 @@ const publishEntryRequest = function (entry: Entry): Request {
     headers: {
       'X-Contentful-Version': entry.version,
       'X-Contentful-Content-Type': entry.contentTypeId
+    }
+  }
+}
+
+const unpublishEntryRequest = function (entry: Entry): Request {
+  return {
+    method: 'DELETE',
+    url: `/entries/${entry.id}/published`,
+    headers: {
+      'X-Contentful-Version': entry.version,
     }
   }
 }
@@ -348,6 +359,24 @@ class OfflineAPI {
     const entry = this.entries.find((entry) => entry.id === id)
 
     this.currentRequestsRecorded.push(publishEntryRequest(entry.clone()))
+
+    // Mutate version bump
+    entry.version = entry.version + 1
+
+    return entry
+  }
+
+  async unpublishEntry (id: string): Promise<Entry> {
+    this.assertRecording()
+
+    const hasEntry = this.entries.some((entry) => entry.id === id)
+
+    if (!hasEntry) {
+      throw new Error(`Cannot unpublish Entry ${id} because it does not exist`)
+    }    // Store clone as a request
+    const entry = this.entries.find((entry) => entry.id === id)
+
+    this.currentRequestsRecorded.push(unpublishEntryRequest(entry.clone()))
 
     // Mutate version bump
     entry.version = entry.version + 1
