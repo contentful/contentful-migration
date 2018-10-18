@@ -12,6 +12,7 @@ class EntryTransformToTypeAction extends APIAction {
   private transformEntryForLocale: (inputFields: any, locale: string) => Promise<any>
   private identityKey: (fromFields: any) => Promise<string>
   private shouldPublish: boolean
+  private removeOldEntries: boolean
 
   constructor (entryTransformation: EntryTransformToType) {
     super()
@@ -20,6 +21,7 @@ class EntryTransformToTypeAction extends APIAction {
     this.targetContentTypeId = entryTransformation.targetContentType
     this.identityKey = entryTransformation.identityKey
     this.shouldPublish = entryTransformation.shouldPublish || true
+    this.removeOldEntries = entryTransformation.removeOldEntries || true
     this.transformEntryForLocale = entryTransformation.transformEntryForLocale
   }
 
@@ -94,9 +96,8 @@ class EntryTransformToTypeAction extends APIAction {
         }
       }
 
-      await api.saveEntry(entry.id)
-      if (this.shouldPublish) {
-        await api.publishEntry(entry.id)
+      if(this.removeOldEntries) {
+        await api.deleteEntry(entry.id);
       }
     }
   }

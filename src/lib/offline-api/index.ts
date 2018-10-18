@@ -58,6 +58,16 @@ const publishEntryRequest = function (entry: Entry): Request {
   }
 }
 
+const deleteEntryRequest = function (entry: Entry): Request {
+  return {
+    method: 'DELETE',
+    url: `/entries/${entry.id}`,
+    headers: {
+      'X-Contentful-Version': entry.version
+    }
+  }
+}
+
 const publishContentTypeRequest = function (ct: ContentType): Request {
   return {
     method: 'PUT',
@@ -341,6 +351,24 @@ class OfflineAPI {
 
     // Mutate version bump
     entry.version = entry.version + 1
+
+    return entry
+  }
+
+  async deleteEntry (id: string): Promise<Entry> {
+    this.assertRecording()
+
+    const hasEntry = this.entries.some((entry) => entry.id === id)
+
+    if (!hasEntry) {
+      throw new Error(`Cannot delete Entry ${id} because it does not exist`)
+    }    // Store clone as a request
+    const entry = this.entries.find((entry) => entry.id === id)
+
+    const index = this.entries.indexOf(entry);
+    this.entries.splice(index, 1);
+
+    this.currentRequestsRecorded.push(deleteEntryRequest(entry.clone()))
 
     return entry
   }
