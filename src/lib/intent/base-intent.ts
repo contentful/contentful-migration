@@ -26,6 +26,10 @@ export default abstract class Intent implements IntentInterface {
     return this.payload.fieldId
   }
 
+  requiresAllEntries () {
+    return false
+  }
+
   isContentTypeUpdate () {
     return false
   }

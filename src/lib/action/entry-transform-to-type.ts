@@ -13,6 +13,7 @@ class EntryTransformToTypeAction extends APIAction {
   private identityKey: (fromFields: any) => Promise<string>
   private shouldPublish: boolean
   private removeOldEntries: boolean
+  private updateReferences: boolean
 
   constructor (entryTransformation: EntryTransformToType) {
     super()
@@ -22,6 +23,7 @@ class EntryTransformToTypeAction extends APIAction {
     this.identityKey = entryTransformation.identityKey
     this.shouldPublish = entryTransformation.shouldPublish || true
     this.removeOldEntries = entryTransformation.removeOldEntries || true
+    this.updateReferences = entryTransformation.updateReferences || true
     this.transformEntryForLocale = entryTransformation.transformEntryForLocale
   }
 
@@ -101,6 +103,10 @@ class EntryTransformToTypeAction extends APIAction {
           await api.unpublishEntry(entry.id);
         }
         await api.deleteEntry(entry.id);
+      }
+
+      if(this.updateReferences) {
+        // TODO
       }
     }
   }

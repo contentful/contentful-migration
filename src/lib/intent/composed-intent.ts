@@ -101,6 +101,10 @@ export default class ComposedIntent implements Intent {
     return [this.getContentTypeId()]
   }
 
+  requiresAllEntries (): boolean {
+    return false
+  }
+
   groupsWith (): boolean {
     return false
   }

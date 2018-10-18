@@ -10,6 +10,8 @@ interface Intent {
   getFieldId (): string
   getRawType (): string
 
+  requiresAllEntries (): boolean
+
   shouldSave (): boolean
   shouldPublish (): boolean
 

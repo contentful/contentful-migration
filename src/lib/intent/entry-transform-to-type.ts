@@ -47,4 +47,8 @@ export default class EntryTransformToTypeIntent extends Intent {
   shouldPublish () {
     return false
   }
+
+  requiresAllEntries () {
+    return this.payload.entryTransformationToType.updateReferences
+  }
 }
