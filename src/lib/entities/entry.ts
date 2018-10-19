@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash'
 import APIEntry from '../interfaces/api-entry'
-import { isNullOrUndefined } from 'util';
+import { isNullOrUndefined } from 'util'
 
 class Entry {
   private _id: string
@@ -50,9 +50,8 @@ class Entry {
 
     if (fieldArray.length < index + 1) {
       fieldArray.push(link)
-    }
-    else {
-      fieldArray.splice(index, 1, link);
+    } else {
+      fieldArray.splice(index, 1, link)
     }
   }
 

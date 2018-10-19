@@ -1,7 +1,6 @@
 import EntryTransformToType from '../interfaces/entry-transform-to-type'
 import { APIAction } from './action'
 import { OfflineAPI } from '../offline-api'
-//import { ContentType } from '../entities/content-type'
 import Entry from '../entities/entry'
 import * as _ from 'lodash'
 
@@ -11,7 +10,7 @@ class EntryTransformToTypeAction extends APIAction {
   private targetContentTypeId: string
   private transformEntryForLocale: (inputFields: any, locale: string) => Promise<any>
   private identityKey: (fromFields: any) => Promise<string>
-  private shouldPublish: boolean|"preserve"
+  private shouldPublish: boolean|'preserve'
   private removeOldEntries: boolean
   private updateReferences: boolean
 
@@ -30,7 +29,6 @@ class EntryTransformToTypeAction extends APIAction {
   async applyTo (api: OfflineAPI) {
     const entries: Entry[] = await api.getEntriesForContentType(this.sourceContentTypeId)
     const locales: string[] = await api.getLocalesForSpace()
-    //const sourceContentType: ContentType = await api.getContentType(this.sourceContentTypeId)
 
     for (const entry of entries) {
       const inputs = _.pick(entry.fields, this.fromFields)
@@ -93,33 +91,32 @@ class EntryTransformToTypeAction extends APIAction {
 
         }
         await api.saveEntry(targetEntry.id)
-        if (this.shouldPublish===true || (this.shouldPublish==="preserve" && entry.isPublished) ) {
+        if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && entry.isPublished) ) {
           await api.publishEntry(targetEntry.id)
         }
       }
 
-      if(this.updateReferences) {
-        const links = await api.getLinks(entry.id, locales);
+      if (this.updateReferences) {
+        const links = await api.getLinks(entry.id, locales)
         for (const link of links) {
-          if (!link.isInArray()){
+          if (!link.isInArray()) {
             link.element.setFieldForLocale(link.field, link.locale,{ sys: { id: newEntryId, type: 'Link', linkType: 'Entry'}})
-          }
-          else {
+          } else {
             link.element.replaceArrayLinkForLocale(link.field, link.locale, link.index, newEntryId)
           }
 
-          await api.saveEntry(link.element.id)              
-          if (this.shouldPublish===true || (this.shouldPublish==="preserve" && link.element.isPublished) ) {
+          await api.saveEntry(link.element.id)
+          if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && link.element.isPublished) ) {
             await api.publishEntry(link.element.id)
           }
         }
       }
 
-      if(this.removeOldEntries) {
-        if(entry.isPublished) {
-          await api.unpublishEntry(entry.id);
+      if (this.removeOldEntries) {
+        if (entry.isPublished) {
+          await api.unpublishEntry(entry.id)
         }
-        await api.deleteEntry(entry.id);
+        await api.deleteEntry(entry.id)
       }
     }
   }

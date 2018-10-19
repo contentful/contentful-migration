@@ -10,7 +10,7 @@ import SchemaValidator from './validator/schema/index'
 import TypeChangeValidator from './validator/type-change'
 import { Intent } from '../interfaces/intent'
 import APIEntry from '../interfaces/api-entry'
-import Link from '../entities/link';
+import Link from '../entities/link'
 
 interface RequestBatch {
   intent: Intent
@@ -65,7 +65,7 @@ const unpublishEntryRequest = function (entry: Entry): Request {
     method: 'DELETE',
     url: `/entries/${entry.id}/published`,
     headers: {
-      'X-Contentful-Version': entry.version,
+      'X-Contentful-Version': entry.version
     }
   }
 }
@@ -399,8 +399,8 @@ class OfflineAPI {
     }    // Store clone as a request
     const entry = this.entries.find((entry) => entry.id === id)
 
-    const index = this.entries.indexOf(entry);
-    this.entries.splice(index, 1);
+    const index = this.entries.indexOf(entry)
+    this.entries.splice(index, 1)
 
     this.currentRequestsRecorded.push(deleteEntryRequest(entry.clone()))
 
@@ -413,31 +413,31 @@ class OfflineAPI {
     return entries
   }
 
-  async getLinks(childId: string, locales: string[]): Promise<Link[]> {
+  async getLinks (childId: string, locales: string[]): Promise<Link[]> {
 
-    const links: Link[] = [];
+    const links: Link[] = []
 
-    this.entries.forEach((entry)=>{
-      const fields = entry.fields;
+    this.entries.forEach((entry) => {
+      const fields = entry.fields
       Object.keys(fields).forEach(key => {
         locales.forEach((locale) => {
-          const field = entry.fields[key][locale];
+          const field = entry.fields[key][locale]
           if (field instanceof Object && field.sys instanceof Object && field.sys.id === childId) {
             links.push(new Link(entry, key, locale))
           }
           if (field instanceof Array) {
-            const fieldArray = field as Array<any>;
+            const fieldArray = field as Array<any>
             fieldArray.forEach((fieldEntry, index) => {
               if (fieldEntry instanceof Object && fieldEntry.sys instanceof Object && fieldEntry.sys.id === childId) {
                 links.push(new Link(entry, key, locale, index))
               }
             })
           }
-        });
-      });
-    });
+        })
+      })
+    })
 
-    return links;
+    return links
   }
 
   async getLocalesForSpace () {

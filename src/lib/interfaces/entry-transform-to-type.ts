@@ -4,7 +4,7 @@ export default interface TransformEntryToType {
   from: string[],
   to: string[],
   identityKey: (fromFields: any) => Promise<string>
-  shouldPublish?: boolean|"preserve",
+  shouldPublish?: boolean|'preserve',
   removeOldEntries?: boolean,
   updateReferences?: boolean,
   transformEntryForLocale (inputFields: any, locale: string): Promise<any>

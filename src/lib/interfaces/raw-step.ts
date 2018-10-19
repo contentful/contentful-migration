@@ -1,7 +1,7 @@
 import ContentTransform from './content-transform'
 import EntryDerive from './entry-derive'
 import { APIEditorInterfaceSettings } from './content-type'
-import TransformEntryToType from './entry-transform-to-type';
+import TransformEntryToType from './entry-transform-to-type'
 
 interface RawStep {
   type: string
