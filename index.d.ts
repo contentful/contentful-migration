@@ -193,7 +193,11 @@ export interface ITransformEntriesConfig {
   */
   transformEntryForLocale: (fromFields: ContentFields, currentLocale: string) => any,
   /** (optional) – If true, the transformed entries will be published. If false, both will remain in draft state (default true) */
-  shouldPublish?: boolean
+  shouldPublish?: boolean,
+  /** (optional) – If true, references to the old entry are replaced with references to the new entry (default true) */
+  updateReferences?: boolean,
+  /** (optional) – If true, the original entry is removed after the new entry was created (default true) */
+  removeOldEntries?: boolean
 }
 
 export interface IDeriveLinkedEntriesConfig {
