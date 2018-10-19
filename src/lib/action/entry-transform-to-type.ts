@@ -108,11 +108,10 @@ class EntryTransformToTypeAction extends APIAction {
             saveEntry = true
           }
 
-            if (saveEntry) {
-              await api.saveEntry(parent.element.id)              
-              if (this.shouldPublish===true || (this.shouldPublish==="preserve" && parent.element.isPublished) ) {
-                await api.publishEntry(parent.element.id)
-              }
+          if (saveEntry) {
+            await api.saveEntry(parent.element.id)              
+            if (this.shouldPublish===true || (this.shouldPublish==="preserve" && parent.element.isPublished) ) {
+              await api.publishEntry(parent.element.id)
             }
           }
         }
