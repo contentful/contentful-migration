@@ -74,10 +74,6 @@ class EntryTransformToTypeAction extends APIAction {
       }
 
       if (!hasEntry) {
-        // TODO: How do we handle already existing links?
-        // Usually you would not want to derive the contents again
-        // But what if the previous round may not have been complete
-        // for example one optional field was missing in the previous iteration
         const targetEntry = await api.createEntry(this.targetContentTypeId, newEntryId)
 
         // we are not skipping this source entry and the target entry does not yet exist,
@@ -98,6 +94,7 @@ class EntryTransformToTypeAction extends APIAction {
         }
       }
 
+      // look for entries linking to the old entry and replace them with references to the new entry
       if(this.updateReferences) {
         const links = await api.getLinks(entry.id, locales);
         for (const link of links) {
@@ -120,6 +117,7 @@ class EntryTransformToTypeAction extends APIAction {
         }
       }
 
+      // remove the original item
       if(this.removeOldEntries) {
         if(entry.isPublished) {
           await api.unpublishEntry(entry.id);
