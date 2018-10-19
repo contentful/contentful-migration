@@ -1,5 +1,4 @@
-
-import Entry from './entry';
+import Entry from './entry'
 
 class Link {
   private _field: string
@@ -14,28 +13,28 @@ class Link {
     this._element = element
   }
 
-  get field(): string {
+  get field (): string {
     return this._field
   }
 
-  get locale(): string {
+  get locale (): string {
     return this._locale
   }
 
-  get index(): number {
+  get index (): number {
     return this._index
   }
 
-  get element(): Entry {
+  get element (): Entry {
     return this._element
   }
 
-  isValid(): boolean {
+  isValid (): boolean {
     return this._field.length > 0
   }
 
-  isInArray(): boolean {
-    return this._index != -1
+  isInArray (): boolean {
+    return this._index !== -1
   }
 }
 

@@ -29,7 +29,7 @@ export default class Fetcher implements APIFetcher {
     let entries: APIEntry[] = []
     let skip: number = 0
 
-    const filterSpecification = loadAllEntries ? "" : `sys.contentType.sys.id[in]=${ids.join(',')}&`
+    const filterSpecification = loadAllEntries ? '' : `sys.contentType.sys.id[in]=${ids.join(',')}&`
 
     while (true) {
       const response = await this.makeRequest({

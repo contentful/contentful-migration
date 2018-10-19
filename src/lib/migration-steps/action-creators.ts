@@ -1,7 +1,7 @@
 import * as Intents from '../intent/index'
 import ContentTransform from '../interfaces/content-transform'
 import EntryDerive from '../interfaces/entry-derive'
-import TransformEntryToType from '../interfaces/entry-transform-to-type';
+import TransformEntryToType from '../interfaces/entry-transform-to-type'
 
 const actionCreators = {
   contentType: {

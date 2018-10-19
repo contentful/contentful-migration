@@ -70,7 +70,7 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
-  isEntryTransformToType() {
+  isEntryTransformToType () {
     return false
   }
 
