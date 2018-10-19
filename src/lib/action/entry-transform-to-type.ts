@@ -99,19 +99,22 @@ class EntryTransformToTypeAction extends APIAction {
       }
 
       if(this.updateReferences) {
-        // TODO
-        const parents = await api.getLinks(entry.id, locales);
-        for (const parent of parents) {
+        const links = await api.getLinks(entry.id, locales);
+        for (const link of links) {
           let saveEntry = false
-          for (const locale of locales) {
-            parent.element.setFieldForLocale(parent.field, locale,{ sys: { id: newEntryId, type: 'Link', linkType: 'Entry'}})
-            saveEntry = true
+          if (!link.isInArray()){
+            link.element.setFieldForLocale(link.field, link.locale,{ sys: { id: newEntryId, type: 'Link', linkType: 'Entry'}})
           }
+          else {
+            const fieldArray = link.element[link.field][link.locale] as Array<any>
+            fieldArray.splice(link.index, 1, { sys: { id: newEntryId, type: 'Link', linkType: 'Entry'}})
+          }
+          saveEntry = true
 
           if (saveEntry) {
-            await api.saveEntry(parent.element.id)              
-            if (this.shouldPublish===true || (this.shouldPublish==="preserve" && parent.element.isPublished) ) {
-              await api.publishEntry(parent.element.id)
+            await api.saveEntry(link.element.id)              
+            if (this.shouldPublish===true || (this.shouldPublish==="preserve" && link.element.isPublished) ) {
+              await api.publishEntry(link.element.id)
             }
           }
         }
