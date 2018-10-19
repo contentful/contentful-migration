@@ -25,7 +25,7 @@ module.exports = function (migration) {
     to: ['woofs'],
     shouldPublish: false,
     updateReferences: true,
-    removeOldEntries: false,
+    removeOldEntries: true,
     identityKey: function(fields) {
       const value = fields.woofs['en-US'].toString()
       return MurmurHash3(value).result().toString()
