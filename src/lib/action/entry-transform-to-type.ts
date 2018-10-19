@@ -106,7 +106,7 @@ class EntryTransformToTypeAction extends APIAction {
             link.element.setFieldForLocale(link.field, link.locale,{ sys: { id: newEntryId, type: 'Link', linkType: 'Entry'}})
           }
           else {
-            const fieldArray = link.element[link.field][link.locale] as Array<any>
+            const fieldArray = link.element.fields[link.field][link.locale] as Array<any>
             fieldArray.splice(link.index, 1, { sys: { id: newEntryId, type: 'Link', linkType: 'Entry'}})
           }
           saveEntry = true

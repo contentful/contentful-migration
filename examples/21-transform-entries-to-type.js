@@ -28,7 +28,7 @@ module.exports = function (migration) {
     removeOldEntries: false,
     identityKey: function(fields) {
       const value = fields.woofs['en-US'].toString()
-      return MurmurHash3(value).result()
+      return MurmurHash3(value).result().toString()
     },
     transformEntryForLocale: function (fromFields, currentLocale) {
       return {

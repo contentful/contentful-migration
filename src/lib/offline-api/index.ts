@@ -422,13 +422,13 @@ class OfflineAPI {
       Object.keys(fields).forEach(key => {
         locales.forEach((locale) => {
           const field = entry.fields[key][locale];
-          if (field instanceof Object && field.sys instanceof Object && field.sys.id == childId) {
+          if (field instanceof Object && field.sys instanceof Object && field.sys.id === childId) {
             links.push(new Link(entry, key, locale))
           }
           if (field instanceof Array) {
             const fieldArray = field as Array<any>;
             fieldArray.forEach((fieldEntry, index) => {
-              if (fieldEntry instanceof Object && fieldEntry.sys instanceof Object && fieldEntry.sys.id == childId) {
+              if (fieldEntry instanceof Object && fieldEntry.sys instanceof Object && fieldEntry.sys.id === childId) {
                 links.push(new Link(entry, key, locale, index))
               }
             })
