@@ -103,12 +103,26 @@ class EntryTransformToTypeAction extends APIAction {
         const parents = await api.getParentEntries(entry.id);
 
         for (const parent of parents) {
+          let saveEntry = false;
           const fields = parent.fields;
           Object.keys(fields).forEach(key => {
-            if (fields[key] instanceof Object) {
+            if (fields[key] instanceof Object && fields[key][locales[0]].sys.id === entry.id) {
               console.log(JSON.stringify(fields[key]));
+
+              // replace linked ids?
+              for (const locale of locales) {
+                parent.setFieldForLocale(key, locale, newEntryId);
+                saveEntry = true;
+              }
             }
           });
+
+          if (saveEntry) {
+            await api.saveEntry(parent.id);
+            if (this.shouldPublish) {
+              await api.publishEntry(parent.id)
+            }
+          }
         }
       }
 
