@@ -10,7 +10,7 @@ import SchemaValidator from './validator/schema/index'
 import TypeChangeValidator from './validator/type-change'
 import { Intent } from '../interfaces/intent'
 import APIEntry from '../interfaces/api-entry'
-import ParentEntry from '../entities/parent-entry';
+import Link from '../entities/parent-entry';
 
 interface RequestBatch {
   intent: Intent
@@ -413,27 +413,23 @@ class OfflineAPI {
     return entries
   }
 
-  async getParentEntries(childId: string, locales: string[]): Promise<ParentEntry[]> {
+  async getLinks(childId: string, locales: string[]): Promise<Link[]> {
 
-    const parentEntries: ParentEntry[] = [];
+    const links: Link[] = [];
 
     this.entries.forEach((entry)=>{
-      const parentEl = new ParentEntry(entry);
       const fields = entry.fields;
       Object.keys(fields).forEach(key => {
         locales.forEach((locale) => {
-          if (entry.fields[key][locale].sys.id === childId) {
-            parentEl.linkedOnKeys.push(key)
+          const field = entry.fields[key][locale];
+          if (field instanceof Object && field.sys instanceof Object && field.sys.id == childId) {
+            links.push(new Link(entry, key))
           }
         });
-        
-        if (parentEl.isValid()) {
-          parentEntries.push(parentEl);
-        }
       });
     });
 
-    return parentEntries;
+    return links;
   }
 
   async getLocalesForSpace () {

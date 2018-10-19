@@ -1,17 +1,23 @@
 
 import Entry from './entry';
 
-class ParentEntry {
-  private _linkedOnKeys: string[]
+class Link {
+  private _field: string
+  private _index: number
   private _element: Entry
 
-  constructor (element: Entry) {
-    this._linkedOnKeys = []
+  constructor (element: Entry, field: string, index: number = -1) {
+    this._field = field
+    this._index = index
     this._element = element
   }
 
-  get linkedOnKeys(): string[] {
-    return this._linkedOnKeys
+  get field(): string {
+    return this._field
+  }
+
+  get index(): number {
+    return this._index
   }
 
   get element(): Entry {
@@ -19,11 +25,15 @@ class ParentEntry {
   }
 
   isValid(): boolean {
-    return this._linkedOnKeys.length > 0
+    return this._field.length > 0
+  }
+
+  isInArray(): boolean {
+    return this._index != -1
   }
 }
 
 export {
-  ParentEntry as default,
-  ParentEntry
+  Link as default,
+  Link
 }
