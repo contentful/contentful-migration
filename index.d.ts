@@ -192,8 +192,8 @@ export interface ITransformEntriesConfig {
    * The return value must be an object with the same keys as specified in to. Their values will be written to the respective entry fields for the current locale (i.e. {nameField: 'myNewValue'}). If it returns undefined, this the values for this locale on the entry will be left untouched.
   */
   transformEntryForLocale: (fromFields: ContentFields, currentLocale: string) => any,
-  /** (optional) – If true, the transformed entries will be published. If false, both will remain in draft state (default true) */
-  shouldPublish?: boolean,
+  /** (optional) – If true, the transformed entries will be published. If false, they will remain in draft state. When the value is set to "preserve" items will be published only if the original entry was published as well (default true) */
+  shouldPublish?: boolean|"preserve",
   /** (optional) – If true, references to the old entry are replaced with references to the new entry (default true) */
   updateReferences?: boolean,
   /** (optional) – If true, the original entry is removed after the new entry was created (default true) */

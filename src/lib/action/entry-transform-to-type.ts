@@ -11,7 +11,7 @@ class EntryTransformToTypeAction extends APIAction {
   private targetContentTypeId: string
   private transformEntryForLocale: (inputFields: any, locale: string) => Promise<any>
   private identityKey: (fromFields: any) => Promise<string>
-  private shouldPublish: boolean
+  private shouldPublish: boolean|"preserve"
   private removeOldEntries: boolean
   private updateReferences: boolean
 
@@ -73,7 +73,7 @@ class EntryTransformToTypeAction extends APIAction {
         continue
       }
 
-      if (false && !hasEntry) {
+      if (!hasEntry) {
         // TODO: How do we handle already existing links?
         // Usually you would not want to derive the contents again
         // But what if the previous round may not have been complete
@@ -93,7 +93,7 @@ class EntryTransformToTypeAction extends APIAction {
 
         }
         await api.saveEntry(targetEntry.id)
-        if (this.shouldPublish) {
+        if (this.shouldPublish===true || (this.shouldPublish==="preserve" && entry.isPublished) ) {
           await api.publishEntry(targetEntry.id)
         }
       }
@@ -108,10 +108,11 @@ class EntryTransformToTypeAction extends APIAction {
             saveEntry = true
           }
 
-          if (saveEntry) {
-            api.saveEntry(parent.element.id)              
-            if (this.shouldPublish) {
-              await api.publishEntry(parent.element.id)
+            if (saveEntry) {
+              await api.saveEntry(parent.element.id)              
+              if (this.shouldPublish===true || (this.shouldPublish==="preserve" && parent.element.isPublished) ) {
+                await api.publishEntry(parent.element.id)
+              }
             }
           }
         }
