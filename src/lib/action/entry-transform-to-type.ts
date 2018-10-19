@@ -100,27 +100,21 @@ class EntryTransformToTypeAction extends APIAction {
 
       if(this.updateReferences) {
         // TODO
-        const parents = await api.getParentEntries(entry.id);
-
+        const parents = await api.getParentEntries(entry.id, locales);
         for (const parent of parents) {
-          let saveEntry = false;
-          const fields = parent.fields;
-          Object.keys(fields).forEach(key => {
-            if (fields[key] instanceof Object && fields[key][locales[0]].sys.id === entry.id) {
-              console.log(JSON.stringify(fields[key]));
-
-              // replace linked ids?
-              for (const locale of locales) {
-                parent.setFieldForLocale(key, locale, newEntryId);
-                saveEntry = true;
-              }
+          const keys = parent.linkedOnKeys;
+          for (const key of keys) {
+            let saveEntry = false
+            for (const locale of locales) {
+              parent.element.setFieldForLocale(key, locale, newEntryId)
+              saveEntry = true
             }
-          });
 
-          if (saveEntry) {
-            await api.saveEntry(parent.id);
-            if (this.shouldPublish===true || (this.shouldPublish==="preserve" && parent.isPublished) ) {
-              await api.publishEntry(parent.id)
+            if (saveEntry) {
+              await api.saveEntry(parent.element.id)              
+              if (this.shouldPublish===true || (this.shouldPublish==="preserve" && parent.element.isPublished) ) {
+                await api.publishEntry(parent.element.id)
+              }
             }
           }
         }
