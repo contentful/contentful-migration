@@ -21,9 +21,9 @@ class EntryTransformToTypeAction extends APIAction {
     this.sourceContentTypeId = entryTransformation.sourceContentType
     this.targetContentTypeId = entryTransformation.targetContentType
     this.identityKey = entryTransformation.identityKey
-    this.shouldPublish = entryTransformation.shouldPublish || true
-    this.removeOldEntries = entryTransformation.removeOldEntries || true
-    this.updateReferences = entryTransformation.updateReferences || true
+    this.shouldPublish = entryTransformation.shouldPublish || false
+    this.removeOldEntries = entryTransformation.removeOldEntries || false
+    this.updateReferences = entryTransformation.updateReferences || false
     this.transformEntryForLocale = entryTransformation.transformEntryForLocale
   }
 
@@ -73,7 +73,7 @@ class EntryTransformToTypeAction extends APIAction {
         continue
       }
 
-      if (!hasEntry) {
+      if (false && !hasEntry) {
         // TODO: How do we handle already existing links?
         // Usually you would not want to derive the contents again
         // But what if the previous round may not have been complete
@@ -98,15 +98,25 @@ class EntryTransformToTypeAction extends APIAction {
         }
       }
 
+      if(this.updateReferences) {
+        // TODO
+        const parents = await api.getParentEntries(entry.id);
+
+        for (const parent of parents) {
+          const fields = parent.fields;
+          Object.keys(fields).forEach(key => {
+            if (fields[key] instanceof Object) {
+              console.log(JSON.stringify(fields[key]));
+            }
+          });
+        }
+      }
+
       if(this.removeOldEntries) {
         if(entry.isPublished) {
           await api.unpublishEntry(entry.id);
         }
         await api.deleteEntry(entry.id);
-      }
-
-      if(this.updateReferences) {
-        // TODO
       }
     }
   }

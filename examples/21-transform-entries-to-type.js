@@ -6,17 +6,17 @@ module.exports = function (migration) {
   // please run 01-angry-dog first, add some entries
 
   // create new content type
-  const copycat = migration.createContentType('copycat').name('copy of dog').description('super friendly copy dog');
+  // const copycat = migration.createContentType('copycat').name('copy of dog').description('super friendly copy dog');
 
-  // add field
-  copycat.createField('woofs', {
-    name: 'woof woof woof',
-    type: 'Symbol',
-    required: true
-  });
+  // // add field
+  // copycat.createField('woofs', {
+  //   name: 'woof woof woof',
+  //   type: 'Symbol',
+  //   required: true
+  // });
 
-  // add entry title
-  copycat.displayField('woofs');
+  // // add entry title
+  // copycat.displayField('woofs');
 
   migration.transformEntriesToType({
     sourceContentType: 'dog',
@@ -24,8 +24,7 @@ module.exports = function (migration) {
     from: ['woofs'],
     to: ['woofs'],
     shouldPublish: false,
-    link: false,
-    unlink: false,
+    updateReferences: true,
     removeOldEntries: false,
     identityKey: function(fields) {
       const value = fields.woofs['en-US'].toString()

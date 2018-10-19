@@ -412,6 +412,12 @@ class OfflineAPI {
     return entries
   }
 
+  async getParentEntries(childId: string): Promise<Entry[]> {
+    const entries = this.entries.filter((entry)=> entry.id !== childId && JSON.stringify(entry.fields).includes(childId));
+
+    return entries;
+  }
+
   async getLocalesForSpace () {
     return this.locales
   }
