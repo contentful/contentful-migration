@@ -43,6 +43,19 @@ class Entry {
     this._fields[id] = field
   }
 
+  replaceArrayLinkForLocale (id: string, locale: string, index: number, linkId: string) {
+    const link = { sys: { id: linkId, type: 'Link', linkType: 'Entry'}}
+    const field = this._fields[id] || {}
+    const fieldArray = field[locale] as Array<any> || new Array<any>()
+
+    if (fieldArray.length < index + 1) {
+      fieldArray.push(link)
+    }
+    else {
+      fieldArray.splice(index, 1, link);
+    }
+  }
+
   get version () {
     return this._version
   }
