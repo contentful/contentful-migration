@@ -194,20 +194,15 @@ describe('Transform Entry to Type Action', function () {
 
     expect(batches[0].requests[3].method).to.eql('PUT')
     expect(batches[0].requests[3].url).to.eql('/entries/123/published')
-
-
-    expect(true).to.eql(true);
   })
-  
 
   it('preserves publish state of child entry', async (): Promise<void> => {
-
     const transformation: TransformEntryToType = {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
       from: ['name'],
       updateReferences: true,
-      shouldPublish: "preserve",
+      shouldPublish: 'preserve',
       identityKey: async () => '345',
       transformEntryForLocale: async (fields, locale) => { return { name: fields['name'][locale] } }
     }
@@ -256,7 +251,6 @@ describe('Transform Entry to Type Action', function () {
     expect(batches[0].requests[1].method).to.eql('PUT')
     expect(batches[0].requests[1].url).to.eql('/entries/345/published')
   })
-  
 
   it('preserves publish state of parent entry', async (): Promise<void> => {
 
@@ -265,7 +259,7 @@ describe('Transform Entry to Type Action', function () {
       targetContentType: 'copycat',
       from: ['name'],
       updateReferences: true,
-      shouldPublish: "preserve",
+      shouldPublish: 'preserve',
       identityKey: async () => '345',
       transformEntryForLocale: async (fields, locale) => { return { name: fields['name'][locale] } }
     }
@@ -314,7 +308,6 @@ describe('Transform Entry to Type Action', function () {
     expect(batches[0].requests[2].method).to.eql('PUT')
     expect(batches[0].requests[2].url).to.eql('/entries/123/published')
   })
-  
 
   it('disable publishing of any entry', async (): Promise<void> => {
 
