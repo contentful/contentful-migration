@@ -16,7 +16,6 @@ describe('Transform Entry to Type Action', function () {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
       from: ['name'],
-      to: ['name'],
       identityKey: async (fields) => fields.name['en-US'].toString(),
       transformEntryForLocale: async (fields, locale) => { return { name: 'x' + fields['name'][locale] } }
     }
@@ -55,7 +54,6 @@ describe('Transform Entry to Type Action', function () {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
       from: ['name'],
-      to: ['name'],
       updateReferences: true,
       identityKey: async (fields) => fields.name['en-US'].toString(),
       transformEntryForLocale: async (fields, locale) => { return { name: fields['name'][locale] } }
@@ -108,7 +106,6 @@ describe('Transform Entry to Type Action', function () {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
       from: ['name'],
-      to: ['name'],
       removeOldEntries: true,
       identityKey: async (fields) => fields.name['en-US'].toString(),
       transformEntryForLocale: async (fields, locale) => { return { name: fields['name'][locale] } }
@@ -148,7 +145,6 @@ describe('Transform Entry to Type Action', function () {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
       from: ['name'],
-      to: ['name'],
       updateReferences: true,
       shouldPublish: true,
       identityKey: async () => '345',
@@ -210,7 +206,6 @@ describe('Transform Entry to Type Action', function () {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
       from: ['name'],
-      to: ['name'],
       updateReferences: true,
       shouldPublish: "preserve",
       identityKey: async () => '345',
@@ -269,7 +264,6 @@ describe('Transform Entry to Type Action', function () {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
       from: ['name'],
-      to: ['name'],
       updateReferences: true,
       shouldPublish: "preserve",
       identityKey: async () => '345',
@@ -328,7 +322,6 @@ describe('Transform Entry to Type Action', function () {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
       from: ['name'],
-      to: ['name'],
       updateReferences: true,
       shouldPublish: false,
       identityKey: async () => '345',
@@ -383,7 +376,6 @@ describe('Transform Entry to Type Action', function () {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
       from: ['name'],
-      to: ['name'],
       updateReferences: true,
       shouldPublish: false,
       identityKey: async () => '345',
