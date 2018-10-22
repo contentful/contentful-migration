@@ -102,4 +102,43 @@ describe('Transform Entry to Type Action', function () {
     const updatedParent = batches[0].requests[1].data as APIEntry
     expect(updatedParent.fields['pet']['en-US'].sys.id).to.eql('bob')
   })
+
+  it('removes source entry when configured', async function () {
+    const transformation: TransformEntryToType = {
+      sourceContentType: 'dog',
+      targetContentType: 'copycat',
+      from: ['name'],
+      to: ['name'],
+      removeOldEntries: true,
+      identityKey: async (fields) => fields.name['en-US'].toString(),
+      transformEntryForLocale: async (fields, locale) => { return { name: fields['name'][locale] } }
+    }
+
+    const action = new EntryTransformToTypeAction(transformation)
+    const entries = [
+      new Entry(makeApiEntry({
+        id: '246',
+        contentTypeId: 'dog',
+        version: 1,
+        fields: {
+          name: {
+            'en-US': 'bob',
+            'hawaii': 'haukea'
+          }
+        }
+      }))
+    ]
+    const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
+    await api.startRecordingRequests(null)
+
+    await action.applyTo(api)
+    await api.stopRecordingRequests()
+    const batches = await api.getRequestBatches()
+
+    expect(batches[0].requests.length).to.eq(2)
+
+    const deleteRequest = batches[0].requests[1]
+    expect(deleteRequest.method).to.eql('DELETE')
+    expect(deleteRequest.url).to.eql('/entries/246')
+  })
 })
