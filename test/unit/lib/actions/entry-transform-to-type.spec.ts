@@ -376,4 +376,42 @@ describe('Transform Entry to Type Action', function () {
 
     expect(batches[0].requests.length).to.eq(2)
   })
+
+  it('skip entry when undefined', async (): Promise<void> => {
+
+    const transformation: TransformEntryToType = {
+      sourceContentType: 'dog',
+      targetContentType: 'copycat',
+      from: ['name'],
+      to: ['name'],
+      updateReferences: true,
+      shouldPublish: false,
+      identityKey: async () => '345',
+      transformEntryForLocale: async () => { return undefined }
+    }
+
+    const action = new EntryTransformToTypeAction(transformation)
+    const entries = [
+      new Entry(makeApiEntry({
+        id: '246',
+        contentTypeId: 'dog',
+        version: 1,
+        fields: {
+          name: {
+            'en-US': 'bob',
+            'hawaii': 'haukea'
+          }
+        }
+      }))
+    ]
+
+    const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
+    await api.startRecordingRequests(null)
+
+    await action.applyTo(api)
+    await api.stopRecordingRequests()
+    const batches = await api.getRequestBatches()
+
+    expect(batches[0].requests.length).to.eq(0)
+  })
 })
