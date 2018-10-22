@@ -399,4 +399,81 @@ describe('Transform Entry to Type Action', function () {
 
     expect(batches[0].requests.length).to.eq(0)
   })
+
+  it('passes only specified fields from source entry', async function () {
+    let passedObject: any = {}
+
+    const transformation: TransformEntryToType = {
+      sourceContentType: 'dog',
+      targetContentType: 'copycat',
+      from: ['name'],
+      updateReferences: true,
+      identityKey: async (fields) => fields.name['en-US'].toString(),
+      transformEntryForLocale: async (fields, locale) => { passedObject = fields; return { name: fields['name'][locale] } }
+    }
+
+    const action = new EntryTransformToTypeAction(transformation)
+    const entries = [
+      new Entry(makeApiEntry({
+        id: '246',
+        contentTypeId: 'dog',
+        version: 1,
+        fields: {
+          name: {
+            'en-US': 'bob'
+          },
+
+          other: {
+            'en-US': 'x'
+          }
+        }
+      }))
+    ]
+    const api = new OfflineApi(new Map(), entries, ['en-US' ])
+    await api.startRecordingRequests(null)
+
+    await action.applyTo(api)
+    await api.stopRecordingRequests()
+
+    expect(passedObject).to.have.property('name')
+    expect(passedObject).to.not.have.property('other')
+  })
+
+  it('passes all fields from source entry if no source field specified', async function () {
+    let passedObject: any = {}
+
+    const transformation: TransformEntryToType = {
+      sourceContentType: 'dog',
+      targetContentType: 'copycat',
+      updateReferences: true,
+      identityKey: async (fields) => fields.name['en-US'].toString(),
+      transformEntryForLocale: async (fields, locale) => { passedObject = fields; return { name: fields['name'][locale] } }
+    }
+
+    const action = new EntryTransformToTypeAction(transformation)
+    const entries = [
+      new Entry(makeApiEntry({
+        id: '246',
+        contentTypeId: 'dog',
+        version: 1,
+        fields: {
+          name: {
+            'en-US': 'bob'
+          },
+
+          other: {
+            'en-US': 'x'
+          }
+        }
+      }))
+    ]
+    const api = new OfflineApi(new Map(), entries, ['en-US' ])
+    await api.startRecordingRequests(null)
+
+    await action.applyTo(api)
+    await api.stopRecordingRequests()
+
+    expect(passedObject).to.have.property('name')
+    expect(passedObject).to.have.property('other')
+  })
 })

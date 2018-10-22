@@ -5,7 +5,7 @@ import Entry from '../entities/entry'
 import * as _ from 'lodash'
 
 class EntryTransformToTypeAction extends APIAction {
-  private fromFields: string[]
+  private fromFields?: string[]
   private sourceContentTypeId: string
   private targetContentTypeId: string
   private transformEntryForLocale: (inputFields: any, locale: string) => Promise<any>
@@ -31,7 +31,7 @@ class EntryTransformToTypeAction extends APIAction {
     const locales: string[] = await api.getLocalesForSpace()
 
     for (const entry of entries) {
-      const inputs = _.pick(entry.fields, this.fromFields)
+      const inputs = this.fromFields ? _.pick(entry.fields, this.fromFields) : entry.fields
       const newEntryId = await this.identityKey(inputs)
       const hasEntry = await api.hasEntry(newEntryId)
 
