@@ -141,4 +141,239 @@ describe('Transform Entry to Type Action', function () {
     expect(deleteRequest.method).to.eql('DELETE')
     expect(deleteRequest.url).to.eql('/entries/246')
   })
+
+  it('publishes all changed entries', async (): Promise<void> => {
+
+    const transformation: TransformEntryToType = {
+      sourceContentType: 'dog',
+      targetContentType: 'copycat',
+      from: ['name'],
+      to: ['name'],
+      updateReferences: true,
+      shouldPublish: true,
+      identityKey: async () => '345',
+      transformEntryForLocale: async (fields, locale) => { return { name: fields['name'][locale] } }
+    }
+
+    const action = new EntryTransformToTypeAction(transformation)
+    const entries = [
+      new Entry(makeApiEntry({
+        id: '246',
+        contentTypeId: 'dog',
+        version: 1,
+        fields: {
+          name: {
+            'en-US': 'bob',
+            'hawaii': 'haukea'
+          }
+        }
+      })),
+      new Entry(makeApiEntry({
+        id: '123',
+        contentTypeId: 'person',
+        version: 1,
+        fields: {
+          pet: {
+            'en-US': {
+              sys: {
+                type: 'Link',
+                id: '246'
+              }
+            }
+          }
+        }
+      }))
+    ]
+    const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
+    await api.startRecordingRequests(null)
+
+    await action.applyTo(api)
+    await api.stopRecordingRequests()
+    const batches = await api.getRequestBatches()
+
+    expect(batches[0].requests.length).to.eq(4)
+
+    expect(batches[0].requests[1].method).to.eql('PUT')
+    expect(batches[0].requests[1].url).to.eql('/entries/345/published')
+
+    expect(batches[0].requests[3].method).to.eql('PUT')
+    expect(batches[0].requests[3].url).to.eql('/entries/123/published')
+
+
+    expect(true).to.eql(true);
+  })
+  
+
+  it('preserves publish state of child entry', async (): Promise<void> => {
+
+    const transformation: TransformEntryToType = {
+      sourceContentType: 'dog',
+      targetContentType: 'copycat',
+      from: ['name'],
+      to: ['name'],
+      updateReferences: true,
+      shouldPublish: "preserve",
+      identityKey: async () => '345',
+      transformEntryForLocale: async (fields, locale) => { return { name: fields['name'][locale] } }
+    }
+
+    const action = new EntryTransformToTypeAction(transformation)
+    const entries = [
+      new Entry(makeApiEntry({
+        id: '246',
+        contentTypeId: 'dog',
+        version: 1,
+        fields: {
+          name: {
+            'en-US': 'bob',
+            'hawaii': 'haukea'
+          }
+        }
+      })),
+      new Entry(makeApiEntry({
+        id: '123',
+        contentTypeId: 'person',
+        version: 1,
+        fields: {
+          pet: {
+            'en-US': {
+              sys: {
+                type: 'Link',
+                id: '246'
+              }
+            }
+          }
+        }
+      }))
+    ]
+
+    entries[0].isPublished = true
+
+    const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
+    await api.startRecordingRequests(null)
+
+    await action.applyTo(api)
+    await api.stopRecordingRequests()
+    const batches = await api.getRequestBatches()
+
+    expect(batches[0].requests.length).to.eq(3)
+
+    expect(batches[0].requests[1].method).to.eql('PUT')
+    expect(batches[0].requests[1].url).to.eql('/entries/345/published')
+  })
+  
+
+  it('preserves publish state of parent entry', async (): Promise<void> => {
+
+    const transformation: TransformEntryToType = {
+      sourceContentType: 'dog',
+      targetContentType: 'copycat',
+      from: ['name'],
+      to: ['name'],
+      updateReferences: true,
+      shouldPublish: "preserve",
+      identityKey: async () => '345',
+      transformEntryForLocale: async (fields, locale) => { return { name: fields['name'][locale] } }
+    }
+
+    const action = new EntryTransformToTypeAction(transformation)
+    const entries = [
+      new Entry(makeApiEntry({
+        id: '246',
+        contentTypeId: 'dog',
+        version: 1,
+        fields: {
+          name: {
+            'en-US': 'bob',
+            'hawaii': 'haukea'
+          }
+        }
+      })),
+      new Entry(makeApiEntry({
+        id: '123',
+        contentTypeId: 'person',
+        version: 1,
+        fields: {
+          pet: {
+            'en-US': {
+              sys: {
+                type: 'Link',
+                id: '246'
+              }
+            }
+          }
+        }
+      }))
+    ]
+
+    entries[1].isPublished = true
+
+    const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
+    await api.startRecordingRequests(null)
+
+    await action.applyTo(api)
+    await api.stopRecordingRequests()
+    const batches = await api.getRequestBatches()
+
+    expect(batches[0].requests.length).to.eq(3)
+
+    expect(batches[0].requests[2].method).to.eql('PUT')
+    expect(batches[0].requests[2].url).to.eql('/entries/123/published')
+  })
+  
+
+  it('disable publishing of any entry', async (): Promise<void> => {
+
+    const transformation: TransformEntryToType = {
+      sourceContentType: 'dog',
+      targetContentType: 'copycat',
+      from: ['name'],
+      to: ['name'],
+      updateReferences: true,
+      shouldPublish: false,
+      identityKey: async () => '345',
+      transformEntryForLocale: async (fields, locale) => { return { name: fields['name'][locale] } }
+    }
+
+    const action = new EntryTransformToTypeAction(transformation)
+    const entries = [
+      new Entry(makeApiEntry({
+        id: '246',
+        contentTypeId: 'dog',
+        version: 1,
+        fields: {
+          name: {
+            'en-US': 'bob',
+            'hawaii': 'haukea'
+          }
+        }
+      })),
+      new Entry(makeApiEntry({
+        id: '123',
+        contentTypeId: 'person',
+        version: 1,
+        fields: {
+          pet: {
+            'en-US': {
+              sys: {
+                type: 'Link',
+                id: '246'
+              }
+            }
+          }
+        }
+      }))
+    ]
+
+    entries[1].isPublished = true
+
+    const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
+    await api.startRecordingRequests(null)
+
+    await action.applyTo(api)
+    await api.stopRecordingRequests()
+    const batches = await api.getRequestBatches()
+
+    expect(batches[0].requests.length).to.eq(2)
+  })
 })
