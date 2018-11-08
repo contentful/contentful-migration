@@ -7,7 +7,7 @@ export interface Movement {
   afterField(field: string)
 }
 
-type FieldType = 'Symbol' | 'Text' | 'Integer' | 'Number' | 'Date' | 'Boolean' | 'Object' | 'Location' | 'Array' | 'Link'
+type FieldType = 'Symbol' | 'Text' | 'Integer' | 'Number' | 'Date' | 'Boolean' | 'Object' | 'Location' | 'RichText' | 'Array' | 'Link'
 
 export interface IFieldOptions {
   newId?: string

@@ -346,7 +346,7 @@ module.exports = {
       },
       propertyOneOf: function (prop, id) {
         return result => {
-          const oneOf = '["Symbol", "Text", "Integer", "Number", "Date", "Boolean", "Object", "Link", "Array", "Location"]';
+          const oneOf = '["Symbol", "Text", "Integer", "Number", "Date", "Boolean", "Object", "Link", "Array", "Location", "RichText"]';
           expect(result.code).to.eql(1);
           expect(result.stdout).not.to.be.empty();
           expect(result.stderr).not.to.be.empty();

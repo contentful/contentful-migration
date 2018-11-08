@@ -70,7 +70,8 @@ const fieldSchema = Joi.object().keys({
     'Object',
     'Link',
     'Array',
-    'Location'
+    'Location',
+    'RichText'
   ).required(),
   linkType: enforceDependency({
     valid: Joi.string().valid('Asset', 'Entry'),
