@@ -1,7 +1,7 @@
 import test from 'blue-tape'
 import sinon from 'sinon'
 
-import {spaceMock, setupEntitiesMock, organizationMock, userMock, personalAccessTokenMock} from './mocks/entities'
+import {spaceMock, setupEntitiesMock, organizationMock, userMock, personalAccessTokenMock, usagePeriodMock} from './mocks/entities'
 import setupHttpMock from './mocks/http'
 import createContentfulApi, {__RewireAPI__ as createContentfulApiRewireApi} from '../../lib/create-contentful-api'
 import {makeGetEntityTest, makeGetCollectionTest, makeEntityMethodFailingTest} from './test-creators/static-entity-methods'
@@ -86,6 +86,22 @@ test('API call getOrganizations', (t) => {
 test('API call getOrganizations fails', (t) => {
   makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'getOrganizations'
+  })
+})
+
+// Usage Periods tests
+
+test('API call getUsagePeriods', (t) => {
+  makeGetCollectionTest(t, setup, teardown, {
+    entityType: 'usagePeriod',
+    mockToReturn: usagePeriodMock,
+    methodToTest: 'getUsagePeriods'
+  })
+})
+
+test('API call getUsagePeriods fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getUsagePeriods'
   })
 })
 

@@ -9,7 +9,6 @@ export function makeGetEntityTest (t, setup, teardown, {entityType, mockToReturn
   const {api, entitiesMock} = setup(Promise.resolve({}))
   entitiesMock[entityType][`wrap${upperFirst(entityType)}${wrapperSuffix}`]
     .returns(mockToReturn)
-
   return api[methodToTest]('eid')
     .then((r) => {
       t.looseEqual(r, mockToReturn)
