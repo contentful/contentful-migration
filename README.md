@@ -369,6 +369,7 @@ Creates a field with provided `id`.
   - `Boolean`
   - `Object`
   - `Location`
+  - `RichText`
   - `Array` (requires `items`)
   - `Link` (requires `linkType`)
 - **`items : Object`** _(required for type 'Array')_ – Defines the items of an Array field.
