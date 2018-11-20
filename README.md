@@ -110,6 +110,7 @@
   - Change editorInterface
   - Reset editorInterface
   - Copy editorInterface
+  - Move field
 
 ## Pre-requisites && Installation
 
@@ -424,7 +425,53 @@ This implies that associated content for the field will be lost.
 Changes the field's ID.
 
 **`currentId : string`** – The current ID of the field.
+
 **`newId : string`** – The new ID for the field.
+
+#### `moveField (id)` : MovableField
+
+Move the field (position of the field in the web editor)
+
+**`id: string`** - The ID of the field to move
+
+`.moveField(id)` returns a movable field type which must be called with a direction function:
+
+- **`.toTheTop()`**
+- **`.toTheBottom()`**
+- **`.beforeField(fieldId)`**
+- **`.afterField(fieldId)`**
+
+Example:
+```
+module.exports = function (migration) {
+  const food = migration.editContentType('food');
+
+  food.createField('calories')
+    .type('Number')
+    .name('How many calories does it have?');
+
+  food.createField('sugar')
+    .type('Number')
+    .name('Amount of sugar');
+
+  food.createField('vegan')
+    .type('Boolean')
+    .name('Vegan friendly');
+
+  food.createField('producer')
+    .type('Symbol')
+    .name('Food producer');
+
+  food.createField('gmo')
+    .type('Boolean')
+    .name('Genetically modified food');
+
+  food.moveField('calories').toTheTop();
+  food.moveField('sugar').toTheBottom();
+  food.moveField('producer').beforeField('vegan');
+  food.moveField('gmo').afterField('vegan');
+};
+```
 
 #### `changeEditorInterface (fieldId, widgetId[, settings])` : void
 
