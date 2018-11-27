@@ -13,7 +13,7 @@ const ENVIRONMENT_ID = uuid.v4();
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 
-describe.only('apply validations migration examples', function () {
+describe('apply validations migration examples', function () {
   this.timeout(30000);
   let environmentId;
 
