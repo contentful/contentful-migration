@@ -74,4 +74,12 @@ describe('apply validations migration examples', function () {
         done();
       }));
   });
+
+  it.only('successfully creates field with rich text and validations', function (done) {
+    cli()
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/22-create-rich-text-field-with-validation.js`)
+      .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
+      .stdout(/.* Migration successful/)
+      .end(done);
+  });
 });
