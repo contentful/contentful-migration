@@ -6,8 +6,8 @@ const validation = (name, constraint) => Joi.object({
 })
 
 const range = (type) => Joi.object({
-  min: Joi[type]().required().allow(null),
-  max: Joi[type]().required().allow(null)
+  min: Joi[type]().allow(null),
+  max: Joi[type]().allow(null)
 })
 
 const linkContentType = validation('linkContentType', Joi.array().items(Joi.string()))

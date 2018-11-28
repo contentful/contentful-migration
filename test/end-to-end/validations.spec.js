@@ -57,7 +57,7 @@ describe('apply validations migration examples', function () {
         disabled: false,
         localized: false,
         omitted: false,
-        validations: [{ assetImageDimensions: { width: { min: 1199, max: null }, height: { min: null, max: null } } }]
+        validations: [{ assetImageDimensions: { width: { min: 1199, max: null }, height: { min: 1343 } } }]
       }
     ];
 
@@ -66,19 +66,12 @@ describe('apply validations migration examples', function () {
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
       .expect(assert.plans.contentType.create('dieatary-food', { name: 'Dieatary Food', description: 'Food with up to 500 calories' }))
       .expect(assert.plans.field.create('name', { type: 'Symbol', name: 'name of the food', validations: [{ unique: true }] }))
-      .expect(assert.plans.field.create('calories', { type: 'Link', linkType: 'Asset', name: 'amount of calories the food contains', validations: [{ assetImageDimensions: { width: { min: 1199, max: null }, height: { min: null, max: null } } }] }))
+      .expect(assert.plans.field.create('calories', { type: 'Link', linkType: 'Asset', name: 'amount of calories the food contains', validations: [{ assetImageDimensions: { width: { min: 1199, max: null }, height: { min: 1343 } } }] }))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
         const contentType = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'dieatary-food');
         expect(contentType.fields).to.eql(expectedFields);
         done();
       }));
-  });
-
-  it('attempts to apply 19-bad-validations migration and fails', function (done) {
-    cli()
-      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/19-bad-validations.js`)
-      .stderr(/The property "validations.0.assetImageDimensions.width.max" is required on the field "assetTest"./)
-      .end(done);
   });
 });
