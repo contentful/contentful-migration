@@ -33,7 +33,8 @@ const assetFileSize = validation('assetFileSize', range('number'))
 
 const nodes = validation('nodes', Joi.object({
   'embedded-entry-block': Joi.array(),
-  'embedded-entry-inline': Joi.array()
+  'embedded-entry-inline': Joi.array(),
+  'entry-hyperlink': Joi.array()
 }))
 
 const enabledMarks = validation('enabledMarks', Joi.array().items(Joi.string().valid('bold', 'italic', 'code', 'underline')))
