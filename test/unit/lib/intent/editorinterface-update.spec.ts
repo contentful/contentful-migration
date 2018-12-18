@@ -35,15 +35,15 @@ describe('EditorInterfaceUpdateIntent', function () {
         sections: [
           {
             details: [
-              '\u001b[3mwidgetId\u001b[23m: \"markdown\"'
+              chalk`{italic widgetId}: \"markdown\"`
             ],
-            heading: 'Update field \u001b[33mname\u001b[39m'
+            heading: chalk`Update field {yellow name}`
           },
           {
             details: [
-              '\u001b[3mwidgetId\u001b[23m: \"singleLine\"'
+              chalk`{italic widgetId}: \"singleLine\"`
             ],
-            heading: 'Update field \u001b[33mdescription\u001b[39m'
+            heading: chalk`Update field {yellow description}`
           }
         ]
       })
