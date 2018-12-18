@@ -32,7 +32,20 @@ describe('EditorInterfaceUpdateIntent', function () {
       expect(message1).to.eql({
         heading: chalk`Update editor interface for Content Type {bold.yellow test}`,
         details: [],
-        sections: []
+        sections: [
+          {
+            details: [
+              '\u001b[3mwidgetId\u001b[23m: \"markdown\"'
+            ],
+            heading: 'Update field \u001b[33mname\u001b[39m'
+          },
+          {
+            details: [
+              '\u001b[3mwidgetId\u001b[23m: \"singleLine\"'
+            ],
+            heading: 'Update field \u001b[33mdescription\u001b[39m'
+          }
+        ]
       })
     })
   })

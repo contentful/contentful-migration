@@ -6,7 +6,6 @@ import { difference, groupBy, flatten, values, entries } from 'lodash'
 function mergeSections (sections: Section[]): Section {
   const sameSections = groupBy(sections, 'heading')
   const mergedSections: Section[] = []
-
   for (const [heading, sections] of entries(sameSections)) {
     const details: string[] = flatten(sections.map((section: Section) => section.details || []))
     const section: Section = { heading, details }
@@ -147,6 +146,7 @@ export default class ComposedIntent implements Intent {
     const contentTypeUpdates = this.intents.filter((intent) => intent.isContentTypeUpdate())
 
     const fieldCreates = this.intents.filter((intent) => intent.isFieldCreate())
+    const editorInterfaceUpdates = this.intents.filter((intent) => intent.isEditorInterfaceUpdate())
 
     const createdFieldIds = fieldCreates.map((createIntent) => createIntent.getFieldId())
     const fieldUpdates = this.intents.filter((intent) => intent.isFieldUpdate())
@@ -162,6 +162,18 @@ export default class ComposedIntent implements Intent {
 
     let createSections = []
 
+    for (const editorInterfaceIntent of editorInterfaceUpdates) {
+      const updateSections = editorInterfaceIntent.toPlanMessage().sections
+      const [updateSection] = updateSections
+      const heading = updateSection.heading
+      const mergedSection = mergeSections(updateSections) || { details: [] }
+      const nextUpdateSection = {
+        ...mergedSection,
+        heading
+      }
+      createSections.push(nextUpdateSection)
+    }
+    debugger
     for (const createIntent of fieldCreates) {
       const fieldId = createIntent.getFieldId()
       const [createSection] = createIntent.toPlanMessage().sections
