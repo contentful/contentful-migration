@@ -35,6 +35,11 @@ class EntryTransformToTypeAction extends APIAction {
       const newEntryId = await this.identityKey(inputs)
       const hasEntry = await api.hasEntry(newEntryId)
 
+      if(hasEntry) {
+        await api.recordRuntimeError(new Error(`Entry with id '${newEntryId}' already exists`))
+        continue
+      }
+
       let skipEntry = true
       let fieldsForTargetEntry = {}
 
@@ -71,25 +76,23 @@ class EntryTransformToTypeAction extends APIAction {
         continue
       }
 
-      if (!hasEntry) {
-        const targetEntry = await api.createEntry(this.targetContentTypeId, newEntryId)
+      const targetEntry = await api.createEntry(this.targetContentTypeId, newEntryId)
 
-        // we are not skipping this source entry and the target entry does not yet exist,
-        // so now is the time to write the collected target entry values to the offline API
-        for (const [fieldId, localizedField] of _.entries(fieldsForTargetEntry)) {
-          if (!targetEntry.fields[fieldId]) {
-            targetEntry.setField(fieldId, {})
-          }
-
-          for (const [locale, localizedValue] of _.entries(localizedField)) {
-            targetEntry.setFieldForLocale(fieldId, locale, localizedValue)
-          }
-
+      // we are not skipping this source entry and the target entry does not yet exist,
+      // so now is the time to write the collected target entry values to the offline API
+      for (const [fieldId, localizedField] of _.entries(fieldsForTargetEntry)) {
+        if (!targetEntry.fields[fieldId]) {
+          targetEntry.setField(fieldId, {})
         }
-        await api.saveEntry(targetEntry.id)
-        if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && entry.isPublished) ) {
-          await api.publishEntry(targetEntry.id)
+
+        for (const [locale, localizedValue] of _.entries(localizedField)) {
+          targetEntry.setFieldForLocale(fieldId, locale, localizedValue)
         }
+
+      }
+      await api.saveEntry(targetEntry.id)
+      if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && entry.isPublished) ) {
+        await api.publishEntry(targetEntry.id)
       }
 
       // look for entries linking to the old entry and replace them with references to the new entry
