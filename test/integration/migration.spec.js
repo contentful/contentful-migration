@@ -209,7 +209,7 @@ describe('the migration', function () {
         validations: [
           { assetImageDimensions:
             { width: { min: 1199, max: null },
-              height: { min: null, max: null } }
+              height: { min: 1343 } }
           }
         ]
       }

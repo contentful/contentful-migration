@@ -52,8 +52,8 @@ export default class Fetcher implements APIFetcher {
     // Excluding editor interface intents here since, API-wise, editor interfaces don't require
     // to know the full details about the associated content type.
     const ids: string[] = _.uniq(intentList.getIntents()
-      .filter((intent) => (!intent.isEditorInterfaceUpdate() &&
-                           !intent.isEditorInterfaceCopy() &&
+      .filter((intent) => (!intent.isEditorInterfaceUpdate() ||
+                           !intent.isEditorInterfaceCopy() ||
                            !intent.isEditorInterfaceReset()))
       .reduce((ids, intent) => {
         const intentIds = intent.getRelatedContentTypeIds()

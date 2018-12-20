@@ -6,8 +6,8 @@ const validation = (name, constraint) => Joi.object({
 })
 
 const range = (type) => Joi.object({
-  min: Joi[type]().required().allow(null),
-  max: Joi[type]().required().allow(null)
+  min: Joi[type]().allow(null),
+  max: Joi[type]().allow(null)
 })
 
 const linkContentType = validation('linkContentType', Joi.array().items(Joi.string()))
@@ -31,6 +31,33 @@ const assetImageDimensions = validation('assetImageDimensions', Joi.object({
 
 const assetFileSize = validation('assetFileSize', range('number'))
 
+const nodes = validation('nodes', Joi.object({
+  'embedded-entry-block': Joi.array(),
+  'embedded-entry-inline': Joi.array(),
+  'entry-hyperlink': Joi.array()
+}))
+
+const enabledMarks = validation('enabledMarks', Joi.array().items(Joi.string().valid('bold', 'italic', 'code', 'underline')))
+
+const enabledNodeTypes = validation('enabledNodeTypes', Joi.array().items(Joi.string().valid(
+  'heading-1',
+  'heading-2',
+  'heading-3',
+  'heading-4',
+  'heading-5',
+  'heading-6',
+  'ordered-list',
+  'unordered-list',
+  'hr',
+  'blockquote',
+  'embedded-entry-block',
+  'embedded-asset-block',
+  'hyperlink',
+  'entry-hyperlink',
+  'asset-hyperlink',
+  'embedded-entry-inline'
+)))
+
 const fieldValidations = Joi.alternatives().try(
   linkContentType,
   inValidation,
@@ -41,7 +68,10 @@ const fieldValidations = Joi.alternatives().try(
   unique,
   dateRange,
   assetImageDimensions,
-  assetFileSize
+  assetFileSize,
+  nodes,
+  enabledMarks,
+  enabledNodeTypes
 )
 
 export default fieldValidations

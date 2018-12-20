@@ -32,7 +32,20 @@ describe('EditorInterfaceUpdateIntent', function () {
       expect(message1).to.eql({
         heading: chalk`Update editor interface for Content Type {bold.yellow test}`,
         details: [],
-        sections: []
+        sections: [
+          {
+            details: [
+              chalk`{italic widgetId}: \"markdown\"`
+            ],
+            heading: chalk`Update field {yellow name}`
+          },
+          {
+            details: [
+              chalk`{italic widgetId}: \"singleLine\"`
+            ],
+            heading: chalk`Update field {yellow description}`
+          }
+        ]
       })
     })
   })
