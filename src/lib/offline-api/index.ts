@@ -362,8 +362,8 @@ class OfflineAPI {
     this.currentRequestsRecorded.push(publishEntryRequest(entry.clone()))
 
     // Mutate version bump
+    entry.publishedVersion = entry.version
     entry.version = entry.version + 1
-    entry.isPublished = true
 
     return entry
   }
@@ -383,8 +383,8 @@ class OfflineAPI {
     this.currentRequestsRecorded.push(unpublishEntryRequest(entry.clone()))
 
     // Mutate version bump
+    entry.publishedVersion = null
     entry.version = entry.version + 1
-    entry.isPublished = false
 
     return entry
   }

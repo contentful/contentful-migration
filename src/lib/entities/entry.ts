@@ -7,14 +7,14 @@ class Entry {
   private _contentTypeId: string
   private _version: number
   private _fields: object
-  private _isPublished: boolean
+  private _publishedVersion?: number
 
   constructor (entry: APIEntry) {
     this._id = entry.sys.id
     this._fields = entry.fields
     this._version = entry.sys.version
     this._contentTypeId = entry.sys.contentType.sys.id
-    this._isPublished = !isNullOrUndefined(entry.sys.publishedVersion)
+    this._publishedVersion = entry.sys.publishedVersion
   }
 
   get id () {
@@ -64,17 +64,22 @@ class Entry {
   }
 
   get isPublished () {
-    return this._isPublished
+    return !isNullOrUndefined(this._publishedVersion)
   }
 
-  set isPublished (published: boolean) {
-    this._isPublished = published
+  get publishedVersion () {
+    return this._publishedVersion
+  }
+
+  set publishedVersion (version: number|null) {
+    this._publishedVersion = version
   }
 
   toApiEntry (): APIEntry {
     const sys = {
       id: this.id,
       version: this.version,
+      publishedVersion: this.publishedVersion,
       contentType: {
         sys: {
           type: 'Link',

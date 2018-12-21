@@ -144,6 +144,7 @@ describe('EntryDeriveIntent', function () {
           id: 'doge',
           contentTypeId: 'entry',
           version: 3,
+          publishedVersion: 2,
           fields: {
             text: {
               'en-US': 'Such text, wow',
@@ -165,6 +166,7 @@ describe('EntryDeriveIntent', function () {
           id: 'clickbait',
           contentTypeId: 'entry',
           version: 3,
+          publishedVersion: 2,
           fields: {
             text: {
               'en-US': 'You won\'t believe what happened next',
@@ -186,6 +188,7 @@ describe('EntryDeriveIntent', function () {
           id: 'categorical-imperative',
           contentTypeId: 'entry',
           version: 3,
+          publishedVersion: 2,
           fields: {
             text: {
               'en-US': 'Act only according to that maxim whereby you can, at the same time, will that it should become a universal law',
@@ -210,6 +213,7 @@ describe('EntryDeriveIntent', function () {
           id: 'mcauthorface',
           contentTypeId: 'author',
           version: 2,
+          publishedVersion: 1,
           fields: {
             firstName: {
               'en-US': 'Author'
@@ -226,6 +230,7 @@ describe('EntryDeriveIntent', function () {
           id: 'ikant',
           contentTypeId: 'author',
           version: 2,
+          publishedVersion: 1,
           fields: {
             firstName: {
               'en-US': 'Immanuel'
@@ -378,6 +383,7 @@ describe('EntryDeriveIntent', function () {
           id: 'doge',
           contentTypeId: 'entry',
           version: 3,
+          publishedVersion: 2,
           fields: {
             text: {
               'en-US': 'Such text, wow',
@@ -399,6 +405,7 @@ describe('EntryDeriveIntent', function () {
           id: 'clickbait',
           contentTypeId: 'entry',
           version: 3,
+          publishedVersion: 2,
           fields: {
             text: {
               'en-US': 'You won\'t believe what happened next',
@@ -442,6 +449,7 @@ describe('EntryDeriveIntent', function () {
           id: 'mcauthorface',
           contentTypeId: 'author',
           version: 2,
+          publishedVersion: 1,
           fields: {
             firstName: {
               'en-US': 'Author'

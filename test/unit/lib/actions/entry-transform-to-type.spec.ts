@@ -212,7 +212,8 @@ describe('Transform Entry to Type Action', function () {
       new Entry(makeApiEntry({
         id: '246',
         contentTypeId: 'dog',
-        version: 1,
+        version: 2,
+        publishedVersion: 1,
         fields: {
           name: {
             'en-US': 'bob',
@@ -236,8 +237,6 @@ describe('Transform Entry to Type Action', function () {
         }
       }))
     ]
-
-    entries[0].isPublished = true
 
     const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
     await api.startRecordingRequests(null)
@@ -280,7 +279,8 @@ describe('Transform Entry to Type Action', function () {
       new Entry(makeApiEntry({
         id: '123',
         contentTypeId: 'person',
-        version: 1,
+        version: 2,
+        publishedVersion: 1,
         fields: {
           pet: {
             'en-US': {
@@ -293,8 +293,6 @@ describe('Transform Entry to Type Action', function () {
         }
       }))
     ]
-
-    entries[1].isPublished = true
 
     const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
     await api.startRecordingRequests(null)
@@ -337,7 +335,8 @@ describe('Transform Entry to Type Action', function () {
       new Entry(makeApiEntry({
         id: '123',
         contentTypeId: 'person',
-        version: 1,
+        version: 2,
+        publishedVersion: 1,
         fields: {
           pet: {
             'en-US': {
@@ -350,8 +349,6 @@ describe('Transform Entry to Type Action', function () {
         }
       }))
     ]
-
-    entries[1].isPublished = true
 
     const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
     await api.startRecordingRequests(null)
