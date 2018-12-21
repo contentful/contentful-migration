@@ -51,7 +51,7 @@ class Entry {
     if (fieldArray.length < index + 1) {
       fieldArray.push(link)
     } else {
-      fieldArray.splice(index, 1, link)
+      fieldArray[index] = link
     }
   }
 
