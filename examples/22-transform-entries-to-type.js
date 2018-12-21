@@ -20,7 +20,6 @@ module.exports = function (migration) {
     sourceContentType: 'dog',
     targetContentType: 'copycat',
     from: ['woofs'],
-    to: ['woofs'],
     shouldPublish: false,
     updateReferences: true,
     removeOldEntries: true,
