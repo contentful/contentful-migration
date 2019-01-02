@@ -72,6 +72,67 @@ describe('Entry Derive', function () {
     expect(updateEntryWithLinkFields.ownerRef['en-US'].sys.id).to.eq(batches[0].requests[0].data.sys.id); // id of linked object is same as id of target object
   });
 
+  it('respects shouldPublish', async function () {
+    const action = new EntryDeriveAction('dog', {
+      derivedContentType: 'owner',
+      from: ['owner'],
+      toReferenceField: 'ownerRef',
+      derivedFields: ['firstName', 'lastName'],
+      identityKey: async (fromFields) => {
+        return fromFields.owner['en-US'].toLowerCase().replace(' ', '-');
+      },
+      shouldPublish: false,
+      deriveEntryForLocale: async (inputFields, locale) => {
+        if (locale !== 'en-US') {
+          return;
+        }
+        const [firstName, lastName] = inputFields.owner[locale].split(' ');
+        return {
+          firstName,
+          lastName
+        };
+      }
+    });
+
+    const contentTypes = new Map();
+    contentTypes.set('dog', new ContentType({
+      sys: {
+        id: 'dog'
+      },
+      fields: [{
+        name: 'ownerRef',
+        id: 'ownerRef',
+        type: 'Symbol'
+      }]
+    })
+    );
+
+    const entries = [
+      new Entry(makeApiEntry({
+        id: '246',
+        contentTypeId: 'dog',
+        version: 1,
+        fields: {
+          owner: {
+            'en-US': 'john doe'
+          }
+        }
+      }))
+    ];
+
+    const api = new OfflineApi(contentTypes, entries, ['en-US']);
+    api.startRecordingRequests(null);
+    await action.applyTo(api);
+    api.stopRecordingRequests();
+    const batches = await api.getRequestBatches();
+    expect(batches[0].requests.length).to.eq(2);
+
+    expect(batches[0].requests[0].data.sys.publishedVersion).to.eql(undefined);
+    expect(batches[0].requests[0].data.sys.version).to.eql(0);
+    expect(batches[0].requests[1].data.sys.publishedVersion).to.eql(undefined);
+    expect(batches[0].requests[1].data.sys.version).to.eql(1);
+  });
+
   it('derives an entry from n to n', async function () {
     const action = new EntryDeriveAction('dog', {
       derivedContentType: 'owner',
