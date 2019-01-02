@@ -488,7 +488,8 @@ Changes the editor interface of given field's ID.
 - **`falseLabel : string`** _(only for fields of type boolean)_ – Shows this text next to the radio button that sets this value to `false`. Defaults to “No”.
 - **`stars : number`** _(only for fields of type rating)_ – Number of stars to select from. Defaults to 5.
 - **`format : string`** _(only for fields of type datePicker)_ – One of “dateonly”, “time”, “timeZ” (default). Specifies whether to show the clock and/or timezone inputs.
-- **`ampm : string`** _(only for fields of type datePicker)_ – Specifies which type of clock to use. Must be one of the stringss “12” or “24” (default).
+- **`ampm : string`** _(only for fields of type datePicker)_ – Specifies which type of clock to use. Must be one of the strings “12” or “24” (default).
+- **`bulkEditing : boolean`** _(only for fields of type Array)_ – Specifies whether bulk editing of linked entries is possible.
 
 #### `resetEditorInterface (fieldId)` : void
 
