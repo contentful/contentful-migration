@@ -417,10 +417,10 @@ class OfflineAPI {
 
     const links: Link[] = []
 
-    for(let entry of this.entries) {
+    for (let entry of this.entries) {
       const fields = entry.fields
-      for(let key of Object.keys(fields)) {
-        for(let locale of locales) {
+      for (let key of Object.keys(fields)) {
+        for (let locale of locales) {
           const field = entry.fields[key][locale]
           if (field instanceof Object && field.sys instanceof Object && field.sys.id === childId) {
             links.push(new Link(entry, key, locale))

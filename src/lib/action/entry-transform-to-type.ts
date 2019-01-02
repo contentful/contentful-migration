@@ -35,7 +35,7 @@ class EntryTransformToTypeAction extends APIAction {
       const newEntryId = await this.identityKey(inputs)
       const hasEntry = await api.hasEntry(newEntryId)
 
-      if(hasEntry) {
+      if (hasEntry) {
         await api.recordRuntimeError(new Error(`Entry with id '${newEntryId}' already exists`))
         continue
       }
