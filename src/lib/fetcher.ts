@@ -14,23 +14,27 @@ export default class Fetcher implements APIFetcher {
   }
 
   async getEntriesInIntents (intentList: IntentList): Promise<APIEntry[]> {
+    const loadAllEntries = intentList.getIntents().some((intent) => intent.requiresAllEntries())
+
     const ids: string[] = _.uniq(
       intentList.getIntents()
-      .filter((intent) => intent.isContentTransform() || intent.isEntryDerive())
+      .filter((intent) => intent.isContentTransform() || intent.isEntryDerive() || intent.isEntryTransformToType())
       .map((intent) => intent.getContentTypeId())
     )
 
-    if (ids.length === 0) {
+    if (!loadAllEntries && ids.length === 0) {
       return []
     }
 
     let entries: APIEntry[] = []
     let skip: number = 0
 
+    const filterSpecification = loadAllEntries ? '' : `sys.contentType.sys.id[in]=${ids.join(',')}&`
+
     while (true) {
       const response = await this.makeRequest({
         method: 'GET',
-        url: `/entries?sys.contentType.sys.id[in]=${ids.join(',')}&skip=${skip}`
+        url: `/entries?${filterSpecification}skip=${skip}`
       })
 
       entries = entries.concat(response.items)
@@ -48,8 +52,8 @@ export default class Fetcher implements APIFetcher {
     // Excluding editor interface intents here since, API-wise, editor interfaces don't require
     // to know the full details about the associated content type.
     const ids: string[] = _.uniq(intentList.getIntents()
-      .filter((intent) => (!intent.isEditorInterfaceUpdate() &&
-                           !intent.isEditorInterfaceCopy() &&
+      .filter((intent) => (!intent.isEditorInterfaceUpdate() ||
+                           !intent.isEditorInterfaceCopy() ||
                            !intent.isEditorInterfaceReset()))
       .reduce((ids, intent) => {
         const intentIds = intent.getRelatedContentTypeIds()

@@ -10,6 +10,7 @@ import SchemaValidator from './validator/schema/index'
 import TypeChangeValidator from './validator/type-change'
 import { Intent } from '../interfaces/intent'
 import APIEntry from '../interfaces/api-entry'
+import Link from '../entities/link'
 
 interface RequestBatch {
   intent: Intent
@@ -47,6 +48,7 @@ const saveEntryRequest = function (entry: Entry): Request {
     data: entry.toApiEntry()
   }
 }
+
 const publishEntryRequest = function (entry: Entry): Request {
   return {
     method: 'PUT',
@@ -54,6 +56,26 @@ const publishEntryRequest = function (entry: Entry): Request {
     headers: {
       'X-Contentful-Version': entry.version,
       'X-Contentful-Content-Type': entry.contentTypeId
+    }
+  }
+}
+
+const unpublishEntryRequest = function (entry: Entry): Request {
+  return {
+    method: 'DELETE',
+    url: `/entries/${entry.id}/published`,
+    headers: {
+      'X-Contentful-Version': entry.version
+    }
+  }
+}
+
+const deleteEntryRequest = function (entry: Entry): Request {
+  return {
+    method: 'DELETE',
+    url: `/entries/${entry.id}`,
+    headers: {
+      'X-Contentful-Version': entry.version
     }
   }
 }
@@ -340,7 +362,47 @@ class OfflineAPI {
     this.currentRequestsRecorded.push(publishEntryRequest(entry.clone()))
 
     // Mutate version bump
+    entry.publishedVersion = entry.version
     entry.version = entry.version + 1
+
+    return entry
+  }
+
+  async unpublishEntry (id: string): Promise<Entry> {
+    this.assertRecording()
+
+    const hasEntry = this.entries.some((entry) => entry.id === id)
+
+    if (!hasEntry) {
+      throw new Error(`Cannot unpublish Entry ${id} because it does not exist`)
+    }
+
+    const entry = this.entries.find((entry) => entry.id === id)
+
+    // Store clone as a request
+    this.currentRequestsRecorded.push(unpublishEntryRequest(entry.clone()))
+
+    // Mutate version bump
+    entry.publishedVersion = null
+    entry.version = entry.version + 1
+
+    return entry
+  }
+
+  async deleteEntry (id: string): Promise<Entry> {
+    this.assertRecording()
+
+    const hasEntry = this.entries.some((entry) => entry.id === id)
+
+    if (!hasEntry) {
+      throw new Error(`Cannot delete Entry ${id} because it does not exist`)
+    }    // Store clone as a request
+    const entry = this.entries.find((entry) => entry.id === id)
+
+    const index = this.entries.indexOf(entry)
+    this.entries.splice(index, 1)
+
+    this.currentRequestsRecorded.push(deleteEntryRequest(entry.clone()))
 
     return entry
   }
@@ -349,6 +411,33 @@ class OfflineAPI {
     const entries = this.entries.filter((entry) => entry.contentTypeId === ctId)
 
     return entries
+  }
+
+  async getLinks (childId: string, locales: string[]): Promise<Link[]> {
+
+    const links: Link[] = []
+
+    for (let entry of this.entries) {
+      const fields = entry.fields
+      for (let key of Object.keys(fields)) {
+        for (let locale of locales) {
+          const field = entry.fields[key][locale]
+          if (field instanceof Object && field.sys instanceof Object && field.sys.id === childId) {
+            links.push(new Link(entry, key, locale))
+          }
+          if (field instanceof Array) {
+            const fieldArray = field as any[]
+            fieldArray.forEach((fieldEntry, index) => {
+              if (fieldEntry instanceof Object && fieldEntry.sys instanceof Object && fieldEntry.sys.id === childId) {
+                links.push(new Link(entry, key, locale, index))
+              }
+            })
+          }
+        }
+      }
+    }
+
+    return links
   }
 
   async getLocalesForSpace () {

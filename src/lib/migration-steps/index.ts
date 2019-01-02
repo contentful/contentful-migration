@@ -1,5 +1,4 @@
 'use strict'
-import EntryDerive from '../interfaces/entry-derive'
 
 import * as Bluebird from 'bluebird'
 import actionCreators from './action-creators'
@@ -8,6 +7,8 @@ import Intent from '../intent'
 import DispatchProxy from './dispatch-proxy'
 import { omit } from 'lodash'
 import ContentTransform from '../interfaces/content-transform'
+import EntryDerive from '../interfaces/entry-derive'
+import TransformEntryToType from '../interfaces/entry-transform-to-type'
 import { ClientConfig } from '../../bin/lib/config'
 
 const createInstanceIdManager = () => {
@@ -226,6 +227,14 @@ export async function migration (migrationCreator: Function, makeRequest: Functi
       const instanceId = instanceIdManager.getNew(id)
 
       dispatch(actionCreators.contentType.deriveLinkedEntries(id, instanceId, stripped, callsite))
+    },
+
+    transformEntriesToType: function (transformation): void {
+      const callsite = getFirstExternalCaller()
+      const stripped = omit(transformation, 'contentType') as TransformEntryToType
+      const instanceId = instanceIdManager.getNew(transformation.sourceContentType)
+
+      dispatch(actionCreators.contentType.transformEntriesToType(instanceId, stripped, callsite))
     }
   }
 

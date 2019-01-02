@@ -68,7 +68,8 @@ describe('payload validation', function () {
         'Date',
         'Boolean',
         'Object',
-        'Location'
+        'Location',
+        'RichText'
       ]
 
       for (const type of types) {
@@ -97,7 +98,7 @@ describe('payload validation', function () {
           .name('invalid')
       }, [])
 
-      const valid = `["Symbol", "Text", "Integer", "Number", "Date", "Boolean", "Object", "Link", "Array", "Location"]`
+      const valid = `["Symbol", "Text", "Integer", "Number", "Date", "Boolean", "Object", "Link", "Array", "Location", "RichText"]`
       expect(errors).to.eql([
         [
           {
