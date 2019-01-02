@@ -1,6 +1,7 @@
-import ContentTransform from '../interfaces/content-transform'
 import * as Intents from '../intent/index'
+import ContentTransform from '../interfaces/content-transform'
 import EntryDerive from '../interfaces/entry-derive'
+import TransformEntryToType from '../interfaces/entry-transform-to-type'
 
 const actionCreators = {
   contentType: {
@@ -74,6 +75,20 @@ const actionCreators = {
       payload: {
         derivation,
         contentTypeId: id
+      }
+    }),
+    transformEntriesToType: (instanceId: number, entryTransformationToType: TransformEntryToType, callsite): Intents.EntryTransformToType => new Intents.EntryTransformToType({
+      type: 'contentType/transformEntriesToType',
+      meta: {
+        contentTypeInstanceId: `contentType/${entryTransformationToType.sourceContentType}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        entryTransformationToType,
+        contentTypeId: entryTransformationToType.sourceContentType
       }
     }),
     changeEditorInterface: (id, instanceId, callsite, fieldId, widgetId, settings = {}): Intents.EditorInterfaceUpdate => new Intents.EditorInterfaceUpdate({
