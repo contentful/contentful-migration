@@ -2,6 +2,8 @@ import EntryDerive from '../interfaces/entry-derive'
 import { APIAction } from './action'
 import { OfflineAPI } from '../offline-api'
 import { ContentType } from '../entities/content-type'
+import isDefined from '../utils/is-defined'
+
 import Entry from '../entities/entry'
 import * as _ from 'lodash'
 
@@ -22,7 +24,7 @@ class EntryDeriveAction extends APIAction {
     this.derivedContentType = entryDerivation.derivedContentType
     this.deriveEntryForLocale = entryDerivation.deriveEntryForLocale
     this.identityKey = entryDerivation.identityKey
-    this.shouldPublish = entryDerivation.shouldPublish || true
+    this.shouldPublish = isDefined(entryDerivation.shouldPublish) ? entryDerivation.shouldPublish : true
   }
 
   async applyTo (api: OfflineAPI) {

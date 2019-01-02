@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash'
 import APIEntry from '../interfaces/api-entry'
-import { isNullOrUndefined } from 'util'
+import isDefined from '../utils/is-defined'
 
 class Entry {
   private _id: string
@@ -64,7 +64,7 @@ class Entry {
   }
 
   get isPublished () {
-    return !isNullOrUndefined(this._publishedVersion)
+    return isDefined(this._publishedVersion)
   }
 
   get publishedVersion () {
