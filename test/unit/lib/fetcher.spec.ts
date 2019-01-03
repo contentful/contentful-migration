@@ -78,14 +78,24 @@ describe('Fetcher', function () {
         method: 'GET',
         url: '/entries?sys.contentType.sys.id=foo'
       })
-      .resolves({ items: ['item', 'item'] })
+      .resolves({
+        skip: 0,
+        limit: 2,
+        total: 2,
+        items: ['item', 'item']
+      })
 
     request
       .withArgs({
         method: 'GET',
         url: '/entries?sys.contentType.sys.id=bar'
       })
-      .resolves({ items: [] })
+      .resolves({
+        skip: 0,
+        limit: 2,
+        total: 0,
+        items: []
+      })
 
     const intentList = new IntentList(intents)
 
@@ -171,7 +181,10 @@ describe('Fetcher', function () {
           description: 'A plant!',
           fields: []
         }
-      ]
+      ],
+      skip: 0,
+      limit: 4,
+      total: 4
     })
 
     const intentList = new IntentList(intents)
@@ -181,7 +194,7 @@ describe('Fetcher', function () {
 
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: '/content_types?sys.id[in]=person,dog,cat,plant'
+      url: `/content_types?sys.id[in]=person,dog,cat,plant&skip=0`
     })
     expect(contentTypes).to.eql([
       {
@@ -268,7 +281,10 @@ describe('Fetcher', function () {
             }
           ]
         }
-      ]
+      ],
+      skip: 0,
+      limit: 0,
+      total: 2
     })
 
     const intentList = new IntentList(intents)
@@ -278,7 +294,7 @@ describe('Fetcher', function () {
 
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: '/content_types?sys.id[in]=dog,owner'
+      url: '/content_types?sys.id[in]=dog,owner&skip=0'
     })
   })
 
@@ -362,5 +378,61 @@ describe('Fetcher', function () {
       ]
     })
     expect(editorInterfaces).to.eql(result)
+  })
+
+  it('fetches all locales in the space', async function () {
+    const request = sinon.stub()
+    request
+      .withArgs({
+        method: 'GET',
+        url: '/locales?skip=0'
+      })
+      .resolves({
+        skip: 0,
+        limit: 2,
+        total: 6,
+        items: [{ code: 'a' }, { code: 'b' }]
+      })
+    request
+      .withArgs({
+        method: 'GET',
+        url: '/locales?skip=2'
+      })
+      .resolves({
+        skip: 2,
+        limit: 4,
+        total: 6,
+        items: [{ code: 'c' }, { code: 'd' }]
+      })
+    request
+      .withArgs({
+        method: 'GET',
+        url: '/locales?skip=4'
+      })
+      .resolves({
+        skip: 4,
+        limit: 6,
+        total: 6,
+        items: [{ code: 'e' }, { code: 'f' }]
+      })
+
+    const fetcher = new Fetcher(request)
+    const localeCodes = await fetcher.getLocalesForSpace()
+
+    expect(request).to.have.been.calledWith({
+      method: 'GET',
+      url: '/locales?skip=0'
+    })
+    expect(request).to.have.been.calledWith({
+      method: 'GET',
+      url: '/locales?skip=2'
+    })
+    expect(request).to.have.been.calledWith({
+      method: 'GET',
+      url: '/locales?skip=4'
+    })
+
+    const result = ['a', 'b', 'c', 'd', 'e', 'f']
+    expect(localeCodes).to.eql(result)
   })
 })
