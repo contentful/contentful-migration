@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "outDir": "./built",
+    "allowJs": true,
+    "target": "es2017",
+    "module": "commonjs",
+    "lib": [
+      "es2015",
+      "es2016",
+      "es2017",
+      "esnext"
+    ],
+    "sourceMap": true,
+    "typeRoots": [
+      "./typings",
+      "./node_modules/@types"
+    ],
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  },
+  "include": [
+    "./src/**/*",
+    "./test/**/*"
+  ]
+}
