@@ -5,15 +5,15 @@ import { getConfig } from '../../../../src/bin/lib/config'
 
 const fileConfig = {
   cmaToken: process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN
-};
+}
 
 describe('Config', function () {
   beforeEach(function () {
-    writeFileSync(resolve('/tmp', '.contentfulrc.json'), JSON.stringify(fileConfig));
-  });
+    writeFileSync(resolve('/tmp', '.contentfulrc.json'), JSON.stringify(fileConfig))
+  })
 
   it('reads the contentfulrc.json', async function () {
-    const config = getConfig({});
+    const config = getConfig({})
     expect(config.accessToken).to.eql(process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN)
   })
 
@@ -21,13 +21,13 @@ describe('Config', function () {
     const token = process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN
 
     process.env.CONTENTFUL_MANAGEMENT_ACCESS_TOKEN = 'schnitzel'
-    const config = getConfig({});
+    const config = getConfig({})
     expect(config.accessToken).to.eql('schnitzel')
     process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN = token
   })
 
   it('prefers handed in config over env config', async function () {
-    const config = getConfig({accessToken: 'fooMyBar'});
+    const config = getConfig({accessToken: 'fooMyBar'})
     expect(config.accessToken).to.eql('fooMyBar')
   })
 })
