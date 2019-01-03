@@ -27,7 +27,8 @@ export default class Fetcher implements APIFetcher {
     }
 
     const filter = {
-      'sys.contentType.sys.id[in]': ids.join(',')
+      'sys.contentType.sys.id[in]': ids.join(','),
+      'sys.archivedAt[exists]': 'false'
     }
 
     const entries = await this.fetchAllPaginatedItems<APIEntry>('/entries', filter)

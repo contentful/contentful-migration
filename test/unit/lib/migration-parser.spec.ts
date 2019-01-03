@@ -3,7 +3,7 @@
 const { expect } = require('chai')
 import createMigrationParser from '../../../src/lib/migration-parser'
 
-describe.only('Migration parser', function () {
+describe('Migration parser', function () {
   describe('when transforming content', function () {
     it('returns all collected errors', async function () {
       const fakeMakeRequest = (config) => {
@@ -25,7 +25,7 @@ describe.only('Migration parser', function () {
           }
         }
 
-        if (config.url.indexOf('/entries?sys.contentType.sys.id[in]=foo,cat&skip=0') !== -1) {
+        if (config.url.indexOf('/entries?sys.contentType.sys.id[in]=foo,cat&sys.archivedAt[exists]=false&skip=0') !== -1) {
           return {
             total: 2,
             skip: 0,
@@ -130,7 +130,7 @@ describe.only('Migration parser', function () {
           }
         }
 
-        if (config.url === '/entries?sys.contentType.sys.id[in]=foo&skip=0') {
+        if (config.url === '/entries?sys.contentType.sys.id[in]=foo&sys.archivedAt[exists]=false&skip=0') {
           return {
             total: 2,
             skip: 0,
