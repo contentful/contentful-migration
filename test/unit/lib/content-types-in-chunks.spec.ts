@@ -7,6 +7,8 @@ import {migration as migrationSteps } from '../../../src/lib/migration-steps'
 import IntentList from '../../../src/lib/intent-list'
 import Fetcher from '../../../src/lib/fetcher'
 
+const noOp = () => undefined
+
 describe('Content Type fetcher', function () {
   it('fetches all the Content Types in the plan', async function () {
     const intents = await migrationSteps(function up (migration) {
@@ -32,7 +34,7 @@ describe('Content Type fetcher', function () {
 
       migration.deleteContentType('dog')
       migration.deleteContentType('plant')
-    }, () => {}, {})
+    }, noOp, {})
 
     const request = sinon.stub()
 

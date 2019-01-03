@@ -5,8 +5,10 @@ import { expect } from 'chai'
 import { PlanMessage } from '../../../../src/lib/interfaces/plan-message'
 import chalk from 'chalk'
 
+const noOp = () => undefined
+
 const composedIntent = async function (migration): Promise<ComposedIntent> {
-  const intents = await migrationSteps(migration, () => {}, {})
+  const intents = await migrationSteps(migration, noOp, {})
   const list = new IntentList(intents)
 
   return list.compressed().getIntents()[0] as ComposedIntent

@@ -5,8 +5,10 @@ import IntentList from '../../../../src/lib/intent-list'
 import { Intent } from '../../../../src/lib/interfaces/intent'
 import chalk from 'chalk'
 
+const noOp = () => undefined
+
 const composedIntent = async function (migration): Promise<Intent[]> {
-  const intents = await migrationSteps(migration, () => {}, {})
+  const intents = await migrationSteps(migration, noOp, {})
   const list = new IntentList(intents)
 
   return list.compressed().getIntents()

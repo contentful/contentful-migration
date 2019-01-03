@@ -3,6 +3,8 @@ import IntentList from '../../../../../src/lib/intent-list'
 import validate from '../../../../../src/lib/migration-chunks/validation'
 import { ContentType } from '../../../../../src/lib/entities/content-type'
 
+const noOp = () => undefined
+
 const stripCallsites = (errors) => {
   return errors.map((error) => {
     delete error.details.intent.package
@@ -14,7 +16,7 @@ const stripCallsites = (errors) => {
 }
 
 const validateChunks = async function (migration, testCts: any[]) {
-  const intents = await migrationSteps(migration, () => {}, {})
+  const intents = await migrationSteps(migration, noOp, {})
   const list = new IntentList(intents)
 
   const existingCts: ContentType[] = testCts.map((ct) => {

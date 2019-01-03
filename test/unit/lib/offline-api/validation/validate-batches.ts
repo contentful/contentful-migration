@@ -3,8 +3,10 @@ import { ContentType } from '../../../../../src/lib/entities/content-type'
 import { OfflineAPI } from '../../../../../src/lib/offline-api/index'
 import { migration } from '../../../../../src/lib/migration-steps'
 
+const noOp = () => undefined
+
 const validateBatches = async function (runMigration, contentTypes) {
-  const intents = await migration(runMigration, () => {}, {})
+  const intents = await migration(runMigration, noOp, {})
   const list = new IntentList(intents)
 
   const existingCTs: Map<String, ContentType> = new Map()

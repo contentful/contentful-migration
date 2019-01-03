@@ -7,6 +7,8 @@ import Fetcher from '../../../src/lib/fetcher'
 import { ContentType } from '../../../src/lib/entities/content-type'
 import { APIEditorInterfaces } from '../../../src/lib/interfaces/content-type'
 
+const noOp = () => undefined
+
 describe('Fetcher', function () {
   it('fetches all required Entries in the plan', async function () {
     const intents = await buildIntents(function up (migration) {
@@ -70,7 +72,7 @@ describe('Fetcher', function () {
     const intents = await buildIntents(function up (migration) {
       migration.deleteContentType('foo')
       migration.deleteContentType('bar')
-    }, () => {}, {})
+    }, noOp, {})
 
     const request = sinon.stub()
     request
@@ -149,7 +151,7 @@ describe('Fetcher', function () {
 
       migration.deleteContentType('dog')
       migration.deleteContentType('plant')
-    }, () => {}, {})
+    }, noOp, {})
 
     const request = sinon.stub()
 
@@ -250,7 +252,7 @@ describe('Fetcher', function () {
           }
         }
       })
-    }, () => {}, {})
+    }, noOp, {})
 
     const request = sinon.stub()
 
@@ -304,7 +306,7 @@ describe('Fetcher', function () {
       foo.changeEditorInterface('title', 'singleLine')
       const bar = migration.editContentType('bar')
       bar.changeEditorInterface('desc', 'markdown')
-    }, () => {}, {})
+    }, noOp, {})
 
     const request = sinon.stub()
     request

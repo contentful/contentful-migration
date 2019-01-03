@@ -3,6 +3,8 @@ import { expect } from 'chai'
 import IntentList from '../../../../src/lib/intent-list/index'
 import { migration as parseIntoIntents } from '../../../../src/lib/migration-steps/index'
 
+const noOp = () => undefined
+
 describe('Intent List', function () {
   it('initializes correctly', async function () {
     const intents = await parseIntoIntents(function up (migration) {
@@ -34,7 +36,7 @@ describe('Intent List', function () {
       address.createField('houseExtension', {
         type: 'Symbol'
       })
-    }, () => {}, {})
+    }, noOp, {})
     const intentList = new IntentList(intents)
     expect(intentList.getIntents().length).to.equal(15)
   })
@@ -57,7 +59,7 @@ describe('Intent List', function () {
 
       person.editField('fullName').localized(true)
       fullName.required(true)
-    }, () => {}, {})
+    }, noOp, {})
 
     const intentList = new IntentList(intents)
     const compressedList = intentList.compressed()
