@@ -28,7 +28,7 @@ describe('Fetcher', function () {
     request
       .withArgs({
         method: 'GET',
-        url: '/entries?sys.contentType.sys.id[in]=newsArticle&skip=0'
+        url: '/entries?sys.contentType.sys.id[in]=newsArticle&sys.archivedAt[exists]=false&skip=0'
       })
       .resolves({
         skip: 0,
@@ -39,7 +39,7 @@ describe('Fetcher', function () {
     request
       .withArgs({
         method: 'GET',
-        url: '/entries?sys.contentType.sys.id[in]=newsArticle&skip=4'
+        url: '/entries?sys.contentType.sys.id[in]=newsArticle&sys.archivedAt[exists]=false&skip=4'
       })
       .resolves({
         skip: 4,
@@ -55,11 +55,11 @@ describe('Fetcher', function () {
 
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: '/entries?sys.contentType.sys.id[in]=newsArticle&skip=0'
+      url: '/entries?sys.contentType.sys.id[in]=newsArticle&sys.archivedAt[exists]=false&skip=0'
     })
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: '/entries?sys.contentType.sys.id[in]=newsArticle&skip=4'
+      url: '/entries?sys.contentType.sys.id[in]=newsArticle&sys.archivedAt[exists]=false&skip=4'
     })
 
     const result = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6']
