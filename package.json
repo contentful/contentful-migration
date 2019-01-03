@@ -23,7 +23,8 @@
   },
   "scripts": {
     "clean": "rimraf built",
-    "build": "npm run clean && tsc -p .",
+    "build": "npm run clean && tsc -p tsconfig.json",
+    "build-dev": "npm run clean && tsc -p tsconfig-dev.json",
     "prepare": "npm run build",
     "test": "NOCK_RECORD=0 npm run build && npm run test-unit && npm run test-integration && npm run test-e2e && npm run lint",
     "test-watch": "npm run test-unit -- --watch",
