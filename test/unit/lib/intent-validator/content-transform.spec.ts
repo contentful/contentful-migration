@@ -157,7 +157,7 @@ describe('Content transformation', function () {
                 type: 'contentType/transformEntries'
               }
             },
-            message: '"string" is not a valid type for the content transformation property "shouldPublish". Expected "boolean".',
+            message: '"undefined" is not a valid type for the content transformation property "shouldPublish". Expected "alternatives".',
             type: 'InvalidType'
           }
         ])
