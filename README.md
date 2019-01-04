@@ -325,7 +325,7 @@ For the given (source) content type, transforms all its entries according to the
     - `locale` one of the locales in the space being transformed
   The return value must be an object with the same keys as specified in the `targetContentType`. Their values will be written to the respective entry fields for the current locale (i.e. `{nameField: 'myNewValue'}`). If it returns `undefined`, this the values for this locale on the entry will be left untouched.
 
-  ##### `transformEntriesToType` Example
+##### `transformEntriesToType` Example
 
 ```javascript
 const MurmurHash3 = require('imurmurhash');
