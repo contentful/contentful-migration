@@ -313,9 +313,9 @@ For the given (source) content type, transforms all its entries according to the
 
 **`config : Object`** – Content transformation definition, with the following properties:
 
-- **`sourceContentType : string`** _(required)_ – Content type ID of all source entries
+- **`sourceContentType : string`** _(required)_ – Content type ID of source entries
 - **`targetContentType : string`** _(required)_ – Targeted Content type ID
-- **`from : array`** _(optional)_ – Array of the source field IDs, returns all fields if not configured
+- **`from : array`** _(optional)_ – Array of the source field IDs, returns complete list of fields if not configured
 - **`identityKey: function (fields): string`** _(required)_ - Function to create a new entry ID for the target entry
 - **`shouldPublish : bool | 'preserve'`** _(optional)_ – Flag that specifies publishing of target entries, `preserve` will keep current states of the source entries (default `false`)
 - **`updateReferences : bool`** _(optional)_ – Flag that specifies if linking entries should be updated with target entries (default `false`)
@@ -325,9 +325,11 @@ For the given (source) content type, transforms all its entries according to the
     - `locale` one of the locales in the space being transformed
   The return value must be an object with the same keys as specified in the `targetContentType`. Their values will be written to the respective entry fields for the current locale (i.e. `{nameField: 'myNewValue'}`). If it returns `undefined`, this the values for this locale on the entry will be left untouched.
 
-  ##### `transformEntries` Example
+  ##### `transformEntriesToType` Example
 
 ```javascript
+const MurmurHash3 = require('imurmurhash');
+
 migration.transformEntriesToType({
     sourceContentType: 'dog',
     targetContentType: 'copycat',
