@@ -27,8 +27,14 @@ export default class Fetcher implements APIFetcher {
     }
 
     const filter = {
-      'sys.contentType.sys.id[in]': ids.join(','),
       'sys.archivedAt[exists]': 'false'
+    }
+
+    // If we want to load all entries, we do not need to add the filter specification
+    // that loads just the entries for related content types
+    // If we do, then we specify the list of CTs that we want entries for
+    if (!loadAllEntries) {
+      filter['sys.contentType.sys.id[in]'] = ids.join(',')
     }
 
     const entries = await this.fetchAllPaginatedItems<APIEntry>('/entries', filter)

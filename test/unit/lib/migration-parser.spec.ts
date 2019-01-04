@@ -25,7 +25,7 @@ describe('Migration parser', function () {
           }
         }
 
-        if (config.url.indexOf('/entries?sys.contentType.sys.id[in]=foo,cat&sys.archivedAt[exists]=false&skip=0') !== -1) {
+        if (config.url.indexOf('/entries?sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=foo,cat&skip=0') !== -1) {
           return {
             total: 2,
             skip: 0,
@@ -130,7 +130,7 @@ describe('Migration parser', function () {
           }
         }
 
-        if (config.url === '/entries?sys.contentType.sys.id[in]=foo&sys.archivedAt[exists]=false&skip=0') {
+        if (config.url === '/entries?sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=foo&skip=0') {
           return {
             total: 2,
             skip: 0,
