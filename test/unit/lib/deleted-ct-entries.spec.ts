@@ -7,12 +7,14 @@ import makeApiContentType from '../../helpers/make-api-content-type'
 import { ContentType } from '../../../src/lib/entities/content-type'
 import { expect } from 'chai'
 
+const noOp = () => undefined
+
 describe('Entries fetcher', function () {
   it('adds entries info to content types', async function () {
     const intents = await migrationSteps(function up (migration) {
       migration.deleteContentType('foo')
       migration.deleteContentType('bar')
-    }, () => {}, {})
+    }, noOp, {})
 
     const request = sinon.stub()
     request

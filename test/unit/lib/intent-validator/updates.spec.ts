@@ -109,7 +109,7 @@ describe('migration-steps validation', function () {
 
   describe('when passing the wrong type for a prop', function () {
     it('returns all the validation errors', async function () {
-      const invalidFunction = function () {}
+      const invalidFunction = function () { return undefined }
       const validationErrors = await validateSteps(function up (migration) {
         const person = migration.createContentType('person', {
           description: ['Array']

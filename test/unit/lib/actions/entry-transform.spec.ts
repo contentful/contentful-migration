@@ -38,11 +38,11 @@ describe('Entry Action', function () {
       }))
     ]
     const api = new OfflineApi(new Map(), entries, ['en-US'])
-    api.startRecordingRequests(null)
+    await api.startRecordingRequests(null)
 
     try {
       await action.applyTo(api)
-      api.stopRecordingRequests()
+      await api.stopRecordingRequests()
       const batches = await api.getRequestBatches()
       expect(batches[0].runtimeErrors).to.eql([ourError, ourError])
     } catch (err) {
@@ -86,10 +86,10 @@ describe('Entry Action', function () {
       }))
     ]
     const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
-    api.startRecordingRequests(null)
+    await api.startRecordingRequests(null)
 
     await action.applyTo(api)
-    api.stopRecordingRequests()
+    await api.stopRecordingRequests()
     const batches = await api.getRequestBatches()
     expect(batches[0].requests[0].data.fields).to.eql({
       name: {
@@ -136,10 +136,10 @@ describe('Entry Action', function () {
       }))
     ]
     const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
-    api.startRecordingRequests(null)
+    await api.startRecordingRequests(null)
 
     await action.applyTo(api)
-    api.stopRecordingRequests()
+    await api.stopRecordingRequests()
     const batches = await api.getRequestBatches()
     expect(batches[0].requests).to.eql([])
   })

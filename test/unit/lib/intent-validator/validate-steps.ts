@@ -3,6 +3,8 @@
 import { migration as createSteps } from '../../../../src/lib/migration-steps'
 import IntentList from '../../../../src/lib/intent-list'
 
+const noOp = () => undefined
+
 const stripCallsites = (errors) => {
   return errors.map((error) => {
     delete error.details.intent.package
@@ -15,7 +17,7 @@ const stripCallsites = (errors) => {
 
 export default function createValidator (validators) {
   return async function (migration) {
-    const steps = await createSteps(migration, () => {}, {})
+    const steps = await createSteps(migration, noOp, {})
 
     const stepList = new IntentList(steps)
 
