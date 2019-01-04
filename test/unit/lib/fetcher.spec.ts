@@ -30,7 +30,7 @@ describe('Fetcher', function () {
     request
       .withArgs({
         method: 'GET',
-        url: '/entries?sys.contentType.sys.id[in]=newsArticle&sys.archivedAt[exists]=false&skip=0'
+        url: '/entries?sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=newsArticle&skip=0'
       })
       .resolves({
         skip: 0,
@@ -41,7 +41,7 @@ describe('Fetcher', function () {
     request
       .withArgs({
         method: 'GET',
-        url: '/entries?sys.contentType.sys.id[in]=newsArticle&sys.archivedAt[exists]=false&skip=4'
+        url: '/entries?sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=newsArticle&skip=4'
       })
       .resolves({
         skip: 4,
@@ -57,11 +57,68 @@ describe('Fetcher', function () {
 
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: '/entries?sys.contentType.sys.id[in]=newsArticle&sys.archivedAt[exists]=false&skip=0'
+      url: '/entries?sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=newsArticle&skip=0'
     })
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: '/entries?sys.contentType.sys.id[in]=newsArticle&sys.archivedAt[exists]=false&skip=4'
+      url: '/entries?sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=newsArticle&skip=4'
+    })
+
+    const result = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6']
+    expect(entries).to.eql(result)
+  })
+
+  it('fetches all Entries of all CTs in the plan if an intent needs them all', async function () {
+    const intents = await buildIntents(function up (migration) {
+      migration.transformEntriesToType({
+        sourceContentType: 'sourceContentType',
+        targetContentType: 'targetContentType',
+        updateReferences: true,
+        removeOldEntries: false,
+        from: ['author', 'authorCity'],
+        identityKey: () => 'ID',
+        transformEntryForLocale: function () {
+          return {}
+        }
+      })
+    }, null, null)
+
+    const request = sinon.stub()
+    request
+      .withArgs({
+        method: 'GET',
+        url: '/entries?sys.archivedAt[exists]=false&skip=0'
+      })
+      .resolves({
+        skip: 0,
+        limit: 4,
+        total: 6,
+        items: ['item1', 'item2', 'item3', 'item4']
+      })
+    request
+      .withArgs({
+        method: 'GET',
+        url: '/entries?sys.archivedAt[exists]=false&skip=4'
+      })
+      .resolves({
+        skip: 4,
+        limit: 4,
+        total: 6,
+        items: ['item5', 'item6']
+      })
+
+    const intentList = new IntentList(intents)
+
+    const fetcher = new Fetcher(request)
+    const entries = await fetcher.getEntriesInIntents(intentList)
+
+    expect(request).to.have.been.calledWith({
+      method: 'GET',
+      url: '/entries?sys.archivedAt[exists]=false&skip=0'
+    })
+    expect(request).to.have.been.calledWith({
+      method: 'GET',
+      url: '/entries?sys.archivedAt[exists]=false&skip=4'
     })
 
     const result = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6']
