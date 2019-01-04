@@ -27,7 +27,6 @@ interface Intent {
   isAboutField (): boolean
   isContentTransform (): boolean
   isEntryDerive (): boolean
-  isEntryTransformToType (): boolean
   isEditorInterfaceUpdate (): boolean
   isEditorInterfaceReset (): boolean
   isEditorInterfaceCopy (): boolean

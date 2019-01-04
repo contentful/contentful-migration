@@ -18,7 +18,7 @@ export default class Fetcher implements APIFetcher {
 
     const ids: string[] = _.uniq(
       intentList.getIntents()
-      .filter((intent) => intent.isContentTransform() || intent.isEntryDerive() || intent.isEntryTransformToType())
+      .filter((intent) => intent.isContentTransform() || intent.isEntryDerive())
       .map((intent) => intent.getContentTypeId())
     )
 
@@ -27,8 +27,11 @@ export default class Fetcher implements APIFetcher {
     }
 
     const filter = {
-      'sys.contentType.sys.id[in]': ids.join(','),
       'sys.archivedAt[exists]': 'false'
+    }
+
+    if (ids.length > 0) {
+      filter['sys.contentType.sys.id[in]'] = ids.join(',')
     }
 
     const entries = await this.fetchAllPaginatedItems<APIEntry>('/entries', filter)

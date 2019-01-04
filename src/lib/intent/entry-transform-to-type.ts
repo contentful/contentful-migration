@@ -9,9 +9,6 @@ export default class EntryTransformToTypeIntent extends Intent {
       this.payload.entryTransformationToType.sourceContentType
     ]
   }
-  isEntryTransformToType () {
-    return true
-  }
 
   endsGroup (): boolean {
     return true
