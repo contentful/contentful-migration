@@ -1,10 +1,10 @@
 import * as axios from '@contentful/axios'
 
 export interface Movement {
-  toTheTop()
-  toTheBottom()
-  beforeField(field: string)
-  afterField(field: string)
+  toTheTop(): void
+  toTheBottom(): void
+  beforeField(field: string): void
+  afterField(field: string): void
 }
 
 type FieldType = 'Symbol' | 'Text' | 'Integer' | 'Number' | 'Date' | 'Boolean' | 'Object' | 'Location' | 'RichText' | 'Array' | 'Link'
