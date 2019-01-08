@@ -157,7 +157,7 @@ describe('Content transformation', function () {
                 type: 'contentType/transformEntries'
               }
             },
-            message: '"undefined" is not a valid type for the content transformation property "shouldPublish". Expected "alternatives".',
+            message: '"yes please" is not a valid value for the content transformation property "shouldPublish". Expected type boolean or string value "preserve".',
             type: 'InvalidType'
           }
         ])
