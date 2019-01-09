@@ -307,6 +307,50 @@ migration.deriveLinkedEntries({
 
 For the complete version of this migration, please refer to [this example](./examples/15-derive-entry.js).
 
+#### `transformEntriesToType(config)`
+
+For the given (source) content type, transforms all its entries according to the user-provided `transformEntryForLocale` function into a new entry of a specific different (target) content type. For each entry, the CLI will call the function `transformEntryForLocale` once per locale in the space, passing in the `from` fields and the locale as arguments. The transform function is expected to return an object with the desired target fields. If it returns `undefined`, this entry locale will be left untouched.
+
+**`config : Object`** – Content transformation definition, with the following properties:
+
+- **`sourceContentType : string`** _(required)_ – Content type ID of source entries
+- **`targetContentType : string`** _(required)_ – Targeted Content type ID
+- **`from : array`** _(optional)_ – Array of the source field IDs, returns complete list of fields if not configured
+- **`identityKey: function (fields): string`** _(required)_ - Function to create a new entry ID for the target entry
+- **`shouldPublish : bool | 'preserve'`** _(optional)_ – Flag that specifies publishing of target entries, `preserve` will keep current states of the source entries (default `false`)
+- **`updateReferences : bool`** _(optional)_ – Flag that specifies if linking entries should be updated with target entries (default `false`)
+- **`removeOldEntries : bool`** _(optional)_ – Flag that specifies if source entries should be deleted (default `false`)
+- **`transformEntryForLocale : function (fields, locale): object`** _(required)_ – Transformation function to be applied.
+    - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `from == {myField: {'en-US': 'my field value'}}`)
+    - `locale` one of the locales in the space being transformed
+  The return value must be an object with the same keys as specified in the `targetContentType`. Their values will be written to the respective entry fields for the current locale (i.e. `{nameField: 'myNewValue'}`). If it returns `undefined`, this the values for this locale on the entry will be left untouched.
+
+##### `transformEntriesToType` Example
+
+```javascript
+const MurmurHash3 = require('imurmurhash');
+
+migration.transformEntriesToType({
+    sourceContentType: 'dog',
+    targetContentType: 'copycat',
+    from: ['woofs'],
+    shouldPublish: false,
+    updateReferences: false,
+    removeOldEntries: false,
+    identityKey: function (fields) {
+      const value = fields.woofs['en-US'].toString();
+      return MurmurHash3(value).result().toString();
+    },
+    transformEntryForLocale: function (fromFields, currentLocale) {
+      return {
+        woofs: `copy - ${fromFields.woofs[currentLocale]}`
+      };
+    }
+  });
+```
+
+For the complete version of this migration, please refer to [this example](./examples/22-transform-entries-to-type.js).
+
 ### `context`
 
 There may be cases where you want to use Contentful API features that are not supported by the `migration` object. For these cases you have access to the internal configuration of the running migration in a `context` object.
