@@ -16,6 +16,13 @@ const validationErrors = {
   },
   INVALID_PROPERTY_TYPE: (propName, typeName, actualType, expectedType) => {
     return `"${actualType}" is not a valid type for the ${typeName} property "${propName}". Expected "${expectedType}".`
+  },
+  INVALID_VALUE_IN_ALTERNATIVES: (propName, typeName, value, schemaInnerMatches) => {
+    const expectedTypes = schemaInnerMatches.map( (match) => {
+      const validsSet = match.schema._valids._set
+      return validsSet.length > 0 ? `${match.schema._type} value ${validsSet.map(validValue => `"${validValue}"`).join(' or ')}` : `type ${match.schema._type}`
+    })
+    return `"${value}" is not a valid value for the ${typeName} property "${propName}". Expected ${expectedTypes.join(' or ')}.`
   }
 }
 
@@ -81,8 +88,10 @@ abstract class SchemaValidator implements IntentValidator {
             expectedType = 'function'
           }
           const actualType = kindOf(value)
-
-          const message = validationErrors.INVALID_PROPERTY_TYPE(propName, displayName, actualType, expectedType)
+          const message =
+              expectedType === 'alternatives' ?
+                validationErrors.INVALID_VALUE_IN_ALTERNATIVES(propName, displayName, error._object, schema._inner.matches)
+                : validationErrors.INVALID_PROPERTY_TYPE(propName, displayName, actualType, expectedType)
           errors.push({
             type: 'InvalidType',
             message,

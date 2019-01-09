@@ -157,7 +157,7 @@ describe('Content transformation', function () {
                 type: 'contentType/transformEntries'
               }
             },
-            message: '"string" is not a valid type for the content transformation property "shouldPublish". Expected "boolean".',
+            message: '"yes please" is not a valid value for the content transformation property "shouldPublish". Expected type boolean or string value "preserve".',
             type: 'InvalidType'
           }
         ])
