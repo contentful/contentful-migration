@@ -101,7 +101,6 @@
     "semantic-release": "^15.10.6",
     "sinon": "^6.3.5",
     "tap-spec": "^5.0.0",
-    "travis-deploy-once": "^5.0.9",
     "trevor": "^2.2.0",
     "webpack": "^4.23.1",
     "webpack-bundle-analyzer": "^2.13.1",
