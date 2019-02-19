@@ -12,6 +12,7 @@ import apiKeyTests from './api-key-integration'
 import uiExtensionTests from './ui-extension-integration'
 import generateRandomId from './generate-random-id'
 import { createClient } from '../../'
+import { environmentTests } from './environment-integration'
 
 const params = {
   accessToken: process.env.CONTENTFUL_ACCESS_TOKEN
@@ -215,7 +216,8 @@ test('Create space for tests which create, change and delete data', (t) => {
         spaceMembershipTests(t, space),
         roleTests(t, space),
         apiKeyTests(t, space),
-        uiExtensionTests(t, space)
+        uiExtensionTests(t, space),
+        environmentTests(t, space, waitForEnvironmentToBeReady)
       ])
     })
 })
