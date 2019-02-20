@@ -1,6 +1,6 @@
 import test from 'blue-tape'
 import delay from 'delay'
-
+import sinon from 'sinon'
 import {localeTests} from './locale-integration'
 import {contentTypeReadOnlyTests, contentTypeWriteTests} from './content-type-integration'
 import {entryReadOnlyTests, entryWriteTests} from './entry-integration'
@@ -274,5 +274,23 @@ test('Create space with an environment for tests which create, change and delete
       uiExtensionTests(t, environment)
       // test.onFinish(() => environment.delete())
       test.onFinish(() => space.delete())
+    })
+})
+
+test('Logs request and response with custom loggers', (t) => {
+  t.plan(3)
+  const responseLoggerStub = sinon.stub()
+  const requestLoggerStub = sinon.stub()
+
+  const client = createClient({
+    ...params,
+    responseLogger: responseLoggerStub,
+    requestLogger: requestLoggerStub
+  })
+  return client.getSpace('ezs1swce23xe')
+    .then((response) => {
+      t.equal(responseLoggerStub.callCount, 1, 'responseLogger is called')
+      t.equal(requestLoggerStub.callCount, 1, 'requestLogger is called')
+      t.equal(requestLoggerStub.args[0][0].url, 'https://api.contentful.com:443/spaces/ezs1swce23xe', 'requestLogger is called with correct url')
     })
 })

@@ -163,7 +163,7 @@ You can try and change the above example at [Tonic](https://tonicdev.com/npm/con
  - **Can I use the SDK in react native projects**
   	- Yes it is possible
  - **I get the error: Unable to resolve module `http`**
- 	- Our SDK is supplied as node and browser version. Most non-node environments, like React Native, act like a browser. To force using of the browser version, you can require it via: `const { createClient } = require('contentful-management/dist/contentful-management.browser.min.js')`	
+ 	- Our SDK is supplied as node and browser version. Most non-node environments, like React Native, act like a browser. To force using of the browser version, you can require it via: `const { createClient } = require('contentful-management/dist/contentful-management.browser.min.js')`
 - **Can I use it with typescript?**
 	- Yes, type definition file coming soon
 - **I am not sure what payload to send when creating and entity (Asset/Entity/ContentType etc...)**
@@ -221,6 +221,12 @@ By default, this SDK is retrying requests which resulted in a 500 server error a
 
 #### logHandler (default: `function (level, data) {}`)
 Errors and warnings will be logged by default to the node or browser console. Pass your own log handler to intercept here and handle errors, warnings and info on your own.
+
+#### requestLogger (default: `function (config) {}`)
+Interceptor called on every request. Takes Axios request config as an arg. Default does nothing. Pass your own function to log any desired data.
+
+#### responseLogger (default: `function (response) {}`)
+Interceptor called on every response. Takes Axios response object as an arg. Default does nothing. Pass your own function to log any desired data.
 
 ### Reference documentation
 
