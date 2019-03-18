@@ -1,28 +1,34 @@
 import chalk from 'chalk'
 import { RequestBatch } from '../../lib/offline-api/index'
 
-const renderBatch = function (batch: RequestBatch) {
+const renderBatch = function (batch: RequestBatch, quiet: boolean = false) {
   const planMessage = batch.intent.toPlanMessage()
   const message = []
   message.push(chalk`{bold.underline ${planMessage.heading}}`)
-  for (const detail of planMessage.details) {
-    message.push(chalk`  - ${detail}`)
+
+  if (!quiet) {
+    for (const detail of planMessage.details) {
+      message.push(chalk`  - ${detail}`)
+    }
   }
   for (const section of planMessage.sections) {
     message.push(chalk`\n  {bold ${section.heading}}`)
-    for (const sectionDetail of section.details) {
-      message.push(chalk`    - ${sectionDetail}`)
+
+    if (!quiet) {
+      for (const sectionDetail of section.details) {
+        message.push(chalk`    - ${sectionDetail}`)
+      }
     }
   }
 
   console.log(message.join('\n'))
 }
 
-const renderPlan = (batches: RequestBatch[], environment: string) => {
+const renderPlan = (batches: RequestBatch[], environment: string, quiet: boolean = false) => {
   console.log(chalk`{bold.green The following migration has been planned}\n`)
   console.log(chalk`{bold.underline Environment}: {bold.yellow ${environment}}\n`)
   for (const batch of batches) {
-    renderBatch(batch)
+    renderBatch(batch, quiet)
 
     if (batch.validationErrors.length > 0) {
       console.log('\n')

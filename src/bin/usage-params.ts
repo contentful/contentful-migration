@@ -43,6 +43,12 @@ export default yargs
     describe: 'Skips any confirmation before applying the migration script',
     default: false
   })
+  .option('quiet', {
+    alias: 'q',
+    boolean: false,
+    describe: 'Reduce verbosity of information for the execution',
+    default: false
+  })
   .demandOption(['space-id'], 'Please provide a space ID')
   .help('h')
   .alias('h', 'help')
