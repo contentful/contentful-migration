@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import renderSetup from './renderSetup'
+import renderSetup from './render-setup'
 
 import { renderPlan } from '../../../../src/bin/lib/render-migration'
 
