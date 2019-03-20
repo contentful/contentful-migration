@@ -230,6 +230,7 @@ module.exports = {
         if (result.code === 1) {
           stdtype = result.stderr;
         };
+
         expect(stdtype).not.to.be.empty();
 
         const withoutAnsiCodes = stripAnsi(stdtype);
@@ -276,6 +277,20 @@ module.exports = {
         const withoutAnsiCodes = stripAnsi(stdtype);
         expect(withoutAnsiCodes).to.not.include('Do you want to apply the migration');
         expect(withoutAnsiCodes).to.include('Migration successful');
+      };
+    }
+  },
+  logs: {
+    helpMessage: function () {
+      return result => {
+        let stdtype = result.stdout;
+        if (result.code === 1) {
+          stdtype = result.stderr;
+        };
+        expect(stdtype).not.to.be.empty();
+
+        const withoutAnsiCodes = stripAnsi(stdtype);
+        expect(withoutAnsiCodes).to.include(`--quiet, -q`);
       };
     }
   },

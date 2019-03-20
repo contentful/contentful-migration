@@ -34,6 +34,12 @@ describe('contentful-migration CLI flags', function () {
       .expect(assert.confirmation.noConfirmationMessage())
       .end(done);
   });
+  it('includes "--quiet, -q" as options in the help message', function (done) {
+    cli()
+      .run(`--help`)
+      .expect(assert.logs.helpMessage())
+      .end(done);
+  });
 
   describe('file path resolution', function () {
     // Use the Travis build dir for integration tests, fallback to cwd for local tests
