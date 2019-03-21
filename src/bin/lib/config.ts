@@ -8,7 +8,9 @@ const configPath = path.resolve(homedir, '.contentfulrc.json')
 interface ClientConfig {
   accessToken?: string
   spaceId?: string
-  environmentId?: string
+  environmentId?: string,
+  proxy?: string,
+  rawProxy?: boolean
 }
 
 function getFileConfig (): ClientConfig {
@@ -29,11 +31,13 @@ function getEnvConfig (): ClientConfig {
     {}
 }
 
-function getArgvConfig ({spaceId, environmentId = 'master', accessToken}): ClientConfig {
+function getArgvConfig ({spaceId, environmentId = 'master', accessToken, proxy, rawProxy}): ClientConfig {
   const config = {
     spaceId,
     environmentId,
-    accessToken
+    accessToken,
+    proxy,
+    rawProxy
   }
 
   if (!config.accessToken) {

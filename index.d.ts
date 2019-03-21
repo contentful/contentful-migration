@@ -65,7 +65,7 @@ export interface Field {
 
 }
 
-type LinkMimetype = 'attachment' | 'plaintext' | 'image' | 'audio' | 'video' | 'richtext' | 
+type LinkMimetype = 'attachment' | 'plaintext' | 'image' | 'audio' | 'video' | 'richtext' |
   'presentation' | 'spreadsheet' | 'pdfdocument' | 'archive' | 'code' | 'markup'
 
 export interface IValidation {
@@ -103,7 +103,7 @@ export interface IEditorInterfaceOptions {
   /** (only for fields of type boolean) Shows this text next to the radio button that sets this value to true. Defaults to “Yes”. */
   trueLabel?: string
   /** (only for fields of type boolean) Shows this text next to the radio button that sets this value to false. Defaults to “No”. */
-  falseLabel?: string 
+  falseLabel?: string
   /** (only for fields of type rating) Number of stars to select from. Defaults to 5. */
   stars?: number
   /** (only for fields of type datePicker) – One of "dateonly", "time", "timeZ" (default). Specifies whether to show the clock and/or timezone inputs. */
@@ -141,7 +141,7 @@ export interface ContentType {
 
   /**
    * Changes the editor interface of given field's ID.
-   * 
+   *
    * @param fieldId The ID of the field.
    * @param widgetId The new widget ID for the field.
    * @param settings Widget settings
@@ -150,14 +150,14 @@ export interface ContentType {
 
   /**
    * Resets the editor interface of given field's ID.
-   * 
+   *
    * @param fieldId The ID of the field.
    */
   resetEditorInterface (fieldId: string): void
 
   /**
    * copies the editor interface setting from a field to another field in the same content type.
-   * 
+   *
    * @param sourceFieldId The ID of the field to copy the editorinterface setting from.
    * @param destinationFieldId The ID of the field to apply the copied editorinterface setting to.
    */
@@ -219,30 +219,30 @@ export interface ITransformEntriesToTypeConfig {
 }
 
 export interface IDeriveLinkedEntriesConfig {
-  /** 
-   * (required) – Source content type ID 
-   * 
+  /**
+   * (required) – Source content type ID
+   *
    * This is the content type which has the 'from' fields
   */
   contentType: string,
-  /** 
+  /**
    * (required) – Target content type ID
-   * 
+   *
    * This is the content type that the link points to
    */
   derivedContentType: string,
-  /** 
+  /**
    * (required) – Array of the source field IDs
-   * 
+   *
    * The values in these fields on the source content type
    * will be given to "deriveEntryForLocale"
    */
   from: string[],
   /** (required) – ID of the field on the source content type in which to insert the reference */
   toReferenceField: string,
-  /** 
+  /**
    * (required) – Array of the field IDs on the target content type
-   * 
+   *
    * The fields returned from "deriveEntryForLocale" will be written to these fields
    * on the new instance of the derived content type.
    */
@@ -258,13 +258,13 @@ export interface IDeriveLinkedEntriesConfig {
    * (required) – Function that generates the field values for the derived entry.
    *  fields is an object containing each of the from fields. Each field will contain their current localized values (i.e. fields == {myField: {'en-US': 'my field value'}})
    *  locale one of the locales in the space being transformed
-   * 
+   *
    * The return value must be an object with the same keys as specified in derivedFields. Their values will be written to the respective new entry fields for the current locale (i.e. {nameField: 'myNewValue'})
   */
   deriveEntryForLocale: (inputFields: ContentFields, locale: string) => { [field: string]: any }
 }
 
-/** 
+/**
  * The main interface for creating and editing content types.
  */
 export default interface Migration {
@@ -272,13 +272,13 @@ export default interface Migration {
    * Creates a content type with provided id and returns a reference to the newly created content type.
    *
    * id : string – The ID of the content type.
-   * 
+   *
    * opts : Object – Content type definition, with the following options:
-   * 
+   *
    *  * name : string – Name of the content type.
    *  * description : string – Description of the content type.
    *  * displayField : string – ID of the field to use as the display field for the content type.
-   * 
+   *
    * @param id string – The ID of the content type.
    * @param init Object – Content type definition
    */
@@ -299,19 +299,19 @@ export default interface Migration {
 
   /**
    * For the given content type, transforms all its entries according to the user-provided transformEntryForLocale function. For each entry, the CLI will call this function once per locale in the space, passing in the from fields and the locale as arguments. The transform function is expected to return an object with the desired target fields. If it returns undefined, this entry locale will be left untouched.
-   * @param transformation 
+   * @param transformation
    */
   transformEntries (transformation: ITransformEntriesConfig): void
 
   /**
    * For the given content type, transforms all its entries according to the user-provided transformEntryForLocale function into a new content type. For each entry, the CLI will call this function once per locale in the space, passing in the from fields and the locale as arguments. The transform function is expected to return an object with the desired target fields. If it returns undefined, this entry locale will be left untouched
-   * @param transformation 
+   * @param transformation
    */
   transformEntriesToType (transformation: ITransformEntriesToTypeConfig): void
 
   /**
    * For each entry of the given content type (source entry), derives a new entry and sets up a reference to it on the source entry. The content of the new entry is generated by the user-provided deriveEntryForLocale function. For each source entry, this function will be called as many times as there are locales in the space. Each time, it will be called with the from fields and one of the locales as arguments. The derive function is expected to return an object with the desired target fields. If it returns undefined, the new entry will have no values for the current locale.
-   * @param transformation 
+   * @param transformation
    */
   deriveLinkedEntries (transformation: IDeriveLinkedEntriesConfig): void
 }
@@ -319,7 +319,9 @@ export default interface Migration {
 export interface ClientConfig {
   accessToken?: string
   spaceId?: string
-  environmentId?: string
+  environmentId?: string,
+  proxy?: string,
+  rawProxy?: boolean
 }
 
 export type MakeRequest = (requestConfig: axios.AxiosRequestConfig) => axios.AxiosResponse['data']

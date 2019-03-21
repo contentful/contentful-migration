@@ -70,13 +70,20 @@ function agentFromProxy (proxy): { httpsAgent?: HttpsProxyAgent } {
     return {}
   }
 
-  const { host, port, auth: { username, password } } = proxy
-  const auth = `${username}:${password}`
-  const agent = new HttpsProxyAgent({ host, port, auth })
+  const { host, port, auth } = proxy
+
+  let agentAuth
+  if (auth) {
+    const { username, password } = auth
+    agentAuth = `${username}:${password}`
+  }
+
+  const agent = new HttpsProxyAgent({ host, port, auth: agentAuth })
   return { httpsAgent: agent }
 }
 
 export {
   loadProxyFromEnv,
-  agentFromProxy
+  agentFromProxy,
+  proxyStringToObject
 }
