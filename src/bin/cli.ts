@@ -118,7 +118,7 @@ const createRun = ({ shouldThrow }) => async function run (argv) {
     terminate(new ManyError('Runtime Errors', parseResult.getRuntimeErrors()))
   }
 
-  await renderPlan(batches, argv.environmentId)
+  await renderPlan(batches, argv.environmentId, argv.quiet)
 
   const serverErrorsWritten = []
 
