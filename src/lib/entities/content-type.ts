@@ -1,4 +1,4 @@
-import { APIContentType, Field, APIEditorInterfaceControl, APIEditorInterfaces, APIEditorInterfaceSettings } from '../interfaces/content-type'
+import { APIContentType, Field, APIEditorInterfaceControl, APIEditorInterfaces, APIEditorInterfaceSettings, APIEditorInterfaceSidebar } from '../interfaces/content-type'
 import { cloneDeep, find, filter, findIndex, pull, forEach } from 'lodash'
 
 class Fields {
@@ -81,10 +81,12 @@ class Fields {
 class EditorInterfaces {
   private _version: number
   private _controls: APIEditorInterfaceControl[]
+  private _sidebar?: APIEditorInterfaceSidebar[]
 
   constructor (apiEditorInterfaces: APIEditorInterfaces) {
     this._version = apiEditorInterfaces.sys.version
     this._controls = apiEditorInterfaces.controls
+    this._sidebar = apiEditorInterfaces.sidebar || undefined
   }
 
   get version () {
@@ -146,6 +148,12 @@ class EditorInterfaces {
         settings: c.settings
       })
     })
+    if (this._sidebar) {
+      return {
+        controls: result,
+        sidebar: this._sidebar
+      }
+    }
     return {
       controls: result
     }
