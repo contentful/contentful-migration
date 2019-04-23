@@ -1,4 +1,4 @@
-import { loadProxyFromEnv, agentFromProxy } from './proxy'
+import { loadProxyFromEnv, agentFromProxy, proxyStringToObject } from './proxy'
 // One cannot rewire const's
 // eslint-disable-next-line
 import { createClient as _createClient } from 'contentful-management'
@@ -9,7 +9,15 @@ function createManagementClient (params) {
     throw new Error('Please specify the application name that uses this client instance')
   }
 
-  params.proxy = params.proxy || loadProxyFromEnv(process.env)
+  const proxyFromParams = params.proxy && proxyStringToObject(params.proxy)
+  if (proxyFromParams) {
+    params.proxy = proxyFromParams
+  } else {
+    const proxyFromEnv = loadProxyFromEnv(process.env)
+    if (proxyFromEnv) {
+      params.proxy = proxyFromEnv
+    }
+  }
 
   if (!params.rawProxy) {
     const { httpsAgent } = agentFromProxy(params.proxy)
