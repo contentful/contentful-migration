@@ -1,4 +1,4 @@
-import { omit, compact } from 'lodash'
+import { omit, compact, get } from 'lodash'
 import FieldDeletionValidator from './validator/field-deletion'
 import { ContentTypePayloadValidator } from './validator/content-type'
 import { ContentType, EditorInterfaces } from '../entities/content-type'
@@ -421,14 +421,14 @@ class OfflineAPI {
       const fields = entry.fields
       for (let key of Object.keys(fields)) {
         for (let locale of locales) {
-          const field = entry.fields[key][locale]
-          if (field instanceof Object && field.sys instanceof Object && field.sys.id === childId) {
+          const field = get(entry.fields, `${key}.${locale}`)
+          if (get(field, 'sys.id') === childId) {
             links.push(new Link(entry, key, locale))
           }
           if (field instanceof Array) {
             const fieldArray = field as any[]
             fieldArray.forEach((fieldEntry, index) => {
-              if (fieldEntry instanceof Object && fieldEntry.sys instanceof Object && fieldEntry.sys.id === childId) {
+              if (get(fieldEntry, 'sys.id') === childId) {
                 links.push(new Link(entry, key, locale, index))
               }
             })
