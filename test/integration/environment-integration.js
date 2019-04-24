@@ -34,7 +34,7 @@ export function environmentTests (t, space, waitForEnvironmentToBeReady) {
       })
   })
 
-  t.test('creates environment from given source environment', (t) => {
+  t.skip('creates environment from given source environment', (t) => {
     t.plan(2)
     let fromMasterCtCount = 0
     // create an env from master, note how many contentTypes it has
