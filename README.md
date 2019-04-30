@@ -142,7 +142,7 @@ const options = {
 }
 runMigration(options)
   .then(() => console.log('Migration Done!'))
-  .catch((e) => console.error)
+  .catch((e) => console.error(e))
 ```
 
 In your migration description file, export a function that accepts the `migration` object as its argument. For example:
