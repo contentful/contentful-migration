@@ -152,9 +152,9 @@ class EditorInterfaces {
     })
 
     const result: {
-      controls: any,
-      sidebar?: any,
-      editor?: any
+      controls: APIEditorInterfaceControl[],
+      sidebar?: APIEditorInterfaceSidebar[],
+      editor?: APIEditorIntefaceEditor
     } = {
       controls
     }
