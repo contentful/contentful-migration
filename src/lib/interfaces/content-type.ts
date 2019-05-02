@@ -52,12 +52,19 @@ interface APIEditorInterfaceSidebar {
   settings?: { [key: string]: any }
 }
 
+interface APIEditorIntefaceEditor {
+  widgetId: string,
+  widgetNamespace: 'builtin' | 'extension',
+  settings?: { [key: string]: any }
+}
+
 interface APIEditorInterfaces {
   sys: {
     version: number
-  }
-  controls: APIEditorInterfaceControl[]
-  sidebar?: APIEditorInterfaceSidebar[]
+  },
+  controls: APIEditorInterfaceControl[],
+  sidebar?: APIEditorInterfaceSidebar[],
+  editor?: APIEditorIntefaceEditor
 }
 
 export {
@@ -67,5 +74,6 @@ export {
   APIEditorInterfaces,
   APIEditorInterfaceControl,
   APIEditorInterfaceSettings,
-  APIEditorInterfaceSidebar
+  APIEditorInterfaceSidebar,
+  APIEditorIntefaceEditor
 }
