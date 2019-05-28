@@ -48,7 +48,8 @@ export default class Fetcher implements APIFetcher {
     const ids: string[] = _.uniq(intentList.getIntents()
       .filter((intent) => (!intent.isEditorInterfaceUpdate() ||
                            !intent.isEditorInterfaceCopy() ||
-                           !intent.isEditorInterfaceReset()))
+                           !intent.isEditorInterfaceReset() ||
+                           !intent.isSidebarWidgetAdd()))
       .reduce((ids, intent) => {
         const intentIds = intent.getRelatedContentTypeIds()
         return ids.concat(intentIds)
@@ -71,7 +72,12 @@ export default class Fetcher implements APIFetcher {
   async getEditorInterfacesInIntents (intentList: IntentList): Promise<Map<string, APIEditorInterfaces>> {
     const contentTypeIds: string[] = _.uniq(
       intentList.getIntents()
-        .filter((intent) => intent.isFieldRename() || intent.isEditorInterfaceUpdate() || intent.isEditorInterfaceReset() || intent.isEditorInterfaceCopy())
+        .filter((intent) => intent.isFieldRename() ||
+          intent.isEditorInterfaceUpdate() ||
+          intent.isEditorInterfaceReset() ||
+          intent.isEditorInterfaceCopy() ||
+          intent.isSidebarWidgetAdd()
+        )
         .reduce((ids, intent) => {
           const intentIds = intent.getRelatedContentTypeIds()
           return ids.concat(intentIds)

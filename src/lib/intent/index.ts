@@ -13,6 +13,7 @@ import EntryTransformToTypeIntent from './entry-transform-to-type'
 import EditorInterfaceUpdateIntent from './editorinterface-update'
 import EditorInterfaceCopyIntent from './editorinterface-copy'
 import EditorInterfaceResetIntent from './editorinterface-reset'
+import SidebarWidgetAddIntent from './sidebarwidget-add'
 
 export {
   Intent as default,
@@ -30,5 +31,6 @@ export {
   EntryTransformToTypeIntent as EntryTransformToType,
   EditorInterfaceUpdateIntent as EditorInterfaceUpdate,
   EditorInterfaceCopyIntent as EditorInterfaceCopy,
-  EditorInterfaceResetIntent as EditorInterfaceReset
+  EditorInterfaceResetIntent as EditorInterfaceReset,
+  SidebarWidgetAddIntent as SidebarWidgetAdd
 }

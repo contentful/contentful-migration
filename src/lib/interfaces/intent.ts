@@ -31,6 +31,7 @@ interface Intent {
   isEditorInterfaceUpdate (): boolean
   isEditorInterfaceReset (): boolean
   isEditorInterfaceCopy (): boolean
+  isSidebarWidgetAdd (): boolean
 
   isComposedIntent (): boolean
 

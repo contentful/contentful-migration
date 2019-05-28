@@ -141,6 +141,24 @@ const actionCreators = {
           fieldId
         }
       }
+    }),
+    addSidebarWidget: (id, instanceId, callsite, widgetId, widgetNamespace, settings = {}): Intents.SidebarWidgetAdd => new Intents.SidebarWidgetAdd({
+      type: 'contentType/addSidebarWidget',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id,
+        sidebarWidget: {
+          widgetId,
+          widgetNamespace,
+          settings
+        }
+      }
     })
   },
   field: {

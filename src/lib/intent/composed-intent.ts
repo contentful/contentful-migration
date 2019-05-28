@@ -92,6 +92,10 @@ export default class ComposedIntent implements Intent {
     return false
   }
 
+  isSidebarWidgetAdd (): boolean {
+    return false
+  }
+
   getContentTypeId (): string {
     return this.contentTypeId
   }

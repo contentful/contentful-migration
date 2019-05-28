@@ -1,20 +1,20 @@
 import Intent from './base-intent'
 import { PlanMessage } from '../interfaces/plan-message'
-import { UpdateEditorInterfaceAction } from '../action/editorinterface-update'
 import chalk from 'chalk'
 import { SaveEditorInterfaceAction } from '../action/editorinterface-save'
+import { SidebarWidgetAddAction } from '../action/sidebarwidget-add'
 
-export default class EditorInterfaceUpdateIntent extends Intent {
-  isEditorInterfaceUpdate () {
+export default class SidebarWidgetAddIntent extends Intent {
+  isSidebarWidgetAdd () {
     return true
   }
   groupsWith (other: Intent): boolean {
     const sameContentType = other.getContentTypeId() === this.getContentTypeId()
     return (
+        other.isSidebarWidgetAdd() ||
         other.isEditorInterfaceCopy() ||
         other.isEditorInterfaceReset() ||
-        other.isEditorInterfaceUpdate() ||
-        other.isSidebarWidgetAdd()) &&
+        other.isEditorInterfaceUpdate()) &&
         sameContentType
   }
   endsGroup (): boolean {
@@ -28,29 +28,34 @@ export default class EditorInterfaceUpdateIntent extends Intent {
   }
   toActions () {
     return [
-      new UpdateEditorInterfaceAction(
+      new SidebarWidgetAddAction(
         this.payload.contentTypeId,
-        this.payload.editorInterface.fieldId,
-        this.payload.editorInterface.widgetId,
-        this.payload.editorInterface.settings
+        this.payload.sidebarWidget.widgetId,
+        this.payload.sidebarWidget.widgetNamespace,
+        this.payload.sidebarWidget.settings
       ),
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]
   }
   toPlanMessage (): PlanMessage {
-    const { fieldId, settings } = this.payload.editorInterface
-    let createDetails = [chalk`{italic widgetId}: "${this.payload.editorInterface.widgetId}"`]
+    const { settings, widgetId, widgetNamespace } = this.payload.sidebarWidget
 
-    Object.keys(this.payload.editorInterface.settings).forEach(settingName =>
-      createDetails.push(chalk`{italic ${settingName}}: "${settings[settingName]}"`)
+    const settingDetails = Object.keys(this.payload.editorInterface.settings).map(settingName =>
+      chalk`{italic ${settingName}}: "${settings[settingName]}"`
     )
+
+    const createDetails = [
+      chalk`{italic widgetId}: "${widgetId}"`,
+      chalk`{italic widgetNamespace}: "${widgetNamespace}"`,
+      ...settingDetails
+    ]
 
     return {
       heading: chalk`Update editor interface for Content Type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],
       sections: [
         {
-          heading: chalk`Update field {yellow ${fieldId}}`,
+          heading: chalk`Add sidebar widget {yellow ${widgetId}}`,
           details: createDetails
         }
       ]
