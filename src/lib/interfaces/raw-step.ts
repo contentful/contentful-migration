@@ -1,6 +1,6 @@
 import ContentTransform from './content-transform'
 import EntryDerive from './entry-derive'
-import { APIEditorInterfaceSettings } from './content-type'
+import { APIEditorInterfaceSettings, APIEditorInterfaceSidebar } from './content-type'
 import TransformEntryToType from './entry-transform-to-type'
 
 interface RawStep {
@@ -31,6 +31,7 @@ interface RawStepPayload {
   editorInterfaceCopy?: EditorInterfaceCopy
   editorInterfaceReset?: EditorInterfaceReset
   editorInterface?: EditorInterfaceInfo
+  sidebarWidget?: APIEditorInterfaceSidebar
 }
 
 interface EditorInterfaceInfo {

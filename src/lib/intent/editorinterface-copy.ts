@@ -13,7 +13,8 @@ export default class EditorInterfaceCopyIntent extends Intent {
     return (
         other.isEditorInterfaceCopy() ||
         other.isEditorInterfaceReset() ||
-        other.isEditorInterfaceUpdate()
+        other.isEditorInterfaceUpdate() ||
+        other.isSidebarWidgetAdd()
     ) && sameContentType
   }
   endsGroup (): boolean {

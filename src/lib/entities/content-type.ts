@@ -1,4 +1,14 @@
-import { APIContentType, Field, APIEditorInterfaceControl, APIEditorInterfaces, APIEditorInterfaceSettings, APIEditorInterfaceSidebar, APIEditorIntefaceEditor } from '../interfaces/content-type'
+import {
+  APIContentType,
+  Field,
+  APISidebarWidgetSettings,
+  APIEditorInterfaceControl,
+  APIEditorInterfaces,
+  APIEditorInterfaceSettings,
+  APIEditorInterfaceSidebar,
+  APIEditorIntefaceEditor,
+  APIWidgetNamespace
+} from '../interfaces/content-type'
 import { cloneDeep, find, filter, findIndex, pull, forEach } from 'lodash'
 
 class Fields {
@@ -139,6 +149,17 @@ class EditorInterfaces {
         control.settings[k] = v
       })
     }
+  }
+
+  addSidebarWidget (widgetId: string, widgetNamespace: APIWidgetNamespace, settings: APISidebarWidgetSettings, disabled: boolean) {
+    this._sidebar = this._sidebar || []
+
+    this._sidebar.push({
+      disabled,
+      settings,
+      widgetId,
+      widgetNamespace
+    })
   }
 
   toAPI (): object {

@@ -86,6 +86,10 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
+  isSidebarWidgetAdd () {
+    return false
+  }
+
   isAboutContentType () {
     return (
       this.isContentTypeUpdate() ||

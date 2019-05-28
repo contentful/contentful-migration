@@ -179,6 +179,19 @@ class ContentType extends DispatchProxy {
     ))
     return this
   }
+
+  addSidebarWidget (widgetId, widgetNamespace = 'builtin', settings = {}) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.contentType.addSidebarWidget(
+      this.id,
+      this.instanceId,
+      callsite,
+      widgetId,
+      widgetNamespace,
+      settings
+    ))
+    return this
+  }
 }
 
 export async function migration (migrationCreator: Function, makeRequest: Function, config: ClientConfig): Promise<Intent[]> {
