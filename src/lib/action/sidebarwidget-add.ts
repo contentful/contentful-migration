@@ -1,6 +1,6 @@
 import { EditorInterfaces } from '../entities/content-type'
 import { EntityAction } from './action'
-import { APIWidgetNamespace } from '../interfaces/content-type'
+import { APISidebarWidgetNamespace } from '../interfaces/content-type'
 
 interface SidebarWidgetSettings {
   [key: string]: any
@@ -9,13 +9,13 @@ interface SidebarWidgetSettings {
 class SidebarWidgetAddAction extends EntityAction {
   protected contentTypeId: string
   protected widgetId: string
-  protected widgetNamespace: APIWidgetNamespace
+  protected widgetNamespace: APISidebarWidgetNamespace
   protected settings: SidebarWidgetSettings
   protected disabled: boolean
 
   constructor (contentTypeId: string,
                widgetId: string,
-               widgetNamespace: APIWidgetNamespace,
+               widgetNamespace: APISidebarWidgetNamespace,
                settings?: SidebarWidgetSettings,
                disabled: boolean = false) {
     super()

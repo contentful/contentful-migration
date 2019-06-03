@@ -180,7 +180,7 @@ class ContentType extends DispatchProxy {
     return this
   }
 
-  addSidebarWidget (widgetId, widgetNamespace = 'builtin', settings = {}) {
+  addSidebarWidget (widgetId, widgetNamespace = 'sidebar-builtin', settings = {}) {
     const callsite = getFirstExternalCaller()
     this.dispatch(actionCreators.contentType.addSidebarWidget(
       this.id,

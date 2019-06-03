@@ -7,7 +7,7 @@ import {
   APIEditorInterfaceSettings,
   APIEditorInterfaceSidebar,
   APIEditorIntefaceEditor,
-  APIWidgetNamespace
+  APISidebarWidgetNamespace
 } from '../interfaces/content-type'
 import { cloneDeep, find, filter, findIndex, pull, forEach } from 'lodash'
 
@@ -151,7 +151,7 @@ class EditorInterfaces {
     }
   }
 
-  addSidebarWidget (widgetId: string, widgetNamespace: APIWidgetNamespace, settings: APISidebarWidgetSettings, disabled: boolean) {
+  addSidebarWidget (widgetId: string, widgetNamespace: APISidebarWidgetNamespace, settings: APISidebarWidgetSettings, disabled: boolean) {
     this._sidebar = this._sidebar || []
 
     this._sidebar.push({

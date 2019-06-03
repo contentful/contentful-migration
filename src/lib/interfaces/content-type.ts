@@ -38,12 +38,13 @@ interface APIEditorInterfaceSettings {
   ampm?: string
 }
 
-type APIWidgetNamespace = 'builtin' | 'extension'
+type APISidebarWidgetNamespace = 'builtin' | 'extension'
+type APIControlWidgetNamespace = 'builtin' | 'extension'
 
 interface APIEditorInterfaceControl {
   fieldId: string,
   widgetId?: string,
-  widgetNamespace?: APIWidgetNamespace,
+  widgetNamespace?: APIControlWidgetNamespace,
   settings?: APIEditorInterfaceSettings
 }
 
@@ -53,14 +54,14 @@ interface APISidebarWidgetSettings {
 
 interface APIEditorInterfaceSidebar {
   widgetId: string,
-  widgetNamespace: APIWidgetNamespace,
+  widgetNamespace: APISidebarWidgetNamespace,
   disabled?: boolean,
   settings?: APISidebarWidgetSettings
 }
 
 interface APIEditorIntefaceEditor {
   widgetId: string,
-  widgetNamespace: APIWidgetNamespace,
+  widgetNamespace: APIControlWidgetNamespace,
   settings?: { [key: string]: any }
 }
 
@@ -83,5 +84,6 @@ export {
   APIEditorInterfaceSidebar,
   APIEditorIntefaceEditor,
   APISidebarWidgetSettings,
-  APIWidgetNamespace
+  APIControlWidgetNamespace,
+  APISidebarWidgetNamespace
 }
