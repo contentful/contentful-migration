@@ -15,6 +15,7 @@ const fieldMove = require('../../examples/08-move-field');
 const changeEditorInterface = require('../../examples/16-change-editor-interface');
 const changeEditorInterfaceWithExistingContentType = require('../../examples/17-change-editor-interface-for-existing-content-type');
 const changeEditorInterfaceWithExistingContentTypeAddingHelpText = require('../../examples/18-change-editor-interface-for-existing-content-type-adding-help-text');
+const addSidebarWidgets = require('../../examples/24-add-sidebar-widget-to-existing-content-type');
 
 const { createMigrationParser } = require('../../built/lib/migration-parser');
 const co = Bluebird.coroutine;
@@ -207,9 +208,12 @@ describe('the migration', function () {
         localized: false,
         omitted: false,
         validations: [
-          { assetImageDimensions:
-            { width: { min: 1199, max: null },
-              height: { min: 1343 } }
+          {
+            assetImageDimensions:
+              {
+                width: { min: 1199, max: null },
+                height: { min: 1343 }
+              }
           }
         ]
       }
@@ -528,5 +532,28 @@ describe('the migration', function () {
         }
       }
     ]);
+  }));
+
+  it('adds sidebar widget to the editor interface of a content type', co(function * () {
+    yield migrator(addSidebarWidgets);
+
+    const editorInterfaces = yield request({
+      method: 'GET',
+      url: '/content_types/blogPost/editor_interface'
+    });
+    expect(editorInterfaces.sidebar).to.eql([{
+      disabled: false,
+      settings: {},
+      widgetId: 'publication-widget',
+      widgetNamespace: 'sidebar-builtin'
+    }, {
+      disabled: false,
+      settings: {
+        tagField: 'tags',
+        imageField: 'image'
+      },
+      widgetId: 'imageTaggingExtensionId',
+      widgetNamespace: 'extension'
+    }]);
   }));
 });
