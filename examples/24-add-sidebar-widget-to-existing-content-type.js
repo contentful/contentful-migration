@@ -5,13 +5,20 @@ module.exports = function (migration) {
   });
 
   blogPost
-    .addSidebarWidget('publication-widget')
     .addSidebarWidget(
       'imageTaggingExtensionId',
       'extension',
       {
+        imageField: 'image'
+      }
+    )
+    .addSidebarWidget('publication-widget')
+    .updateSidebarWidget(
+      'imageTaggingExtensionId',
+      {
         tagField: 'tags',
         imageField: 'image'
       }
-    );
+    )
+  ;
 };

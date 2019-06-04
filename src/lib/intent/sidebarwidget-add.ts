@@ -5,17 +5,16 @@ import { SaveEditorInterfaceAction } from '../action/editorinterface-save'
 import { SidebarWidgetAddAction } from '../action/sidebarwidget-add'
 
 export default class SidebarWidgetAddIntent extends Intent {
-  isSidebarWidgetAdd () {
+  isEditorInterfaceIntent () {
+    return true
+  }
+  isGroupable () {
     return true
   }
   groupsWith (other: Intent): boolean {
-    const sameContentType = other.getContentTypeId() === this.getContentTypeId()
-    return (
-        other.isSidebarWidgetAdd() ||
-        other.isEditorInterfaceCopy() ||
-        other.isEditorInterfaceReset() ||
-        other.isEditorInterfaceUpdate()) &&
-        sameContentType
+    return other.isGroupable()
+      && other.isEditorInterfaceIntent()
+      && this.isSameContentType(other)
   }
   endsGroup (): boolean {
     return false

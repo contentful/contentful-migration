@@ -18,6 +18,10 @@ export default abstract class Intent implements IntentInterface {
     return this.payload.contentTypeId
   }
 
+  isSameContentType (other: Intent): boolean {
+    return this.getContentTypeId() === other.getContentTypeId()
+  }
+
   getRelatedContentTypeIds () {
     return [this.getContentTypeId()]
   }
@@ -78,15 +82,11 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
-  isEditorInterfaceReset () {
+  isGroupable () {
     return false
   }
 
-  isEditorInterfaceCopy () {
-    return false
-  }
-
-  isSidebarWidgetAdd () {
+  isEditorInterfaceIntent () {
     return false
   }
 

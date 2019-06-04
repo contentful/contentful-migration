@@ -192,6 +192,39 @@ class ContentType extends DispatchProxy {
     ))
     return this
   }
+
+  updateSidebarWidget (widgetId, settings = {}) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.contentType.updateSidebarWidget(
+      this.id,
+      this.instanceId,
+      callsite,
+      widgetId,
+      settings
+    ))
+    return this
+  }
+
+  removeSidebarWidget (widgetId) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.contentType.removeSidebarWidget(
+      this.id,
+      this.instanceId,
+      callsite,
+      widgetId
+    ))
+    return this
+  }
+
+  resetSidebarToDefault () {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.contentType.resetSidebarToDefault(
+      this.id,
+      this.instanceId,
+      callsite
+    ))
+    return this
+  }
 }
 
 export async function migration (migrationCreator: Function, makeRequest: Function, config: ClientConfig): Promise<Intent[]> {

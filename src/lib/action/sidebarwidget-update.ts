@@ -1,23 +1,20 @@
 import { EditorInterfaces } from '../entities/content-type'
 import { EntityAction } from './action'
-import { SidebarWidgetNamespace, SidebarWidgetSettings } from './sidebarwidget'
+import { SidebarWidgetSettings } from './sidebarwidget'
 
-class SidebarWidgetAddAction extends EntityAction {
+class SidebarWidgetUpdateAction extends EntityAction {
   protected contentTypeId: string
   protected widgetId: string
-  protected widgetNamespace: SidebarWidgetNamespace
   protected settings: SidebarWidgetSettings
   protected disabled: boolean
 
   constructor (contentTypeId: string,
                widgetId: string,
-               widgetNamespace: SidebarWidgetNamespace,
                settings?: SidebarWidgetSettings,
-               disabled: boolean = false) {
+               disabled?: boolean) {
     super()
     this.contentTypeId = contentTypeId
     this.widgetId = widgetId
-    this.widgetNamespace = widgetNamespace
     this.settings = settings
     this.disabled = disabled
   }
@@ -31,13 +28,12 @@ class SidebarWidgetAddAction extends EntityAction {
   }
 
   async applyTo (editorInterfaces: EditorInterfaces) {
-    editorInterfaces.addSidebarWidget(
+    editorInterfaces.updateSidebarWidget(
       this.widgetId,
-      this.widgetNamespace,
       this.settings,
       this.disabled
     )
   }
 }
 
-export { SidebarWidgetAddAction }
+export { SidebarWidgetUpdateAction }

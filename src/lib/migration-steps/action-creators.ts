@@ -159,6 +159,52 @@ const actionCreators = {
           settings
         }
       }
+    }),
+    updateSidebarWidget: (id, instanceId, callsite, widgetId, settings = {}): Intents.SidebarWidgetUpdate => new Intents.SidebarWidgetUpdate({
+      type: 'contentType/updateSidebarWidget',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id,
+        sidebarWidget: {
+          widgetId,
+          settings
+        }
+      }
+    }),
+    removeSidebarWidget: (id, instanceId, callsite, widgetId): Intents.SidebarWidgetRemove => new Intents.SidebarWidgetRemove({
+      type: 'contentType/removeSidebarWidget',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id,
+        sidebarWidget: {
+          widgetId
+        }
+      }
+    }),
+    resetSidebarToDefault: (id, instanceId, callsite): Intents.SidebarResetToDefault => new Intents.SidebarResetToDefault({
+      type: 'contentType/resetSidebarToDefault',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id
+      }
     })
   },
   field: {

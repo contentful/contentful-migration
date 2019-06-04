@@ -35,20 +35,14 @@ export default class ComposedIntent implements Intent {
   }
 
   // TODO: adjust interface so we don't have to implement all this
-  isEditorInterfaceUpdate (): boolean {
-    return false
-  }
-  isEditorInterfaceReset (): boolean {
-    return false
-  }
-  isEditorInterfaceCopy (): boolean {
-    return false
-  }
   getFieldId (): string {
     return null
   }
   getRawType (): string {
     return null
+  }
+  isEditorInterfaceUpdate (): boolean {
+    return false
   }
   isContentTypeUpdate (): boolean {
     return false
@@ -92,7 +86,11 @@ export default class ComposedIntent implements Intent {
     return false
   }
 
-  isSidebarWidgetAdd (): boolean {
+  isGroupable (): boolean {
+    return false
+  }
+
+  isEditorInterfaceIntent (): boolean {
     return false
   }
 

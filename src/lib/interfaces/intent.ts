@@ -28,10 +28,9 @@ interface Intent {
   isContentTransform (): boolean
   isEntryDerive (): boolean
   isEntryTransformToType (): boolean
+  isGroupable (): boolean
+  isEditorInterfaceIntent (): boolean
   isEditorInterfaceUpdate (): boolean
-  isEditorInterfaceReset (): boolean
-  isEditorInterfaceCopy (): boolean
-  isSidebarWidgetAdd (): boolean
 
   isComposedIntent (): boolean
 
