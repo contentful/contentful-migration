@@ -11,7 +11,7 @@ export default class SidebarResetToDefaultIntent extends Intent {
   isGroupable () {
     return false
   }
-  groupsWith (other: Intent): boolean {
+  groupsWith (): boolean {
     return false
   }
   endsGroup (): boolean {

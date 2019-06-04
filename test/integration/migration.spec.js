@@ -541,19 +541,23 @@ describe('the migration', function () {
       method: 'GET',
       url: '/content_types/blogPost/editor_interface'
     });
-    expect(editorInterfaces.sidebar).to.eql([{
-      disabled: false,
-      settings: {},
-      widgetId: 'publication-widget',
-      widgetNamespace: 'sidebar-builtin'
-    }, {
-      disabled: false,
-      settings: {
-        tagField: 'tags',
-        imageField: 'image'
+
+    expect(editorInterfaces.sidebar).to.eql([
+      {
+        'disabled': false,
+        'settings': {
+          'tagField': 'tags',
+          'imageField': 'image'
+        },
+        'widgetId': 'imageTaggingExtensionId',
+        'widgetNamespace': 'extension'
       },
-      widgetId: 'imageTaggingExtensionId',
-      widgetNamespace: 'extension'
-    }]);
+      {
+        'disabled': false,
+        'settings': {},
+        'widgetId': 'publication-widget',
+        'widgetNamespace': 'sidebar-builtin'
+      }
+    ]);
   }));
 });
