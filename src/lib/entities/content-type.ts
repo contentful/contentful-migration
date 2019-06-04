@@ -151,8 +151,11 @@ class EditorInterfaces {
     }
   }
 
-  addSidebarWidget (widgetId: string, widgetNamespace: APISidebarWidgetNamespace, settings: APISidebarWidgetSettings, disabled: boolean) {
-    this._sidebar = this._sidebar || []
+  addSidebarWidget (widgetId: string,
+                    widgetNamespace: APISidebarWidgetNamespace,
+                    settings: APISidebarWidgetSettings,
+                    disabled: boolean) {
+    this._sidebar = Array.isArray(this._sidebar) ? this._sidebar : []
 
     this._sidebar.push({
       disabled,
@@ -160,6 +163,36 @@ class EditorInterfaces {
       widgetId,
       widgetNamespace
     })
+  }
+
+  updateSidebarWidget (widgetId: string,
+                       settings?: APISidebarWidgetSettings,
+                       disabled?: boolean) {
+
+    if (!Array.isArray(this._sidebar)) {
+      return
+    }
+
+    const widget = this._sidebar.find(widget => widget.widgetId === widgetId)
+
+    if (!widget) {
+      return
+    }
+
+    widget.settings = settings ? settings : widget.settings
+    widget.disabled = typeof disabled === 'boolean' ? disabled : widget.disabled
+  }
+
+  removeSidebarWidget (widgetId: string) {
+    if (!Array.isArray(this._sidebar)) {
+      return
+    }
+
+    this._sidebar = this._sidebar.filter(widget => widget.widgetId !== widgetId)
+  }
+
+  resetSidebarToDefault () {
+    this._sidebar = undefined
   }
 
   toAPI (): object {

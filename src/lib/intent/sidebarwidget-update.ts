@@ -1,13 +1,10 @@
 import Intent from './base-intent'
 import { PlanMessage } from '../interfaces/plan-message'
-import { UpdateEditorInterfaceAction } from '../action/editorinterface-update'
 import chalk from 'chalk'
 import { SaveEditorInterfaceAction } from '../action/editorinterface-save'
+import { SidebarWidgetUpdateAction } from '../action/sidebarwidget-update'
 
-export default class EditorInterfaceUpdateIntent extends Intent {
-  isEditorInterfaceUpdate () {
-    return true
-  }
+export default class SidebarwidgetUpdateIntent extends Intent {
   isEditorInterfaceIntent () {
     return true
   }
@@ -30,30 +27,34 @@ export default class EditorInterfaceUpdateIntent extends Intent {
   }
   toActions () {
     return [
-      new UpdateEditorInterfaceAction(
+      new SidebarWidgetUpdateAction(
         this.payload.contentTypeId,
-        this.payload.editorInterface.fieldId,
-        this.payload.editorInterface.widgetId,
-        this.payload.editorInterface.settings
+        this.payload.sidebarWidget.widgetId,
+        this.payload.sidebarWidget.settings,
+        this.payload.sidebarWidget.disabled
       ),
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]
   }
   toPlanMessage (): PlanMessage {
-    const { fieldId, settings } = this.payload.editorInterface
-    let createDetails = [chalk`{italic widgetId}: "${this.payload.editorInterface.widgetId}"`]
+    const { settings, widgetId } = this.payload.sidebarWidget
 
-    Object.keys(this.payload.editorInterface.settings).forEach(settingName =>
-      createDetails.push(chalk`{italic ${settingName}}: "${settings[settingName]}"`)
-    )
+    const settingDetails = Object.keys(settings || {}).map(settingName =>
+        chalk`{italic ${settingName}}: "${settings[settingName]}"`
+      )
+
+    const updateDetails = [
+      chalk`{italic widgetId}: "${widgetId}"`,
+      ...settingDetails
+    ]
 
     return {
       heading: chalk`Update editor interface for Content Type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],
       sections: [
         {
-          heading: chalk`Update field {yellow ${fieldId}}`,
-          details: createDetails
+          heading: chalk`Update sidebar widget {yellow ${widgetId}}`,
+          details: updateDetails
         }
       ]
     }

@@ -2,6 +2,7 @@ import ContentTransform from './content-transform'
 import EntryDerive from './entry-derive'
 import { APIEditorInterfaceSettings, APIEditorInterfaceSidebar } from './content-type'
 import TransformEntryToType from './entry-transform-to-type'
+import { SidebarWidget } from '../action/sidebarwidget'
 
 interface RawStep {
   type: string
@@ -31,7 +32,7 @@ interface RawStepPayload {
   editorInterfaceCopy?: EditorInterfaceCopy
   editorInterfaceReset?: EditorInterfaceReset
   editorInterface?: EditorInterfaceInfo
-  sidebarWidget?: APIEditorInterfaceSidebar
+  sidebarWidget?: SidebarWidget
 }
 
 interface EditorInterfaceInfo {

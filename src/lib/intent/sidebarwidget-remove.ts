@@ -1,10 +1,10 @@
 import Intent from './base-intent'
 import { PlanMessage } from '../interfaces/plan-message'
-import { CopyEditorInterfaceAction } from '../action/editorinterface-copy'
 import chalk from 'chalk'
 import { SaveEditorInterfaceAction } from '../action/editorinterface-save'
+import { SidebarWidgetRemoveAction } from '../action/sidebarwidget-remove'
 
-export default class EditorInterfaceCopyIntent extends Intent {
+export default class SidebarWidgetRemoveIntent extends Intent {
   isEditorInterfaceIntent () {
     return true
   }
@@ -27,18 +27,18 @@ export default class EditorInterfaceCopyIntent extends Intent {
   }
   toActions () {
     return [
-      new CopyEditorInterfaceAction(
+      new SidebarWidgetRemoveAction(
         this.payload.contentTypeId,
-        this.payload.editorInterfaceCopy.source,
-        this.payload.editorInterfaceCopy.destination
+        this.payload.sidebarWidget.widgetId
       ),
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]
   }
   toPlanMessage (): PlanMessage {
-    const {source, destination} = this.payload.editorInterfaceCopy
+    const { widgetId } = this.payload.sidebarWidget
+
     return {
-      heading: chalk`Copy editor interface for Content Type {bold.yellow ${this.getContentTypeId()}} from field {italic ${source}} to field {italic ${destination}}`,
+      heading: chalk`Remove sidebar widget {yellow ${widgetId}} from Content Type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],
       sections: []
     }
