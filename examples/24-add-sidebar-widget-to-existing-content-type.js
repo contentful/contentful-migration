@@ -5,6 +5,9 @@ module.exports = function (migration) {
   });
 
   blogPost
+    .addSidebarWidget('not-needed');
+
+  blogPost
     .addSidebarWidget(
       'imageTaggingExtensionId',
       'extension',
@@ -19,6 +22,8 @@ module.exports = function (migration) {
         tagField: 'tags',
         imageField: 'image'
       }
-    )
-  ;
+    );
+
+  blogPost
+    .removeSidebarWidget('not-needed');
 };
