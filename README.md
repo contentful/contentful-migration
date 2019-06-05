@@ -78,6 +78,10 @@
       - [`changeEditorInterface (fieldId, widgetId[, settings])` : void](#changeeditorinterface-fieldid-widgetid-settings--void)
       - [`resetEditorInterface (fieldId)` : void](#reseteditorinterface-fieldid--void)
       - [`copyEditorInterface (sourceFieldId, destinationFieldId)` : void](#copyeditorinterface-sourcefieldid-destinationfieldid--void)
+      - [`addSidebarWidget (widgetId[, widgetNamespace, insertBeforeWidgetId, settings])` : void](#addsidebarwidget-widgetid-widgetnamespace-insertbeforewidgetid-settings--void)
+      - [`updateSidebarWidget (widgetId, settings)` : void](#updatesidebarwidget-widgetid-settings--void)
+      - [`removeSidebarWidget (widgetId)` : void](#removesidebarwidget-widgetid--void)
+      - [`resetSidebarToDefault ()` : void](#resetsidebartodefault---void)
     - [Field](#field)
   - [Validation errors](#validation-errors)
   - [Example migrations](#example-migrations)
@@ -543,6 +547,38 @@ Changes the editor interface of given field's ID.
 
 **`sourceFieldId : string`** – The ID of the field to copy the editorinterface setting from.
 **`destinationFieldId : string`** – The ID of the field to apply the copied editorinterface setting to.
+
+#### `addSidebarWidget (widgetId[, widgetNamespace, insertBeforeWidgetId, settings])` : void
+
+Adds a builtin or custom widget to the sidebar of the content type.
+
+**`widgetId : string`** – The ID of the builtin or extension widget to add.
+
+**`widgetNamespace: string`** – The namespace of the widget, one of the following values:
+- `sidebar-builtin` (Standard widget, default)
+- `extension` (Custom UI extension)
+
+**`insertBeforeWidgetId : Object`** – Insert widget above this widget in the sidebar. If null, the widget will be added to the end.
+
+**`settings : Object`** – Instance settings for the widget.
+
+#### `updateSidebarWidget (widgetId, settings)` : void
+
+Updates the configuration of a widget in the sidebar of the content type.
+
+**`widgetId : string`** – The ID of the builtin or extension widget to add.
+
+**`settings : Object`** – Instance settings for the widget.
+
+#### `removeSidebarWidget (widgetId)` : void
+
+Removes a widget from the sidebar of the content type.
+
+**`widgetId : string`** – The ID of the builtin or extension widget to remove.
+
+#### `resetSidebarToDefault ()` : void
+
+Resets the sidebar of the content type to default.
 
 ### Field
 
