@@ -40,7 +40,7 @@ export default class SidebarWidgetAddIntent extends Intent {
   toPlanMessage (): PlanMessage {
     const { settings, widgetId, widgetNamespace } = this.payload.sidebarWidget
 
-    const settingDetails = Object.keys(this.payload.editorInterface.settings).map(settingName =>
+    const settingDetails = Object.keys(settings).map(settingName =>
       chalk`{italic ${settingName}}: "${settings[settingName]}"`
     )
 

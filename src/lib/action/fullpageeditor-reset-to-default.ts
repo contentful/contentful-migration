@@ -18,7 +18,7 @@ class FullPageEditorResetToDefaultAction extends EntityAction {
   }
 
   async applyTo(editorInterfaces: EditorInterfaces) {
-    editorInterfaces.resetFullPageEditorToDefault()
+    editorInterfaces.resetEditorToDefault()
   }
 }
 
