@@ -144,7 +144,7 @@ class ContentType extends DispatchProxy {
     ))
   }
 
-  changeEditorInterface (fieldId, widgetId, settings) {
+  changeFieldControl (fieldId, widgetId, settings) {
     const callsite = getFirstExternalCaller()
     this.dispatch(actionCreators.contentType.changeEditorInterface(
       this.id,
@@ -157,7 +157,12 @@ class ContentType extends DispatchProxy {
     return this
   }
 
-  copyEditorInterface (sourceFieldId, destinationFieldId) {
+  /** deprecated, use changeFieldControl instead */
+  changeEditorInterface (fieldId, widgetId, settings) {
+    return this.changeFieldControl(fieldId, widgetId, settings)
+  }
+
+  copyFieldControl (sourceFieldId, destinationFieldId) {
     const callsite = getFirstExternalCaller()
     this.dispatch(actionCreators.contentType.copyEditorInterface(
       this.id,
@@ -169,7 +174,12 @@ class ContentType extends DispatchProxy {
     return this
   }
 
-  resetEditorInterface (fieldId) {
+  /** deprecated, use copyFieldControl instead */
+  copyEditorInterface (sourceFieldId, destinationFieldId) {
+    return this.copyFieldControl(sourceFieldId, destinationFieldId)
+  }
+
+  resetFieldControl (fieldId) {
     const callsite = getFirstExternalCaller()
     this.dispatch(actionCreators.contentType.resetEditorInterface(
       this.id,
@@ -178,6 +188,11 @@ class ContentType extends DispatchProxy {
       fieldId
     ))
     return this
+  }
+
+  /** deprecated, use resetFieldControl instead */
+  resetEditorInterface (fieldId) {
+    return this.resetFieldControl(fieldId)
   }
 
   resetFullPageEditor () {

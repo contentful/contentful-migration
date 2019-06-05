@@ -4,5 +4,5 @@ module.exports = function (migration) {
     description: 'super angry'
   });
 
-  blogPost.changeEditorInterface('slug', 'singleLine');
+  blogPost.changeFieldControl('slug', 'singleLine');
 };
