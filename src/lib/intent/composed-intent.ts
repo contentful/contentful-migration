@@ -94,6 +94,10 @@ export default class ComposedIntent implements Intent {
     return false
   }
 
+  isSidebarUpdate (): boolean {
+    return true
+  }
+
   getContentTypeId (): string {
     return this.contentTypeId
   }
@@ -170,6 +174,10 @@ export default class ComposedIntent implements Intent {
 
     const topLevelDetails = flatten(contentTypeUpdates.map((updateIntent) => updateIntent.toPlanMessage().details))
 
+    const sidebarUpdates = flatten(this.intents
+      .filter((intent) => intent.isSidebarUpdate())
+      .map(i => i.toPlanMessage().sections))
+
     let createSections = []
 
     for (const editorInterfaceIntent of editorInterfaceUpdates) {
@@ -210,6 +218,8 @@ export default class ComposedIntent implements Intent {
       const planMessage = moveIntent.toPlanMessage()
       createSections = createSections.concat(planMessage.sections)
     }
+
+    createSections = [...createSections, ...sidebarUpdates]
 
     return {
       heading: mainHeading,

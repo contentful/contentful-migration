@@ -31,6 +31,7 @@ interface Intent {
   isGroupable (): boolean
   isEditorInterfaceIntent (): boolean
   isEditorInterfaceUpdate (): boolean
+  isSidebarUpdate (): boolean
 
   isComposedIntent (): boolean
 

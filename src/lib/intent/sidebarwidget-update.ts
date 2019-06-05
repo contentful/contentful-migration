@@ -4,7 +4,10 @@ import chalk from 'chalk'
 import { SaveEditorInterfaceAction } from '../action/editorinterface-save'
 import { SidebarWidgetUpdateAction } from '../action/sidebarwidget-update'
 
-export default class SidebarwidgetUpdateIntent extends Intent {
+export default class SidebarWidgetUpdateIntent extends Intent {
+  isSidebarUpdate () {
+    return true
+  }
   isEditorInterfaceIntent () {
     return true
   }
@@ -44,19 +47,16 @@ export default class SidebarwidgetUpdateIntent extends Intent {
       )
 
     const updateDetails = [
-      chalk`{italic widgetId}: "${widgetId}"`,
       ...settingDetails
     ]
 
     return {
       heading: chalk`Update editor interface for Content Type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],
-      sections: [
-        {
-          heading: chalk`Update sidebar widget {yellow ${widgetId}}`,
-          details: updateDetails
-        }
-      ]
+      sections: [{
+        heading: chalk`Update sidebar widget {yellow ${widgetId}}`,
+        details: updateDetails
+      }]
     }
   }
 }
