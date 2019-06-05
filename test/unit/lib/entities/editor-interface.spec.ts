@@ -32,6 +32,7 @@ describe('EditorInterfaces', () => {
     editorInterface.addSidebarWidget(
       testWidget.widgetId,
       testWidget.widgetNamespace,
+      null,
       testWidget.settings,
       testWidget.disabled
     )
@@ -45,6 +46,7 @@ describe('EditorInterfaces', () => {
     editorInterface.addSidebarWidget(
       testWidget.widgetId,
       testWidget.widgetNamespace,
+      null,
       testWidget.settings,
       testWidget.disabled
     )
@@ -52,6 +54,32 @@ describe('EditorInterfaces', () => {
     expect(editorInterface.getSidebar()).to.eql([
       existingWidget,
       testWidget
+    ])
+  })
+
+  it('adds sidebar widget before another widget in the custom sidebar', () => {
+    const beforeWidget = {
+      ...existingWidget,
+      widgetId: 'beforeThis'
+    }
+
+    const editorInterface = makeEditorInterface([
+      existingWidget,
+      beforeWidget
+    ])
+
+    editorInterface.addSidebarWidget(
+      testWidget.widgetId,
+      testWidget.widgetNamespace,
+      beforeWidget.widgetId,
+      testWidget.settings,
+      testWidget.disabled
+    )
+
+    expect(editorInterface.getSidebar()).to.eql([
+      existingWidget,
+      testWidget,
+      beforeWidget
     ])
   })
 

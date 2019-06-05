@@ -2,7 +2,7 @@ import ContentTransform from './content-transform'
 import EntryDerive from './entry-derive'
 import { APIEditorInterfaceSettings } from './content-type'
 import TransformEntryToType from './entry-transform-to-type'
-import { SidebarWidget } from '../action/sidebarwidget'
+import { SidebarWidgetNamespace, SidebarWidgetSettings } from '../action/sidebarwidget'
 
 interface RawStep {
   type: string
@@ -32,7 +32,7 @@ interface RawStepPayload {
   editorInterfaceCopy?: EditorInterfaceCopy
   editorInterfaceReset?: EditorInterfaceReset
   editorInterface?: EditorInterfaceInfo
-  sidebarWidget?: SidebarWidget
+  sidebarWidget?: SidebarWidgetInfo
 }
 
 interface EditorInterfaceInfo {
@@ -57,6 +57,14 @@ interface EditorInterfaceReset {
 
 interface RawStepProps {
   [propName: string]: any
+}
+
+export interface SidebarWidgetInfo {
+  widgetId: string,
+  widgetNamespace?: SidebarWidgetNamespace,
+  disabled?: boolean,
+  settings?: SidebarWidgetSettings,
+  insertBeforeWidgetId?: string
 }
 
 export {

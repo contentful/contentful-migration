@@ -142,7 +142,7 @@ const actionCreators = {
         }
       }
     }),
-    addSidebarWidget: (id, instanceId, callsite, widgetId, widgetNamespace, settings = {}): Intents.SidebarWidgetAdd => new Intents.SidebarWidgetAdd({
+    addSidebarWidget: (id, instanceId, callsite, widgetId, widgetNamespace, insertBeforeWidgetId, settings = {}): Intents.SidebarWidgetAdd => new Intents.SidebarWidgetAdd({
       type: 'contentType/addSidebarWidget',
       meta: {
         contentTypeInstanceId: `contentType/${id}/${instanceId}`,
@@ -156,7 +156,8 @@ const actionCreators = {
         sidebarWidget: {
           widgetId,
           widgetNamespace,
-          settings
+          settings,
+          insertBeforeWidgetId
         }
       }
     }),

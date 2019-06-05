@@ -8,16 +8,19 @@ class SidebarWidgetAddAction extends EntityAction {
   protected widgetNamespace: SidebarWidgetNamespace
   protected settings: SidebarWidgetSettings
   protected disabled: boolean
+  protected insertBeforeWidgetId: string
 
   constructor (contentTypeId: string,
                widgetId: string,
                widgetNamespace: SidebarWidgetNamespace,
+               insertBeforeWidgetId?: string,
                settings?: SidebarWidgetSettings,
                disabled: boolean = false) {
     super()
     this.contentTypeId = contentTypeId
     this.widgetId = widgetId
     this.widgetNamespace = widgetNamespace
+    this.insertBeforeWidgetId = insertBeforeWidgetId
     this.settings = settings
     this.disabled = disabled
   }
@@ -34,6 +37,7 @@ class SidebarWidgetAddAction extends EntityAction {
     editorInterfaces.addSidebarWidget(
       this.widgetId,
       this.widgetNamespace,
+      this.insertBeforeWidgetId,
       this.settings,
       this.disabled
     )

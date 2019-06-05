@@ -534,15 +534,21 @@ describe('the migration', function () {
     ]);
   }));
 
-  it('adds sidebar widget to the editor interface of a content type', co(function * () {
+  it('adds sidebar widgets to the editor interface of a content type', co(function * () {
     yield migrator(addSidebarWidgets);
 
     const editorInterfaces = yield request({
       method: 'GET',
-      url: '/content_types/blogPost/editor_interface'
+      url: '/content_types/customSidebar/editor_interface'
     });
 
     expect(editorInterfaces.sidebar).to.eql([
+      {
+        'disabled': false,
+        'settings': {},
+        'widgetId': 'publication-widget',
+        'widgetNamespace': 'sidebar-builtin'
+      },
       {
         'disabled': false,
         'settings': {
@@ -551,12 +557,6 @@ describe('the migration', function () {
         },
         'widgetId': 'imageTaggingExtensionId',
         'widgetNamespace': 'extension'
-      },
-      {
-        'disabled': false,
-        'settings': {},
-        'widgetId': 'publication-widget',
-        'widgetNamespace': 'sidebar-builtin'
       }
     ]);
   }));
