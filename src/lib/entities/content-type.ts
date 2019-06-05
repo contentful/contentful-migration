@@ -109,6 +109,10 @@ class EditorInterfaces {
     this._version = version
   }
 
+  getSidebar () {
+    return this._sidebar
+  }
+
   reset (fieldId: string) {
     let controlIndex: number = findIndex(this._controls, (c) => {
       return c.fieldId === fieldId
