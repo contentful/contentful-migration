@@ -2,7 +2,7 @@ import { migration as migrationSteps } from '../../../../src/lib/migration-steps
 import { expect } from 'chai'
 import IntentList from '../../../../src/lib/intent-list'
 import { Intent } from '../../../../src/lib/interfaces/intent'
-import { SaveEditorInterfaceAction } from '../../../../src/lib/action/editorinterface-save';
+import { SaveEditorInterfaceAction } from '../../../../src/lib/action/editorinterface-save'
 import { SidebarWidgetAddAction } from '../../../../src/lib/action/sidebarwidget-add'
 
 const noOp = () => undefined
