@@ -5,6 +5,9 @@ import { SaveEditorInterfaceAction } from '../action/editorinterface-save'
 import { SidebarWidgetAddAction } from '../action/sidebarwidget-add'
 
 export default class SidebarWidgetAddIntent extends Intent {
+  isSidebarUpdate () {
+    return true
+  }
   isEditorInterfaceIntent () {
     return true
   }
@@ -45,20 +48,17 @@ export default class SidebarWidgetAddIntent extends Intent {
     )
 
     const createDetails = [
-      chalk`{italic widgetId}: "${widgetId}"`,
       chalk`{italic widgetNamespace}: "${widgetNamespace}"`,
       ...settingDetails
     ]
 
     return {
-      heading: chalk`Update editor interface for Content Type {bold.yellow ${this.getContentTypeId()}}`,
+      heading: chalk`Update sidebar for Content Type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],
-      sections: [
-        {
-          heading: chalk`Add sidebar widget {yellow ${widgetId}}`,
-          details: createDetails
-        }
-      ]
+      sections: [{
+        heading: chalk`Add sidebar widget {yellow ${widgetId}}`,
+        details: createDetails
+      }]
     }
   }
 }

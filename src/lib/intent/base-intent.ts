@@ -82,6 +82,10 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
+  isSidebarUpdate () {
+    return false
+  }
+
   isGroupable () {
     return false
   }

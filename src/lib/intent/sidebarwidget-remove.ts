@@ -5,6 +5,9 @@ import { SaveEditorInterfaceAction } from '../action/editorinterface-save'
 import { SidebarWidgetRemoveAction } from '../action/sidebarwidget-remove'
 
 export default class SidebarWidgetRemoveIntent extends Intent {
+  isSidebarUpdate () {
+    return true
+  }
   isEditorInterfaceIntent () {
     return true
   }
@@ -38,9 +41,12 @@ export default class SidebarWidgetRemoveIntent extends Intent {
     const { widgetId } = this.payload.sidebarWidget
 
     return {
-      heading: chalk`Remove sidebar widget {yellow ${widgetId}} from Content Type {bold.yellow ${this.getContentTypeId()}}`,
+      heading: chalk`Update sidebar for Content Type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],
-      sections: []
+      sections: [{
+        heading: chalk`Remove sidebar widget {yellow ${widgetId}}`,
+        details: []
+      }]
     }
   }
 }
