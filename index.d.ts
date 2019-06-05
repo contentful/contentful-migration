@@ -114,6 +114,11 @@ export interface IEditorInterfaceOptions {
   bulkEditing?: boolean
 }
 
+export interface ISidebarWidgetSettings {
+  /** Instance settings for the sidebar widget as key-value pairs. */
+  [setting: string]: string
+}
+
 export interface ContentType {
   id: string
   instanceId: string
@@ -163,6 +168,39 @@ export interface ContentType {
    */
   copyEditorInterface (sourceFieldId: string, destinationFieldId: string): void
 
+  /**
+   * Adds a builtin or custom widget to the sidebar of the content type.
+   *
+   * @param widgetId The ID of the builtin or extension widget to show.
+   * @param widgetNamespace The namespace of the widget. Use 'builtin' for standard widgets or 'extension' for UI extensions.
+   * @param insertBeforeWidgetId Insert widget above this widget in the sidebar. If null, the widget will be added to the end.
+   * @param settings Instance settings for the widget
+   */
+  addSidebarWidget (widgetId: string,
+                    widgetNamespace: 'sidebar-builtin' | 'extension',
+                    insertBeforeWidgetId: string,
+                    settings: ISidebarWidgetSettings): void
+
+  /**
+   * Updates the configuration of a widget in the sidebar of the content type.
+   *
+   * @param widgetId The ID of the widget to update.
+   * @param settings Instance settings for the widget
+   */
+  updateSidebarWidget (widgetId: string,
+                       settings: ISidebarWidgetSettings): void
+
+  /**
+   * Removes a widget from the sidebar of the content type.
+   *
+   * @param widgetId The ID of the widget to update.
+   */
+  removeSidebarWidget (widgetId: string): void
+
+  /**
+   * Resets the sidebar of the content type to default
+   */
+  resetSidebarToDefault (): void
 }
 
 export interface IContentTypeOptions {
