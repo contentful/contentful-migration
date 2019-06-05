@@ -113,6 +113,10 @@ class EditorInterfaces {
     return this._sidebar
   }
 
+  getEditor () {
+    return this._editor
+  }
+
   reset (fieldId: string) {
     let controlIndex: number = findIndex(this._controls, (c) => {
       return c.fieldId === fieldId
@@ -206,6 +210,10 @@ class EditorInterfaces {
 
   resetSidebarToDefault () {
     this._sidebar = undefined
+  }
+
+  resetEditorToDefault () {
+    this._editor = undefined
   }
 
   toAPI (): object {

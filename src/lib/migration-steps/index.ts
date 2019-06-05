@@ -180,6 +180,16 @@ class ContentType extends DispatchProxy {
     return this
   }
 
+  resetFullPageEditor () {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.contentType.resetFullPageEditor(
+      this.id,
+      this.instanceId,
+      callsite
+    ))
+    return this
+  }
+
   addSidebarWidget (widgetId, widgetNamespace = 'sidebar-builtin', insertBeforeWidgetId = null, settings = {}) {
     const callsite = getFirstExternalCaller()
     this.dispatch(actionCreators.contentType.addSidebarWidget(
