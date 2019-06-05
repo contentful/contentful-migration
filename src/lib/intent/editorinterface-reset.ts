@@ -36,7 +36,7 @@ export default class EditorInterfaceResetIntent extends Intent {
   }
   toPlanMessage (): PlanMessage {
     return {
-      heading: chalk`Reset editor interface for Content Type {bold.yellow ${this.getContentTypeId()}}`,
+      heading: chalk`Reset field control for Content Type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],
       sections: []
     }

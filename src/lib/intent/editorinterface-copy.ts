@@ -38,7 +38,7 @@ export default class EditorInterfaceCopyIntent extends Intent {
   toPlanMessage (): PlanMessage {
     const {source, destination} = this.payload.editorInterfaceCopy
     return {
-      heading: chalk`Copy editor interface for Content Type {bold.yellow ${this.getContentTypeId()}} from field {italic ${source}} to field {italic ${destination}}`,
+      heading: chalk`Copy field control for Content Type {bold.yellow ${this.getContentTypeId()}} from field {italic ${source}} to field {italic ${destination}}`,
       details: [],
       sections: []
     }
