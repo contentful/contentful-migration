@@ -110,4 +110,12 @@ describe('EditorInterfaces', () => {
 
     expect(editorInterface.getSidebar()).to.eql(undefined)
   })
+
+  it('resets editor to default', () => {
+    const editorInterface = makeEditorInterface([existingWidget, testWidget])
+
+    editorInterface.resetEditorToDefault()
+
+    expect(editorInterface.getEditor()).to.eql(undefined)
+  })
 })

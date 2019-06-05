@@ -142,6 +142,19 @@ const actionCreators = {
         }
       }
     }),
+    resetFullPageEditor: (id, instanceId, callsite): Intents.FullPageEditorResetToDefault => new Intents.FullPageEditorResetToDefault({
+      type: 'contentType/resetFullPageEditor',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id
+      }
+    }),
     addSidebarWidget: (id, instanceId, callsite, widgetId, widgetNamespace, insertBeforeWidgetId, settings = {}): Intents.SidebarWidgetAdd => new Intents.SidebarWidgetAdd({
       type: 'contentType/addSidebarWidget',
       meta: {
