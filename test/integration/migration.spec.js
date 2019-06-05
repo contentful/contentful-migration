@@ -12,9 +12,9 @@ const deleteContentType = require('../../examples/delete-content-type');
 const fieldValidation = require('../../examples/09-validate-validations');
 const displayField = require('../../examples/07-display-field');
 const fieldMove = require('../../examples/08-move-field');
-const changeEditorInterface = require('../../examples/16-change-editor-interface');
-const changeEditorInterfaceWithExistingContentType = require('../../examples/17-change-editor-interface-for-existing-content-type');
-const changeEditorInterfaceWithExistingContentTypeAddingHelpText = require('../../examples/18-change-editor-interface-for-existing-content-type-adding-help-text');
+const changeEditorInterface = require('../../examples/16-change-field-control');
+const changeEditorInterfaceWithExistingContentType = require('../../examples/17-change-field-control-for-existing-content-type');
+const changeEditorInterfaceWithExistingContentTypeAddingHelpText = require('../../examples/18-change-field-control-for-existing-content-type-adding-help-text');
 const addSidebarWidgets = require('../../examples/24-add-sidebar-widget-to-existing-content-type');
 
 const { createMigrationParser } = require('../../built/lib/migration-parser');

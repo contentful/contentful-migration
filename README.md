@@ -75,9 +75,9 @@
       - [`editField(id[, opts])` : [Field](#field)](#editfieldid-opts--fieldfield)
       - [`deleteField(id)` : void](#deletefieldid--void)
       - [`changeFieldId (currentId, newId)` : void](#changefieldid-currentid-newid--void)
-      - [`changeEditorInterface (fieldId, widgetId[, settings])` : void](#changeeditorinterface-fieldid-widgetid-settings--void)
-      - [`resetEditorInterface (fieldId)` : void](#reseteditorinterface-fieldid--void)
-      - [`copyEditorInterface (sourceFieldId, destinationFieldId)` : void](#copyeditorinterface-sourcefieldid-destinationfieldid--void)
+      - [`changeFieldControl (fieldId, widgetId[, settings])` : void](#changefieldcontrol-fieldid-widgetid-settings--void)
+      - [`resetFieldControl (fieldId)` : void](#resetfieldcontrol-fieldid--void)
+      - [`copyFieldControl (sourceFieldId, destinationFieldId)` : void](#copyfieldcontrol-sourcefieldid-destinationfieldid--void)
       - [`addSidebarWidget (widgetId[, widgetNamespace, insertBeforeWidgetId, settings])` : void](#addsidebarwidget-widgetid-widgetnamespace-insertbeforewidgetid-settings--void)
       - [`updateSidebarWidget (widgetId, settings)` : void](#updatesidebarwidget-widgetid-settings--void)
       - [`removeSidebarWidget (widgetId)` : void](#removesidebarwidget-widgetid--void)
@@ -111,9 +111,9 @@
   - Edit a field
   - Delete a field
   - Rename a field
-  - Change editorInterface
-  - Reset editorInterface
-  - Copy editorInterface
+  - Change a field's control
+  - Reset a field's control
+  - Copy a field's control
   - Move field
 
 ## Pre-requisites && Installation
@@ -521,9 +521,9 @@ module.exports = function (migration) {
 };
 ```
 
-#### `changeEditorInterface (fieldId, widgetId[, settings])` : void
+#### `changeFieldControl (fieldId, widgetId[, settings])` : void
 
-Changes the editor interface of given field's ID.
+Changes control interface of given field's ID.
 
 **`fieldId : string`** – The ID of the field.
 
@@ -539,14 +539,14 @@ Changes the editor interface of given field's ID.
 - **`ampm : string`** _(only for fields of type datePicker)_ – Specifies which type of clock to use. Must be one of the strings “12” or “24” (default).
 - **`bulkEditing : boolean`** _(only for fields of type Array)_ – Specifies whether bulk editing of linked entries is possible.
 
-#### `resetEditorInterface (fieldId)` : void
+#### `resetFieldControl (fieldId)` : void
 
 **`fieldId : string`** – The ID of the field.
 
-#### `copyEditorInterface (sourceFieldId, destinationFieldId)` : void
+#### `copyFieldControl (sourceFieldId, destinationFieldId)` : void
 
-**`sourceFieldId : string`** – The ID of the field to copy the editorinterface setting from.
-**`destinationFieldId : string`** – The ID of the field to apply the copied editorinterface setting to.
+**`sourceFieldId : string`** – The ID of the field to copy the control setting from.
+**`destinationFieldId : string`** – The ID of the field to apply the copied control setting to.
 
 #### `addSidebarWidget (widgetId[, widgetNamespace, insertBeforeWidgetId, settings])` : void
 

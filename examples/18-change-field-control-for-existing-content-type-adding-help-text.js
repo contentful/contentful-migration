@@ -4,7 +4,7 @@ module.exports = function (migration) {
     description: 'super angry'
   });
 
-  blogPost.changeEditorInterface(
+  blogPost.changeFieldControl(
     'slug',
     'slugEditor',
     { helpText: 'This is the slug for the entry, it will be used for the URL' }
