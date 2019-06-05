@@ -48,7 +48,7 @@ export default class EditorInterfaceUpdateIntent extends Intent {
     )
 
     return {
-      heading: chalk`Update editor interface for Content Type {bold.yellow ${this.getContentTypeId()}}`,
+      heading: chalk`Update field controls for Content Type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],
       sections: [
         {
