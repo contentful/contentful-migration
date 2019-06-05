@@ -32,6 +32,7 @@ describe('SidebarWidgetAddIntent', function () {
         ct.addSidebarWidget(
           'widgetId',
           'extension',
+          'test',
           {
             setting: 'set-1'
           }
@@ -46,6 +47,7 @@ describe('SidebarWidgetAddIntent', function () {
           ctId,
           'widgetId',
           'extension',
+          'test',
           {setting: 'set-1'},
           false
         )

@@ -157,16 +157,25 @@ class EditorInterfaces {
 
   addSidebarWidget (widgetId: string,
                     widgetNamespace: APISidebarWidgetNamespace,
+                    insertBeforeWidgetId: string,
                     settings: APISidebarWidgetSettings,
                     disabled: boolean) {
     this._sidebar = Array.isArray(this._sidebar) ? this._sidebar : []
 
-    this._sidebar.push({
+    const nextWidgetIndex = this._sidebar.map(w => w.widgetId).indexOf(insertBeforeWidgetId)
+
+    const newWidget: APIEditorInterfaceSidebar = {
       disabled,
       settings,
       widgetId,
       widgetNamespace
-    })
+    }
+
+    if (nextWidgetIndex < 0) {
+      this._sidebar.push(newWidget)
+    } else {
+      this._sidebar.splice(nextWidgetIndex, 0, newWidget)
+    }
   }
 
   updateSidebarWidget (widgetId: string,

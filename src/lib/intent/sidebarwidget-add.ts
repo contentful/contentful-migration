@@ -31,6 +31,7 @@ export default class SidebarWidgetAddIntent extends Intent {
         this.payload.contentTypeId,
         this.payload.sidebarWidget.widgetId,
         this.payload.sidebarWidget.widgetNamespace,
+        this.payload.sidebarWidget.insertBeforeWidgetId,
         this.payload.sidebarWidget.settings
       ),
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
