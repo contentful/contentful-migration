@@ -7,7 +7,7 @@ import {
   APIEditorInterfaceSettings,
   APIEditorInterfaceSidebar,
   APIEditorIntefaceEditor,
-  APISidebarWidgetNamespace
+  APISidebarWidgetNamespace,
 } from '../interfaces/content-type'
 import { cloneDeep, find, filter, findIndex, pull, forEach } from 'lodash'
 

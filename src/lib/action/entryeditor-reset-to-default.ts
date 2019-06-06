@@ -1,7 +1,7 @@
 import { EditorInterfaces } from "../entities/content-type"
 import { EntityAction } from "./action"
 
-class FullPageEditorResetToDefaultAction extends EntityAction {
+class EntryEditorResetToDefaultAction extends EntityAction {
   protected contentTypeId: string
 
   constructor(contentTypeId: string) {
@@ -22,4 +22,4 @@ class FullPageEditorResetToDefaultAction extends EntityAction {
   }
 }
 
-export { FullPageEditorResetToDefaultAction }
+export { EntryEditorResetToDefaultAction }

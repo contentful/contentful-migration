@@ -17,7 +17,7 @@ import SidebarWidgetAddIntent from './sidebarwidget-add'
 import SidebarWidgetRemoveIntent from './sidebarwidget-remove'
 import SidebarWidgetUpdateIntent from './sidebarwidget-update'
 import SidebarResetToDefaultIntent from './sidebar-reset-to-default'
-import FullPageEditorResetToDefaultIntent from './fullpageeditor-reset-to-default'
+import EntryEditorResetToDefaultIntent from './entryeditor-reset-to-default'
 
 export {
   Intent as default,
@@ -40,5 +40,5 @@ export {
   SidebarWidgetRemoveIntent as SidebarWidgetRemove,
   SidebarWidgetUpdateIntent as SidebarWidgetUpdate,
   SidebarResetToDefaultIntent as SidebarResetToDefault,
-  FullPageEditorResetToDefaultIntent as FullPageEditorResetToDefault
+  EntryEditorResetToDefaultIntent as EntryEditorResetToDefault
 }

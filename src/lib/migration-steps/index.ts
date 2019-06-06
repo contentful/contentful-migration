@@ -195,9 +195,9 @@ class ContentType extends DispatchProxy {
     return this.resetFieldControl(fieldId)
   }
 
-  resetFullPageEditor () {
+  resetEntryEditor () {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.resetFullPageEditor(
+    this.dispatch(actionCreators.contentType.resetEntryEditor(
       this.id,
       this.instanceId,
       callsite

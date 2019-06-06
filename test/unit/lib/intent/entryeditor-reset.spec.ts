@@ -3,7 +3,7 @@ import { expect } from "chai"
 import IntentList from "../../../../src/lib/intent-list"
 import { Intent } from "../../../../src/lib/interfaces/intent"
 import { SaveEditorInterfaceAction } from "../../../../src/lib/action/editorinterface-save"
-import { FullPageEditorResetToDefaultAction } from "../../../../src/lib/action/fullpageeditor-reset-to-default"
+import { EntryEditorResetToDefaultAction } from "../../../../src/lib/action/entryeditor-reset-to-default"
 
 const noOp = () => undefined
 
@@ -14,7 +14,7 @@ const composedIntent = async function(migration): Promise<Intent[]> {
   return list.compressed().getIntents()
 }
 
-describe("FullPageEditorResetIntent", function() {
+describe("EntryEditorResetIntent", function() {
   const ctId = "test"
 
   it("resets editor property", async function() {
@@ -28,14 +28,14 @@ describe("FullPageEditorResetIntent", function() {
       const desc = ct.createField("description")
       desc.type("Text")
 
-      ct.resetFullPageEditor(ctId)
+      ct.resetEntryEditor(ctId)
     })
 
     const intent: Intent = intents[1]
 
     const actions = intent.toActions()
 
-    expect(actions[0]).to.eql(new FullPageEditorResetToDefaultAction(ctId))
+    expect(actions[0]).to.eql(new EntryEditorResetToDefaultAction(ctId))
 
     expect(actions[1]).to.eql(new SaveEditorInterfaceAction(ctId))
   })
