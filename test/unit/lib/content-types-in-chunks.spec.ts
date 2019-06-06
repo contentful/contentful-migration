@@ -3,7 +3,7 @@
 import { expect } from 'chai'
 import * as sinon from 'sinon'
 
-import {migration as migrationSteps } from '../../../src/lib/migration-steps'
+import { migration as migrationSteps } from '../../../src/lib/migration-steps'
 import IntentList from '../../../src/lib/intent-list'
 import Fetcher from '../../../src/lib/fetcher'
 

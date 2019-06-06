@@ -229,7 +229,7 @@ class EditorInterfaces {
     this._editor = undefined
   }
 
-  setEditor(editor: APIEditorIntefaceEditor) {
+  setEditor (editor: APIEditorIntefaceEditor) {
     this._editor = editor
   }
 

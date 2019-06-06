@@ -5,7 +5,7 @@ import { SidebarWidgetNamespace, SidebarWidgetSettings } from '../action/sidebar
 import {
   EntryEditorNamespace,
   EntryEditorSettings
-} from "../action/entryeditor-configure"
+} from '../action/entryeditor-configure'
 
 interface RawStep {
   type: string
