@@ -7,7 +7,7 @@ import {
   APIEditorInterfaceSettings,
   APIEditorInterfaceSidebar,
   APIEditorIntefaceEditor,
-  APISidebarWidgetNamespace,
+  APISidebarWidgetNamespace, APIControlWidgetNamespace
 } from '../interfaces/content-type'
 import { cloneDeep, find, filter, findIndex, pull, forEach } from 'lodash'
 
@@ -117,6 +117,10 @@ class EditorInterfaces {
     return this._editor
   }
 
+  getControls () {
+    return this._controls
+  }
+
   reset (fieldId: string) {
     let controlIndex: number = findIndex(this._controls, (c) => {
       return c.fieldId === fieldId
@@ -135,7 +139,12 @@ class EditorInterfaces {
     }
   }
 
-  update (fieldId: string, widgetId: string, settings?: APIEditorInterfaceSettings) {
+  update (
+    fieldId: string,
+    widgetId: string,
+    settings?: APIEditorInterfaceSettings,
+    widgetNamespace?: APIControlWidgetNamespace
+  ) {
     let control: APIEditorInterfaceControl = find(this._controls, (c) => {
       return c.fieldId === fieldId
     })
@@ -156,6 +165,10 @@ class EditorInterfaces {
         control.settings = control.settings || {}
         control.settings[k] = v
       })
+    }
+
+    if (widgetNamespace) {
+      control.widgetNamespace = widgetNamespace
     }
   }
 
@@ -222,7 +235,8 @@ class EditorInterfaces {
       controls.push({
         fieldId: c.fieldId,
         widgetId: c.widgetId,
-        settings: c.settings
+        settings: c.settings,
+        widgetNamespace: c.widgetNamespace
       })
     })
 

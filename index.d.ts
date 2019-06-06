@@ -112,11 +112,14 @@ export interface IEditorInterfaceOptions {
   ampm?: '12' | '24'
   /** (only for References, many) Select whether to enable Bulk Editing mode */
   bulkEditing?: boolean
+
+  /** Instance settings for the sidebar widget as key-value pairs. */
+  [setting: string]: any
 }
 
 export interface ISidebarWidgetSettings {
   /** Instance settings for the sidebar widget as key-value pairs. */
-  [setting: string]: string
+  [setting: string]: any
 }
 
 export interface ContentType {
@@ -150,8 +153,9 @@ export interface ContentType {
    * @param fieldId The ID of the field.
    * @param widgetId The new widget ID for the field.
    * @param settings Widget settings
+   * @param widgetNamespace The namespace of the widget. Use 'builtin' for standard widgets or 'extension' for UI extensions.
    */
-  changeFieldControl (fieldId: string, widgetId: string, settings?: IEditorInterfaceOptions): void
+  changeFieldControl (fieldId: string, widgetId: string, settings?: IEditorInterfaceOptions, widgetNamespace?: 'builtin' | 'extension'): void
 
   /**
    * Resets the field control of given field's ID.

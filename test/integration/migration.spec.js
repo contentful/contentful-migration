@@ -486,19 +486,20 @@ describe('the migration', function () {
     expect(blogEntriesWithoutSys).to.eql(entries);
   }));
 
-  it('changes the editor interface', co(function * () {
+  it.only('changes the editor interface', co(function * () {
     yield migrator(changeEditorInterface);
 
     const editorInterfaces = yield request({
       method: 'GET',
       url: '/content_types/blogPost/editor_interface'
     });
-    expect(editorInterfaces.controls).to.eql([
-      {
-        fieldId: 'slug',
-        widgetId: 'slugEditor'
-      }
-    ]);
+
+    expect(editorInterfaces.controls[0]).to.eql({
+      fieldId: 'slug',
+      widgetId: 'slugEditor',
+      widgetNamespace: 'extension',
+      settings: { setting: 'value' }
+    });
   }));
 
   it('changes the editor interface with an existing contentType', co(function * () {
@@ -511,7 +512,8 @@ describe('the migration', function () {
     expect(editorInterfaces.controls).to.eql([
       {
         fieldId: 'slug',
-        widgetId: 'singleLine'
+        widgetId: 'singleLine',
+        widgetNamespace: 'extension'
       }
     ]);
   }));
