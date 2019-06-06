@@ -141,5 +141,21 @@ describe('EditorInterfaces', () => {
       ...control,
       widgetNamespace: 'extension'
     }])
+
   })
+
+  it('configures editor', () => {
+    const editorInterface = makeEditorInterface([existingWidget, testWidget])
+
+    editorInterface.setEditor({
+      widgetId: 'test-widget-id',
+      widgetNamespace: 'extension',
+      settings: { key: 'value' }
+    })
+
+    expect(editorInterface.getEditor().widgetId).to.eql('test-widget-id')
+    expect(editorInterface.getEditor().widgetNamespace).to.eql('extension')
+    expect(editorInterface.getEditor().settings.key).to.eql('value')
+  })
+
 })

@@ -229,6 +229,10 @@ class EditorInterfaces {
     this._editor = undefined
   }
 
+  setEditor(editor: APIEditorIntefaceEditor) {
+    this._editor = editor
+  }
+
   toAPI (): object {
     let controls: APIEditorInterfaceControl[] = []
     forEach(this._controls, (c) => {

@@ -156,6 +156,24 @@ const actionCreators = {
         contentTypeId: id
       }
     }),
+    configureEntryEditor: (id, instanceId, callsite, widgetId, widgetNamespace, settings): Intents.EntryEditorConfigure => new Intents.EntryEditorConfigure({
+      type: 'contentType/configureEntryEditor',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id,
+        entryEditor: {
+          widgetId,
+          widgetNamespace,
+          settings
+        }
+      }
+    }),
     addSidebarWidget: (id, instanceId, callsite, widgetId, widgetNamespace, insertBeforeWidgetId, settings = {}): Intents.SidebarWidgetAdd => new Intents.SidebarWidgetAdd({
       type: 'contentType/addSidebarWidget',
       meta: {

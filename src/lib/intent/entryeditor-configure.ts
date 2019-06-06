@@ -2,9 +2,9 @@ import Intent from "./base-intent"
 import { PlanMessage } from "../interfaces/plan-message"
 import chalk from "chalk"
 import { SaveEditorInterfaceAction } from "../action/editorinterface-save"
-import { EntryEditorResetToDefaultAction } from "../action/entryeditor-reset-to-default"
+import { EntryEditorConfigureAction } from "../action/entryeditor-configure"
 
-export default class EntryEditorResetToDefaultIntent extends Intent {
+export default class EntryEditorConfigureIntent extends Intent {
   isEditorInterfaceIntent() {
     return true
   }
@@ -25,13 +25,18 @@ export default class EntryEditorResetToDefaultIntent extends Intent {
   }
   toActions() {
     return [
-      new EntryEditorResetToDefaultAction(this.payload.contentTypeId),
+      new EntryEditorConfigureAction(
+        this.payload.contentTypeId,
+        this.payload.entryEditor.widgetId,
+        this.payload.entryEditor.widgetNamespace,
+        this.payload.entryEditor.settings
+      ),
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]
   }
   toPlanMessage(): PlanMessage {
     return {
-      heading: chalk`Reset entry editor interface for content type {bold.yellow ${this.getContentTypeId()}} to default`,
+      heading: chalk`Configure entry editor interface for content type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],
       sections: []
     }
