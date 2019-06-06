@@ -10,6 +10,7 @@ import ContentTransform from '../interfaces/content-transform'
 import EntryDerive from '../interfaces/entry-derive'
 import TransformEntryToType from '../interfaces/entry-transform-to-type'
 import { ClientConfig } from '../../bin/lib/config'
+import { deprecatedMethod } from '../utils/deprecated'
 
 const createInstanceIdManager = () => {
   const instanceCounts = {}
@@ -160,6 +161,7 @@ class ContentType extends DispatchProxy {
 
   /** deprecated, use changeFieldControl instead */
   changeEditorInterface (fieldId, widgetId, settings, widgetNamespace) {
+    deprecatedMethod('changeEditorInterface', 'changeFieldControl')
     return this.changeFieldControl(fieldId, widgetId, settings, widgetNamespace)
   }
 
@@ -177,6 +179,7 @@ class ContentType extends DispatchProxy {
 
   /** deprecated, use copyFieldControl instead */
   copyEditorInterface (sourceFieldId, destinationFieldId) {
+    deprecatedMethod('copyEditorInterface', 'copyFieldControl')
     return this.copyFieldControl(sourceFieldId, destinationFieldId)
   }
 
@@ -193,6 +196,7 @@ class ContentType extends DispatchProxy {
 
   /** deprecated, use resetFieldControl instead */
   resetEditorInterface (fieldId) {
+    deprecatedMethod('resetEditorInterface', 'resetFieldControl')
     return this.resetFieldControl(fieldId)
   }
 

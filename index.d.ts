@@ -158,11 +158,23 @@ export interface ContentType {
   changeFieldControl (fieldId: string, widgetId: string, settings?: IEditorInterfaceOptions, widgetNamespace?: 'builtin' | 'extension'): void
 
   /**
+   * @deprecated
+   * Use change field control instead
+   */
+  changeEditorInterface (fieldId: string, widgetId: string, settings?: IEditorInterfaceOptions, widgetNamespace?: 'builtin' | 'extension'): void
+
+  /**
    * Resets the field control of given field's ID.
    *
    * @param fieldId The ID of the field.
    */
   resetFieldControl (fieldId: string): void
+
+  /**
+   * @deprecated
+   * Use resetFieldControl instead
+   */
+  resetEditorInterface (fieldId: string): void
 
   /**
    * copies the control settings from a field to another field in the same content type.
@@ -171,6 +183,12 @@ export interface ContentType {
    * @param destinationFieldId The ID of the field to apply the copied control setting to.
    */
   copyFieldControl (sourceFieldId: string, destinationFieldId: string): void
+
+  /**
+   * @deprecated
+   * Use copyFieldControl instead
+   */
+  copyEditorInterface (sourceFieldId: string, destinationFieldId: string): void
 
   /**
    * Adds a builtin or custom widget to the sidebar of the content type.
