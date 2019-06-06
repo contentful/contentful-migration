@@ -29,13 +29,7 @@ interface APIContentType {
 }
 
 interface APIEditorInterfaceSettings {
-  helpText?: string,
-  trueLabel?: string,
-  falseLabel?: string,
-  bulkEditing?: boolean,
-  stars?: number,
-  format?: string,
-  ampm?: string
+  [setting: string]: any
 }
 
 type APISidebarWidgetNamespace = 'builtin' | 'extension'

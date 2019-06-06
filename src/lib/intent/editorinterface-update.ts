@@ -43,9 +43,12 @@ export default class EditorInterfaceUpdateIntent extends Intent {
   toPlanMessage (): PlanMessage {
     const { widgetId, fieldId, settings, widgetNamespace } = this.payload.editorInterface
     let createDetails = [
-      chalk`{italic widgetId}: "${widgetId}"`,
-      chalk`{italic widgetNamespace}: "${widgetNamespace}"`
+      chalk`{italic widgetId}: "${widgetId}"`
     ]
+
+    if (widgetNamespace) {
+      createDetails = [...createDetails, chalk`{italic widgetNamespace}: "${widgetNamespace}"`]
+    }
 
     Object.keys(settings).forEach(settingName =>
       createDetails.push(chalk`{italic ${settingName}}: "${settings[settingName]}"`)

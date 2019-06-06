@@ -486,7 +486,7 @@ describe('the migration', function () {
     expect(blogEntriesWithoutSys).to.eql(entries);
   }));
 
-  it.only('changes the editor interface', co(function * () {
+  it('changes the editor interface', co(function * () {
     yield migrator(changeEditorInterface);
 
     const editorInterfaces = yield request({
@@ -512,8 +512,7 @@ describe('the migration', function () {
     expect(editorInterfaces.controls).to.eql([
       {
         fieldId: 'slug',
-        widgetId: 'singleLine',
-        widgetNamespace: 'extension'
+        widgetId: 'singleLine'
       }
     ]);
   }));

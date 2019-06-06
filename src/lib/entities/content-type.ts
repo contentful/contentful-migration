@@ -135,7 +135,7 @@ class EditorInterfaces {
       return c.fieldId === fromFieldId
     })
     if (control) {
-      this.update(toFieldId, control.widgetId, control.settings)
+      this.update(toFieldId, control.widgetId, control.settings, control.widgetNamespace)
     }
   }
 

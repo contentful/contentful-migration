@@ -30,7 +30,7 @@ describe('EditorInterfaceCopyIntent', function () {
       })
       const message: PlanMessage = intents[1].toPlanMessage()
       expect(message.heading).to.eq(
-        chalk`Copy editor interface for Content Type {bold.yellow test} from field {italic name} to field {italic description}`
+        chalk`Copy field control for Content Type {bold.yellow test} from field {italic name} to field {italic description}`
       )
     })
   })
