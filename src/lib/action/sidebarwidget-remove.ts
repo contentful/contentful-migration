@@ -1,15 +1,19 @@
 import { EditorInterfaces } from '../entities/content-type'
 import { EntityAction } from './action'
+import { SidebarWidgetNamespace } from './sidebarwidget'
 
 class SidebarWidgetRemoveAction extends EntityAction {
   protected contentTypeId: string
   protected widgetId: string
+  protected widgetNamespace: SidebarWidgetNamespace
 
   constructor (contentTypeId: string,
-               widgetId: string) {
+               widgetId: string,
+               widgetNamespace: SidebarWidgetNamespace) {
     super()
     this.contentTypeId = contentTypeId
     this.widgetId = widgetId
+    this.widgetNamespace = widgetNamespace
   }
 
   getEntityType (): string {
@@ -22,7 +26,8 @@ class SidebarWidgetRemoveAction extends EntityAction {
 
   async applyTo (editorInterfaces: EditorInterfaces) {
     editorInterfaces.removeSidebarWidget(
-      this.widgetId
+      this.widgetId,
+      this.widgetNamespace
     )
   }
 }

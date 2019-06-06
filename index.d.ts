@@ -194,7 +194,7 @@ export interface ContentType {
    * Adds a builtin or custom widget to the sidebar of the content type.
    *
    * @param widgetId The ID of the builtin or extension widget to add.
-   * @param widgetNamespace The namespace of the widget. Use 'builtin' for standard widgets or 'extension' for UI extensions.
+   * @param widgetNamespace The namespace of the widget. Use 'sidebar-builtin' for standard widgets or 'extension' for UI extensions.
    * @param insertBeforeWidgetId Insert widget above this widget in the sidebar. If null, the widget will be added to the end.
    * @param settings Instance settings for the widget
    */
@@ -207,17 +207,21 @@ export interface ContentType {
    * Updates the configuration of a widget in the sidebar of the content type.
    *
    * @param widgetId The ID of the widget to update.
+   * @param widgetNamespace The namespace of the widget. Use 'sidebar-builtin' for standard widgets or 'extension' for UI extensions.
    * @param settings Instance settings for the widget
    */
   updateSidebarWidget (widgetId: string,
+                       widgetNamespace: 'sidebar-builtin' | 'extension',
                        settings: ISidebarWidgetSettings): void
 
   /**
    * Removes a widget from the sidebar of the content type.
    *
    * @param widgetId The ID of the widget to remove.
+   * @param widgetNamespace The namespace of the widget. Use 'sidebar-builtin' for standard widgets or 'extension' for UI extensions.
    */
-  removeSidebarWidget (widgetId: string): void
+  removeSidebarWidget (widgetId: string,
+                       widgetNamespace: 'sidebar-builtin' | 'extension'): void
 
   /**
    * Resets the sidebar of the content type to default

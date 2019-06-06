@@ -86,7 +86,7 @@ describe('EditorInterfaces', () => {
   it('removes sidebar widget', () => {
     const editorInterface = makeEditorInterface([existingWidget, testWidget])
 
-    editorInterface.removeSidebarWidget(testWidget.widgetId)
+    editorInterface.removeSidebarWidget(testWidget.widgetId, testWidget.widgetNamespace)
 
     expect(editorInterface.getSidebar()).to.eql([
       existingWidget
@@ -96,7 +96,7 @@ describe('EditorInterfaces', () => {
   it('does not fail when removing non-existing sidebar widget', () => {
     const editorInterface = makeEditorInterface([existingWidget])
 
-    editorInterface.removeSidebarWidget(testWidget.widgetId)
+    editorInterface.removeSidebarWidget(testWidget.widgetId, testWidget.widgetNamespace)
 
     expect(editorInterface.getSidebar()).to.eql([
       existingWidget

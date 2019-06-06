@@ -193,7 +193,7 @@ const actionCreators = {
         }
       }
     }),
-    updateSidebarWidget: (id, instanceId, callsite, widgetId, settings = {}): Intents.SidebarWidgetUpdate => new Intents.SidebarWidgetUpdate({
+    updateSidebarWidget: (id, instanceId, callsite, widgetId, widgetNamespace, settings = {}): Intents.SidebarWidgetUpdate => new Intents.SidebarWidgetUpdate({
       type: 'contentType/updateSidebarWidget',
       meta: {
         contentTypeInstanceId: `contentType/${id}/${instanceId}`,
@@ -206,11 +206,12 @@ const actionCreators = {
         contentTypeId: id,
         sidebarWidget: {
           widgetId,
-          settings
+          settings,
+          widgetNamespace
         }
       }
     }),
-    removeSidebarWidget: (id, instanceId, callsite, widgetId): Intents.SidebarWidgetRemove => new Intents.SidebarWidgetRemove({
+    removeSidebarWidget: (id, instanceId, callsite, widgetId, widgetNamespace): Intents.SidebarWidgetRemove => new Intents.SidebarWidgetRemove({
       type: 'contentType/removeSidebarWidget',
       meta: {
         contentTypeInstanceId: `contentType/${id}/${instanceId}`,
@@ -222,7 +223,8 @@ const actionCreators = {
       payload: {
         contentTypeId: id,
         sidebarWidget: {
-          widgetId
+          widgetId,
+          widgetNamespace
         }
       }
     }),

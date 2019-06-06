@@ -78,9 +78,9 @@
       - [`changeFieldControl (fieldId, widgetId, widgetNamespace[, settings])` : void](#changefieldcontrol-fieldid-widgetid-widgetnamespace-settings--void)
       - [`resetFieldControl (fieldId)` : void](#resetfieldcontrol-fieldid--void)
       - [`copyFieldControl (sourceFieldId, destinationFieldId)` : void](#copyfieldcontrol-sourcefieldid-destinationfieldid--void)
-      - [`addSidebarWidget (widgetId[, widgetNamespace, insertBeforeWidgetId, settings])` : void](#addsidebarwidget-widgetid-widgetnamespace-insertbeforewidgetid-settings--void)
-      - [`updateSidebarWidget (widgetId, settings)` : void](#updatesidebarwidget-widgetid-settings--void)
-      - [`removeSidebarWidget (widgetId)` : void](#removesidebarwidget-widgetid--void)
+      - [`addSidebarWidget (widgetId, widgetNamespace[, insertBeforeWidgetId, settings])` : void](#addsidebarwidget-widgetid-widgetnamespace-insertbeforewidgetid-settings--void)
+      - [`updateSidebarWidget (widgetId, widgetNamespace, settings)` : void](#updatesidebarwidget-widgetid-widgetnamespace-settings--void)
+      - [`removeSidebarWidget (widgetId, widgetNamespace)` : void](#removesidebarwidget-widgetid-widgetnamespace--void)
       - [`resetSidebarToDefault ()` : void](#resetsidebartodefault---void)
     - [Field](#field)
   - [Validation errors](#validation-errors)
@@ -552,7 +552,7 @@ Changes control interface of given field's ID.
 **`sourceFieldId : string`** – The ID of the field to copy the control setting from.
 **`destinationFieldId : string`** – The ID of the field to apply the copied control setting to.
 
-#### `addSidebarWidget (widgetId[, widgetNamespace, insertBeforeWidgetId, settings])` : void
+#### `addSidebarWidget (widgetId, widgetNamespace[, insertBeforeWidgetId, settings])` : void
 
 Adds a builtin or custom widget to the sidebar of the content type.
 
@@ -566,19 +566,27 @@ Adds a builtin or custom widget to the sidebar of the content type.
 
 **`settings : Object`** – Instance settings for the widget.
 
-#### `updateSidebarWidget (widgetId, settings)` : void
+#### `updateSidebarWidget (widgetId, widgetNamespace, settings)` : void
 
 Updates the configuration of a widget in the sidebar of the content type.
 
 **`widgetId : string`** – The ID of the builtin or extension widget to add.
 
+**`widgetNamespace: string`** – The namespace of the widget, one of the following values:
+- `sidebar-builtin` (Standard widget, default)
+- `extension` (Custom UI extension)
+
 **`settings : Object`** – Instance settings for the widget.
 
-#### `removeSidebarWidget (widgetId)` : void
+#### `removeSidebarWidget (widgetId, widgetNamespace)` : void
 
 Removes a widget from the sidebar of the content type.
 
 **`widgetId : string`** – The ID of the builtin or extension widget to remove.
+
+**`widgetNamespace: string`** – The namespace of the widget, one of the following values:
+- `sidebar-builtin` (Standard widget, default)
+- `extension` (Custom UI extension)
 
 #### `resetSidebarToDefault ()` : void
 

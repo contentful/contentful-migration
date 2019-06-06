@@ -10,6 +10,7 @@ import {
   APISidebarWidgetNamespace, APIControlWidgetNamespace
 } from '../interfaces/content-type'
 import { cloneDeep, find, filter, findIndex, pull, forEach } from 'lodash'
+import { SidebarWidgetNamespace } from '../action/sidebarwidget'
 
 class Fields {
   private _fields: Field[]
@@ -196,6 +197,7 @@ class EditorInterfaces {
   }
 
   updateSidebarWidget (widgetId: string,
+                       widgetNamespace: SidebarWidgetNamespace,
                        settings?: APISidebarWidgetSettings,
                        disabled?: boolean) {
 
@@ -203,7 +205,9 @@ class EditorInterfaces {
       return
     }
 
-    const widget = this._sidebar.find(widget => widget.widgetId === widgetId)
+    const widget = this._sidebar.find(widget =>
+      widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace
+    )
 
     if (!widget) {
       return
@@ -213,12 +217,14 @@ class EditorInterfaces {
     widget.disabled = typeof disabled === 'boolean' ? disabled : widget.disabled
   }
 
-  removeSidebarWidget (widgetId: string) {
+  removeSidebarWidget (widgetId: string, widgetNamespace: APISidebarWidgetNamespace) {
     if (!Array.isArray(this._sidebar)) {
       return
     }
 
-    this._sidebar = this._sidebar.filter(widget => widget.widgetId !== widgetId)
+    this._sidebar = this._sidebar.filter(
+      widget => !(widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace)
+    )
   }
 
   resetSidebarToDefault () {

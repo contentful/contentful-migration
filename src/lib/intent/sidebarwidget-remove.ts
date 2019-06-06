@@ -32,20 +32,23 @@ export default class SidebarWidgetRemoveIntent extends Intent {
     return [
       new SidebarWidgetRemoveAction(
         this.payload.contentTypeId,
-        this.payload.sidebarWidget.widgetId
+        this.payload.sidebarWidget.widgetId,
+        this.payload.sidebarWidget.widgetNamespace
       ),
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]
   }
   toPlanMessage (): PlanMessage {
-    const { widgetId } = this.payload.sidebarWidget
+    const { widgetId, widgetNamespace } = this.payload.sidebarWidget
 
     return {
       heading: chalk`Update sidebar for Content Type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],
       sections: [{
         heading: chalk`Remove sidebar widget {yellow ${widgetId}}`,
-        details: []
+        details: [
+          chalk`{italic widgetNamespace: "${widgetNamespace}"`
+        ]
       }]
     }
   }

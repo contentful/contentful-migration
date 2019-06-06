@@ -5,7 +5,7 @@ module.exports = function (migration) {
   });
 
   blogPost
-    .addSidebarWidget('not-needed');
+    .addSidebarWidget('not-needed', 'sidebar-builtin');
 
   blogPost
     .addSidebarWidget('imageTaggingExtensionId', 'extension', null, {
@@ -14,6 +14,7 @@ module.exports = function (migration) {
     .addSidebarWidget('publication-widget', 'sidebar-builtin', 'imageTaggingExtensionId')
     .updateSidebarWidget(
       'imageTaggingExtensionId',
+      'extension',
       {
         tagField: 'tags',
         imageField: 'image'
@@ -21,5 +22,5 @@ module.exports = function (migration) {
     );
 
   blogPost
-    .removeSidebarWidget('not-needed');
+    .removeSidebarWidget('not-needed', 'sidebar-builtin');
 };

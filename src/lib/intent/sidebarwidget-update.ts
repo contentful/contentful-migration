@@ -33,6 +33,7 @@ export default class SidebarWidgetUpdateIntent extends Intent {
       new SidebarWidgetUpdateAction(
         this.payload.contentTypeId,
         this.payload.sidebarWidget.widgetId,
+        this.payload.sidebarWidget.widgetNamespace,
         this.payload.sidebarWidget.settings,
         this.payload.sidebarWidget.disabled
       ),
@@ -40,13 +41,14 @@ export default class SidebarWidgetUpdateIntent extends Intent {
     ]
   }
   toPlanMessage (): PlanMessage {
-    const { settings, widgetId } = this.payload.sidebarWidget
+    const { settings, widgetId, widgetNamespace } = this.payload.sidebarWidget
 
     const settingDetails = Object.keys(settings || {}).map(settingName =>
         chalk`{italic ${settingName}}: "${settings[settingName]}"`
       )
 
     const updateDetails = [
+      chalk`{italic widgetNamespace: "${widgetNamespace}"`,
       ...settingDetails
     ]
 

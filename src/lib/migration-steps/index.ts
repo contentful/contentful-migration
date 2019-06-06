@@ -237,25 +237,27 @@ class ContentType extends DispatchProxy {
     return this
   }
 
-  updateSidebarWidget (widgetId, settings = {}) {
+  updateSidebarWidget (widgetId, widgetNamespace, settings = {}) {
     const callsite = getFirstExternalCaller()
     this.dispatch(actionCreators.contentType.updateSidebarWidget(
       this.id,
       this.instanceId,
       callsite,
       widgetId,
+      widgetNamespace,
       settings
     ))
     return this
   }
 
-  removeSidebarWidget (widgetId) {
+  removeSidebarWidget (widgetId, widgetNamespace) {
     const callsite = getFirstExternalCaller()
     this.dispatch(actionCreators.contentType.removeSidebarWidget(
       this.id,
       this.instanceId,
       callsite,
-      widgetId
+      widgetId,
+      widgetNamespace
     ))
     return this
   }
