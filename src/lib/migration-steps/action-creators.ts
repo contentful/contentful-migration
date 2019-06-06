@@ -142,8 +142,8 @@ const actionCreators = {
         }
       }
     }),
-    resetFullPageEditor: (id, instanceId, callsite): Intents.FullPageEditorResetToDefault => new Intents.FullPageEditorResetToDefault({
-      type: 'contentType/resetFullPageEditor',
+    resetEntryEditor: (id, instanceId, callsite): Intents.EntryEditorResetToDefault => new Intents.EntryEditorResetToDefault({
+      type: 'contentType/resetEntryEditor',
       meta: {
         contentTypeInstanceId: `contentType/${id}/${instanceId}`,
         callsite: {

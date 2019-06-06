@@ -2,9 +2,9 @@ import Intent from "./base-intent"
 import { PlanMessage } from "../interfaces/plan-message"
 import chalk from "chalk"
 import { SaveEditorInterfaceAction } from "../action/editorinterface-save"
-import { FullPageEditorResetToDefaultAction } from "../action/fullpageeditor-reset-to-default"
+import { EntryEditorResetToDefaultAction } from "../action/entryeditor-reset-to-default"
 
-export default class FullPageEditorResetToDefaultIntent extends Intent {
+export default class EntryEditorResetToDefaultIntent extends Intent {
   isEditorInterfaceIntent() {
     return true
   }
@@ -25,7 +25,7 @@ export default class FullPageEditorResetToDefaultIntent extends Intent {
   }
   toActions() {
     return [
-      new FullPageEditorResetToDefaultAction(this.payload.contentTypeId),
+      new EntryEditorResetToDefaultAction(this.payload.contentTypeId),
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]
   }
