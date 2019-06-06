@@ -7,6 +7,7 @@ module.exports = function (migration) {
   blogPost.changeFieldControl(
     'slug',
     'slugEditor',
+    'builtin',
     { helpText: 'This is the slug for the entry, it will be used for the URL' }
   );
 };

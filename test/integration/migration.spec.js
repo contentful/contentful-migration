@@ -497,7 +497,7 @@ describe('the migration', function () {
     expect(editorInterfaces.controls[0]).to.eql({
       fieldId: 'slug',
       widgetId: 'slugEditor',
-      widgetNamespace: 'extension',
+      widgetNamespace: 'builtin',
       settings: { setting: 'value' }
     });
   }));
@@ -512,7 +512,8 @@ describe('the migration', function () {
     expect(editorInterfaces.controls).to.eql([
       {
         fieldId: 'slug',
-        widgetId: 'singleLine'
+        widgetId: 'singleLine',
+        widgetNamespace: 'builtin'
       }
     ]);
   }));
@@ -528,6 +529,7 @@ describe('the migration', function () {
       {
         fieldId: 'slug',
         widgetId: 'slugEditor',
+        widgetNamespace: 'builtin',
         settings: {
           helpText: 'This is the slug for the entry, it will be used for the URL'
         }

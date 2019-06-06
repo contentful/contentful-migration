@@ -14,6 +14,6 @@ module.exports = function (migration) {
     name: 'Instruction',
     type: 'Text'
   });
-  recipe.changeFieldControl('description', 'markdown');
+  recipe.changeFieldControl('description', 'markdown', 'builtin');
   recipe.copyFieldControl('description', 'instruction');
 };

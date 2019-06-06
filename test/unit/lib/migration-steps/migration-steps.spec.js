@@ -702,8 +702,8 @@ describe('migration-steps', function () {
       const plan = yield migration(function (migration) {
         migration
           .editContentType('book')
-          .changeFieldControl('title', 'markdown')
-          .changeFieldControl('desc', 'singleLine');
+          .changeFieldControl('title', 'markdown', 'builtin')
+          .changeFieldControl('desc', 'singleLine', 'builtin');
       });
 
       expect(stripCallsites(plan)).to.eql([
@@ -718,7 +718,7 @@ describe('migration-steps', function () {
               fieldId: 'title',
               widgetId: 'markdown',
               settings: {},
-              widgetNamespace: undefined
+              widgetNamespace: 'builtin'
             }
           }
         },
@@ -733,7 +733,7 @@ describe('migration-steps', function () {
               fieldId: 'desc',
               widgetId: 'singleLine',
               settings: {},
-              widgetNamespace: undefined
+              widgetNamespace: 'builtin'
             }
           }
         }]);
