@@ -18,11 +18,11 @@ describe('EditorInterfaces', () => {
     disabled: false
   }
 
-  const makeEditorInterface = (sidebar?) => new EditorInterfaces({
+  const makeEditorInterface = (sidebar?, controls = []) => new EditorInterfaces({
     sys: {
       version: 1
     },
-    controls: [],
+    controls,
     sidebar
   })
 
@@ -117,5 +117,29 @@ describe('EditorInterfaces', () => {
     editorInterface.resetEditorToDefault()
 
     expect(editorInterface.getEditor()).to.eql(undefined)
+  })
+
+  it('updates field control namespace', () => {
+    const control = {
+      fieldId: 'name',
+      widgetNamespace: 'builtin',
+      widgetId: 'singleLine',
+      settings: {
+        my: 'setting'
+      }
+    }
+
+    const editorInterface = makeEditorInterface([], [control])
+    editorInterface.update(
+      control.fieldId,
+      control.widgetId,
+      null,
+      'extension'
+    )
+
+    expect(editorInterface.getControls()).to.eql([{
+      ...control,
+      widgetNamespace: 'extension'
+    }])
   })
 })

@@ -1,6 +1,5 @@
 import ContentTransform from './content-transform'
 import EntryDerive from './entry-derive'
-import { APIEditorInterfaceSettings } from './content-type'
 import TransformEntryToType from './entry-transform-to-type'
 import { SidebarWidgetNamespace, SidebarWidgetSettings } from '../action/sidebarwidget'
 
@@ -38,8 +37,15 @@ interface RawStepPayload {
 interface EditorInterfaceInfo {
   fieldId: string
   widgetId: string
-  settings?: APIEditorInterfaceSettings
+  widgetNamespace: FieldControlNamespace
+  settings?: FieldControlSettings
 }
+
+interface FieldControlSettings {
+  [setting: string]: any
+}
+
+type FieldControlNamespace = 'builtin' | 'extension'
 
 interface Movement {
   pivot?: string

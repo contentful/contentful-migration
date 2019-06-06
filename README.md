@@ -75,7 +75,7 @@
       - [`editField(id[, opts])` : [Field](#field)](#editfieldid-opts--fieldfield)
       - [`deleteField(id)` : void](#deletefieldid--void)
       - [`changeFieldId (currentId, newId)` : void](#changefieldid-currentid-newid--void)
-      - [`changeFieldControl (fieldId, widgetId[, settings])` : void](#changefieldcontrol-fieldid-widgetid-settings--void)
+      - [`changeFieldControl (fieldId, widgetId[, settings, widgetNamespace])` : void](#changefieldcontrol-fieldid-widgetid-settings-widgetnamespace--void)
       - [`resetFieldControl (fieldId)` : void](#resetfieldcontrol-fieldid--void)
       - [`copyFieldControl (sourceFieldId, destinationFieldId)` : void](#copyfieldcontrol-sourcefieldid-destinationfieldid--void)
       - [`addSidebarWidget (widgetId[, widgetNamespace, insertBeforeWidgetId, settings])` : void](#addsidebarwidget-widgetid-widgetnamespace-insertbeforewidgetid-settings--void)
@@ -521,7 +521,7 @@ module.exports = function (migration) {
 };
 ```
 
-#### `changeFieldControl (fieldId, widgetId[, settings])` : void
+#### `changeFieldControl (fieldId, widgetId[, settings, widgetNamespace])` : void
 
 Changes control interface of given field's ID.
 
@@ -529,7 +529,7 @@ Changes control interface of given field's ID.
 
 **`widgetId : string`** – The new widget ID for the field. See the [editor interface documentation](https://www.contentful.com/developers/docs/concepts/editor-interfaces/) for a list of available widgets.
 
-**`settings : Object`** – Widget settings, with the following options:
+**`settings : Object`** – Widget settings and extension instance parameters. For builtin widgets, the the following options are available:
 
 - **`helpText : string`** – This help text will show up below the field.
 - **`trueLabel : string`** _(only for fields of type boolean)_ – Shows this text next to the radio button that sets this value to `true`. Defaults to “Yes”.
@@ -538,6 +538,10 @@ Changes control interface of given field's ID.
 - **`format : string`** _(only for fields of type datePicker)_ – One of “dateonly”, “time”, “timeZ” (default). Specifies whether to show the clock and/or timezone inputs.
 - **`ampm : string`** _(only for fields of type datePicker)_ – Specifies which type of clock to use. Must be one of the strings “12” or “24” (default).
 - **`bulkEditing : boolean`** _(only for fields of type Array)_ – Specifies whether bulk editing of linked entries is possible.
+
+**`widgetNamespace : string`** – The namespace of the widget, one of the following values:
+- `builtin` (Standard widget, default)
+- `extension` (Custom UI extension)
 
 #### `resetFieldControl (fieldId)` : void
 

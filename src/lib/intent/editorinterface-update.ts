@@ -34,16 +34,20 @@ export default class EditorInterfaceUpdateIntent extends Intent {
         this.payload.contentTypeId,
         this.payload.editorInterface.fieldId,
         this.payload.editorInterface.widgetId,
-        this.payload.editorInterface.settings
+        this.payload.editorInterface.settings,
+        this.payload.editorInterface.widgetNamespace
       ),
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]
   }
   toPlanMessage (): PlanMessage {
-    const { fieldId, settings } = this.payload.editorInterface
-    let createDetails = [chalk`{italic widgetId}: "${this.payload.editorInterface.widgetId}"`]
+    const { widgetId, fieldId, settings, widgetNamespace } = this.payload.editorInterface
+    let createDetails = [
+      chalk`{italic widgetId}: "${widgetId}"`,
+      chalk`{italic widgetNamespace}: "${widgetNamespace}"`
+    ]
 
-    Object.keys(this.payload.editorInterface.settings).forEach(settingName =>
+    Object.keys(settings).forEach(settingName =>
       createDetails.push(chalk`{italic ${settingName}}: "${settings[settingName]}"`)
     )
 

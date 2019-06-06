@@ -7,8 +7,6 @@ const { expect } = require('chai');
 const cli = require('./cli');
 const { createDevEnvironment, deleteDevEnvironment, getDevEditorInterface } = require('../helpers/client');
 
-require('../../examples/24-add-sidebar-widget-to-existing-content-type')
-
 const uuid = require('uuid');
 const ENVIRONMENT_ID = uuid.v4();
 
