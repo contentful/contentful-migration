@@ -210,14 +210,14 @@ class ContentType extends DispatchProxy {
     return this
   }
 
-  configureEntryEditor (widgetId, widgetNamespace, settings?) {
+  configureEntryEditor (widgetNamespace, widgetId, settings?) {
     const callsite = getFirstExternalCaller()
     this.dispatch(actionCreators.contentType.configureEntryEditor(
       this.id,
       this.instanceId,
       callsite,
-      widgetId,
       widgetNamespace,
+      widgetId,
       settings
     ))
     return this

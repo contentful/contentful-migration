@@ -156,7 +156,7 @@ const actionCreators = {
         contentTypeId: id
       }
     }),
-    configureEntryEditor: (id, instanceId, callsite, widgetId, widgetNamespace, settings): Intents.EntryEditorConfigure => new Intents.EntryEditorConfigure({
+    configureEntryEditor: (id, instanceId, callsite, widgetNamespace, widgetId, settings): Intents.EntryEditorConfigure => new Intents.EntryEditorConfigure({
       type: 'contentType/configureEntryEditor',
       meta: {
         contentTypeInstanceId: `contentType/${id}/${instanceId}`,
