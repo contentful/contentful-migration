@@ -96,6 +96,8 @@ export interface IValidation {
   [validation: string]: any
 }
 
+export type WidgetSettingsValue = number | boolean | string
+
 export interface IEditorInterfaceOptions {
 
   /** This help text will show up below the field. */
@@ -114,12 +116,12 @@ export interface IEditorInterfaceOptions {
   bulkEditing?: boolean
 
   /** Instance settings for the sidebar widget as key-value pairs. */
-  [setting: string]: any
+  [setting: string]: WidgetSettingsValue
 }
 
 export interface ISidebarWidgetSettings {
   /** Instance settings for the sidebar widget as key-value pairs. */
-  [setting: string]: any
+  [setting: string]: WidgetSettingsValue
 }
 
 export interface ContentType {

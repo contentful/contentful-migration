@@ -5,8 +5,10 @@ export interface SidebarWidget {
   settings?: SidebarWidgetSettings
 }
 
+type SidebarWidgetSettingValue = number | boolean | string
+
 export interface SidebarWidgetSettings {
-  [key: string]: any
+  [key: string]: SidebarWidgetSettingValue
 }
 
 export type SidebarWidgetNamespace = 'builtin' | 'extension'

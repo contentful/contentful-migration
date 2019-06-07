@@ -28,8 +28,10 @@ interface APIContentType {
   displayField?: string
 }
 
+type APIParameterValue = number | boolean | string
+
 interface APIEditorInterfaceSettings {
-  [setting: string]: any
+  [setting: string]: APIParameterValue
 }
 
 type APISidebarWidgetNamespace = 'builtin' | 'extension'
@@ -43,7 +45,7 @@ interface APIEditorInterfaceControl {
 }
 
 interface APISidebarWidgetSettings {
-  [key: string]: any
+  [key: string]: APIParameterValue
 }
 
 interface APIEditorInterfaceSidebar {
@@ -56,7 +58,7 @@ interface APIEditorInterfaceSidebar {
 interface APIEditorIntefaceEditor {
   widgetId: string,
   widgetNamespace: APIControlWidgetNamespace,
-  settings?: { [key: string]: any }
+  settings?: { [key: string]: APIParameterValue }
 }
 
 interface APIEditorInterfaces {

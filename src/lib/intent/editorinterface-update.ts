@@ -51,7 +51,7 @@ export default class EditorInterfaceUpdateIntent extends Intent {
     }
 
     Object.keys(settings).forEach(settingName =>
-      createDetails.push(chalk`{italic ${settingName}}: "${settings[settingName]}"`)
+      createDetails.push(chalk`{italic ${settingName}}: "${settings[settingName].toString()}"`)
     )
 
     return {

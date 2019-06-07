@@ -46,8 +46,10 @@ interface EditorInterfaceInfo {
   settings?: FieldControlSettings
 }
 
+type SettingsParameterValue = number | boolean | string
+
 interface FieldControlSettings {
-  [setting: string]: any
+  [setting: string]: SettingsParameterValue
 }
 
 type FieldControlNamespace = 'builtin' | 'extension'

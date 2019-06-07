@@ -533,7 +533,7 @@ Changes control interface of given field's ID.
 
 **`widgetId : string`** – The new widget ID for the field. See the [editor interface documentation](https://www.contentful.com/developers/docs/concepts/editor-interfaces/) for a list of available widgets.
 
-**`settings : Object`** – Widget settings and extension instance parameters. For builtin widgets, the the following options are available:
+**`settings : Object`** – Widget settings and extension instance parameters. Key-value pairs of type (string, number | boolean | string). For builtin widgets, the the following options are available:
 
 - **`helpText : string`** – This help text will show up below the field.
 - **`trueLabel : string`** _(only for fields of type boolean)_ – Shows this text next to the radio button that sets this value to `true`. Defaults to “Yes”.
@@ -562,7 +562,7 @@ Adds a builtin or custom widget to the sidebar of the content type.
 
 **`widgetId : string`** – The ID of the builtin or extension widget to add.
 
-**`settings : Object`** – Instance settings for the widget.
+**`settings : Object`** – Instance settings for the widget. Key-value pairs of type (string, number | boolean | string)
 
 **`insertBeforeWidgetId : Object`** – Insert widget above this widget in the sidebar. If null, the widget will be added to the end.
 
@@ -576,7 +576,7 @@ Updates the configuration of a widget in the sidebar of the content type.
 
 **`widgetId : string`** – The ID of the builtin or extension widget to add.
 
-**`settings : Object`** – Instance settings for the widget.
+**`settings : Object`** – Instance settings for the widget. Key-value pairs of type (string, number | boolean | string)
 
 #### `removeSidebarWidget (widgetNamespace, widgetId)` : void
 

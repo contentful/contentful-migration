@@ -44,7 +44,7 @@ export default class SidebarWidgetUpdateIntent extends Intent {
     const { settings, widgetId, widgetNamespace } = this.payload.sidebarWidget
 
     const settingDetails = Object.keys(settings || {}).map(settingName =>
-        chalk`{italic ${settingName}}: "${settings[settingName]}"`
+        chalk`{italic ${settingName}}: "${settings[settingName].toString()}"`
       )
 
     const updateDetails = [
