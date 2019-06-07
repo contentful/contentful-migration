@@ -32,7 +32,7 @@ describe("apply entry extension migration examples", function() {
   it("migrates the editor with 25-configure-entry-editor.js", function(done) {
     cli()
       .run(
-        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/24-add-sidebar-widget-to-existing-content-type.js`
+        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/25-configure-entry-editor.js`
       )
       .on(/\? Do you want to apply the migration \(Y\/n\)/)
       .respond("y\n")
@@ -42,7 +42,7 @@ describe("apply entry extension migration examples", function() {
           environmentId,
           "customEntryEditor"
         )
-        const editor = editorInterfaces.editor
+        const editor = editorInterfaces.getEditor()
         expect(editor).to.eql([
           {
             settings: {},
@@ -50,6 +50,25 @@ describe("apply entry extension migration examples", function() {
             widgetNamespace: "extension"
           }
         ])
+        done()
+      })
+  })
+
+  it("migrates the editor with 26-reset-entry-editor.js", function(done) {
+    cli()
+      .run(
+        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/26-reset-entry-editor.js`
+      )
+      .on(/\? Do you want to apply the migration \(Y\/n\)/)
+      .respond("y\n")
+      .end(async () => {
+        const editorInterfaces = await getDevEditorInterface(
+          SOURCE_TEST_SPACE,
+          environmentId,
+          "customEntryEditor"
+        )
+        const editor = editorInterfaces.getEditor()
+        expect(editor).to.eql(undefined)
         done()
       })
   })
