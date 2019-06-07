@@ -223,7 +223,7 @@ class ContentType extends DispatchProxy {
     return this
   }
 
-  addSidebarWidget (widgetNamespace, widgetId, insertBeforeWidgetId = null, settings = {}) {
+  addSidebarWidget (widgetNamespace, widgetId, settings = {}, insertBeforeWidgetId = null) {
     const callsite = getFirstExternalCaller()
     this.dispatch(actionCreators.contentType.addSidebarWidget(
       this.id,

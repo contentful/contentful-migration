@@ -8,10 +8,10 @@ module.exports = function (migration) {
     .addSidebarWidget('sidebar-builtin', 'not-needed');
 
   blogPost
-    .addSidebarWidget('extension', 'imageTaggingExtensionId', null, {
+    .addSidebarWidget('extension', 'imageTaggingExtensionId', {
       imageField: 'image'
     })
-    .addSidebarWidget('sidebar-builtin', 'publication-widget', 'imageTaggingExtensionId')
+    .addSidebarWidget('sidebar-builtin', 'publication-widget', {}, 'imageTaggingExtensionId')
     .updateSidebarWidget(
       'extension',
       'imageTaggingExtensionId',

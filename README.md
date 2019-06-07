@@ -78,7 +78,7 @@
       - [`changeFieldControl (fieldId, widgetNamespace, widgetId[, settings])` : void](#changefieldcontrol-fieldid-widgetid-widgetnamespace-settings--void)
       - [`resetFieldControl (fieldId)` : void](#resetfieldcontrol-fieldid--void)
       - [`copyFieldControl (sourceFieldId, destinationFieldId)` : void](#copyfieldcontrol-sourcefieldid-destinationfieldid--void)
-      - [`addSidebarWidget (widgetNamespace, widgetId[, insertBeforeWidgetId, settings])` : void](#addsidebarwidget-widgetnamespace-widgetid-insertbeforewidgetid-settings--void)
+      - [`addSidebarWidget (widgetNamespace, widgetId[, settings, insertBeforeWidgetId])` : void](#addsidebarwidget-widgetnamespace-widgetid-settings-insertbeforewidgetid--void)
       - [`updateSidebarWidget (widgetNamespace, widgetId, settings)` : void](#updatesidebarwidget-widgetnamespace-widgetid-settings--void)
       - [`removeSidebarWidget (widgetNamespace, widgetId)` : void](#removesidebarwidget-widgetnamespace-widgetid--void)
       - [`resetSidebarToDefault ()` : void](#resetsidebartodefault---void)
@@ -552,7 +552,7 @@ Changes control interface of given field's ID.
 **`sourceFieldId : string`** – The ID of the field to copy the control setting from.
 **`destinationFieldId : string`** – The ID of the field to apply the copied control setting to.
 
-#### `addSidebarWidget (widgetNamespace, widgetId[, insertBeforeWidgetId, settings])` : void
+#### `addSidebarWidget (widgetNamespace, widgetId[, settings, insertBeforeWidgetId])` : void
 
 Adds a builtin or custom widget to the sidebar of the content type.
 
@@ -562,9 +562,9 @@ Adds a builtin or custom widget to the sidebar of the content type.
 
 **`widgetId : string`** – The ID of the builtin or extension widget to add.
 
-**`insertBeforeWidgetId : Object`** – Insert widget above this widget in the sidebar. If null, the widget will be added to the end.
-
 **`settings : Object`** – Instance settings for the widget.
+
+**`insertBeforeWidgetId : Object`** – Insert widget above this widget in the sidebar. If null, the widget will be added to the end.
 
 #### `updateSidebarWidget (widgetNamespace, widgetId, settings)` : void
 

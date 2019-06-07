@@ -195,13 +195,13 @@ export interface ContentType {
    *
    * @param widgetNamespace The namespace of the widget. Use 'sidebar-builtin' for standard widgets or 'extension' for UI extensions.
    * @param widgetId The ID of the builtin or extension widget to add.
-   * @param insertBeforeWidgetId Insert widget above this widget in the sidebar. If null, the widget will be added to the end.
    * @param settings Instance settings for the widget
+   * @param insertBeforeWidgetId Insert widget above this widget in the sidebar. If null, the widget will be added to the end.
    */
   addSidebarWidget (widgetNamespace: 'sidebar-builtin' | 'extension',
                     widgetId: string,
-                    insertBeforeWidgetId: string,
-                    settings: ISidebarWidgetSettings): void
+                    settings: ISidebarWidgetSettings,
+                    insertBeforeWidgetId: string): void
 
   /**
    * Updates the configuration of a widget in the sidebar of the content type.

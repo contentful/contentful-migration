@@ -39,10 +39,10 @@ describe('SidebarWidgetAddIntent', function () {
         ct.addSidebarWidget(
           'extension',
           'widgetId',
-          'test',
           {
             setting: 'set-1'
-          }
+          },
+          'test'
         )
       }))
 
