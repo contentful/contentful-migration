@@ -82,8 +82,8 @@
       - [`updateSidebarWidget (widgetNamespace, widgetId, settings)` : void](#updatesidebarwidget-widgetnamespace-widgetid-settings--void)
       - [`removeSidebarWidget (widgetNamespace, widgetId)` : void](#removesidebarwidget-widgetnamespace-widgetid--void)
       - [`resetSidebarToDefault ()` : void](#resetsidebartodefault---void)
-      - [`configureEntryEditor (widgetId, widgetNamespace[, settings])` : void](#configureEntryEditor-widgetid-widgetnamespace-settings--void)
-      - [`resetEditorToDefault()` : void](#resetsidebartodefault---void)
+      - [`configureEntryEditor (widgetNamespace, widgetId[, settings])` : void](#configureentryeditor-widgetid-widgetnamespace-settings--void)
+      - [`resetEditorToDefault()` : void](#reseteditortodefault---void)
     - [Field](#field)
   - [Validation errors](#validation-errors)
   - [Example migrations](#example-migrations)
@@ -594,12 +594,12 @@ Removes a widget from the sidebar of the content type.
 
 Resets the sidebar of the content type to default.
 
-#### `configureEntryEditor (widgetId, widgetNamespace[, settings])** : void
+#### `configureEntryEditor (widgetNamespace, widgetId[, settings])** : void
 
 Sets the entry editor to specified widget.
 
-**`widgetId : string`** – The ID of the builtin or extension widget to add.
 **`widgetNamespace: string`** – The namespace of the widget.
+**`widgetId : string`** – The ID of the builtin or extension widget to add.
 **`settings : Object`** – Instance settings for the widget. Key-value pairs of type (string, number | boolean | string). Optional.
 
 #### `resetEntryEditorToDefault ()` : void
