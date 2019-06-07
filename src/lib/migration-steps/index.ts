@@ -223,7 +223,7 @@ class ContentType extends DispatchProxy {
     return this
   }
 
-  addSidebarWidget (widgetId, widgetNamespace = 'sidebar-builtin', insertBeforeWidgetId = null, settings = {}) {
+  addSidebarWidget (widgetNamespace, widgetId, insertBeforeWidgetId = null, settings = {}) {
     const callsite = getFirstExternalCaller()
     this.dispatch(actionCreators.contentType.addSidebarWidget(
       this.id,
@@ -237,7 +237,7 @@ class ContentType extends DispatchProxy {
     return this
   }
 
-  updateSidebarWidget (widgetId, widgetNamespace, settings = {}) {
+  updateSidebarWidget (widgetNamespace, widgetId, settings = {}) {
     const callsite = getFirstExternalCaller()
     this.dispatch(actionCreators.contentType.updateSidebarWidget(
       this.id,
@@ -250,7 +250,7 @@ class ContentType extends DispatchProxy {
     return this
   }
 
-  removeSidebarWidget (widgetId, widgetNamespace) {
+  removeSidebarWidget (widgetNamespace, widgetId) {
     const callsite = getFirstExternalCaller()
     this.dispatch(actionCreators.contentType.removeSidebarWidget(
       this.id,

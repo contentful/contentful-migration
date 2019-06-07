@@ -30,8 +30,8 @@ describe('SidebarWidgetAddIntent', function () {
         desc.type('Text')
 
         ct.addSidebarWidget(
-          'widgetId',
           'extension',
+          'widgetId',
           'test',
           {
             setting: 'set-1'

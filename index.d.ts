@@ -150,12 +150,12 @@ export interface ContentType {
   /**
    * Changes the control of given field's ID.
    *
+   * @param widgetNamespace The namespace of the widget. Use 'builtin' for standard widgets or 'extension' for UI extensions.
    * @param fieldId The ID of the field.
    * @param widgetId The new widget ID for the field.
-   * @param widgetNamespace The namespace of the widget. Use 'builtin' for standard widgets or 'extension' for UI extensions.
    * @param settings Widget settings
    */
-  changeFieldControl (fieldId: string, widgetId: string, widgetNamespace: 'builtin' | 'extension', settings?: IEditorInterfaceOptions): void
+  changeFieldControl (fieldId: string, widgetNamespace: 'builtin' | 'extension', widgetId: string, settings?: IEditorInterfaceOptions): void
 
   /**
    * @deprecated
@@ -193,35 +193,35 @@ export interface ContentType {
   /**
    * Adds a builtin or custom widget to the sidebar of the content type.
    *
-   * @param widgetId The ID of the builtin or extension widget to add.
    * @param widgetNamespace The namespace of the widget. Use 'sidebar-builtin' for standard widgets or 'extension' for UI extensions.
+   * @param widgetId The ID of the builtin or extension widget to add.
    * @param insertBeforeWidgetId Insert widget above this widget in the sidebar. If null, the widget will be added to the end.
    * @param settings Instance settings for the widget
    */
-  addSidebarWidget (widgetId: string,
-                    widgetNamespace: 'sidebar-builtin' | 'extension',
+  addSidebarWidget (widgetNamespace: 'sidebar-builtin' | 'extension',
+                    widgetId: string,
                     insertBeforeWidgetId: string,
                     settings: ISidebarWidgetSettings): void
 
   /**
    * Updates the configuration of a widget in the sidebar of the content type.
    *
-   * @param widgetId The ID of the widget to update.
    * @param widgetNamespace The namespace of the widget. Use 'sidebar-builtin' for standard widgets or 'extension' for UI extensions.
+   * @param widgetId The ID of the widget to update.
    * @param settings Instance settings for the widget
    */
-  updateSidebarWidget (widgetId: string,
-                       widgetNamespace: 'sidebar-builtin' | 'extension',
+  updateSidebarWidget (widgetNamespace: 'sidebar-builtin' | 'extension',
+                       widgetId: string,
                        settings: ISidebarWidgetSettings): void
 
   /**
    * Removes a widget from the sidebar of the content type.
    *
-   * @param widgetId The ID of the widget to remove.
    * @param widgetNamespace The namespace of the widget. Use 'sidebar-builtin' for standard widgets or 'extension' for UI extensions.
+   * @param widgetId The ID of the widget to remove.
    */
-  removeSidebarWidget (widgetId: string,
-                       widgetNamespace: 'sidebar-builtin' | 'extension'): void
+  removeSidebarWidget (widgetNamespace: 'sidebar-builtin' | 'extension',
+                       widgetId: string): void
 
   /**
    * Resets the sidebar of the content type to default

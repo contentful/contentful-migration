@@ -75,12 +75,12 @@
       - [`editField(id[, opts])` : [Field](#field)](#editfieldid-opts--fieldfield)
       - [`deleteField(id)` : void](#deletefieldid--void)
       - [`changeFieldId (currentId, newId)` : void](#changefieldid-currentid-newid--void)
-      - [`changeFieldControl (fieldId, widgetId, widgetNamespace[, settings])` : void](#changefieldcontrol-fieldid-widgetid-widgetnamespace-settings--void)
+      - [`changeFieldControl (fieldId, widgetNamespace, widgetId[, settings])` : void](#changefieldcontrol-fieldid-widgetid-widgetnamespace-settings--void)
       - [`resetFieldControl (fieldId)` : void](#resetfieldcontrol-fieldid--void)
       - [`copyFieldControl (sourceFieldId, destinationFieldId)` : void](#copyfieldcontrol-sourcefieldid-destinationfieldid--void)
-      - [`addSidebarWidget (widgetId, widgetNamespace[, insertBeforeWidgetId, settings])` : void](#addsidebarwidget-widgetid-widgetnamespace-insertbeforewidgetid-settings--void)
-      - [`updateSidebarWidget (widgetId, widgetNamespace, settings)` : void](#updatesidebarwidget-widgetid-widgetnamespace-settings--void)
-      - [`removeSidebarWidget (widgetId, widgetNamespace)` : void](#removesidebarwidget-widgetid-widgetnamespace--void)
+      - [`addSidebarWidget (widgetNamespace, widgetId[, insertBeforeWidgetId, settings])` : void](#addsidebarwidget-widgetnamespace-widgetid-insertbeforewidgetid-settings--void)
+      - [`updateSidebarWidget (widgetNamespace, widgetId, settings)` : void](#updatesidebarwidget-widgetnamespace-widgetid-settings--void)
+      - [`removeSidebarWidget (widgetNamespace, widgetId)` : void](#removesidebarwidget-widgetnamespace-widgetid--void)
       - [`resetSidebarToDefault ()` : void](#resetsidebartodefault---void)
     - [Field](#field)
   - [Validation errors](#validation-errors)
@@ -521,17 +521,17 @@ module.exports = function (migration) {
 };
 ```
 
-#### `changeFieldControl (fieldId, widgetId, widgetNamespace[, settings])` : void
+#### `changeFieldControl (fieldId, widgetNamespace, widgetId[, settings])` : void
 
 Changes control interface of given field's ID.
 
 **`fieldId : string`** – The ID of the field.
 
-**`widgetId : string`** – The new widget ID for the field. See the [editor interface documentation](https://www.contentful.com/developers/docs/concepts/editor-interfaces/) for a list of available widgets.
-
 **`widgetNamespace : string`** – The namespace of the widget, one of the following values:
 - `builtin` (Standard widget)
 - `extension` (Custom UI extension)
+
+**`widgetId : string`** – The new widget ID for the field. See the [editor interface documentation](https://www.contentful.com/developers/docs/concepts/editor-interfaces/) for a list of available widgets.
 
 **`settings : Object`** – Widget settings and extension instance parameters. For builtin widgets, the the following options are available:
 
@@ -552,41 +552,41 @@ Changes control interface of given field's ID.
 **`sourceFieldId : string`** – The ID of the field to copy the control setting from.
 **`destinationFieldId : string`** – The ID of the field to apply the copied control setting to.
 
-#### `addSidebarWidget (widgetId, widgetNamespace[, insertBeforeWidgetId, settings])` : void
+#### `addSidebarWidget (widgetNamespace, widgetId[, insertBeforeWidgetId, settings])` : void
 
 Adds a builtin or custom widget to the sidebar of the content type.
-
-**`widgetId : string`** – The ID of the builtin or extension widget to add.
 
 **`widgetNamespace: string`** – The namespace of the widget, one of the following values:
 - `sidebar-builtin` (Standard widget, default)
 - `extension` (Custom UI extension)
+
+**`widgetId : string`** – The ID of the builtin or extension widget to add.
 
 **`insertBeforeWidgetId : Object`** – Insert widget above this widget in the sidebar. If null, the widget will be added to the end.
 
 **`settings : Object`** – Instance settings for the widget.
 
-#### `updateSidebarWidget (widgetId, widgetNamespace, settings)` : void
+#### `updateSidebarWidget (widgetNamespace, widgetId, settings)` : void
 
 Updates the configuration of a widget in the sidebar of the content type.
 
-**`widgetId : string`** – The ID of the builtin or extension widget to add.
-
 **`widgetNamespace: string`** – The namespace of the widget, one of the following values:
 - `sidebar-builtin` (Standard widget, default)
 - `extension` (Custom UI extension)
+
+**`widgetId : string`** – The ID of the builtin or extension widget to add.
 
 **`settings : Object`** – Instance settings for the widget.
 
-#### `removeSidebarWidget (widgetId, widgetNamespace)` : void
+#### `removeSidebarWidget (widgetNamespace, widgetId)` : void
 
 Removes a widget from the sidebar of the content type.
-
-**`widgetId : string`** – The ID of the builtin or extension widget to remove.
 
 **`widgetNamespace: string`** – The namespace of the widget, one of the following values:
 - `sidebar-builtin` (Standard widget, default)
 - `extension` (Custom UI extension)
+
+**`widgetId : string`** – The ID of the builtin or extension widget to remove.
 
 #### `resetSidebarToDefault ()` : void
 

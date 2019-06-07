@@ -5,16 +5,16 @@ module.exports = function (migration) {
   });
 
   blogPost
-    .addSidebarWidget('not-needed', 'sidebar-builtin');
+    .addSidebarWidget('sidebar-builtin', 'not-needed');
 
   blogPost
-    .addSidebarWidget('imageTaggingExtensionId', 'extension', null, {
+    .addSidebarWidget('extension', 'imageTaggingExtensionId', null, {
       imageField: 'image'
     })
-    .addSidebarWidget('publication-widget', 'sidebar-builtin', 'imageTaggingExtensionId')
+    .addSidebarWidget('sidebar-builtin', 'publication-widget', 'imageTaggingExtensionId')
     .updateSidebarWidget(
-      'imageTaggingExtensionId',
       'extension',
+      'imageTaggingExtensionId',
       {
         tagField: 'tags',
         imageField: 'image'
@@ -22,5 +22,5 @@ module.exports = function (migration) {
     );
 
   blogPost
-    .removeSidebarWidget('not-needed', 'sidebar-builtin');
+    .removeSidebarWidget('sidebar-builtin', 'not-needed');
 };
