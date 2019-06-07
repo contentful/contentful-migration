@@ -47,7 +47,7 @@ export default class SidebarWidgetRemoveIntent extends Intent {
       sections: [{
         heading: chalk`Remove sidebar widget {yellow ${widgetId}}`,
         details: [
-          chalk`{italic widgetNamespace: "${widgetNamespace}"`
+          chalk`{italic widgetNamespace}: "${widgetNamespace}"`
         ]
       }]
     }

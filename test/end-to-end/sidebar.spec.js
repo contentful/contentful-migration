@@ -1,8 +1,5 @@
 'use strict';
 
-const Bluebird = require('bluebird');
-const co = Bluebird.coroutine;
-
 const { expect } = require('chai');
 const cli = require('./cli');
 const { createDevEnvironment, deleteDevEnvironment, getDevEditorInterface } = require('../helpers/client');
@@ -16,21 +13,21 @@ describe('apply sidebar migration examples', function () {
   this.timeout(30000);
   let environmentId;
 
-  before(co(function * () {
+  before(async () => {
     this.timeout(30000);
-    environmentId = yield createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
-  }));
+    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
+  });
 
-  after(co(function * () {
-    yield deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId);
-  }));
+  after(async () => {
+    await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId);
+  });
 
   it('migrates the sidebar with 24-add-sidebar-widget-to-existing-content-type.js', function (done) {
     cli()
       .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/24-add-sidebar-widget-to-existing-content-type.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
-      .end(co(function * () {
-        const editorInterfaces = yield getDevEditorInterface(SOURCE_TEST_SPACE, environmentId, 'customSidebar');
+      .end(async () => {
+        const editorInterfaces = await getDevEditorInterface(SOURCE_TEST_SPACE, environmentId, 'customSidebar');
         const sidebar = editorInterfaces.sidebar;
         expect(sidebar).to.eql([
           {
@@ -50,6 +47,6 @@ describe('apply sidebar migration examples', function () {
           }
         ]);
         done();
-      }));
+      });
   });
 });

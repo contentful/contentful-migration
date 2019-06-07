@@ -48,7 +48,7 @@ export default class SidebarWidgetUpdateIntent extends Intent {
       )
 
     const updateDetails = [
-      chalk`{italic widgetNamespace: "${widgetNamespace}"`,
+      chalk`{italic widgetNamespace}: "${widgetNamespace}"`,
       ...settingDetails
     ]
 

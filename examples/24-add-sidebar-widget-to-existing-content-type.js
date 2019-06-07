@@ -1,13 +1,13 @@
 module.exports = function (migration) {
-  const blogPost = migration.createContentType('customSidebar', {
+  const customSidebar = migration.createContentType('customSidebar', {
     name: 'Custom sidebar',
     description: 'How to add, remove and update widgets'
   });
 
-  blogPost
+  customSidebar
     .addSidebarWidget('sidebar-builtin', 'not-needed');
 
-  blogPost
+  customSidebar
     .addSidebarWidget('extension', 'imageTaggingExtensionId', {
       imageField: 'image'
     })
@@ -21,6 +21,6 @@ module.exports = function (migration) {
       }
     );
 
-  blogPost
+  customSidebar
     .removeSidebarWidget('sidebar-builtin', 'not-needed');
 };
