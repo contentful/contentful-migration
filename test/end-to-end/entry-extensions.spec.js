@@ -42,14 +42,12 @@ describe("apply entry extension migration examples", function() {
           environmentId,
           "customEntryEditor"
         )
-        const editor = editorInterfaces.getEditor()
-        expect(editor).to.eql([
-          {
-            settings: {},
-            widgetId: "customEntryEditor",
-            widgetNamespace: "extension"
-          }
-        ])
+        const editor = editorInterfaces.editor
+        expect(editor).to.eql({
+          settings: {},
+          widgetId: "customEntryEditor",
+          widgetNamespace: "extension"
+        })
         done()
       })
   })
@@ -67,7 +65,7 @@ describe("apply entry extension migration examples", function() {
           environmentId,
           "customEntryEditor"
         )
-        const editor = editorInterfaces.getEditor()
+        const editor = editorInterfaces.editor
         expect(editor).to.eql(undefined)
         done()
       })

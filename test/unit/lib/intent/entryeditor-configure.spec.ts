@@ -35,7 +35,7 @@ describe('EntryEditorConfigureIntent', function () {
     const actions = intent.toActions()
 
     expect(actions[0]).to.eql(
-      new EntryEditorConfigureAction(ctId, 'widgetId', 'extension', {
+      new EntryEditorConfigureAction(ctId, 'extension', 'widgetId', {
         key: 'value'
       })
     )
