@@ -594,7 +594,7 @@ Removes a widget from the sidebar of the content type.
 
 Resets the sidebar of the content type to default.
 
-#### `configureEntryEditor (widgetNamespace, widgetId[, settings])** : void
+#### `configureEntryEditor (widgetNamespace, widgetId[, settings])` : void
 
 Sets the entry editor to specified widget.
 
