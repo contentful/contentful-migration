@@ -96,6 +96,8 @@ export interface IValidation {
   [validation: string]: any
 }
 
+export type WidgetSettingsValue = number | boolean | string
+
 export interface IEditorInterfaceOptions {
 
   /** This help text will show up below the field. */
@@ -112,6 +114,14 @@ export interface IEditorInterfaceOptions {
   ampm?: '12' | '24'
   /** (only for References, many) Select whether to enable Bulk Editing mode */
   bulkEditing?: boolean
+
+  /** Instance settings for the sidebar widget as key-value pairs. */
+  [setting: string]: WidgetSettingsValue
+}
+
+export interface ISidebarWidgetSettings {
+  /** Instance settings for the sidebar widget as key-value pairs. */
+  [setting: string]: WidgetSettingsValue
 }
 
 export interface ContentType {
@@ -140,29 +150,85 @@ export interface ContentType {
   changeFieldId (oldId: string, newId: string): void
 
   /**
-   * Changes the editor interface of given field's ID.
+   * Changes the control of given field's ID.
    *
+   * @param widgetNamespace The namespace of the widget. Use 'builtin' for standard widgets or 'extension' for UI extensions.
    * @param fieldId The ID of the field.
    * @param widgetId The new widget ID for the field.
    * @param settings Widget settings
    */
-  changeEditorInterface (fieldId: string, widgetId: string, settings?: IEditorInterfaceOptions): void
+  changeFieldControl (fieldId: string, widgetNamespace: 'builtin' | 'extension', widgetId: string, settings?: IEditorInterfaceOptions): void
 
   /**
-   * Resets the editor interface of given field's ID.
+   * @deprecated
+   * Use change field control instead
+   */
+  changeEditorInterface (fieldId: string, widgetId: string, settings?: IEditorInterfaceOptions, widgetNamespace?: 'builtin' | 'extension'): void
+
+  /**
+   * Resets the field control of given field's ID.
    *
    * @param fieldId The ID of the field.
+   */
+  resetFieldControl (fieldId: string): void
+
+  /**
+   * @deprecated
+   * Use resetFieldControl instead
    */
   resetEditorInterface (fieldId: string): void
 
   /**
-   * copies the editor interface setting from a field to another field in the same content type.
+   * copies the control settings from a field to another field in the same content type.
    *
-   * @param sourceFieldId The ID of the field to copy the editorinterface setting from.
-   * @param destinationFieldId The ID of the field to apply the copied editorinterface setting to.
+   * @param sourceFieldId The ID of the field to copy the control setting from.
+   * @param destinationFieldId The ID of the field to apply the copied control setting to.
+   */
+  copyFieldControl (sourceFieldId: string, destinationFieldId: string): void
+
+  /**
+   * @deprecated
+   * Use copyFieldControl instead
    */
   copyEditorInterface (sourceFieldId: string, destinationFieldId: string): void
 
+  /**
+   * Adds a builtin or custom widget to the sidebar of the content type.
+   *
+   * @param widgetNamespace The namespace of the widget. Use 'sidebar-builtin' for standard widgets or 'extension' for UI extensions.
+   * @param widgetId The ID of the builtin or extension widget to add.
+   * @param settings Instance settings for the widget
+   * @param insertBeforeWidgetId Insert widget above this widget in the sidebar. If null, the widget will be added to the end.
+   */
+  addSidebarWidget (widgetNamespace: 'sidebar-builtin' | 'extension',
+                    widgetId: string,
+                    settings: ISidebarWidgetSettings,
+                    insertBeforeWidgetId: string): void
+
+  /**
+   * Updates the configuration of a widget in the sidebar of the content type.
+   *
+   * @param widgetNamespace The namespace of the widget. Use 'sidebar-builtin' for standard widgets or 'extension' for UI extensions.
+   * @param widgetId The ID of the widget to update.
+   * @param settings Instance settings for the widget
+   */
+  updateSidebarWidget (widgetNamespace: 'sidebar-builtin' | 'extension',
+                       widgetId: string,
+                       settings: ISidebarWidgetSettings): void
+
+  /**
+   * Removes a widget from the sidebar of the content type.
+   *
+   * @param widgetNamespace The namespace of the widget. Use 'sidebar-builtin' for standard widgets or 'extension' for UI extensions.
+   * @param widgetId The ID of the widget to remove.
+   */
+  removeSidebarWidget (widgetNamespace: 'sidebar-builtin' | 'extension',
+                       widgetId: string): void
+
+  /**
+   * Resets the sidebar of the content type to default
+   */
+  resetSidebarToDefault (): void
 }
 
 export interface IContentTypeOptions {

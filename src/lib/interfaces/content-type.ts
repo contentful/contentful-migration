@@ -28,34 +28,37 @@ interface APIContentType {
   displayField?: string
 }
 
+type APIParameterValue = number | boolean | string
+
 interface APIEditorInterfaceSettings {
-  helpText?: string,
-  trueLabel?: string,
-  falseLabel?: string,
-  bulkEditing?: boolean,
-  stars?: number,
-  format?: string,
-  ampm?: string
+  [setting: string]: APIParameterValue
 }
+
+type APISidebarWidgetNamespace = 'builtin' | 'extension'
+type APIControlWidgetNamespace = 'builtin' | 'extension'
 
 interface APIEditorInterfaceControl {
   fieldId: string,
   widgetId?: string,
-  widgetNamespace?: 'builtin' | 'extension',
+  widgetNamespace?: APIControlWidgetNamespace,
   settings?: APIEditorInterfaceSettings
+}
+
+interface APISidebarWidgetSettings {
+  [key: string]: APIParameterValue
 }
 
 interface APIEditorInterfaceSidebar {
   widgetId: string,
-  widgetNamespace: 'builtin' | 'extension',
+  widgetNamespace: APISidebarWidgetNamespace,
   disabled?: boolean,
-  settings?: { [key: string]: any }
+  settings?: APISidebarWidgetSettings
 }
 
 interface APIEditorIntefaceEditor {
   widgetId: string,
-  widgetNamespace: 'builtin' | 'extension',
-  settings?: { [key: string]: any }
+  widgetNamespace: APIControlWidgetNamespace,
+  settings?: { [key: string]: APIParameterValue }
 }
 
 interface APIEditorInterfaces {
@@ -75,5 +78,8 @@ export {
   APIEditorInterfaceControl,
   APIEditorInterfaceSettings,
   APIEditorInterfaceSidebar,
-  APIEditorIntefaceEditor
+  APIEditorIntefaceEditor,
+  APISidebarWidgetSettings,
+  APIControlWidgetNamespace,
+  APISidebarWidgetNamespace
 }

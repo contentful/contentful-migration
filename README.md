@@ -75,9 +75,15 @@
       - [`editField(id[, opts])` : [Field](#field)](#editfieldid-opts--fieldfield)
       - [`deleteField(id)` : void](#deletefieldid--void)
       - [`changeFieldId (currentId, newId)` : void](#changefieldid-currentid-newid--void)
-      - [`changeEditorInterface (fieldId, widgetId[, settings])` : void](#changeeditorinterface-fieldid-widgetid-settings--void)
-      - [`resetEditorInterface (fieldId)` : void](#reseteditorinterface-fieldid--void)
-      - [`copyEditorInterface (sourceFieldId, destinationFieldId)` : void](#copyeditorinterface-sourcefieldid-destinationfieldid--void)
+      - [`changeFieldControl (fieldId, widgetNamespace, widgetId[, settings])` : void](#changefieldcontrol-fieldid-widgetid-widgetnamespace-settings--void)
+      - [`resetFieldControl (fieldId)` : void](#resetfieldcontrol-fieldid--void)
+      - [`copyFieldControl (sourceFieldId, destinationFieldId)` : void](#copyfieldcontrol-sourcefieldid-destinationfieldid--void)
+      - [`addSidebarWidget (widgetNamespace, widgetId[, settings, insertBeforeWidgetId])` : void](#addsidebarwidget-widgetnamespace-widgetid-settings-insertbeforewidgetid--void)
+      - [`updateSidebarWidget (widgetNamespace, widgetId, settings)` : void](#updatesidebarwidget-widgetnamespace-widgetid-settings--void)
+      - [`removeSidebarWidget (widgetNamespace, widgetId)` : void](#removesidebarwidget-widgetnamespace-widgetid--void)
+      - [`resetSidebarToDefault ()` : void](#resetsidebartodefault---void)
+      - [`configureEntryEditor (widgetNamespace, widgetId[, settings])` : void](#configureentryeditor-widgetid-widgetnamespace-settings--void)
+      - [`resetEditorToDefault()` : void](#reseteditortodefault---void)
     - [Field](#field)
   - [Validation errors](#validation-errors)
   - [Example migrations](#example-migrations)
@@ -107,9 +113,9 @@
   - Edit a field
   - Delete a field
   - Rename a field
-  - Change editorInterface
-  - Reset editorInterface
-  - Copy editorInterface
+  - Change a field's control
+  - Reset a field's control
+  - Copy a field's control
   - Move field
 
 ## Pre-requisites && Installation
@@ -517,15 +523,19 @@ module.exports = function (migration) {
 };
 ```
 
-#### `changeEditorInterface (fieldId, widgetId[, settings])` : void
+#### `changeFieldControl (fieldId, widgetNamespace, widgetId[, settings])` : void
 
-Changes the editor interface of given field's ID.
+Changes control interface of given field's ID.
 
 **`fieldId : string`** – The ID of the field.
 
+**`widgetNamespace : string`** – The namespace of the widget, one of the following values:
+- `builtin` (Standard widget)
+- `extension` (Custom UI extension)
+
 **`widgetId : string`** – The new widget ID for the field. See the [editor interface documentation](https://www.contentful.com/developers/docs/concepts/editor-interfaces/) for a list of available widgets.
 
-**`settings : Object`** – Widget settings, with the following options:
+**`settings : Object`** – Widget settings and extension instance parameters. Key-value pairs of type (string, number | boolean | string). For builtin widgets, the the following options are available:
 
 - **`helpText : string`** – This help text will show up below the field.
 - **`trueLabel : string`** _(only for fields of type boolean)_ – Shows this text next to the radio button that sets this value to `true`. Defaults to “Yes”.
@@ -535,14 +545,66 @@ Changes the editor interface of given field's ID.
 - **`ampm : string`** _(only for fields of type datePicker)_ – Specifies which type of clock to use. Must be one of the strings “12” or “24” (default).
 - **`bulkEditing : boolean`** _(only for fields of type Array)_ – Specifies whether bulk editing of linked entries is possible.
 
-#### `resetEditorInterface (fieldId)` : void
+#### `resetFieldControl (fieldId)` : void
 
 **`fieldId : string`** – The ID of the field.
 
-#### `copyEditorInterface (sourceFieldId, destinationFieldId)` : void
+#### `copyFieldControl (sourceFieldId, destinationFieldId)` : void
 
-**`sourceFieldId : string`** – The ID of the field to copy the editorinterface setting from.
-**`destinationFieldId : string`** – The ID of the field to apply the copied editorinterface setting to.
+**`sourceFieldId : string`** – The ID of the field to copy the control setting from.
+**`destinationFieldId : string`** – The ID of the field to apply the copied control setting to.
+
+#### `addSidebarWidget (widgetNamespace, widgetId[, settings, insertBeforeWidgetId])` : void
+
+Adds a builtin or custom widget to the sidebar of the content type.
+
+**`widgetNamespace: string`** – The namespace of the widget, one of the following values:
+- `sidebar-builtin` (Standard widget, default)
+- `extension` (Custom UI extension)
+
+**`widgetId : string`** – The ID of the builtin or extension widget to add.
+
+**`settings : Object`** – Instance settings for the widget. Key-value pairs of type (string, number | boolean | string)
+
+**`insertBeforeWidgetId : Object`** – Insert widget above this widget in the sidebar. If null, the widget will be added to the end.
+
+#### `updateSidebarWidget (widgetNamespace, widgetId, settings)` : void
+
+Updates the configuration of a widget in the sidebar of the content type.
+
+**`widgetNamespace: string`** – The namespace of the widget, one of the following values:
+- `sidebar-builtin` (Standard widget, default)
+- `extension` (Custom UI extension)
+
+**`widgetId : string`** – The ID of the builtin or extension widget to add.
+
+**`settings : Object`** – Instance settings for the widget. Key-value pairs of type (string, number | boolean | string)
+
+#### `removeSidebarWidget (widgetNamespace, widgetId)` : void
+
+Removes a widget from the sidebar of the content type.
+
+**`widgetNamespace: string`** – The namespace of the widget, one of the following values:
+- `sidebar-builtin` (Standard widget, default)
+- `extension` (Custom UI extension)
+
+**`widgetId : string`** – The ID of the builtin or extension widget to remove.
+
+#### `resetSidebarToDefault ()` : void
+
+Resets the sidebar of the content type to default.
+
+#### `configureEntryEditor (widgetNamespace, widgetId[, settings])` : void
+
+Sets the entry editor to specified widget.
+
+**`widgetNamespace: string`** – The namespace of the widget.
+**`widgetId : string`** – The ID of the builtin or extension widget to add.
+**`settings : Object`** – Instance settings for the widget. Key-value pairs of type (string, number | boolean | string). Optional.
+
+#### `resetEntryEditorToDefault ()` : void
+
+Resets the entry editor of the content type to default.
 
 ### Field
 

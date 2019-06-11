@@ -1,5 +1,16 @@
-import { APIContentType, Field, APIEditorInterfaceControl, APIEditorInterfaces, APIEditorInterfaceSettings, APIEditorInterfaceSidebar, APIEditorIntefaceEditor } from '../interfaces/content-type'
+import {
+  APIContentType,
+  Field,
+  APISidebarWidgetSettings,
+  APIEditorInterfaceControl,
+  APIEditorInterfaces,
+  APIEditorInterfaceSettings,
+  APIEditorInterfaceSidebar,
+  APIEditorIntefaceEditor,
+  APISidebarWidgetNamespace, APIControlWidgetNamespace
+} from '../interfaces/content-type'
 import { cloneDeep, find, filter, findIndex, pull, forEach } from 'lodash'
+import { SidebarWidgetNamespace } from '../action/sidebarwidget'
 
 class Fields {
   private _fields: Field[]
@@ -99,6 +110,18 @@ class EditorInterfaces {
     this._version = version
   }
 
+  getSidebar () {
+    return this._sidebar
+  }
+
+  getEditor () {
+    return this._editor
+  }
+
+  getControls () {
+    return this._controls
+  }
+
   reset (fieldId: string) {
     let controlIndex: number = findIndex(this._controls, (c) => {
       return c.fieldId === fieldId
@@ -113,11 +136,16 @@ class EditorInterfaces {
       return c.fieldId === fromFieldId
     })
     if (control) {
-      this.update(toFieldId, control.widgetId, control.settings)
+      this.update(toFieldId, control.widgetId, control.settings, control.widgetNamespace)
     }
   }
 
-  update (fieldId: string, widgetId: string, settings?: APIEditorInterfaceSettings) {
+  update (
+    fieldId: string,
+    widgetId: string,
+    settings?: APIEditorInterfaceSettings,
+    widgetNamespace?: APIControlWidgetNamespace
+  ) {
     let control: APIEditorInterfaceControl = find(this._controls, (c) => {
       return c.fieldId === fieldId
     })
@@ -139,6 +167,76 @@ class EditorInterfaces {
         control.settings[k] = v
       })
     }
+
+    if (widgetNamespace) {
+      control.widgetNamespace = widgetNamespace
+    }
+  }
+
+  addSidebarWidget (widgetId: string,
+                    widgetNamespace: APISidebarWidgetNamespace,
+                    insertBeforeWidgetId: string,
+                    settings: APISidebarWidgetSettings,
+                    disabled: boolean) {
+    this._sidebar = Array.isArray(this._sidebar) ? this._sidebar : []
+
+    const nextWidgetIndex = this._sidebar.map(w => w.widgetId).indexOf(insertBeforeWidgetId)
+
+    const newWidget: APIEditorInterfaceSidebar = {
+      disabled,
+      settings,
+      widgetId,
+      widgetNamespace
+    }
+
+    if (nextWidgetIndex < 0) {
+      this._sidebar.push(newWidget)
+    } else {
+      this._sidebar.splice(nextWidgetIndex, 0, newWidget)
+    }
+  }
+
+  updateSidebarWidget (widgetId: string,
+                       widgetNamespace: SidebarWidgetNamespace,
+                       settings?: APISidebarWidgetSettings,
+                       disabled?: boolean) {
+
+    if (!Array.isArray(this._sidebar)) {
+      return
+    }
+
+    const widget = this._sidebar.find(widget =>
+      widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace
+    )
+
+    if (!widget) {
+      return
+    }
+
+    widget.settings = settings ? settings : widget.settings
+    widget.disabled = typeof disabled === 'boolean' ? disabled : widget.disabled
+  }
+
+  removeSidebarWidget (widgetId: string, widgetNamespace: APISidebarWidgetNamespace) {
+    if (!Array.isArray(this._sidebar)) {
+      return
+    }
+
+    this._sidebar = this._sidebar.filter(
+      widget => !(widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace)
+    )
+  }
+
+  resetSidebarToDefault () {
+    this._sidebar = undefined
+  }
+
+  resetEditorToDefault () {
+    this._editor = undefined
+  }
+
+  setEditor (editor: APIEditorIntefaceEditor) {
+    this._editor = editor
   }
 
   toAPI (): object {
@@ -147,7 +245,8 @@ class EditorInterfaces {
       controls.push({
         fieldId: c.fieldId,
         widgetId: c.widgetId,
-        settings: c.settings
+        settings: c.settings,
+        widgetNamespace: c.widgetNamespace
       })
     })
 

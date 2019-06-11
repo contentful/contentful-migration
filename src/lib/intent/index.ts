@@ -13,6 +13,12 @@ import EntryTransformToTypeIntent from './entry-transform-to-type'
 import EditorInterfaceUpdateIntent from './editorinterface-update'
 import EditorInterfaceCopyIntent from './editorinterface-copy'
 import EditorInterfaceResetIntent from './editorinterface-reset'
+import SidebarWidgetAddIntent from './sidebarwidget-add'
+import SidebarWidgetRemoveIntent from './sidebarwidget-remove'
+import SidebarWidgetUpdateIntent from './sidebarwidget-update'
+import SidebarResetToDefaultIntent from './sidebar-reset-to-default'
+import EntryEditorResetToDefaultIntent from './entryeditor-reset-to-default'
+import EntryEditorConfigureIntent from './entryeditor-configure'
 
 export {
   Intent as default,
@@ -30,5 +36,11 @@ export {
   EntryTransformToTypeIntent as EntryTransformToType,
   EditorInterfaceUpdateIntent as EditorInterfaceUpdate,
   EditorInterfaceCopyIntent as EditorInterfaceCopy,
-  EditorInterfaceResetIntent as EditorInterfaceReset
+  EditorInterfaceResetIntent as EditorInterfaceReset,
+  SidebarWidgetAddIntent as SidebarWidgetAdd,
+  SidebarWidgetRemoveIntent as SidebarWidgetRemove,
+  SidebarWidgetUpdateIntent as SidebarWidgetUpdate,
+  SidebarResetToDefaultIntent as SidebarResetToDefault,
+  EntryEditorResetToDefaultIntent as EntryEditorResetToDefault,
+  EntryEditorConfigureIntent as EntryEditorConfigure
 }

@@ -1,10 +1,13 @@
 import Intent from './base-intent'
 import { PlanMessage } from '../interfaces/plan-message'
-import { ResetEditorInterfaceAction } from '../action/editorinterface-reset'
 import chalk from 'chalk'
 import { SaveEditorInterfaceAction } from '../action/editorinterface-save'
+import { SidebarWidgetRemoveAction } from '../action/sidebarwidget-remove'
 
-export default class EditorInterfaceResetIntent extends Intent {
+export default class SidebarWidgetRemoveIntent extends Intent {
+  isSidebarUpdate () {
+    return true
+  }
   isEditorInterfaceIntent () {
     return true
   }
@@ -27,18 +30,26 @@ export default class EditorInterfaceResetIntent extends Intent {
   }
   toActions () {
     return [
-      new ResetEditorInterfaceAction(
+      new SidebarWidgetRemoveAction(
         this.payload.contentTypeId,
-        this.payload.editorInterfaceReset.fieldId
+        this.payload.sidebarWidget.widgetId,
+        this.payload.sidebarWidget.widgetNamespace
       ),
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]
   }
   toPlanMessage (): PlanMessage {
+    const { widgetId, widgetNamespace } = this.payload.sidebarWidget
+
     return {
-      heading: chalk`Reset field control for Content Type {bold.yellow ${this.getContentTypeId()}}`,
+      heading: chalk`Update sidebar for Content Type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],
-      sections: []
+      sections: [{
+        heading: chalk`Remove sidebar widget {yellow ${widgetId}}`,
+        details: [
+          chalk`{italic widgetNamespace}: "${widgetNamespace}"`
+        ]
+      }]
     }
   }
 }

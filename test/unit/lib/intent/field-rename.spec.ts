@@ -108,7 +108,12 @@ describe('FieldRenameIntent', function () {
         sys: {
           version: 1
         },
-        controls: [{ widgetId: 'dropdown', fieldId: 'bits' }]
+        controls: [{
+          widgetId: 'dropdown',
+          fieldId: 'bits',
+          widgetNamespace: 'extension',
+          settings: { setting: 'value'}
+        }]
       })
       editorInterfacesByContentType.set('dog', ei)
       const entries = [
@@ -158,7 +163,14 @@ describe('FieldRenameIntent', function () {
       const api = await runIntent(intent, contentTypes, entries, [], editorInterfacesByContentType)
       const requestBatches = await api.getRequestBatches()
       expect(requestBatches[0].requests.length).to.eq(3)
-      expect(requestBatches[0].requests[2].data).to.deep.include({controls: [{fieldId: 'bites', widgetId: 'dropdown', settings: undefined}]})
+      expect(requestBatches[0].requests[2].data).to.deep.include({
+        controls: [{
+          fieldId: 'bites',
+          widgetId: 'dropdown',
+          settings: { setting: 'value' },
+          widgetNamespace: 'extension'
+        }]
+      })
     })
   })
 })

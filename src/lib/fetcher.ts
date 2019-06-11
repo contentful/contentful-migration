@@ -46,9 +46,7 @@ export default class Fetcher implements APIFetcher {
     // Excluding editor interface intents here since, API-wise, editor interfaces don't require
     // to know the full details about the associated content type.
     const ids: string[] = _.uniq(intentList.getIntents()
-      .filter((intent) => (!intent.isEditorInterfaceUpdate() ||
-                           !intent.isEditorInterfaceCopy() ||
-                           !intent.isEditorInterfaceReset()))
+      .filter((intent) => (!intent.isEditorInterfaceIntent()))
       .reduce((ids, intent) => {
         const intentIds = intent.getRelatedContentTypeIds()
         return ids.concat(intentIds)
@@ -71,7 +69,9 @@ export default class Fetcher implements APIFetcher {
   async getEditorInterfacesInIntents (intentList: IntentList): Promise<Map<string, APIEditorInterfaces>> {
     const contentTypeIds: string[] = _.uniq(
       intentList.getIntents()
-        .filter((intent) => intent.isFieldRename() || intent.isEditorInterfaceUpdate() || intent.isEditorInterfaceReset() || intent.isEditorInterfaceCopy())
+        .filter((intent) => intent.isFieldRename() ||
+          intent.isEditorInterfaceIntent()
+        )
         .reduce((ids, intent) => {
           const intentIds = intent.getRelatedContentTypeIds()
           return ids.concat(intentIds)

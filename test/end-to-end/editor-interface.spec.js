@@ -26,9 +26,9 @@ describe('apply editor-interface migration examples', function () {
     yield deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId);
   }));
 
-  it('aborts 16-change-editor-interface migration', function (done) {
+  it('aborts 16-change-field-control migration', function (done) {
     cli()
-      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/16-change-editor-interface.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/16-change-field-control.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('n\n')
       .expect(assert.plans.editorInterface.change('blogPost', 'slug', 'slugEditor'))
       .expect(assert.plans.actions.abort())
@@ -36,7 +36,7 @@ describe('apply editor-interface migration examples', function () {
   });
   it('applies 16-change-editor-interface migration', function (done) {
     cli()
-      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/16-change-editor-interface.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/16-change-field-control.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
       .expect(assert.plans.editorInterface.change('blogPost', 'slug', 'slugEditor'))
       .expect(assert.plans.actions.apply())

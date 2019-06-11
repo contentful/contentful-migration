@@ -12,9 +12,10 @@ const deleteContentType = require('../../examples/delete-content-type');
 const fieldValidation = require('../../examples/09-validate-validations');
 const displayField = require('../../examples/07-display-field');
 const fieldMove = require('../../examples/08-move-field');
-const changeEditorInterface = require('../../examples/16-change-editor-interface');
-const changeEditorInterfaceWithExistingContentType = require('../../examples/17-change-editor-interface-for-existing-content-type');
-const changeEditorInterfaceWithExistingContentTypeAddingHelpText = require('../../examples/18-change-editor-interface-for-existing-content-type-adding-help-text');
+const changeEditorInterface = require('../../examples/16-change-field-control');
+const changeEditorInterfaceWithExistingContentType = require('../../examples/17-change-field-control-for-existing-content-type');
+const changeEditorInterfaceWithExistingContentTypeAddingHelpText = require('../../examples/18-change-field-control-for-existing-content-type-adding-help-text');
+const addSidebarWidgets = require('../../examples/24-add-sidebar-widget-to-existing-content-type');
 
 const { createMigrationParser } = require('../../built/lib/migration-parser');
 const co = Bluebird.coroutine;
@@ -207,9 +208,12 @@ describe('the migration', function () {
         localized: false,
         omitted: false,
         validations: [
-          { assetImageDimensions:
-            { width: { min: 1199, max: null },
-              height: { min: 1343 } }
+          {
+            assetImageDimensions:
+              {
+                width: { min: 1199, max: null },
+                height: { min: 1343 }
+              }
           }
         ]
       }
@@ -489,12 +493,13 @@ describe('the migration', function () {
       method: 'GET',
       url: '/content_types/blogPost/editor_interface'
     });
-    expect(editorInterfaces.controls).to.eql([
-      {
-        fieldId: 'slug',
-        widgetId: 'slugEditor'
-      }
-    ]);
+
+    expect(editorInterfaces.controls[0]).to.eql({
+      fieldId: 'slug',
+      widgetId: 'slugEditor',
+      widgetNamespace: 'builtin',
+      settings: { setting: 'value' }
+    });
   }));
 
   it('changes the editor interface with an existing contentType', co(function * () {
@@ -507,7 +512,8 @@ describe('the migration', function () {
     expect(editorInterfaces.controls).to.eql([
       {
         fieldId: 'slug',
-        widgetId: 'singleLine'
+        widgetId: 'singleLine',
+        widgetNamespace: 'builtin'
       }
     ]);
   }));
@@ -523,9 +529,37 @@ describe('the migration', function () {
       {
         fieldId: 'slug',
         widgetId: 'slugEditor',
+        widgetNamespace: 'builtin',
         settings: {
           helpText: 'This is the slug for the entry, it will be used for the URL'
         }
+      }
+    ]);
+  }));
+
+  it('adds sidebar widgets to the editor interface of a content type', co(function * () {
+    yield migrator(addSidebarWidgets);
+
+    const editorInterfaces = yield request({
+      method: 'GET',
+      url: '/content_types/customSidebar/editor_interface'
+    });
+
+    expect(editorInterfaces.sidebar).to.eql([
+      {
+        'disabled': false,
+        'settings': {},
+        'widgetId': 'publication-widget',
+        'widgetNamespace': 'sidebar-builtin'
+      },
+      {
+        'disabled': false,
+        'settings': {
+          'tagField': 'tags',
+          'imageField': 'image'
+        },
+        'widgetId': 'imageTaggingExtensionId',
+        'widgetNamespace': 'extension'
       }
     ]);
   }));

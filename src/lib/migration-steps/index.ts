@@ -10,6 +10,7 @@ import ContentTransform from '../interfaces/content-transform'
 import EntryDerive from '../interfaces/entry-derive'
 import TransformEntryToType from '../interfaces/entry-transform-to-type'
 import { ClientConfig } from '../../bin/lib/config'
+import { deprecatedMethod } from '../utils/deprecated'
 
 const createInstanceIdManager = () => {
   const instanceCounts = {}
@@ -144,7 +145,7 @@ class ContentType extends DispatchProxy {
     ))
   }
 
-  changeEditorInterface (fieldId, widgetId, settings) {
+  changeFieldControl (fieldId, widgetId, widgetNamespace, settings) {
     const callsite = getFirstExternalCaller()
     this.dispatch(actionCreators.contentType.changeEditorInterface(
       this.id,
@@ -152,12 +153,19 @@ class ContentType extends DispatchProxy {
       callsite,
       fieldId,
       widgetId,
-      settings
+      settings,
+      widgetNamespace
     ))
     return this
   }
 
-  copyEditorInterface (sourceFieldId, destinationFieldId) {
+  /** deprecated, use changeFieldControl instead */
+  changeEditorInterface (fieldId, widgetId, settings, widgetNamespace) {
+    deprecatedMethod('changeEditorInterface', 'changeFieldControl')
+    return this.changeFieldControl(fieldId, widgetId, widgetNamespace, settings)
+  }
+
+  copyFieldControl (sourceFieldId, destinationFieldId) {
     const callsite = getFirstExternalCaller()
     this.dispatch(actionCreators.contentType.copyEditorInterface(
       this.id,
@@ -169,13 +177,97 @@ class ContentType extends DispatchProxy {
     return this
   }
 
-  resetEditorInterface (fieldId) {
+  /** deprecated, use copyFieldControl instead */
+  copyEditorInterface (sourceFieldId, destinationFieldId) {
+    deprecatedMethod('copyEditorInterface', 'copyFieldControl')
+    return this.copyFieldControl(sourceFieldId, destinationFieldId)
+  }
+
+  resetFieldControl (fieldId) {
     const callsite = getFirstExternalCaller()
     this.dispatch(actionCreators.contentType.resetEditorInterface(
       this.id,
       this.instanceId,
       callsite,
       fieldId
+    ))
+    return this
+  }
+
+  /** deprecated, use resetFieldControl instead */
+  resetEditorInterface (fieldId) {
+    deprecatedMethod('resetEditorInterface', 'resetFieldControl')
+    return this.resetFieldControl(fieldId)
+  }
+
+  resetEntryEditor () {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.contentType.resetEntryEditor(
+      this.id,
+      this.instanceId,
+      callsite
+    ))
+    return this
+  }
+
+  configureEntryEditor (widgetNamespace, widgetId, settings?) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.contentType.configureEntryEditor(
+      this.id,
+      this.instanceId,
+      callsite,
+      widgetNamespace,
+      widgetId,
+      settings
+    ))
+    return this
+  }
+
+  addSidebarWidget (widgetNamespace, widgetId, settings = {}, insertBeforeWidgetId = null) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.contentType.addSidebarWidget(
+      this.id,
+      this.instanceId,
+      callsite,
+      widgetId,
+      widgetNamespace,
+      insertBeforeWidgetId,
+      settings
+    ))
+    return this
+  }
+
+  updateSidebarWidget (widgetNamespace, widgetId, settings = {}) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.contentType.updateSidebarWidget(
+      this.id,
+      this.instanceId,
+      callsite,
+      widgetId,
+      widgetNamespace,
+      settings
+    ))
+    return this
+  }
+
+  removeSidebarWidget (widgetNamespace, widgetId) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.contentType.removeSidebarWidget(
+      this.id,
+      this.instanceId,
+      callsite,
+      widgetId,
+      widgetNamespace
+    ))
+    return this
+  }
+
+  resetSidebarToDefault () {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.contentType.resetSidebarToDefault(
+      this.id,
+      this.instanceId,
+      callsite
     ))
     return this
   }

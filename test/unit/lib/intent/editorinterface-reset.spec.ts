@@ -30,7 +30,7 @@ describe('EditorInterfaceResetIntent', function () {
       })
       const message: PlanMessage = intents[1].toPlanMessage()
       expect(message.heading).to.eq(
-        chalk`Reset editor interface for Content Type {bold.yellow test}`
+        chalk`Reset field control for Content Type {bold.yellow test}`
       )
     })
   })

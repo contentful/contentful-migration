@@ -91,7 +91,7 @@ const actionCreators = {
         contentTypeId: entryTransformationToType.sourceContentType
       }
     }),
-    changeEditorInterface: (id, instanceId, callsite, fieldId, widgetId, settings = {}): Intents.EditorInterfaceUpdate => new Intents.EditorInterfaceUpdate({
+    changeEditorInterface: (id, instanceId, callsite, fieldId, widgetId, settings = {}, widgetNamespace?): Intents.EditorInterfaceUpdate => new Intents.EditorInterfaceUpdate({
       type: 'contentType/changeEditorInterface',
       meta: {
         contentTypeInstanceId: `contentType/${id}/${instanceId}`,
@@ -105,7 +105,8 @@ const actionCreators = {
         editorInterface: {
           fieldId,
           widgetId,
-          settings
+          settings,
+          widgetNamespace
         }
       }
     }),
@@ -140,6 +141,104 @@ const actionCreators = {
         editorInterfaceReset: {
           fieldId
         }
+      }
+    }),
+    resetEntryEditor: (id, instanceId, callsite): Intents.EntryEditorResetToDefault => new Intents.EntryEditorResetToDefault({
+      type: 'contentType/resetEntryEditor',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id
+      }
+    }),
+    configureEntryEditor: (id, instanceId, callsite, widgetNamespace, widgetId, settings): Intents.EntryEditorConfigure => new Intents.EntryEditorConfigure({
+      type: 'contentType/configureEntryEditor',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id,
+        entryEditor: {
+          widgetId,
+          widgetNamespace,
+          settings
+        }
+      }
+    }),
+    addSidebarWidget: (id, instanceId, callsite, widgetId, widgetNamespace, insertBeforeWidgetId, settings = {}): Intents.SidebarWidgetAdd => new Intents.SidebarWidgetAdd({
+      type: 'contentType/addSidebarWidget',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id,
+        sidebarWidget: {
+          widgetId,
+          widgetNamespace,
+          settings,
+          insertBeforeWidgetId
+        }
+      }
+    }),
+    updateSidebarWidget: (id, instanceId, callsite, widgetId, widgetNamespace, settings = {}): Intents.SidebarWidgetUpdate => new Intents.SidebarWidgetUpdate({
+      type: 'contentType/updateSidebarWidget',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id,
+        sidebarWidget: {
+          widgetId,
+          settings,
+          widgetNamespace
+        }
+      }
+    }),
+    removeSidebarWidget: (id, instanceId, callsite, widgetId, widgetNamespace): Intents.SidebarWidgetRemove => new Intents.SidebarWidgetRemove({
+      type: 'contentType/removeSidebarWidget',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id,
+        sidebarWidget: {
+          widgetId,
+          widgetNamespace
+        }
+      }
+    }),
+    resetSidebarToDefault: (id, instanceId, callsite): Intents.SidebarResetToDefault => new Intents.SidebarResetToDefault({
+      type: 'contentType/resetSidebarToDefault',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id
       }
     })
   },

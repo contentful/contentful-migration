@@ -697,13 +697,13 @@ describe('migration-steps', function () {
     }));
   });
 
-  describe('when updating an editor interface', function () {
+  describe('when updating a field control', function () {
     it('returns the right steps', Bluebird.coroutine(function * () {
       const plan = yield migration(function (migration) {
         migration
           .editContentType('book')
-          .changeEditorInterface('title', 'markdown')
-          .changeEditorInterface('desc', 'singleLine');
+          .changeFieldControl('title', 'markdown', 'builtin')
+          .changeFieldControl('desc', 'singleLine', 'builtin');
       });
 
       expect(stripCallsites(plan)).to.eql([
@@ -717,7 +717,8 @@ describe('migration-steps', function () {
             editorInterface: {
               fieldId: 'title',
               widgetId: 'markdown',
-              settings: {}
+              settings: {},
+              widgetNamespace: 'builtin'
             }
           }
         },
@@ -731,7 +732,8 @@ describe('migration-steps', function () {
             editorInterface: {
               fieldId: 'desc',
               widgetId: 'singleLine',
-              settings: {}
+              settings: {},
+              widgetNamespace: 'builtin'
             }
           }
         }]);

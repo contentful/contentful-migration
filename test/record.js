@@ -11,7 +11,7 @@ module.exports = function (name, options) {
   // `hasFixture` indicates whether the test has fixtures we should read,
   // or doesn't, so we should record and save them.
   // the environment variable `NOCK_RECORD` can be used to force a new recording.
-  let hasFixture = process.env.NOCK_RECORD === 1;
+  let hasFixture = parseInt(process.env.NOCK_RECORD) === 1;
   return {
     // starts recording, or ensure the fixtures exist
     before: function () {

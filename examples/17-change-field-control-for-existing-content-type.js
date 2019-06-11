@@ -4,9 +4,7 @@ module.exports = function (migration) {
     description: 'super angry'
   });
 
-  blogPost.changeEditorInterface(
-    'slug',
-    'slugEditor',
-    { helpText: 'This is the slug for the entry, it will be used for the URL' }
-  );
+  blogPost
+    .resetFieldControl('slug')
+    .changeFieldControl('slug', 'singleLine', 'builtin');
 };

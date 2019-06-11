@@ -35,20 +35,14 @@ export default class ComposedIntent implements Intent {
   }
 
   // TODO: adjust interface so we don't have to implement all this
-  isEditorInterfaceUpdate (): boolean {
-    return false
-  }
-  isEditorInterfaceReset (): boolean {
-    return false
-  }
-  isEditorInterfaceCopy (): boolean {
-    return false
-  }
   getFieldId (): string {
     return null
   }
   getRawType (): string {
     return null
+  }
+  isEditorInterfaceUpdate (): boolean {
+    return false
   }
   isContentTypeUpdate (): boolean {
     return false
@@ -90,6 +84,18 @@ export default class ComposedIntent implements Intent {
 
   isEntryTransformToType (): boolean {
     return false
+  }
+
+  isGroupable (): boolean {
+    return false
+  }
+
+  isEditorInterfaceIntent (): boolean {
+    return false
+  }
+
+  isSidebarUpdate (): boolean {
+    return true
   }
 
   getContentTypeId (): string {
@@ -168,6 +174,10 @@ export default class ComposedIntent implements Intent {
 
     const topLevelDetails = flatten(contentTypeUpdates.map((updateIntent) => updateIntent.toPlanMessage().details))
 
+    const sidebarUpdates = flatten(this.intents
+      .filter((intent) => intent.isSidebarUpdate())
+      .map(i => i.toPlanMessage().sections))
+
     let createSections = []
 
     for (const editorInterfaceIntent of editorInterfaceUpdates) {
@@ -208,6 +218,8 @@ export default class ComposedIntent implements Intent {
       const planMessage = moveIntent.toPlanMessage()
       createSections = createSections.concat(planMessage.sections)
     }
+
+    createSections = [...createSections, ...sidebarUpdates]
 
     return {
       heading: mainHeading,

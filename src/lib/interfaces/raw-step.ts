@@ -1,7 +1,11 @@
 import ContentTransform from './content-transform'
 import EntryDerive from './entry-derive'
-import { APIEditorInterfaceSettings } from './content-type'
 import TransformEntryToType from './entry-transform-to-type'
+import { SidebarWidgetNamespace, SidebarWidgetSettings } from '../action/sidebarwidget'
+import {
+  EntryEditorNamespace,
+  EntryEditorSettings
+} from '../action/entryeditor-configure'
 
 interface RawStep {
   type: string
@@ -31,13 +35,24 @@ interface RawStepPayload {
   editorInterfaceCopy?: EditorInterfaceCopy
   editorInterfaceReset?: EditorInterfaceReset
   editorInterface?: EditorInterfaceInfo
+  sidebarWidget?: SidebarWidgetInfo
+  entryEditor?: EntryEditorInfo
 }
 
 interface EditorInterfaceInfo {
   fieldId: string
   widgetId: string
-  settings?: APIEditorInterfaceSettings
+  widgetNamespace: FieldControlNamespace
+  settings?: FieldControlSettings
 }
+
+type SettingsParameterValue = number | boolean | string
+
+interface FieldControlSettings {
+  [setting: string]: SettingsParameterValue
+}
+
+type FieldControlNamespace = 'builtin' | 'extension'
 
 interface Movement {
   pivot?: string
@@ -55,6 +70,20 @@ interface EditorInterfaceReset {
 
 interface RawStepProps {
   [propName: string]: any
+}
+
+export interface SidebarWidgetInfo {
+  widgetId: string
+  widgetNamespace?: SidebarWidgetNamespace
+  disabled?: boolean
+  settings?: SidebarWidgetSettings
+  insertBeforeWidgetId?: string
+}
+
+export interface EntryEditorInfo {
+  widgetId: string
+  widgetNamespace?: EntryEditorNamespace
+  settings?: EntryEditorSettings
 }
 
 export {

@@ -4,5 +4,10 @@ module.exports = function (migration) {
     description: 'super angry'
   });
 
-  blogPost.changeEditorInterface('slug', 'singleLine');
+  blogPost.changeFieldControl(
+    'slug',
+    'slugEditor',
+    'builtin',
+    { helpText: 'This is the slug for the entry, it will be used for the URL' }
+  );
 };

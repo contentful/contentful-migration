@@ -32,7 +32,7 @@ describe('EditorInterfaceUpdateIntent', function () {
       })
       const message1: PlanMessage = intents[1].toPlanMessage()
       expect(message1).to.eql({
-        heading: chalk`Update editor interface for Content Type {bold.yellow test}`,
+        heading: chalk`Update field controls for Content Type {bold.yellow test}`,
         details: [],
         sections: [
           {

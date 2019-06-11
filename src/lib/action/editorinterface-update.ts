@@ -1,5 +1,5 @@
 import { EditorInterfaces } from '../entities/content-type'
-import { APIEditorInterfaceSettings } from '../interfaces/content-type'
+import { APIControlWidgetNamespace, APIEditorInterfaceSettings } from '../interfaces/content-type'
 import { EntityAction } from './action'
 
 class UpdateEditorInterfaceAction extends EntityAction {
@@ -7,13 +7,21 @@ class UpdateEditorInterfaceAction extends EntityAction {
   protected fieldId: string
   private _widgetId: string
   private _settings?: APIEditorInterfaceSettings
+  private _widgetNamespace: APIControlWidgetNamespace
 
-  constructor (contentTypeId: string, fieldId: string, widgetId: string, settings?: APIEditorInterfaceSettings) {
+  constructor (
+    contentTypeId: string,
+    fieldId: string,
+    widgetId: string,
+    settings?: APIEditorInterfaceSettings,
+    widgetNamespace?: APIControlWidgetNamespace
+  ) {
     super()
     this.contentTypeId = contentTypeId
     this.fieldId = fieldId
     this._widgetId = widgetId
     this._settings = settings
+    this._widgetNamespace = widgetNamespace
   }
 
   getEntityType (): string {
@@ -30,7 +38,7 @@ class UpdateEditorInterfaceAction extends EntityAction {
   }
 
   async applyTo (editorInterfaces: EditorInterfaces) {
-    editorInterfaces.update(this.getFieldId(), this._widgetId, this._settings)
+    editorInterfaces.update(this.getFieldId(), this._widgetId, this._settings, this._widgetNamespace)
   }
 }
 

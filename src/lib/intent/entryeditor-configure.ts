@@ -1,20 +1,18 @@
 import Intent from './base-intent'
 import { PlanMessage } from '../interfaces/plan-message'
-import { ResetEditorInterfaceAction } from '../action/editorinterface-reset'
 import chalk from 'chalk'
 import { SaveEditorInterfaceAction } from '../action/editorinterface-save'
+import { EntryEditorConfigureAction } from '../action/entryeditor-configure'
 
-export default class EditorInterfaceResetIntent extends Intent {
+export default class EntryEditorConfigureIntent extends Intent {
   isEditorInterfaceIntent () {
     return true
   }
   isGroupable () {
-    return true
+    return false
   }
-  groupsWith (other: Intent): boolean {
-    return other.isGroupable()
-      && other.isEditorInterfaceIntent()
-      && this.isSameContentType(other)
+  groupsWith (): boolean {
+    return false
   }
   endsGroup (): boolean {
     return false
@@ -27,16 +25,18 @@ export default class EditorInterfaceResetIntent extends Intent {
   }
   toActions () {
     return [
-      new ResetEditorInterfaceAction(
+      new EntryEditorConfigureAction(
         this.payload.contentTypeId,
-        this.payload.editorInterfaceReset.fieldId
+        this.payload.entryEditor.widgetNamespace,
+        this.payload.entryEditor.widgetId,
+        this.payload.entryEditor.settings
       ),
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]
   }
   toPlanMessage (): PlanMessage {
     return {
-      heading: chalk`Reset field control for Content Type {bold.yellow ${this.getContentTypeId()}}`,
+      heading: chalk`Configure entry editor interface for content type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],
       sections: []
     }

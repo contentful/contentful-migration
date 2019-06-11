@@ -5,16 +5,16 @@ import chalk from 'chalk'
 import { SaveEditorInterfaceAction } from '../action/editorinterface-save'
 
 export default class EditorInterfaceCopyIntent extends Intent {
-  isEditorInterfaceCopy () {
+  isEditorInterfaceIntent () {
+    return true
+  }
+  isGroupable () {
     return true
   }
   groupsWith (other: Intent): boolean {
-    const sameContentType = other.getContentTypeId() === this.getContentTypeId()
-    return (
-        other.isEditorInterfaceCopy() ||
-        other.isEditorInterfaceReset() ||
-        other.isEditorInterfaceUpdate()
-    ) && sameContentType
+    return other.isGroupable()
+      && other.isEditorInterfaceIntent()
+      && this.isSameContentType(other)
   }
   endsGroup (): boolean {
     return false
@@ -38,7 +38,7 @@ export default class EditorInterfaceCopyIntent extends Intent {
   toPlanMessage (): PlanMessage {
     const {source, destination} = this.payload.editorInterfaceCopy
     return {
-      heading: chalk`Copy editor interface for Content Type {bold.yellow ${this.getContentTypeId()}} from field {italic ${source}} to field {italic ${destination}}`,
+      heading: chalk`Copy field control for Content Type {bold.yellow ${this.getContentTypeId()}} from field {italic ${source}} to field {italic ${destination}}`,
       details: [],
       sections: []
     }
