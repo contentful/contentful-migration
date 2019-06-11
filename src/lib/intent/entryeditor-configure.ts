@@ -27,8 +27,8 @@ export default class EntryEditorConfigureIntent extends Intent {
     return [
       new EntryEditorConfigureAction(
         this.payload.contentTypeId,
-        this.payload.entryEditor.widgetId,
         this.payload.entryEditor.widgetNamespace,
+        this.payload.entryEditor.widgetId,
         this.payload.entryEditor.settings
       ),
       new SaveEditorInterfaceAction(this.payload.contentTypeId)

@@ -40,12 +40,14 @@ describe('apply entry extension migration examples', function () {
         const editorInterfaces = await getDevEditorInterface(
           SOURCE_TEST_SPACE,
           environmentId,
-          'customEntryEditor'
+          'customEntryEditor_v5'
         );
         const editor = editorInterfaces.editor;
+
+
         expect(editor).to.eql({
           settings: {},
-          widgetId: 'customEntryEditor',
+          widgetId: 'customEntryEditor_v5',
           widgetNamespace: 'extension'
         });
         done();
@@ -63,7 +65,7 @@ describe('apply entry extension migration examples', function () {
         const editorInterfaces = await getDevEditorInterface(
           SOURCE_TEST_SPACE,
           environmentId,
-          'customEntryEditor'
+          'resetEntryEditor_v5'
         );
         const editor = editorInterfaces.editor;
         expect(editor).to.eql(undefined);
