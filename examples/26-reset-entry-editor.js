@@ -4,7 +4,7 @@ module.exports = function(migration) {
     description: "Set entry editor"
   })
 
-  customEntryEditor.configureEntryEditor("customEntryEditor", "extension", {})
+  customEntryEditor.configureEntryEditor("extension", "customEntryEditor", {})
 
   customEntryEditor.resetEntryEditor()
 }
