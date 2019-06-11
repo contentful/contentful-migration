@@ -52,8 +52,8 @@
     "tonic-example.js"
   ],
   "dependencies": {
-    "@contentful/axios": "^0.18.0",
-    "contentful-sdk-core": "^6.3.1",
+    "axios": "^0.19.0",
+    "contentful-sdk-core": "^6.3.5",
     "lodash": "^4.17.11"
   },
   "devDependencies": {
@@ -130,11 +130,11 @@
     },
     {
       "path": "./dist/contentful-management.node.js",
-      "maxSize": "70Kb"
+      "maxSize": "72Kb"
     },
     {
       "path": "./dist/contentful-management.node.min.js",
-      "maxSize": "22Kb"
+      "maxSize": "23Kb"
     }
   ]
 }
