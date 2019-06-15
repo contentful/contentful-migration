@@ -96,7 +96,7 @@ export interface IValidation {
   [validation: string]: any
 }
 
-export type WidgetSettingsValue = number | boolean | string
+export type WidgetSettingsValue = number | boolean | string | undefined
 
 export interface IEditorInterfaceOptions {
 
