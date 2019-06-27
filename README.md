@@ -126,7 +126,7 @@
 
 ### Installation
 
-```js
+```bash
 npm install contentful-migration
 ```
 
@@ -492,7 +492,7 @@ Move the field (position of the field in the web editor)
 - **`.afterField(fieldId)`**
 
 Example:
-```
+```javascript
 module.exports = function (migration) {
   const food = migration.editContentType('food');
 
@@ -647,7 +647,7 @@ migrations()
 You can use Typescript to write your migration files using `ts-node`!  First `npm install --save ts-node typescript`,
 then run your migration with ts-node:
 
-```
+```bash
 node_modules/.bin/ts-node node_modules/.bin/contentful-migration -s $CONTENTFUL_SPACE_ID -a $CONTENTFUL_MANAGEMENT_TOKEN my_migration.ts
 ```
 
