@@ -75,7 +75,7 @@
       - [`editField(id[, opts])` : [Field](#field)](#editfieldid-opts--fieldfield)
       - [`deleteField(id)` : void](#deletefieldid--void)
       - [`changeFieldId (currentId, newId)` : void](#changefieldid-currentid-newid--void)
-      - [`changeFieldControl (fieldId, widgetNamespace, widgetId[, settings])` : void](#changefieldcontrol-fieldid-widgetid-widgetnamespace-settings--void)
+      - [`changeFieldControl (fieldId, widgetId, widgetNamespace[, settings])` : void](#changefieldcontrol-fieldid-widgetid-widgetnamespace-settings--void)
       - [`resetFieldControl (fieldId)` : void](#resetfieldcontrol-fieldid--void)
       - [`copyFieldControl (sourceFieldId, destinationFieldId)` : void](#copyfieldcontrol-sourcefieldid-destinationfieldid--void)
       - [`addSidebarWidget (widgetNamespace, widgetId[, settings, insertBeforeWidgetId])` : void](#addsidebarwidget-widgetnamespace-widgetid-settings-insertbeforewidgetid--void)
@@ -523,17 +523,17 @@ module.exports = function (migration) {
 };
 ```
 
-#### `changeFieldControl (fieldId, widgetNamespace, widgetId[, settings])` : void
+#### `changeFieldControl (fieldId, widgetId, widgetNamespace[, settings])` : void
 
 Changes control interface of given field's ID.
 
 **`fieldId : string`** – The ID of the field.
 
+**`widgetId : string`** – The new widget ID for the field. See the [editor interface documentation](https://www.contentful.com/developers/docs/concepts/editor-interfaces/) for a list of available widgets.
+
 **`widgetNamespace : string`** – The namespace of the widget, one of the following values:
 - `builtin` (Standard widget)
 - `extension` (Custom UI extension)
-
-**`widgetId : string`** – The new widget ID for the field. See the [editor interface documentation](https://www.contentful.com/developers/docs/concepts/editor-interfaces/) for a list of available widgets.
 
 **`settings : Object`** – Widget settings and extension instance parameters. Key-value pairs of type (string, number | boolean | string). For builtin widgets, the the following options are available:
 
