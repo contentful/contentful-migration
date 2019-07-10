@@ -702,8 +702,8 @@ describe('migration-steps', function () {
       const plan = yield migration(function (migration) {
         migration
           .editContentType('book')
-          .changeFieldControl('title', 'markdown', 'builtin')
-          .changeFieldControl('desc', 'singleLine', 'builtin');
+          .changeFieldControl('title', 'builtin', 'markdown')
+          .changeFieldControl('desc', 'builtin', 'singleLine');
       });
 
       expect(stripCallsites(plan)).to.eql([

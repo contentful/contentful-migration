@@ -34,5 +34,5 @@ module.exports = function (migration) {
     type: 'Symbol',
     required: true
   });
-  blogPost.changeFieldControl('slug', 'slugEditor', 'builtin', { setting: 'value' });
+  blogPost.changeFieldControl('slug', 'builtin', 'slugEditor', { setting: 'value' });
 };

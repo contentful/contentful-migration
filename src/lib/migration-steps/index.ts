@@ -145,7 +145,7 @@ class ContentType extends DispatchProxy {
     ))
   }
 
-  changeFieldControl (fieldId, widgetId, widgetNamespace, settings) {
+  changeFieldControl (fieldId, widgetNamespace, widgetId, settings) {
     const callsite = getFirstExternalCaller()
     this.dispatch(actionCreators.contentType.changeEditorInterface(
       this.id,
@@ -162,7 +162,7 @@ class ContentType extends DispatchProxy {
   /** deprecated, use changeFieldControl instead */
   changeEditorInterface (fieldId, widgetId, settings, widgetNamespace) {
     deprecatedMethod('changeEditorInterface', 'changeFieldControl')
-    return this.changeFieldControl(fieldId, widgetId, widgetNamespace, settings)
+    return this.changeFieldControl(fieldId, widgetNamespace, widgetId, settings)
   }
 
   copyFieldControl (sourceFieldId, destinationFieldId) {
