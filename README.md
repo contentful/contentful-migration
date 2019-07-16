@@ -106,7 +106,7 @@
   - Edit Content type
   - Create a Content type
 - Entries
-  - Tranform Entries for a Given Content type
+  - Transform Entries for a Given Content type
   - Derives a new entry and sets up a reference to it on the source entry
 - Fields
   - Create a field
