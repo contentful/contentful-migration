@@ -70,7 +70,7 @@ const createRun = ({ shouldThrow }) => async function run (argv) {
     return client.rawRequest(config)
   }
 
-  const migrationParser = createMigrationParser(makeRequest, clientConfig)
+  const migrationParser = createMigrationParser(makeRequest, { ...clientConfig, client, yes: argv.yes })
 
   let parseResult: ParseResult
 
