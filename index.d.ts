@@ -152,12 +152,12 @@ export interface ContentType {
   /**
    * Changes the control of given field's ID.
    *
-   * @param widgetNamespace The namespace of the widget. Use 'builtin' for standard widgets or 'extension' for UI extensions.
    * @param fieldId The ID of the field.
    * @param widgetId The new widget ID for the field.
+   * @param widgetNamespace The namespace of the widget. Use 'builtin' for standard widgets or 'extension' for UI extensions.
    * @param settings Widget settings
    */
-  changeFieldControl (fieldId: string, widgetNamespace: 'builtin' | 'extension', widgetId: string, settings?: IEditorInterfaceOptions): void
+  changeFieldControl (fieldId: string, widgetId: string, widgetNamespace: 'builtin' | 'extension', settings?: IEditorInterfaceOptions): void
 
   /**
    * @deprecated
