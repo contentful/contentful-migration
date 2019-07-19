@@ -21,6 +21,11 @@ const regexp = validation('regexp', Joi.object({
   flags: Joi.string().allow(null).optional()
 }))
 
+const prohibitRegexp = validation('prohibitRegexp', Joi.object({
+  pattern: Joi.string(),
+  flags: Joi.string().allow(null).optional()
+}))
+
 const unique = validation('unique', Joi.boolean())
 const dateRange = validation('dateRange', range('string'))
 
@@ -65,6 +70,7 @@ const fieldValidations = Joi.alternatives().try(
   size,
   rangeValidation,
   regexp,
+  prohibitRegexp,
   unique,
   dateRange,
   assetImageDimensions,
