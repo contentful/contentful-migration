@@ -311,7 +311,7 @@ migration.deriveLinkedEntries({
   });
 ```
 
-For the complete version of this migration, please refer to [this example](./examples/15-derive-entry.js).
+For the complete version of this migration, please refer to [this example](./examples/15-derive-entry-n-to-1.js).
 
 #### `transformEntriesToType(config)`
 
