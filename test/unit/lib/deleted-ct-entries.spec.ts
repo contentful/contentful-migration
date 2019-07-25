@@ -1,7 +1,7 @@
 'use strict'
 import { migration as migrationSteps } from '../../../src/lib/migration-steps'
 import IntentList from '../../../src/lib/intent-list'
-import * as sinon from 'sinon'
+import sinon from 'sinon'
 import Fetcher from '../../../src/lib/fetcher'
 import makeApiContentType from '../../helpers/make-api-content-type'
 import { ContentType } from '../../../src/lib/entities/content-type'

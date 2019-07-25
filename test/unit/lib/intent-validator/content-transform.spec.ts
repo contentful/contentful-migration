@@ -137,7 +137,7 @@ describe('Content transformation', function () {
         const validationErrors = await validateSteps(function up (migration) {
           migration.transformEntries(properties)
         })
-
+        debugger
         expect(validationErrors).to.eql([
           {
             details: {
@@ -157,7 +157,7 @@ describe('Content transformation', function () {
                 type: 'contentType/transformEntries'
               }
             },
-            message: '"yes please" is not a valid value for the content transformation property "shouldPublish". Expected type boolean or string value "preserve".',
+            message: '"yes please" is not a valid value for the content transformation property "shouldPublish". Expected type boolean or type string.',
             type: 'InvalidType'
           }
         ])

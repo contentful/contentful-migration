@@ -7,7 +7,7 @@ const enforceDependency = function ({ valid, when, is }) {
   }).error((errors) => {
     return errors.map((error) => {
       const path = error.path
-      const splitPath = path.split('.')
+      const splitPath = path
       // top level would be 0.foo
       // anything nested would be 0.foo.bar
       let subPath = [when]

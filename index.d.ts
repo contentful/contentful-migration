@@ -1,4 +1,4 @@
-import * as axios from '@contentful/axios'
+import axios from '@contentful/axios'
 
 export interface Movement {
   toTheTop(): void
