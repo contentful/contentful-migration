@@ -1,7 +1,7 @@
 import * as Joi from 'joi'
 import * as _ from 'lodash'
 import { reach } from 'hoek'
-import * as kindOf from 'kind-of'
+import kindOf from 'kind-of'
 import errorMessages from '../errors'
 import { PayloadValidationError } from '../../../interfaces/errors'
 import { ContentType } from '../../../entities/content-type'
@@ -31,19 +31,19 @@ const validateContentType = function (contentType: ContentType): PayloadValidati
   const { error } = Joi.validate(_.omit(contentType.toAPI(), ['sys']), contentTypeSchema, {
     abortEarly: false
   })
-
   if (!error) {
     return []
   }
 
   return error.details.map(({ path, type }): PayloadValidationError => {
+    debugger
     if (type === 'any.required') {
       return {
         type: 'InvalidPayload',
         message: errorMessages.contentType.REQUIRED_PROPERTY(path)
       }
     }
-    if (type === 'array.max' && ((path as unknown) as string) === 'fields') {
+    if (type === 'array.max' && path[0] === 'fields') {
       return {
         type: 'InvalidPayload',
         message: errorMessages.contentType.TOO_MANY_FIELDS(contentTypeId, MAX_FIELDS)

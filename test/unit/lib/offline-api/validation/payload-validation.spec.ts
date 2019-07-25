@@ -32,7 +32,7 @@ describe('payload validation', function () {
   })
 
   describe('when adding more than 50 fields', function () {
-    it('returns the errors', async function () {
+    it.only('returns the errors', async function () {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch')
         lunch.name('A lunch')
@@ -43,7 +43,6 @@ describe('payload validation', function () {
             .name(`menu${i}`)
         }
       }, [])
-
       expect(errors).to.eql([
         [
           {
