@@ -10,7 +10,7 @@ import fieldsSchema from './fields-schema'
 
 interface SimplifiedValidationError {
   message: string
-  path: string[]
+  path: string
   type: string
   context?: {
     isRequiredDependency?: boolean
@@ -43,7 +43,7 @@ const validateContentType = function (contentType: ContentType): PayloadValidati
         message: errorMessages.contentType.REQUIRED_PROPERTY(path)
       }
     }
-    if (type === 'array.max' && path[0] === 'fields') {
+    if (type === 'array.max' && path === 'fields') {
       return {
         type: 'InvalidPayload',
         message: errorMessages.contentType.TOO_MANY_FIELDS(contentTypeId, MAX_FIELDS)
@@ -69,7 +69,7 @@ const unknownCombinationError = function ({ path, keys }): SimplifiedValidationE
 // }]
 const combineErrors = function (fieldValidationsErrors: SimplifiedValidationError[]): SimplifiedValidationError[] {
   const byItemPath: _.Dictionary<SimplifiedValidationError[]> = _.groupBy(fieldValidationsErrors, ({ path }) => {
-    return path.slice(0, -1).join('.')
+    return path.split('.').slice(0, -1).join('.')
   })
 
   const pathErrorTuples: [string, SimplifiedValidationError[]][] = _.entries(byItemPath)
@@ -98,7 +98,7 @@ const combineErrors = function (fieldValidationsErrors: SimplifiedValidationErro
 // They are noise, execept when all error types are the same.
 const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): SimplifiedValidationError[] {
   const [normalErrors, fieldValidationsErrors] = _.partition(error.details, (detail) => {
-    const [, fieldProp] = detail.path // workaround for joi typedef
+    const [, fieldProp] = detail.path
     return fieldProp !== 'validations'
   })
 
