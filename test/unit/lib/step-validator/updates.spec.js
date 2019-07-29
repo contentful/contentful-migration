@@ -112,7 +112,9 @@ describe('migration-steps validation', function () {
 
   describe('when passing the wrong type for a prop', function () {
     it('returns all the validation errors', Bluebird.coroutine(function * () {
+      /* tslint:disable */
       const invalidFunction = function () {};
+      /* tslint:enable */
       const validationErrors = yield validateSteps(function up (migration) {
         const person = migration.createContentType('person', {
           description: ['Array']

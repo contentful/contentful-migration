@@ -6,8 +6,9 @@ const enforceDependency = function ({ valid, when, is }) {
     is: is, then: Joi.any().required(), otherwise: Joi.any().forbidden()
   }).error((errors) => {
     return errors.map((error) => {
+      debugger
       const path = error.path
-      const splitPath = path
+      const splitPath = path.split('.')
       // top level would be 0.foo
       // anything nested would be 0.foo.bar
       let subPath = [when]

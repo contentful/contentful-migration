@@ -31,12 +31,12 @@ const validateContentType = function (contentType: ContentType): PayloadValidati
   const { error } = Joi.validate(_.omit(contentType.toAPI(), ['sys']), contentTypeSchema, {
     abortEarly: false
   })
+
   if (!error) {
     return []
   }
 
   return error.details.map(({ path, type }): PayloadValidationError => {
-    debugger
     if (type === 'any.required') {
       return {
         type: 'InvalidPayload',
@@ -98,7 +98,7 @@ const combineErrors = function (fieldValidationsErrors: SimplifiedValidationErro
 // They are noise, execept when all error types are the same.
 const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): SimplifiedValidationError[] {
   const [normalErrors, fieldValidationsErrors] = _.partition(error.details, (detail) => {
-    const [, fieldProp] = detail.path
+    const [, fieldProp] = detail.path.split('.')
     return fieldProp !== 'validations'
   })
 
@@ -134,7 +134,7 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
 
     // `path` looks like `0.field`
     // look up the field
-    const [index, ...fieldNames] = path
+    const [index, ...fieldNames] = path.split('.')
     const prop = fieldNames.join('.')
     const field = fields[index]
 

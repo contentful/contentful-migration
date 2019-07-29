@@ -87,7 +87,6 @@ describe('apply content transformation', function () {
       .end(async function () {
         const res = await getEntries(SOURCE_TEST_SPACE, environmentId, 'newsArticle');
         const entriesWithoutSys = res.items.map(i => _.omit(i, 'sys'));
-
         const expected = [
           {
             fields: {

@@ -5,7 +5,7 @@ import { RequestOptions } from 'http'
 
 type ProxyAuthConfig = {
   username?: string
-  password?:string
+  password?: string
 }
 type ProxyConfig = RequestOptions | {
   isHttps: boolean
