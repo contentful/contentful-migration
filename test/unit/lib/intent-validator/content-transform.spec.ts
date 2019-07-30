@@ -137,7 +137,6 @@ describe('Content transformation', function () {
         const validationErrors = await validateSteps(function up (migration) {
           migration.transformEntries(properties)
         })
-        debugger
         expect(validationErrors).to.eql([
           {
             details: {
