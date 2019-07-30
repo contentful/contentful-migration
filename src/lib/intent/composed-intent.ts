@@ -191,7 +191,6 @@ export default class ComposedIntent implements Intent {
       }
       createSections.push(nextUpdateSection)
     }
-    debugger
     for (const createIntent of fieldCreates) {
       const fieldId = createIntent.getFieldId()
       const [createSection] = createIntent.toPlanMessage().sections

@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import * as sinon from 'sinon'
+import sinon from 'sinon'
 import renderSetup from './render-setup'
 
 import { renderPlan } from '../../../../src/bin/lib/render-migration'

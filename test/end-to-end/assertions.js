@@ -200,7 +200,6 @@ module.exports = {
       apply: function () {
         return result => {
           expect(result.stdout).not.to.be.empty();
-
           const withoutAnsiCodes = stripAnsi(result.stdout);
           expect(withoutAnsiCodes).to.include(`The following migration has been planned`);
           expect(withoutAnsiCodes).to.include(`? Do you want to apply the migration Yes`);

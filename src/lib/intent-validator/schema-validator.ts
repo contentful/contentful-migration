@@ -1,7 +1,7 @@
 
 import * as Joi from 'joi'
-import * as didYouMean from 'didyoumean2'
-import * as kindOf from 'kind-of'
+import didYouMean from 'didyoumean2'
+import kindOf from 'kind-of'
 
 import IntentValidator from '../interfaces/intent-validator'
 import ValidationError from '../interfaces/errors'

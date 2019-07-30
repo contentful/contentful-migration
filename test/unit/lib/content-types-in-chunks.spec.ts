@@ -1,7 +1,7 @@
 'use strict'
 
 import { expect } from 'chai'
-import * as sinon from 'sinon'
+import sinon from 'sinon'
 
 import { migration as migrationSteps } from '../../../src/lib/migration-steps'
 import IntentList from '../../../src/lib/intent-list'

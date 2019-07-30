@@ -1,8 +1,8 @@
 'use strict'
 
-import * as Bluebird from 'bluebird'
+import Bluebird from 'bluebird'
 import actionCreators from './action-creators'
-import * as getFirstExternalCaller from './first-external-caller'
+import getFirstExternalCaller from './first-external-caller'
 import Intent from '../intent'
 import DispatchProxy from './dispatch-proxy'
 import { omit } from 'lodash'

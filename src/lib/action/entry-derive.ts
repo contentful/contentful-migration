@@ -87,7 +87,7 @@ class EntryDeriveAction extends APIAction {
             targetEntry.setField(fieldId, {})
           }
 
-          for (const [locale, localizedValue] of _.entries(localizedField)) {
+          for (const [locale, localizedValue] of _.entries((localizedField as object))) {
             targetEntry.setFieldForLocale(fieldId, locale, localizedValue)
           }
 

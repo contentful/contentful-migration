@@ -43,7 +43,6 @@ describe('payload validation', function () {
             .name(`menu${i}`)
         }
       }, [])
-
       expect(errors).to.eql([
         [
           {

@@ -238,8 +238,8 @@ export default function (intents: Intent[], contentTypes: ContentType[]): Invali
 
   let context = {
     remote: new Set(remote), // all currently (in the current iteration step) existing content types
-    created: new Set(), // all by now (in previous iteration steps) created content types
-    deleted: new Set(), // all by now (in previous iteration steps) deleted content types
+    created: new Set<string>(), // all by now (in previous iteration steps) created content types
+    deleted: new Set<string>(), // all by now (in previous iteration steps) deleted content types
     toBeCreated: new Set(toBeCreated), // all future (in remaining iteration steps) created content types
     remoteContentTypes: contentTypes
   }
