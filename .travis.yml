@@ -10,6 +10,7 @@ env:
 script:
   - npm run lint
   - npm run build-dev
+  - npm run test-typescript-declaration
   - npm run coverage-report
 
 cache:

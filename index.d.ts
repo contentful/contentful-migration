@@ -1,4 +1,4 @@
-import axios from 'axios'
+import * as axios from 'axios'
 
 export interface Movement {
   toTheTop(): void

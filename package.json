@@ -127,7 +127,7 @@
     "ts-node": "^3.3.0",
     "tslint": "^5.7.0",
     "tslint-config-standard": "^6.0.1",
-    "typescript": "^2.5.3",
+    "typescript": "^3.5.3",
     "uuid": "^3.3.2",
     "zlib": "^1.0.5"
   },
