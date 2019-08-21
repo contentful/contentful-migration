@@ -6,5 +6,5 @@ module.exports = function (migration) {
 
   blogPost
     .resetFieldControl('slug')
-    .changeFieldControl('slug', 'singleLine', 'builtin');
+    .changeFieldControl('slug', 'builtin', 'singleLine');
 };
