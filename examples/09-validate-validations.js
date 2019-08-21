@@ -7,7 +7,14 @@ module.exports = function (migration) {
   food.createField('name')
     .type('Symbol')
     .name('name of the food')
-    .validations([{ unique: true }]);
+    .validations([{ unique: true },
+      {
+        prohibitRegexp: {
+          pattern: 'foo',
+          flags: null
+        },
+        message: 'asdf'
+      }]);
 
   food.createField('calories')
     .type('Link')

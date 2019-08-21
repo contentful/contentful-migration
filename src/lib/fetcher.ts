@@ -3,7 +3,7 @@ import { APIContentType, APIEditorInterfaces } from '../lib/interfaces/content-t
 import APIEntry from '../lib/interfaces/api-entry'
 import { ContentType } from '../lib/entities/content-type'
 import * as _ from 'lodash'
-import * as Bluebird from 'bluebird'
+import Bluebird from 'bluebird'
 import APIFetcher from './interfaces/api-fetcher'
 
 export default class Fetcher implements APIFetcher {

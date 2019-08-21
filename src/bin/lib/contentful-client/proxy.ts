@@ -1,11 +1,15 @@
-import * as HttpsProxyAgent from 'https-proxy-agent'
+import HttpsProxyAgent from 'https-proxy-agent'
 import * as _ from 'lodash'
 import * as url from 'url'
 import { RequestOptions } from 'http'
 
+type ProxyAuthConfig = {
+  username?: string
+  password?: string
+}
 type ProxyConfig = RequestOptions | {
   isHttps: boolean
-  // auth: ProxyAuthConfig
+  auth?: ProxyAuthConfig
 }
 
 function parseAuth (authString: string): { username: string, password: string } {

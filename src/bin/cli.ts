@@ -2,7 +2,7 @@ import * as path from 'path'
 
 import chalk from 'chalk'
 import * as inquirer from 'inquirer'
-import * as Listr from 'listr'
+import Listr from 'listr'
 import { createManagementClient } from './lib/contentful-client'
 const { version } = require('../../package.json')
 const {

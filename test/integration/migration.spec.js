@@ -196,6 +196,13 @@ describe('the migration', function () {
         omitted: false,
         validations: [{
           unique: true
+        },
+        {
+          prohibitRegexp: {
+            pattern: 'foo',
+            flags: null
+          },
+          message: 'asdf'
         }]
       },
       {

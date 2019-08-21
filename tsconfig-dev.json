@@ -3,6 +3,7 @@
     "outDir": "./built",
     "allowJs": true,
     "target": "es2017",
+    "esModuleInterop":true,
     "module": "commonjs",
     "lib": [
       "es2015",

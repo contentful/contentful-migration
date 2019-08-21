@@ -1,6 +1,6 @@
 'use strict'
 
-import * as getFirstExternalCaller from './first-external-caller'
+import getFirstExternalCaller from './first-external-caller'
 
 /*
   Base class that dynamically dispatches property update messages based on the function being called

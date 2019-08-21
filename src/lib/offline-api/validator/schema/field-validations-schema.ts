@@ -10,6 +10,13 @@ const range = (type) => Joi.object({
   max: Joi[type]().allow(null)
 })
 
+const rangeForDate = () => Joi.object({
+  before: Joi.string().optional().allow(null),
+  after: Joi.string().optional().allow(null),
+  min: Joi.string().optional().allow(null),
+  max: Joi.string().optional().allow(null)
+})
+
 const linkContentType = validation('linkContentType', Joi.array().items(Joi.string()))
 const inValidation = validation('in', Joi.array())
 const linkMimetypeGroup = validation('linkMimetypeGroup', Joi.array().items(Joi.string()))
@@ -21,8 +28,13 @@ const regexp = validation('regexp', Joi.object({
   flags: Joi.string().allow(null).optional()
 }))
 
+const prohibitRegexp = validation('prohibitRegexp', Joi.object({
+  pattern: Joi.string(),
+  flags: Joi.string().allow(null).optional()
+}))
+
 const unique = validation('unique', Joi.boolean())
-const dateRange = validation('dateRange', range('string'))
+const dateRange = validation('dateRange', rangeForDate())
 
 const assetImageDimensions = validation('assetImageDimensions', Joi.object({
   width: range('number'),
@@ -65,6 +77,7 @@ const fieldValidations = Joi.alternatives().try(
   size,
   rangeValidation,
   regexp,
+  prohibitRegexp,
   unique,
   dateRange,
   assetImageDimensions,
