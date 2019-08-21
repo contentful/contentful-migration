@@ -50,6 +50,7 @@
   },
   "files": [
     "dist",
+    "typings",
     "tonic-example.js"
   ],
   "dependencies": {
