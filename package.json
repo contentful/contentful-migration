@@ -50,8 +50,8 @@
   },
   "files": [
     "dist",
-    "typings",
-    "tonic-example.js"
+    "tonic-example.js",
+    "typings"
   ],
   "dependencies": {
     "axios": "^0.19.0",
