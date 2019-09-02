@@ -83,6 +83,10 @@ The Contentful Management SDK will be accessible via the `contentfulManagement` 
 
 Check the [releases](https://github.com/contentful/contentful-management.js/releases) page to know which versions are available.
 
+### Typings
+
+This library also comes with typings to use with typescript.
+
 ### Legacy browsers:
 
 This library also comes with a legacy version to support Internet Explorer 11 and other older browsers. It already contains a polyfill for Promises.
