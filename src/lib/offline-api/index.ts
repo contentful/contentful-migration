@@ -201,7 +201,7 @@ class OfflineAPI {
     const hasContentType = this.modifiedContentTypes.has(id)
 
     if (!hasContentType) {
-      throw new Error(`Cannot save CT ${id} because it does not exist`)
+      throw new Error(`Cannot save the content type (id: ${id}) because it does not exist`)
     }
 
     const ct = await this.getContentType(id)
