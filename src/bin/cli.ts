@@ -49,9 +49,9 @@ const createRun = ({ shouldThrow }) => async function run (argv) {
   try {
     migrationFunction = require(argv.filePath)
   } catch (e) {
-    console.error(chalk`{red.bold The ${argv.filePath} script could not be parsed, as it seems to contain syntax errors.}\n`)
-    console.error(e)
-    return
+    const message = chalk`{red.bold The ${argv.filePath} script could not be parsed, as it seems to contain syntax errors.}\n`
+    console.error(message)
+    terminate(new Error(message))
   }
 
   const application = argv.managementApplication || `contentful.migration-cli/${version}`
