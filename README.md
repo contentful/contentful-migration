@@ -13,7 +13,6 @@
 # contentful-migration - content model migration tool
 
 > Describe and execute changes to your content model and transform entry content.
->This tool is currently available in **Beta**.
 
 <p align="center">
   <img src="https://img.shields.io/badge/Status-Maintained-green.svg" alt="This repository is actively maintained" /> &nbsp;
@@ -376,7 +375,7 @@ module.exports = function (migration, { makeRequest, spaceId, accessToken }) {
 
 The function used by the migration object to talk to the Contentful Management API. This can be useful if you want to use API features that may not be supported by the `migration` object.
 
-`config : Object` - Configuration for the request based on [the Contentful management SDK](https://contentful.github.io/contentful-management.js/contentful-management/5.0.0-beta2/ContentfulClientAPI.html#.rawRequest)
+`config : Object` - Configuration for the request based on [the Contentful management SDK](https://contentful.github.io/contentful-management.js/contentful-management/5.10.2/ContentfulClientAPI.html#.rawRequest)
   - `method` : `string` – HTTP method
   - `url` : `string` - HTTP endpoint
 
