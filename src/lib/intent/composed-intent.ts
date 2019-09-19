@@ -123,11 +123,11 @@ export default class ComposedIntent implements Intent {
   }
 
   shouldSave (): boolean {
-    return true
+    return this.intents.some(intent => intent.shouldSave())
   }
 
   shouldPublish (): boolean {
-    return true
+    return this.intents.some(intent => intent.shouldPublish())
   }
 
   isComposedIntent (): boolean {

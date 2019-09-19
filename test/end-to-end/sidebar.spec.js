@@ -22,12 +22,40 @@ describe('apply sidebar migration examples', function () {
     await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId);
   });
 
-  it('migrates the sidebar with 24-add-sidebar-widget-to-existing-content-type.js', function (done) {
+  it('migrates the sidebar with 24-add-sidebar-widgets-to-new-content-type.js', function (done) {
     cli()
-      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/24-add-sidebar-widget-to-existing-content-type.js`)
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/24-add-sidebar-widgets-to-new-content-type.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
       .end(async () => {
         const editorInterfaces = await getDevEditorInterface(SOURCE_TEST_SPACE, environmentId, 'customSidebar');
+        const sidebar = editorInterfaces.sidebar;
+        expect(sidebar).to.eql([
+          {
+            'disabled': false,
+            'settings': {},
+            'widgetId': 'publication-widget',
+            'widgetNamespace': 'sidebar-builtin'
+          },
+          {
+            'disabled': false,
+            'settings': {
+              'tagField': 'tags',
+              'imageField': 'image'
+            },
+            'widgetId': 'imageTaggingExtensionId',
+            'widgetNamespace': 'extension'
+          }
+        ]);
+        done();
+      });
+  });
+
+  it('migrates the sidebar with 27-add-sidebar-widgets-to-existing-content-type.js', function (done) {
+    cli()
+      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/27-add-sidebar-widgets-to-existing-content-type.js`)
+      .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
+      .end(async () => {
+        const editorInterfaces = await getDevEditorInterface(SOURCE_TEST_SPACE, environmentId, 'richTextTest');
         const sidebar = editorInterfaces.sidebar;
         expect(sidebar).to.eql([
           {
