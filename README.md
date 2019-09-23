@@ -13,7 +13,6 @@
 # contentful-migration - content model migration tool
 
 > Describe and execute changes to your content model and transform entry content.
->This tool is currently available in **Beta**.
 
 <p align="center">
   <img src="https://img.shields.io/badge/Status-Maintained-green.svg" alt="This repository is actively maintained" /> &nbsp;
@@ -75,7 +74,7 @@
       - [`editField(id[, opts])` : [Field](#field)](#editfieldid-opts--fieldfield)
       - [`deleteField(id)` : void](#deletefieldid--void)
       - [`changeFieldId (currentId, newId)` : void](#changefieldid-currentid-newid--void)
-      - [`changeFieldControl (fieldId, widgetId, widgetNamespace[, settings])` : void](#changefieldcontrol-fieldid-widgetid-widgetnamespace-settings--void)
+      - [`changeFieldControl (fieldId, widgetNamespace, widgetId[, settings])` : void](#changefieldcontrol-fieldid-widgetnamespace-widgetid-settings--void)
       - [`resetFieldControl (fieldId)` : void](#resetfieldcontrol-fieldid--void)
       - [`copyFieldControl (sourceFieldId, destinationFieldId)` : void](#copyfieldcontrol-sourcefieldid-destinationfieldid--void)
       - [`addSidebarWidget (widgetNamespace, widgetId[, settings, insertBeforeWidgetId])` : void](#addsidebarwidget-widgetnamespace-widgetid-settings-insertbeforewidgetid--void)
@@ -376,7 +375,7 @@ module.exports = function (migration, { makeRequest, spaceId, accessToken }) {
 
 The function used by the migration object to talk to the Contentful Management API. This can be useful if you want to use API features that may not be supported by the `migration` object.
 
-`config : Object` - Configuration for the request based on [the Contentful management SDK](https://contentful.github.io/contentful-management.js/contentful-management/5.0.0-beta2/ContentfulClientAPI.html#.rawRequest)
+`config : Object` - Configuration for the request based on [the Contentful management SDK](https://contentful.github.io/contentful-management.js/contentful-management/5.10.2/ContentfulClientAPI.html#.rawRequest)
   - `method` : `string` – HTTP method
   - `url` : `string` - HTTP endpoint
 
@@ -523,17 +522,17 @@ module.exports = function (migration) {
 };
 ```
 
-#### `changeFieldControl (fieldId, widgetId, widgetNamespace[, settings])` : void
+#### `changeFieldControl (fieldId, widgetNamespace, widgetId[, settings])` : void
 
 Changes control interface of given field's ID.
 
 **`fieldId : string`** – The ID of the field.
 
-**`widgetId : string`** – The new widget ID for the field. See the [editor interface documentation](https://www.contentful.com/developers/docs/concepts/editor-interfaces/) for a list of available widgets.
-
 **`widgetNamespace : string`** – The namespace of the widget, one of the following values:
 - `builtin` (Standard widget)
 - `extension` (Custom UI extension)
+
+**`widgetId : string`** – The new widget ID for the field. See the [editor interface documentation](https://www.contentful.com/developers/docs/concepts/editor-interfaces/) for a list of available widgets.
 
 **`settings : Object`** – Widget settings and extension instance parameters. Key-value pairs of type (string, number | boolean | string). For builtin widgets, the the following options are available:
 
