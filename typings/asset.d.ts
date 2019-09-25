@@ -12,7 +12,8 @@ export interface AssetProps {
         contentType: string,
         upload?: string,
         url?: string,
-        details: Object,
+        details?: Object,
+        uploadFrom?: Object
       }
     }
   }
