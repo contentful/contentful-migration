@@ -15,7 +15,8 @@ const fieldMove = require('../../examples/08-move-field');
 const changeEditorInterface = require('../../examples/16-change-field-control');
 const changeEditorInterfaceWithExistingContentType = require('../../examples/17-change-field-control-for-existing-content-type');
 const changeEditorInterfaceWithExistingContentTypeAddingHelpText = require('../../examples/18-change-field-control-for-existing-content-type-adding-help-text');
-const addSidebarWidgets = require('../../examples/24-add-sidebar-widget-to-existing-content-type');
+const addSidebarWidgets = require('../../examples/24-add-sidebar-widgets-to-new-content-type');
+const addSidebarWidgetsToExisting = require('../../examples/27-add-sidebar-widgets-to-existing-content-type');
 
 const { createMigrationParser } = require('../../built/lib/migration-parser');
 const co = Bluebird.coroutine;
@@ -550,6 +551,33 @@ describe('the migration', function () {
     const editorInterfaces = yield request({
       method: 'GET',
       url: '/content_types/customSidebar/editor_interface'
+    });
+
+    expect(editorInterfaces.sidebar).to.eql([
+      {
+        'disabled': false,
+        'settings': {},
+        'widgetId': 'publication-widget',
+        'widgetNamespace': 'sidebar-builtin'
+      },
+      {
+        'disabled': false,
+        'settings': {
+          'tagField': 'tags',
+          'imageField': 'image'
+        },
+        'widgetId': 'imageTaggingExtensionId',
+        'widgetNamespace': 'extension'
+      }
+    ]);
+  }));
+
+  it('adds sidebar widgets to the editor interface of an existing content type', co(function * () {
+    yield migrator(addSidebarWidgetsToExisting);
+
+    const editorInterfaces = yield request({
+      method: 'GET',
+      url: '/content_types/richTextTest/editor_interface'
     });
 
     expect(editorInterfaces.sidebar).to.eql([
