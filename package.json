@@ -83,7 +83,7 @@
     "contentful-management": "^5.9.0",
     "didyoumean2": "^1.3.0",
     "hoek": "^4.2.1",
-    "https-proxy-agent": "^2.1.0",
+    "https-proxy-agent": "^3.0.0",
     "inquirer": "^3.2.3",
     "joi": "^10.6.0",
     "kind-of": "^5.0.2",
