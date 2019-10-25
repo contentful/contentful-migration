@@ -49,8 +49,9 @@ class EntryTransformAction extends APIAction {
 
       }
       if (changesForThisEntry) {
+        const currentlyChanged = entry.isChanged
         await api.saveEntry(entry.id)
-        if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && entry.isPublished) ) {
+        if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && (entry.isPublished && !currentlyChanged)) ) {
           await api.publishEntry(entry.id)
         }
       }

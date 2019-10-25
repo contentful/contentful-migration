@@ -67,6 +67,10 @@ class Entry {
     return isDefined(this._publishedVersion)
   }
 
+  get isChanged () {
+    return isDefined(this._publishedVersion) && this._version > this._publishedVersion + 1
+  }
+
   get publishedVersion () {
     return this._publishedVersion
   }
