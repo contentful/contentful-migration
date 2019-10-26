@@ -90,8 +90,9 @@ class EntryTransformToTypeAction extends APIAction {
         }
 
       }
+      const currentlyChanged = entry.isChanged
       await api.saveEntry(targetEntry.id)
-      if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && entry.isPublished) ) {
+      if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && (entry.isPublished && !currentlyChanged)) ) {
         await api.publishEntry(targetEntry.id)
       }
 
@@ -105,8 +106,9 @@ class EntryTransformToTypeAction extends APIAction {
             link.element.replaceArrayLinkForLocale(link.field, link.locale, link.index, newEntryId)
           }
 
+          const elementCurrentlyChanged = link.element.isChanged
           await api.saveEntry(link.element.id)
-          if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && link.element.isPublished) ) {
+          if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && (link.element.isPublished && !elementCurrentlyChanged)) ) {
             await api.publishEntry(link.element.id)
           }
         }
