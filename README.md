@@ -234,7 +234,8 @@ The transform function is expected to return an object with the desired target f
     - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `from == {myField: {'en-US': 'my field value'}}`)
     - `locale` one of the locales in the space being transformed
   The return value must be an object with the same keys as specified in `to`. Their values will be written to the respective entry fields for the current locale (i.e. `{nameField: 'myNewValue'}`). If it returns `undefined`, this the values for this locale on the entry will be left untouched.
-- **`shouldPublish : boolean`** _(optional)_ – If `true`, the transformed entries will be published. If `false`, both will remain in draft state (default `true`)
+- **`shouldPublish : bool | 'preserve'`** _(optional)_ – Flag that specifies publishing of target entries, `preserve` will keep current states of the source entries (default `false`)
+
 
 ##### `transformEntries` Example
 
@@ -282,7 +283,8 @@ The derive function is expected to return an object with the desired target fiel
 
   The return value must be an object with the same keys as specified in `derivedFields`. Their values will be written to the respective new entry fields for the current locale (i.e. `{nameField: 'myNewValue'}`)
 
-- **`shouldPublish : boolean`** _(optional)_ – If `true`, both the source and the derived entries will be published. If `false`, both will remain in draft state (default `true`)
+- **`shouldPublish : bool | 'preserve'`** _(optional)_ – Flag that specifies publishing of target entries, `preserve` will keep current states of the source entries (default `false`)
+
 
 ##### `deriveLinkedEntries(config)` Example
 
