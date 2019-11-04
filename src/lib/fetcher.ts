@@ -151,6 +151,8 @@ export default class Fetcher implements APIFetcher {
 
     while (true) {
       const paramsWithSkip = {
+        limit: '500',
+        order: 'sys.createdAt',
         ...params,
         skip: skip.toString(10)
       }
