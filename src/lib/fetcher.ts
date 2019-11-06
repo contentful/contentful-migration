@@ -7,6 +7,7 @@ import Bluebird from 'bluebird'
 import APIFetcher from './interfaces/api-fetcher'
 
 export default class Fetcher implements APIFetcher {
+  static perRequestLimit = 100
   private makeRequest: Function
 
   constructor (makeRequest: Function) {
@@ -151,7 +152,7 @@ export default class Fetcher implements APIFetcher {
 
     while (true) {
       const paramsWithSkip = {
-        limit: '500',
+        limit: Fetcher.perRequestLimit,
         order: 'sys.createdAt',
         ...params,
         skip: skip.toString(10)

@@ -79,7 +79,7 @@ describe('Content Type fetcher', function () {
 
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: '/content_types?limit=500&order=sys.createdAt&sys.id[in]=person,dog,cat,plant&skip=0'
+      url: `/content_types?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&sys.id[in]=person,dog,cat,plant&skip=0`
     })
     expect(contentTypes).to.eql([
       {
