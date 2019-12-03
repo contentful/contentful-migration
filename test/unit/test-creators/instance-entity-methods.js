@@ -27,6 +27,7 @@ export function entityUpdateTest (t, setup, { wrapperMethod }) {
       t.ok(response.toPlainObject, 'response is wrapped')
       t.equals(httpMock.put.args[0][1].name, 'updatedname', 'data is sent')
       t.equals(httpMock.put.args[0][2].headers['X-Contentful-Version'], 2, 'version header is sent')
+      return {httpMock, entityMock, response}
     })
 }
 

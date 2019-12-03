@@ -13,6 +13,7 @@ import uiExtensionTests from './ui-extension-integration'
 import generateRandomId from './generate-random-id'
 import { createClient } from '../../'
 import { environmentTests } from './environment-integration'
+import { environmentAliasTests, environmentAliasReadOnlyTests } from './environment-alias-integration'
 
 const params = {
   accessToken: process.env.CONTENTFUL_ACCESS_TOKEN
@@ -186,6 +187,20 @@ test('Gets space for read only tests', (t) => {
     })
 })
 
+test('Gets v2 space for read only tests', (t) => {
+  return v2Client.getSpace('w6xueg32zr68')
+    .then(space => {
+      test.onFinish(() => {
+        // clean up and re-point alias to starting env
+        space.getEnvironmentAlias('master').then(alias => {
+          alias.environment.sys.id = 'previously-master'
+          return alias.update()
+        })
+      })
+      environmentAliasReadOnlyTests(t, space) // v2 space with alias feature enabled and opted-in
+    })
+})
+
 test('Create space for tests which create, change and delete data', (t) => {
   return client.createSpace({
     name: 'CMA JS SDK tests'
@@ -217,7 +232,8 @@ test('Create space for tests which create, change and delete data', (t) => {
         roleTests(t, space),
         apiKeyTests(t, space),
         uiExtensionTests(t, space),
-        environmentTests(t, space, waitForEnvironmentToBeReady)
+        environmentTests(t, space, waitForEnvironmentToBeReady),
+        environmentAliasTests(t, space)
       ])
     })
 })

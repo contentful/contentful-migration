@@ -17,7 +17,8 @@ import {
   setupEntitiesMock,
   cloneMock,
   uiExtensionMock,
-  snapShotMock
+  snapShotMock,
+  environmentAliasMock
 } from './mocks/entities'
 import setupHttpMock from './mocks/http'
 import {
@@ -766,5 +767,33 @@ test('API call createUiExtensionWithId', (t) => {
 test('API call createUiExtensionWithId fails', (t) => {
   makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'createUiExtensionWithId'
+  })
+})
+
+test('API call getEnvironmentAlias', (t) => {
+  makeGetEntityTest(t, setup, teardown, {
+    entityType: 'environmentAlias',
+    mockToReturn: environmentAliasMock,
+    methodToTest: 'getEnvironmentAlias'
+  })
+})
+
+test('API call getEnvironmentAlias fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getEnvironmentAlias'
+  })
+})
+
+test('API call getEnvironmentAliases', (t) => {
+  makeGetCollectionTest(t, setup, teardown, {
+    entityType: 'environmentAlias',
+    mockToReturn: environmentAliasMock,
+    methodToTest: 'getEnvironmentAliases'
+  })
+})
+
+test('API call getEnvironmentAliases fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getEnvironmentAliases'
   })
 })

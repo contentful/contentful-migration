@@ -219,6 +219,13 @@ const uiExtensionMock = {
   })
 }
 
+const environmentAliasMock = {
+  sys: Object.assign(cloneDeep(sysMock), {
+    type: 'EnvironmentAlias'
+  }),
+  environment: environmentMock
+}
+
 const errorMock = {
   config: {
     url: 'requesturl',
@@ -252,7 +259,8 @@ const mocks = {
   user: userMock,
   personalAccessToken: personalAccessTokenMock,
   usagePeriod: usagePeriodMock,
-  usage: usageMock
+  usage: usageMock,
+  environmentAlias: environmentAliasMock
 }
 
 function cloneMock (name) {
@@ -343,6 +351,10 @@ function setupEntitiesMock (rewiredModuleApi) {
     },
     usage: {
       wrapUsageCollection: sinon.stub()
+    },
+    environmentAlias: {
+      wrapEnvironmentAlias: sinon.stub(),
+      wrapEnvironmentAliasCollection: sinon.stub()
     }
   }
   rewiredModuleApi.__Rewire__('entities', entitiesMock)
@@ -377,5 +389,6 @@ export {
   personalAccessTokenMock,
   environmentMock,
   usagePeriodMock,
-  usageMock
+  usageMock,
+  environmentAliasMock
 }
