@@ -89,7 +89,7 @@
     "kind-of": "^5.0.2",
     "listr": "^0.12.0",
     "lodash": "^4.17.4",
-    "yargs": "^8.0.2"
+    "yargs": "^15.0.2"
   },
   "devDependencies": {
     "@contentful/eslint-config-backend": "^5.0.0",
@@ -118,7 +118,7 @@
     "nyc": "^14.1.1",
     "rewire": "^2.5.2",
     "rimraf": "^2.6.2",
-    "semantic-release": "^15.13.19",
+    "semantic-release": "^15.13.31",
     "sinon": "^2.4.1",
     "sinon-chai": "^2.13.0",
     "source-map-support": "^0.5.0",
