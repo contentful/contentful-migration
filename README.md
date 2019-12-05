@@ -209,7 +209,7 @@ Creates a content type with provided `id` and returns a reference to the newly c
 
 - **`name : string`** – Name of the content type.
 - **`description : string`** – Description of the content type.
-- **`displayField : string`** – ID of the field to use as the display field for the content type.
+- **`displayField : string`** – ID of the field to use as the display field for the content type. This is referred to as the "Entry title" in the web application.
 
 #### `editContentType(id[, opts])` : [ContentType](#content-type)
 
