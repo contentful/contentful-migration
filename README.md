@@ -121,7 +121,7 @@
 
 ### Pre-requisites
 
-- node.js 12.x
+- Node LTS
 
 ### Installation
 
