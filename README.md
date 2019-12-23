@@ -121,7 +121,7 @@
 
 ### Pre-requisites
 
-- node.js 8.x
+- node.js 12.x
 
 ### Installation
 
