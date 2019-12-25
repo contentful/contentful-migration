@@ -363,7 +363,7 @@ For the complete version of this migration, please refer to [this example](./exa
 There may be cases where you want to use Contentful API features that are not supported by the `migration` object. For these cases you have access to the internal configuration of the running migration in a `context` object.
 
 ```javascript
-module.exports = function (migration, { makeRequest, spaceId, accessToken }) {
+module.exports = async function (migration, { makeRequest, spaceId, accessToken }) {
   const contentType = await makeRequest({
     method: 'GET',
     url: `/content_types?sys.id[in]=foo`
@@ -382,7 +382,7 @@ The function used by the migration object to talk to the Contentful Management A
   - `url` : `string` - HTTP endpoint
 
 ```javascript
-module.exports = function (migration, { makeRequest }) {
+module.exports = async function (migration, { makeRequest }) {
   const contentType = await makeRequest({
     method: 'GET',
     url: `/content_types?sys.id[in]=foo`
