@@ -263,8 +263,10 @@ export interface ITransformEntriesConfig {
 }
 
 export interface ITransformEntriesToTypeConfig {
-  /** (required) – Content type ID */
-  contentType: string,
+  /** (required) – Content type ID of source entries */
+  sourceContentType: string,
+  /** (required) – Targeted Content type ID */
+  targetContentType: string,
   /** (required) – Array of the source field IDs */
   from: string[],
   /**
