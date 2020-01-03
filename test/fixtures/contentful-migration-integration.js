@@ -1398,7 +1398,7 @@ nock('https://api.contentful.com:443', {"encodedQueryParams":true})
 
 
 nock('https://api.contentful.com:443', {"encodedQueryParams":true})
-  .put('/spaces/bohepdihyxin/environments/env-integration/content_types/dog', {"name":"angry dog","displayField":null,"fields":[{"id":"woofs","name":"woof woof","type":"Number","localized":false,"required":true,"validations":[],"disabled":false,"omitted":true,"deleted":true}],"description":"super angry"})
+  .put('/spaces/bohepdihyxin/environments/env-integration/content_types/dog', {"name":"angry dog","displayField":null,"fields":[],"description":"super angry"})
   .reply(200, {
   "sys": {
     "space": {

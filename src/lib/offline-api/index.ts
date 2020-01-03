@@ -27,13 +27,15 @@ export enum ApiHook {
 }
 
 const saveContentTypeRequest = function (ct: ContentType): Request {
+  const apiContentType = omit(ct.toAPI(), 'sys')
+  apiContentType.fields = apiContentType.fields.filter(field => !field.deleted)
   return {
     method: 'PUT',
     url: `/content_types/${ct.id}`,
     headers: {
       'X-Contentful-Version': ct.version
     },
-    data: omit(ct.toAPI(), 'sys')
+    data: apiContentType
   }
 }
 
