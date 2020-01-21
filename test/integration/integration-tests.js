@@ -307,6 +307,7 @@ test('Logs request and response with custom loggers', (t) => {
     .then((response) => {
       t.equal(responseLoggerStub.callCount, 1, 'responseLogger is called')
       t.equal(requestLoggerStub.callCount, 1, 'requestLogger is called')
-      t.equal(requestLoggerStub.args[0][0].url, 'https://api.contentful.com:443/spaces/ezs1swce23xe', 'requestLogger is called with correct url')
+      const {baseURL, url} = requestLoggerStub.args[0][0]
+      t.equal(`${baseURL}${url}`, 'https://api.contentful.com:443/spaces/ezs1swce23xe', 'requestLogger is called with correct url')
     })
 })

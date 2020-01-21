@@ -33,6 +33,11 @@ export interface ClientParams {
 
 export interface UsageFilter {filters: {metric: 'cda' | 'cma' | 'cpa' | 'all_apis', usagePeriod: string}, orderBy?: {metricUsage?: string}}
 
+export interface getSpacesParams {
+  limit?: number,
+  skip?: number  
+}
+
 export interface ClientAPI {
   createPersonalAccessToken(data: PersonalAccessTokenProp): Promise<PersonalAccessToken>,
   createSpace(data: SpaceProps, organizationId: string): Promise<Space>,
@@ -41,7 +46,7 @@ export interface ClientAPI {
   getPersonalAccessToken(data: PersonalAccessTokenProp): Promise<void>,
   getPersonalAccessTokens(): Promise<Collection<PersonalAccessToken>>,
   getSpace(id: string): Promise<Space>,
-  getSpaces(): Promise<Collection<Space>>
+  getSpaces(params?: getSpacesParams): Promise<Collection<Space>>
   getUsagePeriods(organizationId: string): Promise<Collection<UsagePeriod>>
   getUsages(organizationId: string, type: 'organization' | 'space', query: UsageFilter): Promise<Collection<Usage>>
   rawRequest(Opts: AxiosRequestConfig): Promise<AxiosResponse>
