@@ -60,7 +60,7 @@ describe('Entry Action', function () {
       }
     }
 
-    const action = new EntryTransformAction('dog', ['name'], transformation)
+    const action = new EntryTransformAction('dog', ['name'], transformation, true)
     const entries = [
       new Entry(makeApiEntry({
         id: '246',

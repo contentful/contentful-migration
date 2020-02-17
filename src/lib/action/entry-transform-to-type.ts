@@ -3,6 +3,7 @@ import { APIAction } from './action'
 import { OfflineAPI } from '../offline-api'
 import Entry from '../entities/entry'
 import * as _ from 'lodash'
+import { preservedOrForcedPublish, shouldPublishOrDefault, PublishBehavior } from '../utils/should-publish'
 
 class EntryTransformToTypeAction extends APIAction {
   private fromFields?: string[]
@@ -10,7 +11,7 @@ class EntryTransformToTypeAction extends APIAction {
   private targetContentTypeId: string
   private transformEntryForLocale: (inputFields: any, locale: string) => Promise<any>
   private identityKey: (fromFields: any) => Promise<string>
-  private shouldPublish: boolean|'preserve'
+  private shouldPublish: PublishBehavior
   private removeOldEntries: boolean
   private updateReferences: boolean
 
@@ -20,7 +21,7 @@ class EntryTransformToTypeAction extends APIAction {
     this.sourceContentTypeId = entryTransformation.sourceContentType
     this.targetContentTypeId = entryTransformation.targetContentType
     this.identityKey = entryTransformation.identityKey
-    this.shouldPublish = entryTransformation.shouldPublish || false
+    this.shouldPublish = shouldPublishOrDefault(entryTransformation.shouldPublish)
     this.removeOldEntries = entryTransformation.removeOldEntries || false
     this.updateReferences = entryTransformation.updateReferences || false
     this.transformEntryForLocale = entryTransformation.transformEntryForLocale
@@ -91,7 +92,7 @@ class EntryTransformToTypeAction extends APIAction {
 
       }
       await api.saveEntry(targetEntry.id)
-      if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && entry.isPublished) ) {
+      if (preservedOrForcedPublish(this.shouldPublish, entry.isPublished)) {
         await api.publishEntry(targetEntry.id)
       }
 
@@ -106,7 +107,7 @@ class EntryTransformToTypeAction extends APIAction {
           }
 
           await api.saveEntry(link.element.id)
-          if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && link.element.isPublished) ) {
+          if (preservedOrForcedPublish(this.shouldPublish, link.element.isPublished)) {
             await api.publishEntry(link.element.id)
           }
         }

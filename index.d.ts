@@ -98,6 +98,8 @@ export interface IValidation {
 
 export type WidgetSettingsValue = number | boolean | string | undefined
 
+export type PublishBehavior = boolean | 'preserve'
+
 export interface IEditorInterfaceOptions {
 
   /** This help text will show up below the field. */
@@ -259,7 +261,7 @@ export interface ITransformEntriesConfig {
   */
   transformEntryForLocale: (fromFields: ContentFields, currentLocale: string) => any,
   /** (optional) – If true, the transformed entries will be published. If false, they will remain in draft state. When the value is set to "preserve" items will be published only if the original entry was published as well (default true) */
-  shouldPublish?: boolean|"preserve"
+  shouldPublish?: PublishBehavior
 }
 
 export interface ITransformEntriesToTypeConfig {
@@ -272,7 +274,7 @@ export interface ITransformEntriesToTypeConfig {
   /** (required) - Function to create a new entry ID for the target entry */
   identityKey: (fromFields: ContentFields) => string,
   /** (optional) – Flag that specifies publishing of target entries, preserve will keep current states of the source entries (default false) */
-  shouldPublish?: boolean|"preserve",
+  shouldPublish?: PublishBehavior,
   /** (optional) – Flag that specifies if linking entries should be updated with target entries (default false) */
   updateReferences?: boolean,
   /** (optional) – Flag that specifies if source entries should be deleted (default false) */
@@ -323,7 +325,7 @@ export interface IDeriveLinkedEntriesConfig {
    */
   identityKey: (fromFields: ContentFields) => string,
   /** (optional) – If true, both the source and the derived entries will be published. If false, both will remain in draft state (default true) */
-  shouldPublish?: boolean,
+  shouldPublish?: PublishBehavior,
   /**
    * (required) – Function that generates the field values for the derived entry.
    *  fields is an object containing each of the from fields. Each field will contain their current localized values (i.e. fields == {myField: {'en-US': 'my field value'}})

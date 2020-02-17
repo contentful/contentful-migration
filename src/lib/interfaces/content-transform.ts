@@ -1,6 +1,8 @@
+import { PublishBehavior } from '../utils/should-publish'
+
 export default interface ContentTransform {
   from: string[],
   to: string[],
-  shouldPublish?: boolean|'preserve',
+  shouldPublish?: PublishBehavior,
   transformEntryForLocale (inputFields: any, locale: string): any
 }

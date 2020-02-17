@@ -2,20 +2,21 @@ import { APIAction } from './action'
 import { OfflineAPI } from '../offline-api'
 import Entry from '../entities/entry'
 import * as _ from 'lodash'
+import { preservedOrForcedPublish, shouldPublishOrDefault, PublishBehavior } from '../utils/should-publish'
 
 class EntryTransformAction extends APIAction {
   private contentTypeId: string
   private fromFields: string[]
   private transformEntryForLocale: Function
-  private shouldPublish: boolean|'preserve'
+  private shouldPublish: PublishBehavior
 
-  constructor (contentTypeId: string, fromFields: string[], transformation: Function, shouldPublish: boolean|'preserve' = true) {
+  constructor (contentTypeId: string, fromFields: string[], transformation: Function, shouldPublish?: PublishBehavior) {
     super()
     this.contentTypeId = contentTypeId
     this.fromFields = fromFields
     // this.toFields = toFields
     this.transformEntryForLocale = transformation
-    this.shouldPublish = shouldPublish
+    this.shouldPublish = shouldPublishOrDefault(shouldPublish)
   }
 
   async applyTo (api: OfflineAPI) {
@@ -50,7 +51,7 @@ class EntryTransformAction extends APIAction {
       }
       if (changesForThisEntry) {
         await api.saveEntry(entry.id)
-        if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && entry.isPublished) ) {
+        if (preservedOrForcedPublish(this.shouldPublish, entry.isPublished)) {
           await api.publishEntry(entry.id)
         }
       }

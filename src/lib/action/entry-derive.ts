@@ -2,10 +2,10 @@ import EntryDerive from '../interfaces/entry-derive'
 import { APIAction } from './action'
 import { OfflineAPI } from '../offline-api'
 import { ContentType } from '../entities/content-type'
-import isDefined from '../utils/is-defined'
 
 import Entry from '../entities/entry'
 import * as _ from 'lodash'
+import { preservedOrForcedPublish, shouldPublishOrDefault, PublishBehavior } from '../utils/should-publish'
 
 class EntryDeriveAction extends APIAction {
   private contentTypeId: string
@@ -14,7 +14,7 @@ class EntryDeriveAction extends APIAction {
   private derivedContentType: string
   private deriveEntryForLocale: (inputFields: any, locale: string) => Promise<any>
   private identityKey: (fromFields: any) => Promise<string>
-  private shouldPublish: boolean
+  private shouldPublish: PublishBehavior
 
   constructor (contentTypeId: string, entryDerivation: EntryDerive) {
     super()
@@ -24,7 +24,7 @@ class EntryDeriveAction extends APIAction {
     this.derivedContentType = entryDerivation.derivedContentType
     this.deriveEntryForLocale = entryDerivation.deriveEntryForLocale
     this.identityKey = entryDerivation.identityKey
-    this.shouldPublish = isDefined(entryDerivation.shouldPublish) ? entryDerivation.shouldPublish : true
+    this.shouldPublish = shouldPublishOrDefault(entryDerivation.shouldPublish)
   }
 
   async applyTo (api: OfflineAPI) {
@@ -93,7 +93,7 @@ class EntryDeriveAction extends APIAction {
 
         }
         await api.saveEntry(targetEntry.id)
-        if (this.shouldPublish) {
+        if (preservedOrForcedPublish(this.shouldPublish, targetEntry.isPublished)) {
           await api.publishEntry(targetEntry.id)
         }
       }
@@ -110,7 +110,7 @@ class EntryDeriveAction extends APIAction {
       }
 
       await api.saveEntry(entry.id)
-      if (this.shouldPublish) {
+      if (preservedOrForcedPublish(this.shouldPublish, entry.isPublished)) {
         await api.publishEntry(entry.id)
       }
     }

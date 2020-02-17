@@ -76,6 +76,7 @@ describe('Migration parser', function () {
           contentType: 'foo',
           from: ['name'],
           to: ['name'],
+          shouldPublish: true,
           transformEntryForLocale: (fields, locale) => {
             if (fields.name[locale] === 'Mary') {
               throw fooError
@@ -90,6 +91,7 @@ describe('Migration parser', function () {
           contentType: 'cat',
           from: ['name'],
           to: ['name'],
+          shouldPublish: true,
           transformEntryForLocale: () => {
             throw catError
           }
