@@ -29,6 +29,7 @@ export interface ClientParams {
   application?: null | string,
   integration?: null | string,
   timeout?: number,
+  retryLimit?: number,
 }
 
 export interface UsageFilter {filters: {metric: 'cda' | 'cma' | 'cpa' | 'all_apis', usagePeriod: string}, orderBy?: {metricUsage?: string}}
