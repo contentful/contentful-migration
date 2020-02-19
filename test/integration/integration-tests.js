@@ -51,59 +51,52 @@ test('Gets organizations', (t) => {
     })
 })
 
-test('Gets usage periods for an org', (t) => {
-  t.plan(3)
-  return v2Client.getUsagePeriods(v2Organization)
-    .then(response => {
-      t.ok(response.items.length >= 1, 'organization must have at least one usage period')
-      t.ok(response.items[0].startDate)
-      t.notOk(response.items[0].endDate) // assumes first usage period is current, with enddate = null
-    })
-})
-
-// the following tests assume a usage period with id = 1 exists
-const usagePeriodId = 1
-
-const happyResponseAssertions = (t, usageResponse) => {
+const usageResponse = (t, usageResponse, sysType) => {
   const resource = usageResponse.items[0]
   t.ok(usageResponse.items.length >= 1)
-  t.ok(resource.sys.type === 'ApiUsage')
-  t.ok(resource.usage)
+  t.ok(resource.sys.type === sysType)
+  t.ok(resource.usage >= 0)
   t.ok(resource.unitOfMeasure)
-  t.ok(resource.interval)
+  t.ok(resource.usagePerDay)
 }
 
-test('Gets usage for organization', (t) => {
+test('Get organization usage', (t) => {
   t.plan(5)
-  return v2Client.getUsages(v2Organization, 'organization', {
-    'filters[metric]': 'all_apis',
-    'filters[usagePeriod]': usagePeriodId
+  return v2Client.getOrganizationUsage(v2Organization, {
+    'dateRange.startAt': '2010-01-01'
   })
-    .then(response => happyResponseAssertions(t, response))
+    .then(response => usageResponse(t, response, 'OrganizationPeriodicUsage'))
 })
 
-test('Gets usage for spaces', (t) => {
+test('Get space usage', (t) => {
   t.plan(5)
-  return v2Client.getUsages(v2Organization, 'space', {
-    'filters[metric]': 'all_apis',
-    'filters[usagePeriod]': usagePeriodId
+  return v2Client.getSpaceUsage(v2Organization, {
+    'dateRange.startAt': '2020-01-01'
   })
-    .then(response => happyResponseAssertions(t, response))
+    .then(response => usageResponse(t, response, 'SpacePeriodicUsage'))
 })
 
-test('Fails getting usage without filters[metric]', (t) => {
+test('Fails getting org usage for invalid dateRange', (t) => {
   t.plan(1)
-  t.shouldFail(v2Client.getUsages(v2Organization, 'organization', {
-    'filters[metric]': 'null',
-    'filters[usagePeriod]': usagePeriodId
+  t.shouldFail(v2Client.getOrganizationUsage(v2Organization, {
+    'dateRange.startAt': '2020-01-01',
+    'dateRange.endAt': '2019-01-01'
   }))
 })
 
-test('Fails getting usage without filters[usagePeriod]', (t) => {
+test('Fails getting space usage for invalid dateRange', (t) => {
   t.plan(1)
-  t.shouldFail(v2Client.getUsages(v2Organization, 'organization', {
-    'filters[metric]': 'all_apis',
-    'filters[usagePeriod]': null
+  t.shouldFail(v2Client.getSpaceUsage(v2Organization, {
+    'dateRange.startAt': '2020-01-01',
+    'dateRange.endAt': '2019-01-01'
+  }))
+})
+
+test('Fails getting space usage for unsupported dateRange', (t) => {
+  t.plan(1)
+  t.shouldFail(v2Client.getSpaceUsage(v2Organization, {
+    'dateRange.startAt': '2019-12-01',
+    'dateRange.endAt': '2020-02-01'
   }))
 })
 

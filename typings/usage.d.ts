@@ -1,18 +1,25 @@
-import { MetaSys, MetaSysProps } from "./meta";
-import { DefaultElements } from "./defaultElements";
-import { Organization } from "./organization";
-import { Space } from "./space";
+import { MetaSys, MetaSysProps, MetaLinkProps } from './meta'
+import { QueryOptions } from './queryOptions'
 
-export interface UsageProps {
-  organization?: Organization,
-  space?: Space
-  unitOfMeasure: string,
-  interval: string,
-  startDate: string,
-  endDate: string,
-  usage: number[]
+export type UsageMetricEnum = 'cda' | 'cma' | 'cpa' | 'gql'
+
+export interface UsageQuery extends QueryOptions {
+  'metric[in]'?: string,
+  'dateRange.startAt'?: string,
+  'dateRange.endAt'?: string
 }
 
-export interface Usage
-  extends UsageProps,
-    MetaSys<MetaSysProps> {}
+interface UsageSysProps extends MetaSysProps {
+  organization?: { sys: MetaLinkProps }
+}
+
+export interface Usage extends MetaSys<UsageSysProps> {
+  metric: UsageMetricEnum,
+  unitOfMeasure: string,
+  dateRange: {
+    startAt: string,
+    endAt: string
+  },
+  usage: number,
+  usagePerDay: {} // { 'yyyy-mm-dd': number, ... }
+}
