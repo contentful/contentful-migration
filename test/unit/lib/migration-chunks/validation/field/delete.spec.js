@@ -164,14 +164,13 @@ describe('field deletion plan validation', function () {
       const contentTypes = [];
       const errors = yield validateChunks(function up (migration) {
         const person = migration.editContentType('person');
-
         person.deleteField('name');
       }, contentTypes);
 
       expect(errors).to.eql([
         {
           type: 'InvalidAction',
-          message: 'You cannot delete the field with id "name" on content type "person" because it does not exist.',
+          message: 'You cannot delete the field with id "name" on content type "person" because the content type does not exist.',
           details: {
             step: {
               'type': 'field/delete',
