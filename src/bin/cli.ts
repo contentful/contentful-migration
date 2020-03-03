@@ -51,6 +51,7 @@ const createRun = ({ shouldThrow }) => async function run (argv) {
   } catch (e) {
     const message = chalk`{red.bold The ${argv.filePath} script could not be parsed, as it seems to contain syntax errors.}\n`
     console.error(message)
+    console.error(e)
     terminate(new Error(message))
   }
 
