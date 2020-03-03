@@ -58,22 +58,25 @@
     - [Configuration](#configuration)
     - [Chaining vs Object notation](#chaining-vs-object-notation)
     - [`migration`](#migration)
-      - [`createContentType(id[, opts])` : [ContentType](#content-type)](#createcontenttypeid-opts--contenttypecontent-type)
-      - [`editContentType(id[, opts])` : [ContentType](#content-type)](#editcontenttypeid-opts--contenttypecontent-type)
+      - [`createContentType(id[, opts])` : ContentType](#createcontenttypeid-opts--contenttype)
+      - [`editContentType(id[, opts])` : ContentType](#editcontenttypeid-opts--contenttype)
       - [`deleteContentType(id)`](#deletecontenttypeid)
       - [`transformEntries(config)`](#transformentriesconfig)
         - [`transformEntries` Example](#transformentries-example)
       - [`deriveLinkedEntries(config)`](#derivelinkedentriesconfig)
         - [`deriveLinkedEntries(config)` Example](#derivelinkedentriesconfig-example)
+      - [`transformEntriesToType(config)`](#transformentriestotypeconfig)
+        - [`transformEntriesToType` Example](#transformentriestotype-example)
     - [`context`](#context)
       - [`makeRequest(config)`](#makerequestconfig)
       - [`spaceId` : `string`](#spaceid--string)
       - [`accessToken` : `string`](#accesstoken--string)
     - [Content type](#content-type)
-      - [`createField(id[, opts])` : [Field](#field)](#createfieldid-opts--fieldfield)
-      - [`editField(id[, opts])` : [Field](#field)](#editfieldid-opts--fieldfield)
+      - [`createField(id[, opts])` : Field](#createfieldid-opts--field)
+      - [`editField(id[, opts])` : Field](#editfieldid-opts--field)
       - [`deleteField(id)` : void](#deletefieldid--void)
       - [`changeFieldId (currentId, newId)` : void](#changefieldid-currentid-newid--void)
+      - [`moveField (id)` : MovableField](#movefield-id--movablefield)
       - [`changeFieldControl (fieldId, widgetNamespace, widgetId[, settings])` : void](#changefieldcontrol-fieldid-widgetnamespace-widgetid-settings--void)
       - [`resetFieldControl (fieldId)` : void](#resetfieldcontrol-fieldid--void)
       - [`copyFieldControl (sourceFieldId, destinationFieldId)` : void](#copyfieldcontrol-sourcefieldid-destinationfieldid--void)
@@ -81,8 +84,8 @@
       - [`updateSidebarWidget (widgetNamespace, widgetId, settings)` : void](#updatesidebarwidget-widgetnamespace-widgetid-settings--void)
       - [`removeSidebarWidget (widgetNamespace, widgetId)` : void](#removesidebarwidget-widgetnamespace-widgetid--void)
       - [`resetSidebarToDefault ()` : void](#resetsidebartodefault---void)
-      - [`configureEntryEditor (widgetNamespace, widgetId[, settings])` : void](#configureentryeditor-widgetid-widgetnamespace-settings--void)
-      - [`resetEditorToDefault()` : void](#reseteditortodefault---void)
+      - [`configureEntryEditor (widgetNamespace, widgetId[, settings])` : void](#configureentryeditor-widgetnamespace-widgetid-settings--void)
+      - [`resetEntryEditorToDefault ()` : void](#resetentryeditortodefault---void)
     - [Field](#field)
   - [Validation errors](#validation-errors)
   - [Example migrations](#example-migrations)
@@ -121,7 +124,7 @@
 
 ### Pre-requisites
 
-- node.js 8.x
+- Node LTS
 
 ### Installation
 
@@ -209,7 +212,7 @@ Creates a content type with provided `id` and returns a reference to the newly c
 
 - **`name : string`** – Name of the content type.
 - **`description : string`** – Description of the content type.
-- **`displayField : string`** – ID of the field to use as the display field for the content type.
+- **`displayField : string`** – ID of the field to use as the display field for the content type. This is referred to as the "Entry title" in the web application.
 
 #### `editContentType(id[, opts])` : [ContentType](#content-type)
 
@@ -234,7 +237,8 @@ The transform function is expected to return an object with the desired target f
     - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `from == {myField: {'en-US': 'my field value'}}`)
     - `locale` one of the locales in the space being transformed
   The return value must be an object with the same keys as specified in `to`. Their values will be written to the respective entry fields for the current locale (i.e. `{nameField: 'myNewValue'}`). If it returns `undefined`, this the values for this locale on the entry will be left untouched.
-- **`shouldPublish : boolean`** _(optional)_ – If `true`, the transformed entries will be published. If `false`, both will remain in draft state (default `true`)
+- **`shouldPublish : bool | 'preserve'`** _(optional)_ – Flag that specifies publishing of target entries, `preserve` will keep current states of the source entries (default `true`)
+
 
 ##### `transformEntries` Example
 
@@ -282,7 +286,8 @@ The derive function is expected to return an object with the desired target fiel
 
   The return value must be an object with the same keys as specified in `derivedFields`. Their values will be written to the respective new entry fields for the current locale (i.e. `{nameField: 'myNewValue'}`)
 
-- **`shouldPublish : boolean`** _(optional)_ – If `true`, both the source and the derived entries will be published. If `false`, both will remain in draft state (default `true`)
+- **`shouldPublish : bool`** _(optional)_ – Flag that specifies publishing of target entries. (default `true`)
+
 
 ##### `deriveLinkedEntries(config)` Example
 
@@ -328,6 +333,7 @@ For the given (source) content type, transforms all its entries according to the
 - **`transformEntryForLocale : function (fields, locale): object`** _(required)_ – Transformation function to be applied.
     - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `from == {myField: {'en-US': 'my field value'}}`)
     - `locale` one of the locales in the space being transformed
+
   The return value must be an object with the same keys as specified in the `targetContentType`. Their values will be written to the respective entry fields for the current locale (i.e. `{nameField: 'myNewValue'}`). If it returns `undefined`, this the values for this locale on the entry will be left untouched.
 
 ##### `transformEntriesToType` Example
@@ -361,7 +367,7 @@ For the complete version of this migration, please refer to [this example](./exa
 There may be cases where you want to use Contentful API features that are not supported by the `migration` object. For these cases you have access to the internal configuration of the running migration in a `context` object.
 
 ```javascript
-module.exports = function (migration, { makeRequest, spaceId, accessToken }) {
+module.exports = async function (migration, { makeRequest, spaceId, accessToken }) {
   const contentType = await makeRequest({
     method: 'GET',
     url: `/content_types?sys.id[in]=foo`
@@ -380,7 +386,7 @@ The function used by the migration object to talk to the Contentful Management A
   - `url` : `string` - HTTP endpoint
 
 ```javascript
-module.exports = function (migration, { makeRequest }) {
+module.exports = async function (migration, { makeRequest }) {
   const contentType = await makeRequest({
     method: 'GET',
     url: `/content_types?sys.id[in]=foo`

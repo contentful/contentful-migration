@@ -10,7 +10,7 @@ const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
 describe('contentful-migration CLI flags', function () {
   it('"--help" outputs the help message', function (done) {
     cli()
-      .run('--help')
+      .run('-- --help')
       .expect(assert.help.message())
       .end(done);
   });
@@ -36,7 +36,7 @@ describe('contentful-migration CLI flags', function () {
   });
   it('includes "--quiet, -q" as options in the help message', function (done) {
     cli()
-      .run(`--help`)
+      .run(`-- --help`)
       .expect(assert.logs.helpMessage())
       .end(done);
   });

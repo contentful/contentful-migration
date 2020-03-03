@@ -263,10 +263,20 @@ export interface ITransformEntriesConfig {
 }
 
 export interface ITransformEntriesToTypeConfig {
-  /** (required) – Content type ID */
-  contentType: string,
-  /** (required) – Array of the source field IDs */
-  from: string[],
+  /** (required) – Content type ID of source entries */
+  sourceContentType: string,
+  /** (required) – Targeted Content type ID */
+  targetContentType: string,
+  /** (optional) – Array of the source field IDs, returns complete list of fields if not configured */
+  from?: string[],
+  /** (required) - Function to create a new entry ID for the target entry */
+  identityKey: (fromFields: ContentFields) => string,
+  /** (optional) – Flag that specifies publishing of target entries, preserve will keep current states of the source entries (default false) */
+  shouldPublish?: boolean|"preserve",
+  /** (optional) – Flag that specifies if linking entries should be updated with target entries (default false) */
+  updateReferences?: boolean,
+  /** (optional) – Flag that specifies if source entries should be deleted (default false) */
+  removeOldEntries?: boolean,
   /**
    * (required) – Transformation function to be applied.
    *
@@ -276,12 +286,6 @@ export interface ITransformEntriesToTypeConfig {
    * The return value must be an object with the same keys as specified in to. Their values will be written to the respective entry fields for the current locale (i.e. {nameField: 'myNewValue'}). If it returns undefined, this the values for this locale on the entry will be left untouched.
   */
   transformEntryForLocale: (fromFields: ContentFields, currentLocale: string) => any,
-  /** (optional) – If true, the transformed entries will be published. If false, they will remain in draft state. When the value is set to "preserve" items will be published only if the original entry was published as well (default true) */
-  shouldPublish?: boolean|"preserve",
-  /** (optional) – If true, references to the old entry are replaced with references to the new entry (default true) */
-  updateReferences?: boolean,
-  /** (optional) – If true, the original entry is removed after the new entry was created (default true) */
-  removeOldEntries?: boolean
 }
 
 export interface IDeriveLinkedEntriesConfig {
