@@ -142,14 +142,6 @@ describe('Payload builder', function () {
               type: 'Number',
               name: 'kills',
               required: true
-            },
-            {
-              id: 'favoriteFood',
-              type: 'Symbol',
-              name: 'food',
-              required: true,
-              omitted: true,
-              deleted: true
             }
           ]
         }
@@ -178,13 +170,6 @@ describe('Payload builder', function () {
                 required: true
               },
               {
-                id: 'favoriteFood',
-                type: 'Symbol',
-                name: 'food',
-                required: true,
-                omitted: true,
-                deleted: true
-              }, {
                 id: 'foo',
                 type: 'Symbol',
                 name: 'A foo'

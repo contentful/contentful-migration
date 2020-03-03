@@ -33,7 +33,7 @@ const errorCreators: ErrorCreators = {
         return `Field with id "${id}" cannot be deleted because it does not exist.`
       },
       CONTENT_TYPE_DOES_NOT_EXIST: (id, ctId) => {
-        return `You cannot delete the field with id "${id}" on content type "${ctId}" because it does not exist.`
+        return `You cannot delete the field with id "${id}" on content type "${ctId}" because the content type does not exist.`
       }
     },
     update: {
