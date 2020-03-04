@@ -139,15 +139,27 @@ const createRun = ({ shouldThrow }) => async function run (argv) {
               requestsDone += 1
               task.title = `Making requests (${requestsDone}/${numRequests})`
               task.output = `${request.method} ${request.url} at V${request.headers['X-Contentful-Version']}`
+
               await makeRequest(request).catch((error) => {
                 serverErrorsWritten.push(writeErrorsToLog(error, errorsFile))
-                const parsed = JSON.parse(error.message)
+                let errorMessage
 
-                const errorMessage = {
-                  status: parsed.statusText,
-                  message: parsed.message,
-                  details: parsed.details,
-                  url: parsed.request.url
+                if (error instanceof TypeError) {
+                  errorMessage = {
+                    message: 'Value does not match the expected type',
+                    details: {
+                      message: error.message.toString()
+                    }
+                  }
+                } else {
+                  const parsed = JSON.parse(error.message)
+
+                  errorMessage = {
+                    status: parsed.statusText,
+                    message: parsed.message,
+                    details: parsed.details,
+                    url: parsed.request.url
+                  }
                 }
 
                 requestErrors.push(new Error(JSON.stringify(errorMessage)))
