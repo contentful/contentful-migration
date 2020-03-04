@@ -148,5 +148,31 @@ describe('payload validation', function () {
         []
       ])
     })
+
+    it('can validate all blocks and inlines for RichText', async function () {
+      const errors = await validateBatches(function up (migration) {
+        const novel = migration.createContentType('novel')
+          .name('Novel')
+          .description('A Lovely Novel')
+
+        novel.createField('chapter')
+          .name('Chapter')
+          .type('RichText')
+          .validations([
+            { nodes: {
+              'embedded-entry-block': [{ size: { max: 4 } }],
+              'embedded-entry-inline': [{ size: { max: 4 } }],
+              'embedded-asset-inline': [{ size: { max: 4 } }],
+              'entry-hyperlink': [{ size: { max: 4 } }],
+              'asset-hyperlink': [{ size: { max: 4 } }],
+              'hyperlink': [{ size: { max: 4 } }]
+            } }
+          ])
+      }, [])
+
+      expect(errors).to.eql([
+        []
+      ])
+    })
   })
 })
