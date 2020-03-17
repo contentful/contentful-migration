@@ -13,7 +13,7 @@ export default function spaceMembershipTests (t, space) {
       })
   })
 
-  t.test('Create spaceMembership with id', (t) => {
+  t.skip('Create spaceMembership with id', (t) => {
     const id = generateRandomId('spaceMembership')
     return space.getRoles()
       .then((roles) => {
@@ -31,7 +31,7 @@ export default function spaceMembershipTests (t, space) {
       })
   })
 
-  t.test('Create spaceMembership', (t) => {
+  t.skip('Create spaceMembership', (t) => {
     return space.getRoles()
       .then((roles) => {
         return space.createSpaceMembership({
