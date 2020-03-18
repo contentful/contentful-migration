@@ -92,7 +92,7 @@
     "yargs": "^15.0.2"
   },
   "devDependencies": {
-    "@contentful/eslint-config-backend": "^5.0.0",
+    "@contentful/eslint-config-backend": "^6.1.0",
     "@types/bluebird": "^3.5.15",
     "@types/chai": "^4.0.4",
     "@types/chai-as-promised": "^7.1.0",
