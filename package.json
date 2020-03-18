@@ -114,7 +114,7 @@
     "eslint-plugin-standard": "^3.0.1",
     "mocha": "^5.2.0",
     "nixt": "^0.5.1",
-    "nock": "^9.4.2",
+    "nock": "^12.0.3",
     "nyc": "^14.1.1",
     "rewire": "^2.5.2",
     "rimraf": "^2.6.2",
