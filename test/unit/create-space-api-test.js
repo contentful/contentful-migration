@@ -14,6 +14,7 @@ import {
   spaceMembershipMock,
   roleMock,
   apiKeyMock,
+  userMock,
   setupEntitiesMock,
   cloneMock,
   uiExtensionMock,
@@ -568,6 +569,34 @@ test('API call createSpaceMembershipWithId', (t) => {
 test('API call createSpaceMembershipWithId fails', (t) => {
   makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'createSpaceMembershipWithId'
+  })
+})
+
+test('API call getSpaceUser', (t) => {
+  makeGetEntityTest(t, setup, teardown, {
+    entityType: 'user',
+    mockToReturn: userMock,
+    methodToTest: 'getSpaceUser'
+  })
+})
+
+test('API call getSpaceUser fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getSpaceUser'
+  })
+})
+
+test('API call getSpaceUsers', (t) => {
+  makeGetCollectionTest(t, setup, teardown, {
+    entityType: 'user',
+    mockToReturn: userMock,
+    methodToTest: 'getSpaceUsers'
+  })
+})
+
+test('API call getSpaceUsers fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getSpaceUsers'
   })
 })
 

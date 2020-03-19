@@ -8,6 +8,7 @@ import {assetReadOnlyTests, assetWriteTests} from './asset-integration'
 import webhookTests from './webhook-integration'
 import spaceMembershipTests from './space-membership-integration'
 import roleTests from './role-integration'
+import userTests from './user-integration'
 import apiKeyTests from './api-key-integration'
 import uiExtensionTests from './ui-extension-integration'
 import generateRandomId from './generate-random-id'
@@ -191,6 +192,7 @@ test('Gets v2 space for read only tests', (t) => {
         })
       })
       environmentAliasReadOnlyTests(t, space) // v2 space with alias feature enabled and opted-in
+      userTests(t, space)
     })
 })
 
