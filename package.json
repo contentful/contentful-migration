@@ -100,7 +100,7 @@
     "@types/joi": "^10.6.5",
     "@types/lodash": "^4.14.77",
     "@types/mocha": "^2.2.43",
-    "@types/node": "^8.0.46",
+    "@types/node": "^12.12.31",
     "@types/sinon-chai": "^2.7.29",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
