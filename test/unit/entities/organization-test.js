@@ -1,9 +1,11 @@
 import test from 'blue-tape'
 import { cloneMock } from '../mocks/entities'
 import setupHttpMock from '../mocks/http'
-import { wrapOrganizationCollection } from '../../../lib/entities/organization'
+
+import { wrapOrganization, wrapOrganizationCollection } from '../../../lib/entities/organization'
 import {
-  entityCollectionWrappedTest
+  entityCollectionWrappedTest,
+  entityWrappedTest
 } from '../test-creators/instance-entity-methods'
 
 function setup (promise) {
@@ -12,6 +14,12 @@ function setup (promise) {
     entityMock: cloneMock('organization')
   }
 }
+
+test('Organization is wrapped', (t) => {
+  entityWrappedTest(t, setup, {
+    wrapperMethod: wrapOrganization
+  })
+})
 
 test('Organization collection is wrapped', (t) => {
   entityCollectionWrappedTest(t, setup, {
