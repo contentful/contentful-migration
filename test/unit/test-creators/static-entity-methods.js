@@ -1,4 +1,5 @@
 import {cloneMock} from '../mocks/entities'
+import cloneDeep from 'lodash/cloneDeep'
 
 function upperFirst (string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -70,4 +71,22 @@ export function makeCreateEntityWithIdTest (t, setup, teardown, {entityType, ent
       t.looseEqual(httpMock.put.args[0][1], mockToReturn, 'data is sent')
       teardown()
     })
+}
+
+export function testGettingEntrySDKObject (t, setup, {type, wrapFunctionName, resourceMock, wrapFunction, expectedFunctions, getResourceFromDataFunctionName}) {
+  let {api, httpMock, entitiesMock} = setup(Promise.resolve({}))
+  const resourceData = cloneDeep(resourceMock)
+  entitiesMock[type][wrapFunctionName].returns(wrapFunction(httpMock, resourceData))
+
+  expectedFunctions.forEach(funcName => {
+    t.notEqual(typeof resourceData[funcName], 'function')
+  })
+
+  const sdkEntry = api[getResourceFromDataFunctionName](resourceData)
+
+  t.ok(sdkEntry)
+  expectedFunctions.forEach(funcName => {
+    t.equal(typeof sdkEntry[funcName], 'function')
+  })
+  t.end()
 }
