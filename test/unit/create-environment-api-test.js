@@ -13,6 +13,7 @@ import {
   setupEntitiesMock,
   cloneMock,
   uiExtensionMock,
+  appInstallationMock,
   snapShotMock
 } from './mocks/entities'
 import setupHttpMock from './mocks/http'
@@ -561,5 +562,33 @@ test('API call createUiExtensionWithId', (t) => {
 test('API call createUiExtensionWithId fails', (t) => {
   makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'createUiExtensionWithId'
+  })
+})
+
+test('API call getAppInstallation', (t) => {
+  makeGetEntityTest(t, setup, teardown, {
+    entityType: 'appInstallation',
+    mockToReturn: appInstallationMock,
+    methodToTest: 'getAppInstallation'
+  })
+})
+
+test('API call getAppInstallation fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getAppInstallation'
+  })
+})
+
+test('API call getAppInstallations', (t) => {
+  makeGetEntityTest(t, setup, teardown, {
+    entityType: 'appInstallation',
+    mockToReturn: appInstallationMock,
+    methodToTest: 'getAppInstallations'
+  })
+})
+
+test('API call getAppInstallations fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getAppInstallations'
   })
 })

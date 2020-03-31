@@ -40,6 +40,7 @@ export interface ClientAPI {
   createPersonalAccessToken(data: PersonalAccessTokenProp): Promise<PersonalAccessToken>,
   createSpace(data: SpaceProps, organizationId: string): Promise<Space>,
   getCurrentUser(): Promise<User>,
+  getOrganization(id: string): Promise<Organization>,
   getOrganizations(): Promise<Collection<Organization>>,
   getPersonalAccessToken(data: PersonalAccessTokenProp): Promise<void>,
   getPersonalAccessTokens(): Promise<Collection<PersonalAccessToken>>,

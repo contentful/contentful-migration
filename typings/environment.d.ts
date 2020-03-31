@@ -11,13 +11,14 @@ import { Upload } from './upload'
 import { EditorInterface } from './editorInterface'
 import { Snapshot } from './snapshot'
 import { Asset, AssetProps, AssetFileProp } from './asset'
+import { AppInstallation, AppInstallationProps } from './appInstallation'
 
 export interface EnvironmentProps {
   name: string
 }
 
 export interface Environment extends DefaultElements<EnvironmentProps>, MetaSys<MetaSysProps>, EnvironmentProps {
-
+  createAppInstallation(id: string, data: AppInstallationProps): Promise<AppInstallation>
   createAsset(data: AssetProps): Promise<Asset>,
   createAssetFromFiles(data: AssetFileProp): Promise<Asset>,
   createAssetWithId(id: string, data: AssetProps): Promise<Asset>,
@@ -44,5 +45,7 @@ export interface Environment extends DefaultElements<EnvironmentProps>, MetaSys<
   getLocales(): Promise<Collection<Locale>>,
   getUiExtension(id: string): Promise<UIExtension>,
   getUiExtensions(): Promise<Collection<UIExtension>>,
+  getAppInstallation(id: string): Promise<AppInstallation>,
+  getAppInstallations(): Promise<Collection<AppInstallation>>,
   getUpload(id: string): Promise<Upload>
 }

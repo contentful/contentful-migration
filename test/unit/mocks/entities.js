@@ -56,6 +56,23 @@ const personalAccessTokenMock = {
   ]
 }
 
+const appDefinitionMock = {
+  sys: Object.assign(cloneDeep(sysMock), {
+    type: 'AppDefinition'
+  }),
+  name: 'AI Image Tagging',
+  src: 'https://ai-image-tagging.app-host.com/frontend/',
+  locations: [
+    {
+      location: 'app-config'
+    },
+    {
+      location: 'entry-field',
+      fieldTypes: [{ type: 'Symbol' }]
+    }
+  ]
+}
+
 const contentTypeMock = {
   sys: Object.assign(cloneDeep(sysMock), {
     type: 'ContentType'
@@ -204,7 +221,8 @@ const previewApiKeyMock = {
 const organizationMock = {
   sys: Object.assign(cloneDeep(sysMock), {
     type: 'Organization'
-  })
+  }),
+  name: 'name'
 }
 
 const usageMock = {
@@ -216,6 +234,17 @@ const usageMock = {
 const uiExtensionMock = {
   sys: Object.assign(cloneDeep(sysMock), {
     type: 'Extension'
+  })
+}
+
+const appInstallationMock = {
+  sys: Object.assign(cloneDeep(sysMock), {
+    type: 'AppInstallation',
+    appDefinition: {
+      sys: {
+        id: '<app_definition_id>'
+      }
+    }
   })
 }
 
@@ -257,6 +286,7 @@ const mocks = {
   upload: uploadMock,
   organization: organizationMock,
   uiExtension: uiExtensionMock,
+  appInstallation: appInstallationMock,
   user: userMock,
   personalAccessToken: personalAccessTokenMock,
   usage: usageMock,
@@ -278,6 +308,10 @@ function mockCollection (entityMock) {
 
 function setupEntitiesMock (rewiredModuleApi) {
   const entitiesMock = {
+    appDefinition: {
+      wrapAppDefinition: sinon.stub(),
+      wrapAppDefinitionCollection: sinon.stub()
+    },
     space: {
       wrapSpace: sinon.stub(),
       wrapSpaceCollection: sinon.stub()
@@ -337,11 +371,16 @@ function setupEntitiesMock (rewiredModuleApi) {
       wrapSnapshotCollection: sinon.stub()
     },
     organization: {
+      wrapOrganization: sinon.stub(),
       wrapOrganizationCollection: sinon.stub()
     },
     uiExtension: {
       wrapUiExtension: sinon.stub(),
       wrapUiExtensionCollection: sinon.stub()
+    },
+    appInstallation: {
+      wrapAppInstallation: sinon.stub(),
+      wrapAppInstallationCollection: sinon.stub()
     },
     user: {
       wrapUser: sinon.stub(),
@@ -365,6 +404,7 @@ function setupEntitiesMock (rewiredModuleApi) {
 }
 
 export {
+  appDefinitionMock,
   linkMock,
   sysMock,
   spaceMock,

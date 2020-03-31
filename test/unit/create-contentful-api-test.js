@@ -81,7 +81,34 @@ test('API call createSpace fails', (t) => {
   })
 })
 
-// org tests
+// Organization tests
+test('API call getOrganization', (t) => {
+  const organizationMock2 = Object.assign({}, organizationMock, {sys: {id: 'eid'}})
+  const getOrganizationSetup = () => setup(Promise.resolve({data: {items: [organizationMock, organizationMock2]}}))
+  makeGetEntityTest(t, getOrganizationSetup, teardown, {
+    entityType: 'organization',
+    mockToReturn: organizationMock2,
+    methodToTest: 'getOrganization'
+  })
+})
+
+test('API call getOrganization fails because org ID was not found in results', (t) => {
+  t.plan(1)
+  const {api, entitiesMock} = setup(Promise.resolve({data: {items: [organizationMock]}}))
+  entitiesMock.organization.wrapOrganization.returns(organizationMock)
+  return api.getOrganization('non-existent-id')
+    .catch((r) => {
+      t.ok(r, "Throws an error when ID doesn't exist")
+      teardown()
+    })
+})
+
+test('API call getOrganization fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getOrganization'
+  })
+})
+
 test('API call getOrganizations', (t) => {
   makeGetCollectionTest(t, setup, teardown, {
     entityType: 'organization',
