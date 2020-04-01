@@ -8,6 +8,7 @@ import {assetReadOnlyTests, assetWriteTests} from './asset-integration'
 import webhookTests from './webhook-integration'
 import spaceMembershipTests from './space-membership-integration'
 import organizationMembershipTests from './organization-membership-integration'
+import organizationSpaceMembershipTests from './organization-space-membership-integration'
 import roleTests from './role-integration'
 import userTests from './user-integration'
 import apiKeyTests from './api-key-integration'
@@ -202,7 +203,8 @@ test('Gets organization for tests which change and delete data', (t) => {
     .then((response) => {
       const organization = response.items[0]
       return Promise.all([
-        organizationMembershipTests(t, organization)
+        organizationMembershipTests(t, organization),
+        organizationSpaceMembershipTests(t, organization)
       ])
     })
 })

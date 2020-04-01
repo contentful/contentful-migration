@@ -4,6 +4,7 @@ import createOrganizationApi, {__RewireAPI__ as createOrganizationApiRewireApi} 
 import {
   appDefinitionMock,
   organizationMembershipMock,
+  spaceMembershipMock,
   setupEntitiesMock
 } from './mocks/entities'
 import setupHttpMock from './mocks/http'
@@ -96,5 +97,33 @@ test('API call getOrganizationMemberships', (t) => {
 test('API call getOrganizationMemberships fails', (t) => {
   makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'getOrganizationMemberships'
+  })
+})
+
+test('API call getOrganizationSpaceMembership', (t) => {
+  makeGetEntityTest(t, setup, teardown, {
+    entityType: 'spaceMembership',
+    mockToReturn: spaceMembershipMock,
+    methodToTest: 'getOrganizationSpaceMembership'
+  })
+})
+
+test('API call getOrganizationSpaceMembership fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getOrganizationSpaceMembership'
+  })
+})
+
+test('API call getSpaceOrganizationMemberships', (t) => {
+  makeGetCollectionTest(t, setup, teardown, {
+    entityType: 'spaceMembership',
+    mockToReturn: spaceMembershipMock,
+    methodToTest: 'getOrganizationSpaceMemberships'
+  })
+})
+
+test('API call getOrganizationSpaceMemberships fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getOrganizationSpaceMemberships'
   })
 })
