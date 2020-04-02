@@ -114,6 +114,24 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
+  "release": {
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "releaseRules": [
+            {
+              "type": "build",
+              "scope": "deps",
+              "release": "patch"
+            }
+          ]
+        }
+      ],
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/npm"
+    ]
+  },
   "bundlesize": [
     {
       "path": "./dist/contentful-management.browser.js",
