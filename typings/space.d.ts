@@ -37,7 +37,7 @@ export interface ContentfulSpaceAPI {
   createEntry(contentTypeID: string, data: EntryProp): Promise<Entry>,
   createEntryWithId(contentTypeID: string, id: string, data: EntryProp): Promise<Entry>,
   createEnvironment(data: EnvironmentProps): Promise<Environment>,
-  createEnvironmentWithId(id: string, data: EnvironmentProps): Promise<Environment>,
+  createEnvironmentWithId(id: string, data: EnvironmentProps, sourceEnvironmentId: string): Promise<Environment>,
   createLocale(data: LocaleProps): Promise<Locale>,
   createRole(data: RoleProps): Promise<Role>,
   createRoleWithId(id: string, ata: RoleProps): Promise<Role>,
