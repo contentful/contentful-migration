@@ -32,6 +32,7 @@ export interface Environment extends DefaultElements<EnvironmentProps>, MetaSys<
   createUpload(data: {
     file: string | ArrayBuffer | Stream
   }): Promise<Upload>,
+  delete(): Promise<{}>,
   getAsset(id: string, query?: Object): Promise<Asset>,
   getAssets(query?: Object): Promise<Collection<Asset>>,
   getContentTypes(object?: QueryOptions): Promise<Collection<ContentType>>,

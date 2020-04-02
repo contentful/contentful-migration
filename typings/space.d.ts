@@ -1,5 +1,5 @@
 import { DefaultElements } from './defaultElements'
-import { MetaSys } from './meta'
+import { MetaSys, MetaSysProps } from './meta'
 import { ApiKey, CreateApiKeyProps } from './apiKey'
 import { Collection } from './collection'
 import { Environment, EnvironmentProps } from './environment'
@@ -20,6 +20,11 @@ import { PreviewApiKey } from './previewApiKey'
 
 export interface SpaceProps {
   name: string
+}
+
+export interface EnvironmentAlias extends MetaSys<MetaSysProps> {
+  environment: Environment
+  update(): Promise<EnvironmentAlias>
 }
 
 export interface ContentfulSpaceAPI {
@@ -59,6 +64,7 @@ export interface ContentfulSpaceAPI {
   getEntry(id: string): Promise<Entry>,
   getEntries(object?: QueryOptions): Promise<Collection<Entry>>,
   getEntrySnapshots(id: string): Promise<Collection<Snapshot<EntryProp>>>,
+  getEnvironmentAlias(name: string): Promise<EnvironmentAlias>,
   getLocale(id: string): Promise<Locale>,
   getLocales(): Promise<Collection<Locale>>,
   getUiExtension(id: string): Promise<UIExtension>,

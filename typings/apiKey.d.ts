@@ -14,7 +14,8 @@ export interface ApiKey
   policies: { effect: string; action: string }[],
   preview_api_key: MetaSys<MetaLinkProps>,
   delete(): Promise<void>,
-  update(): Promise<ApiKey>
+  update(): Promise<ApiKey>,
+  environments: MetaSys<MetaLinkProps>[]
 }
 
 export interface CreateApiKeyProps extends ApiKeyProps {
