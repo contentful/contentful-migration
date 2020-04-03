@@ -21,7 +21,7 @@ jobs:
           name: Check Delaration
           command: |
             npm run test-typescript-declaration
-  test:
+  test-unit:
     docker:
       - image: circleci/node:12
     steps:
@@ -30,9 +30,36 @@ jobs:
           name: Install dependencies
           command: npm install
       - run:
-          name: Run Tests
+          name: Run Unit Tests
           command: |
-            npm run coverage-report
+            npm run test-unit
+
+  test-integration:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Run Unit Tests
+          command: |
+            npm run test-integration
+
+  test-e2e:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Run Unit Tests
+          command: |
+            npm run test-e2e
+
   release:
     docker:
       - image: circleci/node:12
@@ -46,8 +73,12 @@ workflows:
   test-and-release:
     jobs:
       - check
-      - test
+      - test-unit
+      - test-integration
+      - test-e2e
       - release:
           requires:
             - check
-            - test
+            - test-unit
+            - test-integration
+            - test-e2e
