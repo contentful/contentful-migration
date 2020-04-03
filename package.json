@@ -86,7 +86,7 @@
     "https-proxy-agent": "^3.0.0",
     "inquirer": "^7.0.0",
     "joi": "^10.6.0",
-    "kind-of": "^5.0.2",
+    "kind-of": "^6.0.3",
     "listr": "^0.12.0",
     "lodash": "^4.17.4",
     "yargs": "^15.0.2"
