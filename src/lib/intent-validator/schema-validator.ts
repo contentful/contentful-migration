@@ -18,7 +18,7 @@ const validationErrors = {
     return `"${actualType}" is not a valid type for the ${typeName} property "${propName}". Expected "${expectedType}".`
   },
   INVALID_VALUE_IN_ALTERNATIVES: (propName, typeName, value, schemaInnerMatches) => {
-    const expectedTypes = schemaInnerMatches.map( (match) => {
+    const expectedTypes = schemaInnerMatches.map((match) => {
       const validsSet = match.schema._valids._set
       return validsSet.length > 0 ? `${match.schema._type} value ${validsSet.map(validValue => `"${validValue}"`).join(' or ')}` : `type ${match.schema._type}`
     })

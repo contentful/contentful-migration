@@ -7,9 +7,9 @@ class EntryTransformAction extends APIAction {
   private contentTypeId: string
   private fromFields: string[]
   private transformEntryForLocale: Function
-  private shouldPublish: boolean|'preserve'
+  private shouldPublish: boolean | 'preserve'
 
-  constructor (contentTypeId: string, fromFields: string[], transformation: Function, shouldPublish: boolean|'preserve' = true) {
+  constructor (contentTypeId: string, fromFields: string[], transformation: Function, shouldPublish: boolean | 'preserve' = true) {
     super()
     this.contentTypeId = contentTypeId
     this.fromFields = fromFields
@@ -50,7 +50,7 @@ class EntryTransformAction extends APIAction {
       }
       if (changesForThisEntry) {
         await api.saveEntry(entry.id)
-        if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && entry.isPublished) ) {
+        if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && entry.isPublished)) {
           await api.publishEntry(entry.id)
         }
       }

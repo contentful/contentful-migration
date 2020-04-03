@@ -62,7 +62,7 @@ describe('Migration parser', function () {
             total: 1,
             skip: 0,
             limit: 0,
-            items: [{code: 'en-US'}]
+            items: [{ code: 'en-US' }]
           }
         }
       }

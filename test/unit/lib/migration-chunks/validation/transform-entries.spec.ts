@@ -88,7 +88,7 @@ describe('Transform entries chunk validation', function () {
     it('returns no error', async function () {
       const func = () => { console.log('transform') }
       const contentTypes = [{
-        fields: [{ id: 'field', type: 'Symbol', description: 'A field'}],
+        fields: [{ id: 'field', type: 'Symbol', description: 'A field' }],
         sys: { id: 'dog' }
       }]
       const errors = await validateChunks(function up (migration) {

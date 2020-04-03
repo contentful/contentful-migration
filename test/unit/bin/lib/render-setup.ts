@@ -126,5 +126,5 @@ export default async function renderSetup () {
   ]
 
   const api = await runIntent(intent, contentTypes, entries, locales)
-  return await api.getRequestBatches()
+  return api.getRequestBatches()
 }

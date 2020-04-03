@@ -8,12 +8,11 @@ const { version } = require('../../package.json')
 const {
   SpaceAccessError
 } = require('../lib/errors')
-import createMigrationParser from '../lib/migration-parser'
+import createMigrationParser, { ParseResult } from '../lib/migration-parser'
 import { renderPlan, renderValidationErrors, renderRuntimeErrors } from './lib/render-migration'
 import renderStepsErrors from './lib/steps-errors'
 import writeErrorsToLog from './lib/write-errors-to-log'
 import { RequestBatch } from '../lib/offline-api/index'
-import { ParseResult } from '../lib/migration-parser'
 import { getConfig } from './lib/config'
 import ValidationError from '../lib/interfaces/errors'
 

@@ -19,7 +19,7 @@ describe('Rendering', async () => {
     })
 
     describe('when --quiet option is passed', () => {
-      it ('logs less verbose information of the execution', () => {
+      it('logs less verbose information of the execution', () => {
         renderPlan(requestBatches,'env-unit', true)
 
         expect(logSpy.called).to.eq(true)
@@ -30,7 +30,7 @@ describe('Rendering', async () => {
     })
 
     describe('when --quiet option is not passed', () => {
-      it ('logs verbose information of the execution', () => {
+      it('logs verbose information of the execution', () => {
         renderPlan(requestBatches,'env-unit')
 
         expect(logSpy.called).to.eq(true)

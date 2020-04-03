@@ -428,7 +428,7 @@ class OfflineAPI {
             links.push(new Link(entry, key, locale))
           }
           if (field instanceof Array) {
-            const fieldArray = field as any[]
+            const fieldArray = field
             fieldArray.forEach((fieldEntry, index) => {
               if (get(fieldEntry, 'sys.id') === childId) {
                 links.push(new Link(entry, key, locale, index))

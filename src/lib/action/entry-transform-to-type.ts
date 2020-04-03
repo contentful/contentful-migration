@@ -10,7 +10,7 @@ class EntryTransformToTypeAction extends APIAction {
   private targetContentTypeId: string
   private transformEntryForLocale: (inputFields: any, locale: string) => Promise<any>
   private identityKey: (fromFields: any) => Promise<string>
-  private shouldPublish: boolean|'preserve'
+  private shouldPublish: boolean | 'preserve'
   private removeOldEntries: boolean
   private updateReferences: boolean
 
@@ -91,7 +91,7 @@ class EntryTransformToTypeAction extends APIAction {
 
       }
       await api.saveEntry(targetEntry.id)
-      if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && entry.isPublished) ) {
+      if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && entry.isPublished)) {
         await api.publishEntry(targetEntry.id)
       }
 
@@ -100,13 +100,13 @@ class EntryTransformToTypeAction extends APIAction {
         const links = await api.getLinks(entry.id, locales)
         for (const link of links) {
           if (!link.isInArray()) {
-            link.element.setFieldForLocale(link.field, link.locale,{ sys: { id: newEntryId, type: 'Link', linkType: 'Entry'}})
+            link.element.setFieldForLocale(link.field, link.locale,{ sys: { id: newEntryId, type: 'Link', linkType: 'Entry' } })
           } else {
             link.element.replaceArrayLinkForLocale(link.field, link.locale, link.index, newEntryId)
           }
 
           await api.saveEntry(link.element.id)
-          if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && link.element.isPublished) ) {
+          if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && link.element.isPublished)) {
             await api.publishEntry(link.element.id)
           }
         }

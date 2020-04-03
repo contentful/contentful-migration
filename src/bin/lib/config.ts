@@ -31,7 +31,7 @@ function getEnvConfig (): ClientConfig {
     {}
 }
 
-function getArgvConfig ({spaceId, environmentId = 'master', accessToken, proxy, rawProxy}): ClientConfig {
+function getArgvConfig ({ spaceId, environmentId = 'master', accessToken, proxy, rawProxy }): ClientConfig {
   const config = {
     spaceId,
     environmentId,

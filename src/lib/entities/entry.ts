@@ -44,7 +44,7 @@ class Entry {
   }
 
   replaceArrayLinkForLocale (id: string, locale: string, index: number, linkId: string) {
-    const link = { sys: { id: linkId, type: 'Link', linkType: 'Entry'}}
+    const link = { sys: { id: linkId, type: 'Link', linkType: 'Entry' } }
     const field = this._fields[id] || {}
     const fieldArray: any[] = field[locale]
 
@@ -71,7 +71,7 @@ class Entry {
     return this._publishedVersion
   }
 
-  set publishedVersion (version: number|null) {
+  set publishedVersion (version: number | null) {
     this._publishedVersion = version
   }
 

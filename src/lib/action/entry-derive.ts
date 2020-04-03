@@ -105,7 +105,7 @@ class EntryDeriveAction extends APIAction {
           linkType: 'Entry',
           id: newEntryId
         }
-        const fieldValue = (field.type === 'Array') ? [{sys}] : {sys}
+        const fieldValue = (field.type === 'Array') ? [{ sys }] : { sys }
         entry.setFieldForLocale(this.referenceField, locale, fieldValue)
       }
 

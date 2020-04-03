@@ -69,7 +69,7 @@ function loadProxyFromEnv (env: { [key: string]: any }): ProxyConfig {
   return proxyStringToObject(proxyString)
 }
 
-function agentFromProxy(proxy): { httpsAgent?: HttpsProxyAgent } {
+function agentFromProxy (proxy): { httpsAgent?: HttpsProxyAgent } {
   if (!proxy) {
     return {}
   }

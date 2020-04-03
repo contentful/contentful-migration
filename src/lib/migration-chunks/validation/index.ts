@@ -4,8 +4,7 @@ import fieldValidations from './field'
 import checkForDuplicatePropsErrors from './duplicate-props'
 import { ContentType } from '../../entities/content-type'
 import { Intent } from '../../interfaces/intent'
-import { InvalidActionError } from '../../interfaces/errors'
-import ValidationError from '../../interfaces/errors'
+import ValidationError, { InvalidActionError } from '../../interfaces/errors'
 
 function validateIntents (intentList: IntentList, contentTypes: ContentType[]): ValidationError[] | InvalidActionError[] {
   const intents: Intent[] = intentList.getIntents()
