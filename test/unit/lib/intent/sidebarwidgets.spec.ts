@@ -54,7 +54,7 @@ describe('SidebarWidgetAddIntent', function () {
           'widgetId',
           'extension',
           'test',
-          {setting: 'set-1'},
+          { setting: 'set-1' },
           false
         )
       )
@@ -85,7 +85,7 @@ describe('SidebarWidgetUpdateIntent', function () {
         ctId,
         'widgetId',
         'extension',
-        {setting: 'set-2'},
+        { setting: 'set-2' },
         undefined
       )
     )

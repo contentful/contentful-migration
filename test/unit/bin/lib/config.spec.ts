@@ -27,7 +27,7 @@ describe('Config', function () {
   })
 
   it('prefers handed in config over env config', async function () {
-    const config = getConfig({accessToken: 'fooMyBar'})
+    const config = getConfig({ accessToken: 'fooMyBar' })
     expect(config.accessToken).to.eql('fooMyBar')
   })
 

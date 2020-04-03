@@ -27,4 +27,3 @@ module.exports = function (migration) {
   food.moveField('producer').beforeField('vegan');
   food.moveField('gmo').afterField('vegan');
 };
-

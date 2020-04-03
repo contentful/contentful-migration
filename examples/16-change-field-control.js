@@ -1,4 +1,3 @@
-
 // This migration might fail dur to some race condition
 // if that happens please consider split this migration into 2 steps
 // 1 create a content type

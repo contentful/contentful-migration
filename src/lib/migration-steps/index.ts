@@ -332,7 +332,7 @@ export async function migration (migrationCreator: Function, makeRequest: Functi
 
   // Create the migration
   await Bluebird.try(function () {
-    return migrationCreator(migration, Object.assign({makeRequest}, config))
+    return migrationCreator(migration, Object.assign({ makeRequest }, config))
   })
 
   return actions

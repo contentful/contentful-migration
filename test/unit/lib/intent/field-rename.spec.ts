@@ -112,7 +112,7 @@ describe('FieldRenameIntent', function () {
           widgetId: 'dropdown',
           fieldId: 'bits',
           widgetNamespace: 'extension',
-          settings: { setting: 'value'}
+          settings: { setting: 'value' }
         }]
       })
       editorInterfacesByContentType.set('dog', ei)

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { expect } = require('chai');
-const HttpsProxyAgent = require('https-proxy-agent');
+const { HttpsProxyAgent } = require('https-proxy-agent');
 
 const rewire = require('rewire');
 const { getConfig } = rewire('../../../../built/bin/lib/config');
@@ -37,9 +37,9 @@ describe('contentful-client', function () {
 
     contentfulClient.__set__('createClient', (params) => {
       expect(params.httpsAgent).to.be.instanceof(HttpsProxyAgent);
-      expect(params.httpsAgent.options.host).to.eql('myproxy.com');
-      expect(params.httpsAgent.options.port).to.eql(1337);
-      expect(params.httpsAgent.options.auth).to.eql('user:pass');
+      expect(params.httpsAgent.proxy.host).to.eql('myproxy.com');
+      expect(params.httpsAgent.proxy.port).to.eql(1337);
+      expect(params.httpsAgent.proxy.auth).to.eql('user:pass');
     });
 
     createManagementClient({ application: 'contentful.migration-cli.integration-test/0.0.0' });

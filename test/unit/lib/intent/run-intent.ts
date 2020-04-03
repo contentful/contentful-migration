@@ -1,10 +1,10 @@
 import APIEntry from '../../../../src/lib/interfaces/api-entry'
 import APIContentType from '../../../../src/lib/interfaces/content-type'
 import IntentList from '../../../../src/lib/intent-list'
-import { ContentType } from '../../../../src/lib/entities/content-type'
+import { ContentType, EditorInterfaces } from '../../../../src/lib/entities/content-type'
 import { OfflineAPI } from '../../../../src/lib/offline-api/index'
 import { Entry } from '../../../../src/lib/entities/entry'
-import { EditorInterfaces } from '../../../../src/lib/entities/content-type'
+
 const runIntent = async function (
   intent,
   contentTypes: APIContentType[],
