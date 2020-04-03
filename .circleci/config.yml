@@ -1,0 +1,53 @@
+
+version: 2
+jobs:
+  check:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Lint
+          command: |
+            npm run lint
+      - run:
+          name: Build
+          command: |
+            npm run build
+      - run:
+          name: Check Delaration
+          command: |
+            npm run test-typescript-declaration
+  test:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Run Tests
+          command: |
+            npm run coverage-report
+  release:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm run semantic-release
+
+workflows:
+  version: 2
+  test-and-release:
+    jobs:
+      - check
+      - test
+      - release:
+          requires:
+            - check
+            - test
