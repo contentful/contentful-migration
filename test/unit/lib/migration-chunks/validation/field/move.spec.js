@@ -318,4 +318,3 @@ describe('field movement plan validation', function () {
     }));
   });
 });
-
