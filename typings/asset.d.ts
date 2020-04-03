@@ -25,7 +25,9 @@ export interface AssetFileProp {
     description: { [key: string]: string },
     file: {
       [key: string]: {
-        file: string | ArrayBuffer | Stream
+        file: string | ArrayBuffer | Stream,
+        contentType: string,
+        fileName: string
       }
     }
   }
