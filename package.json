@@ -102,7 +102,7 @@
     "rimraf": "^2.6.1",
     "selenium-webdriver": "^3.5.0",
     "semantic-release": "^15.10.6",
-    "sinon": "^6.3.5",
+    "sinon": "^9.0.1",
     "tap-spec": "^5.0.0",
     "trevor": "^2.2.0",
     "webpack": "^4.23.1",
