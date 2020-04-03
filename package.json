@@ -63,6 +63,7 @@
   },
   "devDependencies": {
     "@contentful/eslint-config-backend": "^5.0.0",
+    "@semantic-release/changelog": "^5.0.1",
     "@types/bluebird": "^3.5.15",
     "@types/chai": "^4.0.4",
     "@types/chai-as-promised": "^7.1.0",
@@ -120,7 +121,9 @@
         }
       ],
       "@semantic-release/release-notes-generator",
-      "@semantic-release/npm"
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      "@semantic-release/github"
     ]
   }
 }
