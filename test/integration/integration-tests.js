@@ -16,7 +16,7 @@ import uiExtensionTests from './ui-extension-integration'
 import generateRandomId from './generate-random-id'
 import { createClient } from '../../'
 import { environmentTests } from './environment-integration'
-import { environmentAliasTests, environmentAliasReadOnlyTests } from './environment-alias-integration'
+import { environmentAliasReadOnlyTests } from './environment-alias-integration'
 
 const params = {
   accessToken: process.env.CONTENTFUL_ACCESS_TOKEN
@@ -240,8 +240,7 @@ test('Create space for tests which create, change and delete data', (t) => {
         roleTests(t, space),
         apiKeyTests(t, space),
         uiExtensionTests(t, space),
-        environmentTests(t, space, waitForEnvironmentToBeReady),
-        environmentAliasTests(t, space)
+        environmentTests(t, space, waitForEnvironmentToBeReady)
       ])
     })
 })

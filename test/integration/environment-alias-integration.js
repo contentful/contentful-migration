@@ -1,13 +1,3 @@
-export function environmentAliasTests (t, space) {
-  t.test('FeatureNotEnabled when attempting to get aliases', (t) => {
-    t.plan(1)
-    return space.getEnvironmentAliases()
-      .catch(error => {
-        t.equals(error.name, 'FeatureNotEnabled')
-      })
-  })
-}
-
 export function environmentAliasReadOnlyTests (t, space) {
   t.test('Gets aliases', (t) => {
     t.plan(2)

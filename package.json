@@ -60,6 +60,7 @@
     "lodash": "^4.17.11"
   },
   "devDependencies": {
+    "@semantic-release/changelog": "^5.0.1",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.1.0",
@@ -128,7 +129,9 @@
         }
       ],
       "@semantic-release/release-notes-generator",
-      "@semantic-release/npm"
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      "@semantic-release/github"
     ]
   },
   "bundlesize": [
