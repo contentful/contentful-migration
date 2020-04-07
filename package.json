@@ -153,11 +153,11 @@
     },
     {
       "path": "./dist/contentful-management.node.js",
-      "maxSize": "76Kb"
+      "maxSize": "77Kb"
     },
     {
       "path": "./dist/contentful-management.node.min.js",
-      "maxSize": "24Kb"
+      "maxSize": "25Kb"
     }
   ]
 }

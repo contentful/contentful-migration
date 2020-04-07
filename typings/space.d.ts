@@ -7,6 +7,7 @@ import { Asset, AssetProps, AssetFileProp } from './asset'
 import { ContentType, ContentTypeProps } from './contentType'
 import { EntryProp, Entry } from './entry'
 import { LocaleProps, Locale } from './locale'
+import { SpaceMember } from './spaceMember'
 import { Role, RoleProps } from './role'
 import { SpaceMembershipProps, SpaceMembership } from './spaceMembership'
 import { UIExtension, UIExtensionProps } from './uiExtension'
@@ -76,6 +77,8 @@ export interface ContentfulSpaceAPI {
   getPreviewApiKeys(): Promise<Collection<PreviewApiKey>>,
   getWebhook(id: string): Promise<WebHooks>,
   getWebhook(): Promise<Collection<WebHooks>>,
+  getSpaceMember(id: string): Promise<SpaceMember>,
+  getSpaceMembers(): Promise<Collection<SpaceMember>>,
 
 }
 
