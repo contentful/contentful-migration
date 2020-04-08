@@ -5,7 +5,8 @@ import {
   appDefinitionMock,
   organizationMembershipMock,
   spaceMembershipMock,
-  setupEntitiesMock
+  setupEntitiesMock,
+  organizationInvitationMock
 } from './mocks/entities'
 import setupHttpMock from './mocks/http'
 import {
@@ -111,6 +112,34 @@ test('API call getOrganizationSpaceMembership', (t) => {
 test('API call getOrganizationSpaceMembership fails', (t) => {
   makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'getOrganizationSpaceMembership'
+  })
+})
+
+test('API call getOrganizationInvitation', (t) => {
+  makeGetEntityTest(t, setup, teardown, {
+    entityType: 'organizationInvitation',
+    mockToReturn: organizationInvitationMock,
+    methodToTest: 'getOrganizationInvitation'
+  })
+})
+
+test('API call getOrganizationInvitation fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getOrganizationInvitation'
+  })
+})
+
+test('API call createOrganizationInvitation', (t) => {
+  makeCreateEntityTest(t, setup, teardown, {
+    entityType: 'organizationInvitation',
+    mockToReturn: organizationInvitationMock,
+    methodToTest: 'createOrganizationInvitation'
+  })
+})
+
+test('API call createOrganizationInvitation fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'createOrganizationInvitation'
   })
 })
 
