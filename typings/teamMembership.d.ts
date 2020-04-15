@@ -1,6 +1,11 @@
-import { MetaSys, MetaSysProps } from "./meta";
-import { DefaultElements } from "./defaultElements";
+import { MetaSys, MetaSysProps } from './meta'
+import { DefaultElements } from './defaultElements'
+import { QueryOptions } from './queryOptions'
 
+export interface Options {
+  teamId?: string,
+  query?: QueryOptions
+}
 export interface TeamMembershipProps {
   admin: boolean;
   organizationMembershipId: string;
