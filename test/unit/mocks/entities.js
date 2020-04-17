@@ -206,6 +206,12 @@ const organizationMembershipMock = {
   })
 }
 
+const teamMock = {
+  sys: Object.assign(cloneDeep(sysMock), {
+    type: 'Team'
+  })
+}
+
 const teamMembershipMock = {
   sys: Object.assign(cloneDeep(sysMock), {
     type: 'TeamMembership'
@@ -298,6 +304,7 @@ const mocks = {
   spaceMember: spaceMemberMock,
   spaceMembership: spaceMembershipMock,
   organizationMembership: organizationMembershipMock,
+  team: teamMock,
   teamMembership: teamMembershipMock,
   organizationInvitation: organizationInvitationMock,
   role: roleMock,
@@ -372,6 +379,10 @@ function setupEntitiesMock (rewiredModuleApi) {
     organizationMembership: {
       wrapOrganizationMembership: sinon.stub(),
       wrapOrganizationMembershipCollection: sinon.stub()
+    },
+    team: {
+      wrapTeam: sinon.stub(),
+      wrapTeamCollection: sinon.stub()
     },
     teamMembership: {
       wrapTeamMembership: sinon.stub(),
@@ -450,6 +461,7 @@ export {
   spaceMemberMock,
   spaceMembershipMock,
   organizationMembershipMock,
+  teamMock,
   teamMembershipMock,
   organizationInvitationMock,
   roleMock,
