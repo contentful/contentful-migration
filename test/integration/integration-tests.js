@@ -8,6 +8,7 @@ import {assetReadOnlyTests, assetWriteTests} from './asset-integration'
 import webhookTests from './webhook-integration'
 import spaceMembersTests from './space-members-integration'
 import spaceMembershipTests from './space-membership-integration'
+import teamSpaceMembershipTests from './team-space-membership-integration'
 import teamTests from './team-integration'
 import teamMembershipTests from './team-membership-integration'
 import organizationMembershipTests from './organization-membership-integration'
@@ -219,6 +220,13 @@ test('Gets organization for tests which change and delete data', (t) => {
         teamMembershipTests(t, organization),
         organizationInvitationTests(t, organization)
       ])
+    })
+})
+
+test('Get existing space and test team space memberships', (t) => {
+  return client.getSpace('ezs1swce23xe')
+    .then(space => {
+      teamSpaceMembershipTests(t, space)
     })
 })
 

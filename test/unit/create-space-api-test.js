@@ -13,6 +13,7 @@ import {
   webhookMock,
   spaceMemberMock,
   spaceMembershipMock,
+  teamSpaceMembershipMock,
   roleMock,
   apiKeyMock,
   userMock,
@@ -558,6 +559,47 @@ test('API call createSpaceMembership', (t) => {
     mockToReturn: spaceMembershipMock,
     methodToTest: 'createSpaceMembership'
   })
+})
+
+test('API call getTeamSpaceMembership', (t) => {
+  makeGetEntityTest(t, setup, teardown, {
+    entityType: 'teamSpaceMembership',
+    mockToReturn: teamSpaceMembershipMock,
+    methodToTest: 'getTeamSpaceMembership'
+  })
+})
+
+test('API call getTeamSpaceMembership fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getTeamSpaceMembership'
+  })
+})
+
+test('API call getTeamSpaceMemberships', (t) => {
+  makeGetCollectionTest(t, setup, teardown, {
+    entityType: 'teamSpaceMembership',
+    mockToReturn: teamSpaceMembershipMock,
+    methodToTest: 'getTeamSpaceMemberships'
+  })
+})
+
+test('API call getTeamSpaceMemberships fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getTeamSpaceMemberships'
+  })
+})
+
+test('API call createTeamSpaceMembership', (t) => {
+  t.plan(1)
+  const {api, entitiesMock} = setup(Promise.resolve({}))
+  entitiesMock['teamSpaceMembership'][`wrapTeamSpaceMembership`]
+    .returns(teamSpaceMembershipMock)
+
+  return api['createTeamSpaceMembership']({admin: false, teamId: 'id'})
+    .then((r) => {
+      t.looseEqual(r, teamSpaceMembershipMock)
+      teardown()
+    })
 })
 
 test('API call createSpaceMembership fails', (t) => {

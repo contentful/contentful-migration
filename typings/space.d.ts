@@ -10,6 +10,7 @@ import { LocaleProps, Locale } from './locale'
 import { SpaceMember } from './spaceMember'
 import { Role, RoleProps } from './role'
 import { SpaceMembershipProps, SpaceMembership } from './spaceMembership'
+import { TeamSpaceMembershipProps, TeamSpaceMembership } from './teamSpaceMembership'
 import { UIExtension, UIExtensionProps } from './uiExtension'
 import { Upload } from './upload'
 import { Stream } from 'stream'
@@ -49,6 +50,7 @@ export interface ContentfulSpaceAPI {
   createRoleWithId(id: string, ata: RoleProps): Promise<Role>,
   createSpaceMembership(data: SpaceMembershipProps): Promise<SpaceMembership>,
   createSpaceMembershipWithId(id: string, data: SpaceMembershipProps): Promise<SpaceMembership>,
+  createTeamSpaceMembership(data: TeamSpaceMembershipProps): Promise<TeamSpaceMembership>,
   createUiExtension(data: UIExtensionProps): Promise<UIExtension>,
   createUiExtensionWithId(id: string, data: UIExtensionProps): Promise<UIExtension>,
   createUpload(data: {
@@ -79,7 +81,8 @@ export interface ContentfulSpaceAPI {
   getWebhook(): Promise<Collection<WebHooks>>,
   getSpaceMember(id: string): Promise<SpaceMember>,
   getSpaceMembers(): Promise<Collection<SpaceMember>>,
-
+  getTeamSpaceMembership(id: string): Promise<TeamSpaceMembership>,
+  getTeamSpaceMemberships(): Promise<Collection<TeamSpaceMembership>>,
 }
 
 export interface Space extends SpaceProps, DefaultElements<SpaceProps & MetaSys>, MetaSys, ContentfulSpaceAPI {}
