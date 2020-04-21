@@ -8,7 +8,8 @@ import {
   teamMembershipMock,
   setupEntitiesMock,
   organizationInvitationMock,
-  teamMock
+  teamMock,
+  userMock
 } from './mocks/entities'
 import setupHttpMock from './mocks/http'
 import {
@@ -58,6 +59,34 @@ test('API call getAppDefinitions', (t) => {
 test('API call getAppDefinitions fails', (t) => {
   makeEntityMethodFailingTest(t, setup, teardown, {
     methodToTest: 'getAppDefinitions'
+  })
+})
+
+test('API call getUser', (t) => {
+  makeGetEntityTest(t, setup, teardown, {
+    entityType: 'user',
+    mockToReturn: userMock,
+    methodToTest: 'getUser'
+  })
+})
+
+test('API call getUser fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getUser'
+  })
+})
+
+test('API call getUsers', (t) => {
+  makeGetCollectionTest(t, setup, teardown, {
+    entityType: 'user',
+    mockToReturn: userMock,
+    methodToTest: 'getUsers'
+  })
+})
+
+test('API call getUsers fails', (t) => {
+  makeEntityMethodFailingTest(t, setup, teardown, {
+    methodToTest: 'getUsers'
   })
 })
 

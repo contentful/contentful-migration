@@ -141,7 +141,7 @@
     },
     {
       "path": "./dist/contentful-management.browser.min.js",
-      "maxSize": "19Kb"
+      "maxSize": "20Kb"
     },
     {
       "path": "./dist/contentful-management.legacy.js",

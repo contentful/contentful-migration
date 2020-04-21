@@ -5,6 +5,7 @@ import { DefaultElements } from './defaultElements'
 import { MetaSys, MetaSysProps } from './meta'
 import { Options, TeamMembership, TeamMembershipProps } from './teamMembership'
 import { Team, TeamProps } from './team'
+import {User} from './user'
 
 export interface OrganizationProp {
   name: string
@@ -14,6 +15,8 @@ export interface ContentfulOrganizationAPI {
   createAppDefinition(data: AppDefinitionProps): Promise<AppDefinition>,
   getAppDefinition(id: string): Promise<AppDefinition>,
   getAppDefinitions(): Promise<Collection<AppDefinition>>,
+  getUser(userId: string): Promise<User>,
+  getUsers(): Promise<Collection<User>>,
   createTeam(data: TeamProps): Promise<Team>,
   getTeam(teamId: string, id: string): Promise<Team>,
   getTeams(teamId: string): Promise<Collection<Team>>,
