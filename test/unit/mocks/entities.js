@@ -212,7 +212,10 @@ const spaceMembershipMock = {
 
 const teamSpaceMembershipMock = {
   sys: Object.assign(cloneDeep(membershipMock), {
-    type: 'TeamSpaceMembership'
+    type: 'TeamSpaceMembership',
+    space: {
+      sys: { id: 'space_id', type: 'Link', linkType: 'Space' }
+    }
   }),
   roles: [
     {sys: Object.assign(cloneDeep(linkMock), {linkType: 'Role'})}

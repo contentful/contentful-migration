@@ -3,7 +3,8 @@ import {OrganizationInvitation, OrganizationInvitationProps} from './organizatio
 import { Collection } from './collection'
 import { DefaultElements } from './defaultElements'
 import { MetaSys, MetaSysProps } from './meta'
-import { Options, TeamMembership, TeamMembershipProps } from './teamMembership'
+import { Options as TeamMembershipOptions, TeamMembership, TeamMembershipProps } from './teamMembership'
+import { Options as TeamSpaceMembershipOptions, TeamSpaceMembership, TeamSpaceMembershipProps } from './teamSpaceMembership'
 import { Team, TeamProps } from './team'
 import {User} from './user'
 
@@ -22,7 +23,9 @@ export interface ContentfulOrganizationAPI {
   getTeams(teamId: string): Promise<Collection<Team>>,
   createTeamMembership(data: TeamMembershipProps): Promise<TeamMembership>,
   getTeamMembership(teamId: string, id: string): Promise<TeamMembership>,
-  getTeamMemberships(opts?: Options): Promise<Collection<TeamMembership>>,
+  getTeamMemberships(opts?: TeamMembershipOptions): Promise<Collection<TeamMembership>>,
+  getTeamSpaceMembership(id: string): Promise<TeamSpaceMembership>,
+  getTeamSpaceMemberships(opts?: TeamSpaceMembershipOptions): Promise<Collection<TeamSpaceMembership>>,
   getOrganizationInvitation(id: string): Promise<OrganizationInvitation>,
   createOrganizationInvitation(
     data: OrganizationInvitationProps

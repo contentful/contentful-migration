@@ -9,6 +9,7 @@ import webhookTests from './webhook-integration'
 import spaceMembersTests from './space-members-integration'
 import spaceMembershipTests from './space-membership-integration'
 import teamSpaceMembershipTests from './team-space-membership-integration'
+import orgTeamSpaceMembershipTests from './org-team-space-membership-integration'
 import teamTests from './team-integration'
 import teamMembershipTests from './team-membership-integration'
 import organizationMembershipTests from './organization-membership-integration'
@@ -222,6 +223,14 @@ test('Gets organization for tests which change and delete data', (t) => {
         teamMembershipTests(t, organization),
         organizationInvitationTests(t, organization)
       ])
+    })
+})
+
+test('Get organization and test team space memberships', (t) => {
+  return client.getOrganizations()
+    .then((response) => {
+      const organization = response.items[0]
+      orgTeamSpaceMembershipTests(t, organization)
     })
 })
 

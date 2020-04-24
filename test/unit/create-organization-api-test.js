@@ -6,6 +6,7 @@ import {
   organizationMembershipMock,
   spaceMembershipMock,
   teamMembershipMock,
+  teamSpaceMembershipMock,
   setupEntitiesMock,
   organizationInvitationMock,
   teamMock,
@@ -318,6 +319,86 @@ test('API call getTeamMemberships for all teams', (t) => {
         skip: 0,
         limit: 10,
         items: [teamMembershipMock]
+      })
+      teardown()
+    })
+})
+
+test('API call getTeamSpaceMembership', (t) => {
+  t.plan(1)
+  const {api, entitiesMock} = setup(Promise.resolve({}))
+  entitiesMock['teamSpaceMembership'][`wrapTeamSpaceMembership`]
+    .returns(teamSpaceMembershipMock)
+  return api['getTeamSpaceMembership']('eid')
+    .then((r) => {
+      t.looseEqual(r, teamSpaceMembershipMock)
+      teardown()
+    })
+})
+
+test('API call getTeamSpaceMembership fails', (t) => {
+  t.plan(1)
+  const error = cloneMock('error')
+  const {api} = setup(Promise.reject(error))
+
+  return api['getTeamSpaceMembership']('eid')
+    .then(() => {}, (r) => {
+      t.equals(r.name, '404 Not Found')
+      teardown()
+    })
+})
+
+test('API call getTeamSpaceMemberships', (t) => {
+  t.plan(1)
+  const {api, entitiesMock} = setup(Promise.resolve({}))
+  entitiesMock['teamSpaceMembership'][`wrapTeamSpaceMembershipCollection`]
+    .returns({
+      total: 100,
+      skip: 0,
+      limit: 10,
+      items: [teamSpaceMembershipMock]
+    })
+  return api['getTeamSpaceMemberships']({teamId: 'teamid'})
+    .then((r) => {
+      t.looseEqual(r, {
+        total: 100,
+        skip: 0,
+        limit: 10,
+        items: [teamSpaceMembershipMock]
+      })
+      teardown()
+    })
+})
+
+test('API call getTeamMemberships fails', (t) => {
+  t.plan(1)
+  const error = cloneMock('error')
+  const {api} = setup(Promise.reject(error))
+
+  return api['getTeamSpaceMemberships']({teamId: 'teamid'})
+    .then(() => {}, (r) => {
+      t.equals(r.name, '404 Not Found')
+      teardown()
+    })
+})
+
+test('API call getTeamMemberships for all teams', (t) => {
+  t.plan(1)
+  const {api, entitiesMock} = setup(Promise.resolve({}))
+  entitiesMock['teamSpaceMembership'][`wrapTeamSpaceMembershipCollection`]
+    .returns({
+      total: 100,
+      skip: 0,
+      limit: 10,
+      items: [teamSpaceMembershipMock]
+    })
+  return api['getTeamSpaceMemberships']()
+    .then((r) => {
+      t.looseEqual(r, {
+        total: 100,
+        skip: 0,
+        limit: 10,
+        items: [teamSpaceMembershipMock]
       })
       teardown()
     })

@@ -1,5 +1,11 @@
 import { MetaLinkProps, MetaSys, MetaSysProps } from './meta'
 import { DefaultElements } from './defaultElements'
+import { QueryOptions } from './queryOptions'
+
+export interface Options {
+  teamId?: string,
+  query?: QueryOptions
+}
 
 export interface TeamSpaceMembershipProps {
   admin: boolean,
