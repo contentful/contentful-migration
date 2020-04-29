@@ -46,7 +46,7 @@ const assetFileSize = validation('assetFileSize', range('number'))
 const nodes = validation('nodes', Joi.object({
   'embedded-entry-block': Joi.array(),
   'embedded-entry-inline': Joi.array(),
-  'embedded-asset-inline': Joi.array(),
+  'embedded-asset-block': Joi.array(),
   'entry-hyperlink': Joi.array(),
   'asset-hyperlink': Joi.array(),
   'hyperlink': Joi.array()

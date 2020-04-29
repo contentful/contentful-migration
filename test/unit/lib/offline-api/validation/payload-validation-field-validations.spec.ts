@@ -162,7 +162,7 @@ describe('payload validation', function () {
             { nodes: {
               'embedded-entry-block': [{ size: { max: 4 } }],
               'embedded-entry-inline': [{ size: { max: 4 } }],
-              'embedded-asset-inline': [{ size: { max: 4 } }],
+              'embedded-asset-block': [{ size: { max: 4 } }],
               'entry-hyperlink': [{ size: { max: 4 } }],
               'asset-hyperlink': [{ size: { max: 4 } }],
               'hyperlink': [{ size: { max: 4 } }]
