@@ -97,7 +97,7 @@
     "tslint": "^6.1.1",
     "tslint-config-standard": "^9.0.0",
     "typescript": "^3.8.3",
-    "uuid": "^7.0.3",
+    "uuid": "^8.0.0",
     "zlib": "^1.0.5"
   },
   "bin": {
