@@ -150,6 +150,14 @@ export interface ContentType {
   changeFieldId (oldId: string, newId: string): void
 
   /**
+   * 
+   * @param widgetNamespace The namespace of the widget. Use 'builtin' for standard widgets or 'extension' for UI extensions.
+   * @param widgetId The new widget ID for the field.
+   * @param settings Widget settings
+   */
+  configureEntryEditor(widgetNamespace: 'builtin' | 'extension', widgetId: string, settings?: IEditorInterfaceOptions): void
+
+  /**
    * Changes the control of given field's ID.
    *
    * @param fieldId The ID of the field.
