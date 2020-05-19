@@ -4,7 +4,7 @@
   "description": "Migration tooling for contentful",
   "author": "Contentful GmbH",
   "license": "MIT",
-  "main": "index",
+  "main": "built/index",
   "keywords": [
     "contentful",
     "content model",
