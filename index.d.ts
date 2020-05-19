@@ -1,5 +1,16 @@
 import * as axios from 'axios'
 
+export interface RunMigrationConfig {
+  filePath: string
+  accessToken?: string
+  spaceId?: string
+  environmentId?: string
+  proxy?: string
+  rawProxy?: boolean
+}
+
+export function runMigration (config: RunMigrationConfig): Promise<any>
+
 export interface Movement {
   toTheTop(): void
   toTheBottom(): void
