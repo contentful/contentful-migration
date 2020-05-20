@@ -142,7 +142,7 @@ npm install contentful-migration
 ### Usage as a library
 
 ```javascript
-const runMigration = require('contentful-migration/built/bin/cli').runMigration
+const { runMigration } = require('contentful-migration')
 const options = {
   filePath: '<migration-file-path>',
   spaceId: '<space-id>',
