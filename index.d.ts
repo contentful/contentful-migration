@@ -7,6 +7,7 @@ export interface RunMigrationConfig {
   environmentId?: string
   proxy?: string
   rawProxy?: boolean
+  yes?: boolean
 }
 
 export function runMigration (config: RunMigrationConfig): Promise<any>
