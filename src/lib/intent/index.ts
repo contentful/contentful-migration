@@ -20,6 +20,7 @@ import SidebarResetToDefaultIntent from './sidebar-reset-to-default'
 import EntryEditorResetToDefaultIntent from './entryeditor-reset-to-default'
 import EntryEditorConfigureIntent from './entryeditor-configure'
 import TagCreateIntent from './tag-create'
+import TagUpdateIntent from './tag-update'
 
 export {
   Intent as default,
@@ -44,5 +45,6 @@ export {
   SidebarResetToDefaultIntent as SidebarResetToDefault,
   EntryEditorResetToDefaultIntent as EntryEditorResetToDefault,
   EntryEditorConfigureIntent as EntryEditorConfigure,
-  TagCreateIntent as TagCreate
+  TagCreateIntent as TagCreate,
+  TagUpdateIntent as TagUpdate
 }

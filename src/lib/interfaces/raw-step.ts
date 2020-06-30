@@ -14,8 +14,12 @@ interface RawStep {
 }
 
 interface RawStepMeta {
-  contentTypeInstanceId: string
+  // TODO: As this will now be reused for tags as well and tags don't
+  // have cts, I made the contentTypeId property optional. Does this
+  // create new problems?
+  contentTypeInstanceId?: string
   fieldInstanceId?: string
+  tagInstanceId?: string
   callsite: CallSiteInfo
 }
 

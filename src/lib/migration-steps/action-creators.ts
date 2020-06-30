@@ -331,13 +331,31 @@ const actionCreators = {
       return new Intents.TagCreate({
         type: 'tag/create',
         meta: {
-          contentTypeInstanceId: `tag/${id}/${instanceId}`,
+          tagInstanceId: `tag/${id}/${instanceId}`,
           callsite: {
             file: callsite.getFileName(),
             line: callsite.getLineNumber()
           }
         },
         payload: { tagId: id }
+      })
+    },
+    update: (id, instanceId, callsite, property, value): Intents.TagUpdate => {
+      return new Intents.TagUpdate({
+        type: 'tag/update',
+        meta: {
+          tagInstanceId: `tag/${id}/${instanceId}`,
+          callsite: {
+            file: callsite.getFileName(),
+            line: callsite.getLineNumber()
+          }
+        },
+        payload: {
+          tagId: id,
+          props: {
+            [property]: value
+          }
+        }
       })
     },
   }

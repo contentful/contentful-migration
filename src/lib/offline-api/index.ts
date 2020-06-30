@@ -488,7 +488,7 @@ class OfflineAPI {
   }
 
   async createTag (id: string): Promise<Tag> {
-        this.assertRecording()
+    this.assertRecording()
 
     const tag = new Tag({ sys: { id }, name: undefined })
 
@@ -496,6 +496,17 @@ class OfflineAPI {
 
     return tag
   }
+
+  async updateTag (id: string): Promise<Tag> {
+    this.assertRecording()
+
+    const tag = new Tag({ sys: { id }, name: undefined })
+
+    await this.modifiedTags.set(id, tag)
+
+    return tag
+  }
+
 
 
   public async recordRuntimeError (error) {

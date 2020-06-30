@@ -281,7 +281,7 @@ class Tag extends DispatchProxy {
 
   constructor (id, instanceId, props = {}, dispatch) {
     const dispatchUpdate = (callsite, propertyName, propertyValue) => {
-      dispatch(actionCreators.contentType.update(id, instanceId, callsite, propertyName, propertyValue))
+      dispatch(actionCreators.tag.update(id, instanceId, callsite, propertyName, propertyValue))
     }
     super({ dispatchUpdate })
 
