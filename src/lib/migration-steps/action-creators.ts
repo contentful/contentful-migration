@@ -325,6 +325,21 @@ const actionCreators = {
         fieldId
       }
     })
+  },
+  tag: {
+    create: (id, instanceId, callsite): Intents.TagCreate => {
+      return new Intents.TagCreate({
+        type: 'tag/create',
+        meta: {
+          contentTypeInstanceId: `tag/${id}/${instanceId}`,
+          callsite: {
+            file: callsite.getFileName(),
+            line: callsite.getLineNumber()
+          }
+        },
+        payload: { tagId: id }
+      })
+    },
   }
 }
 

@@ -4,6 +4,7 @@ import { ContentTypePayloadValidator } from './validator/content-type'
 import { ContentType, EditorInterfaces } from '../entities/content-type'
 import Request from '../interfaces/request'
 import { Entry } from '../entities/entry'
+import { Tag } from '../entities/tag'
 import { PayloadValidationError, InvalidActionError } from '../interfaces/errors'
 import DisplayFieldValidator from './validator/display-field'
 import SchemaValidator from './validator/schema/index'
@@ -137,6 +138,7 @@ class OfflineAPI {
   private requestBatches: RequestBatch[] = []
   private contentTypeValidators: ContentTypePayloadValidator[] = []
   private locales: string[] = []
+  private modifiedTags: Map<String, Tag> = null
 
   constructor (contentTypes: Map<String, ContentType> = new Map(), entries: Entry[] = [], locales: string[], editorInterfacesByContentType: Map<String, EditorInterfaces> = new Map<String, EditorInterfaces>()) {
     this.modifiedContentTypes = contentTypes
@@ -484,6 +486,17 @@ class OfflineAPI {
     }
     return this.requestBatches
   }
+
+  async createTag (id: string): Promise<Tag> {
+        this.assertRecording()
+
+    const tag = new Tag({ sys: { id }, name: undefined })
+
+    await this.modifiedTags.set(id, tag)
+
+    return tag
+  }
+
 
   public async recordRuntimeError (error) {
     this.currentRuntimeErrorsRecorded.push(error)

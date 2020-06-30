@@ -25,7 +25,10 @@ interface CallSiteInfo {
 }
 
 interface RawStepPayload {
-  contentTypeId: string
+  // TODO: As this will now be reused for tags as well and tags don't
+  // have cts, I made the contentTypeId property optional. Does this
+  // create new problems?
+  contentTypeId?: string
   fieldId?: string
   props?: RawStepProps
   transformation?: ContentTransform
@@ -37,6 +40,8 @@ interface RawStepPayload {
   editorInterface?: EditorInterfaceInfo
   sidebarWidget?: SidebarWidgetInfo
   entryEditor?: EntryEditorInfo
+  // TODO: This should maybe live somewhere else:
+  tagId?: string
 }
 
 interface EditorInterfaceInfo {

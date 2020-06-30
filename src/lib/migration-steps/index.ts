@@ -273,6 +273,95 @@ class ContentType extends DispatchProxy {
   }
 }
 
+// TODO: This is for now just a basic copy of the content type class!
+class Tag extends DispatchProxy {
+  public id: string
+  public instanceId: string
+  // public fieldInstanceIds?
+
+  constructor (id, instanceId, props = {}, dispatch) {
+    const dispatchUpdate = (callsite, propertyName, propertyValue) => {
+      dispatch(actionCreators.contentType.update(id, instanceId, callsite, propertyName, propertyValue))
+    }
+    super({ dispatchUpdate })
+
+    this.id = id
+    this.instanceId = instanceId
+    this.dispatch = dispatch
+    // this.fieldInstanceIds = createInstanceIdManager()
+
+    // Initialize from pros
+    Object.keys(props).forEach((propertyName) => {
+      this[propertyName](props[propertyName])
+    })
+  }
+
+  public dispatch? (step: Intent): void
+
+  // createField (id, init) {
+  //   const callsite = getFirstExternalCaller()
+  //   const fieldInstanceId = this.fieldInstanceIds.getNew(id)
+
+  //   this.dispatch(actionCreators.field.create(this.id, this.instanceId, id, fieldInstanceId, callsite))
+
+  //   const updateField = actionCreators.field.update.bind(null, this.id, this.instanceId, id, fieldInstanceId)
+  //   const field = new Field(id, init, {
+  //     dispatchUpdate: (callsite, property, value) => {
+  //       return this.dispatch(updateField(callsite, property, value))
+  //     }
+  //   })
+
+  //   return field
+  // }
+
+  // editField (id, init) {
+  //   const fieldInstanceId = this.fieldInstanceIds.getNew(id)
+
+  //   const updateField = actionCreators.field.update.bind(null, this.id, this.instanceId, id, fieldInstanceId)
+  //   const field = new Field(id, init, {
+  //     dispatchUpdate: (callsite, property, value) => {
+  //       return this.dispatch(updateField(callsite, property, value))
+  //     }
+  //   })
+
+  //   return field
+  // }
+
+  // moveField (id) {
+  //   const fieldInstanceId = this.fieldInstanceIds.getNew(id)
+
+  //   const contentTypeId = this.id
+  //   const contentTypeInstanceId = this.instanceId
+
+  //   const movement = new Movement({
+  //     dispatchUpdate: (callsite, property, value) => {
+  //       const action = actionCreators.field.move(
+  //         contentTypeId,
+  //         contentTypeInstanceId,
+  //         id,
+  //         fieldInstanceId,
+  //         callsite,
+  //         { direction: property, pivot: value }
+  //       )
+
+  //       this.dispatch(action)
+  //     }
+  //   })
+
+  //   return movement
+  // }
+
+  // deleteField (id) {
+  //   const callsite = getFirstExternalCaller()
+  //   const fieldInstanceId = this.fieldInstanceIds.getNew(id)
+
+  //   this.dispatch(actionCreators.field.delete(this.id, this.instanceId, id, fieldInstanceId, callsite))
+  // }
+
+}
+
+
+
 export async function migration (migrationCreator: Function, makeRequest: Function, config: ClientConfig): Promise<Intent[]> {
   const actions: Intent[] = []
   const instanceIdManager = createInstanceIdManager()
@@ -327,7 +416,17 @@ export async function migration (migrationCreator: Function, makeRequest: Functi
       const instanceId = instanceIdManager.getNew(transformation.sourceContentType)
 
       dispatch(actionCreators.contentType.transformEntriesToType(instanceId, stripped, callsite))
-    }
+    },
+
+    createTag: function (id, init) {
+      const callsite = getFirstExternalCaller()
+      const instanceId = instanceIdManager.getNew(id)
+
+      dispatch(actionCreators.tag.create(id, instanceId, callsite))
+
+      return new Tag(id, instanceId, init, dispatch)
+    },
+
   }
 
   // Create the migration
