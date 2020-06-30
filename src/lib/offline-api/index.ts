@@ -11,6 +11,7 @@ import SchemaValidator from './validator/schema/index'
 import TypeChangeValidator from './validator/type-change'
 import { Intent } from '../interfaces/intent'
 import APIEntry from '../interfaces/api-entry'
+import APITag from '../interfaces/api-tag'
 import Link from '../entities/link'
 
 interface RequestBatch {
@@ -138,7 +139,7 @@ class OfflineAPI {
   private requestBatches: RequestBatch[] = []
   private contentTypeValidators: ContentTypePayloadValidator[] = []
   private locales: string[] = []
-  private modifiedTags: Map<String, Tag> = null
+  private tags: Tag[] = null
 
   constructor (contentTypes: Map<String, ContentType> = new Map(), entries: Entry[] = [], locales: string[], editorInterfacesByContentType: Map<String, EditorInterfaces> = new Map<String, EditorInterfaces>()) {
     this.modifiedContentTypes = contentTypes
@@ -490,23 +491,31 @@ class OfflineAPI {
   async createTag (id: string): Promise<Tag> {
     this.assertRecording()
 
-    const tag = new Tag({ sys: { id }, name: undefined })
+    const tagData: APITag = {
+      sys: {
+        id,
+      },
+      // TODO
+      name: id
+    }
 
-    await this.modifiedTags.set(id, tag)
+    const tag = new Tag(tagData)
 
-    return tag
-  }
-
-  async updateTag (id: string): Promise<Tag> {
-    this.assertRecording()
-
-    const tag = new Tag({ sys: { id }, name: undefined })
-
-    await this.modifiedTags.set(id, tag)
+    this.tags.push(tag)
 
     return tag
   }
 
+  // async updateTag (id: string): Promise<Tag> {
+  //   // This is not yet properly implemented.
+  //   this.assertRecording()
+
+  //   const tag = new Tag({ sys: { id }, name: undefined })
+
+  //   // await this.modifiedTags.set(id, tag)
+
+  //   return tag
+  // }
 
 
   public async recordRuntimeError (error) {

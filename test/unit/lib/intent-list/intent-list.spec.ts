@@ -6,7 +6,7 @@ import { migration as parseIntoIntents } from '../../../../src/lib/migration-ste
 const noOp = () => undefined
 
 describe('Intent List', function () {
-  it('initializes correctly', async function () {
+  it.only('initializes correctly', async function () {
     const intents = await parseIntoIntents(function up (migration) {
       const person = migration.createContentType('person', {
         description: 'A content type for a person',
@@ -36,9 +36,17 @@ describe('Intent List', function () {
       address.createField('houseExtension', {
         type: 'Symbol'
       })
+
+      const sampleTag = migration.createTag('sampleTagId', {
+        name: 'tag name'
+      });
     }, noOp, {})
+
     const intentList = new IntentList(intents)
-    expect(intentList.getIntents().length).to.equal(15)
+    // TODO: I updated this from 15 to 17, because the createTag
+    // method entails one createIntent and one updateIntent (the
+    // latter for setting the name) Is this an acceptable approach?
+    expect(intentList.getIntents().length).to.equal(17)
   })
 
   it('compresses ct create with field creates & updates', async function () {
