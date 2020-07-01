@@ -4,6 +4,11 @@ import chalk from 'chalk'
 import { PlanMessage } from '../interfaces/plan-message'
 
 export default class TagCreateIntent extends Intent {
+  isTagIntent () {
+    return true
+  }
+
+
   isTagCreate () {
     return true
   }

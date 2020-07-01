@@ -48,6 +48,7 @@ export default class Fetcher implements APIFetcher {
     // to know the full details about the associated content type.
     const ids: string[] = _.uniq(intentList.getIntents()
       .filter((intent) => (!intent.isEditorInterfaceIntent()))
+      .filter((intent) => (!intent.isTagIntent()))
       .reduce((ids, intent) => {
         const intentIds = intent.getRelatedContentTypeIds()
         return ids.concat(intentIds)

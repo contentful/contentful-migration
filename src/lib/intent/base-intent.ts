@@ -169,6 +169,10 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
+  isTagIntent (): boolean {
+    return false
+  }
+
   abstract toActions (): (APIAction | EntityAction)[]
   abstract toPlanMessage (): PlanMessage
 }
