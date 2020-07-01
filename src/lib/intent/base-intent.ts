@@ -155,6 +155,20 @@ export default abstract class Intent implements IntentInterface {
     return this.type
   }
 
+  // TODO: Should these be implemented here or in their own generic
+  // intent base class?
+  getTagId (): string {
+    return ''
+  }
+
+  isTagCreate (): boolean {
+    return false
+  }
+
+  isTagUpdate (): boolean {
+    return false
+  }
+
   abstract toActions (): (APIAction | EntityAction)[]
   abstract toPlanMessage (): PlanMessage
 }

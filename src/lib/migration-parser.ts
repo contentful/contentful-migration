@@ -65,6 +65,7 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
     intentList.addValidator(new FieldMovementValidator())
     intentList.addValidator(new ContentTransformIntentValidator())
     intentList.addValidator(new EntryDeriveIntentValidator())
+    // TODO Add a validator for tags
 
     const stepsValidationErrors = intentList.validate()
 

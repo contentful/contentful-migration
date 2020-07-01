@@ -2,7 +2,6 @@ import Intent from './base-intent'
 import { TagUpdateAction } from '../action/tag-update'
 import { PlanMessage } from '../interfaces/plan-message'
 import chalk from 'chalk'
-import { entries } from 'lodash'
 
 export default class TagUpdateIntent extends Intent {
   isTagUpdate () {
@@ -13,16 +12,12 @@ export default class TagUpdateIntent extends Intent {
     return this.payload.tagId
   }
 
-  // groupsWith (other: Intent): boolean {
-  //   const sameTag = other.getTagId() === this.getTagId()
-  //   return (
-  //     other.isTagUpdate() ||
-  //     other.isTagCreate() ||
-  //     other.isFieldCreate() ||
-  //     other.isFieldUpdate() ||
-  //     other.isFieldMove()
-  //  ) && sameTag
-  // }
+  groupsWith (other: Intent): boolean {
+    const sameTag = other.getTagId() === this.getTagId()
+    return (
+      other.isTagUpdate() || other.isTagCreate()
+   ) && sameTag
+  }
 
   endsGroup (): boolean {
     return false
@@ -31,18 +26,22 @@ export default class TagUpdateIntent extends Intent {
   toActions () {
     return [
       new TagUpdateAction(
-        this.getTagId()
+        this.getTagId(),
+        this.payload.props
       )
     ]
   }
 
   toPlanMessage (): PlanMessage {
-    const details = entries(this.payload.props).map(([key, value]) => {
-      return chalk`{italic ${key}}: ${JSON.stringify(value)}`
-    })
+
+    // TODO
+    // const details = entries(this.payload.props).map(([key, value]) => {
+    //   return chalk`{italic ${key}}: ${JSON.stringify(value)}`
+    // })
+    const details = [];
 
     return {
-      heading: chalk`Update Content Type {bold.yellow ${this.getTagId()}}`,
+      heading: chalk`Update Tag {bold.yellow ${this.getTagId()}}`,
       details,
       sections: []
     }

@@ -58,7 +58,7 @@ describe('the migration', function () {
     yield deleteDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
   }));
 
-  it.only('creates a content type', co(function * () {
+  it('creates a content type', co(function * () {
     yield migrator(createDog);
 
     const dogResult = yield request({
@@ -86,7 +86,7 @@ describe('the migration', function () {
     ]);
   }));
 
-  it.only('deletes a field', co(function * () {
+  it('deletes a field', co(function * () {
     yield Bluebird.delay(5000);
 
     yield migrator(function (migration) {
@@ -600,7 +600,7 @@ describe('the migration', function () {
     ]);
   }));
 
-  it('creates a tag', co(function * () {
+  it.only('creates a tag', co(function * () {
     yield migrator(createTag);
 
     const tag = yield request({
