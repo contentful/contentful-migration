@@ -506,17 +506,6 @@ class OfflineAPI {
     return tag
   }
 
-  async updateTag (id: string): Promise<Tag> {
-    // This is not yet properly implemented.
-    this.assertRecording()
-
-    const tag = new Tag({ sys: { id }, name: undefined })
-
-    await this.modifiedTags.set(id, tag)
-
-    return tag
-  }
-
 
   public async recordRuntimeError (error) {
     this.currentRuntimeErrorsRecorded.push(error)
