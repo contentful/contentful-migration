@@ -4,10 +4,12 @@ import APITag from '../interfaces/api-tag'
 class Tag {
   private _id: string
   private _name: string
+  private _version: number
 
   constructor (tag: APITag) {
     this._id = tag.sys.id
     this._name = tag.name
+    this._version = tag.sys.version
   }
 
   get id () {
@@ -18,6 +20,11 @@ class Tag {
     return this._name
   }
 
+  get version () {
+    return this._version
+  }
+
+
   setName (name: string) {
     this._name = name
   }
@@ -25,6 +32,7 @@ class Tag {
   toApiTag (): APITag {
     const sys = {
       id: this.id,
+      version: this.version
     }
     return {
       sys,

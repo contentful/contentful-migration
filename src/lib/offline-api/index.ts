@@ -505,9 +505,9 @@ class OfflineAPI {
     const tagData: APITag = {
       sys: {
         id,
+        version: 1
       },
-      // TODO
-      name: id
+      name: undefined
     }
 
     const tag = new Tag(tagData)

@@ -12,7 +12,6 @@ export default class TagCreateIntent extends Intent {
     return this.payload.tagId
   }
 
-  // ?
   groupsWith (): boolean {
     return false
   }
