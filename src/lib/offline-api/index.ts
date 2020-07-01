@@ -125,6 +125,17 @@ const saveEditorInterfacesRequest = function (contentTypeId: string, editorInter
   }
 }
 
+const saveTagRequest = function (tag: Tag): Request {
+  return {
+    method: 'PUT',
+    url: `/tags/${tag.id}`,
+    headers: {
+      'X-Contentful-Version': tag.version
+    },
+    data: tag.toApiTag()
+  }
+}
+
 class OfflineAPI {
   private modifiedContentTypes: Map<String, ContentType> = null
   private savedContentTypes: Map<String, ContentType> = null
