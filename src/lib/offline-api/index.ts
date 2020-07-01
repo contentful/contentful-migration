@@ -517,6 +517,39 @@ class OfflineAPI {
     return tag
   }
 
+  async saveTag (id: string) {
+    this.assertRecording()
+
+    const hasTag = await this.hasTag(id)
+
+    if (!hasTag) {
+      throw new Error(`Cannot save the tag (id: ${id}) because it does not exist`)
+    }
+
+    const tag = this.tags.find((tag) => tag.id === id)
+    // Store clone as a request
+    this.currentRequestsRecorded.push(saveTagRequest(tag.clone()))
+
+    // Mutate version bump
+    // TODO Check this.
+    tag.version = tag.version + 1
+
+    // TODO proper tag validation
+    // for (const validator of this.contentTypeValidators) {
+    //   if (validator.hooks.includes(ApiHook.SaveContentType)) {
+    //     const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
+    //     this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
+    //   }
+    // }
+
+    return tag
+  }
+
+
+  async hasTag (id: string): Promise<boolean> {
+    return this.tags.some((tag) => tag.id === id)
+  }
+
 
   public async recordRuntimeError (error) {
     this.currentRuntimeErrorsRecorded.push(error)

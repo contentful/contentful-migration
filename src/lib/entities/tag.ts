@@ -24,6 +24,9 @@ class Tag {
     return this._version
   }
 
+  set version (version: number) {
+    this._version = version
+  }
 
   setName (name: string) {
     this._name = name
