@@ -22,11 +22,14 @@ function mergeSections (sections: Section[]): Section {
 
 export default class ComposedIntent implements Intent {
   private contentTypeId: string
+  private tagId: string
+
   private intents: Intent[]
 
   constructor (intents: Intent[]) {
     // Intents share the same content type id
     this.contentTypeId = intents[0].getContentTypeId()
+    this.tagId = intents[0].getTagId()
     this.intents = intents
   }
 
@@ -141,7 +144,7 @@ export default class ComposedIntent implements Intent {
   }
 
   getTagId (): string {
-    return ''
+    return this.tagId
   }
 
   toActions () {
