@@ -27,6 +27,10 @@ export default class TagUpdateIntent extends Intent {
     return false
   }
 
+  shouldPublish(): boolean {
+    return false
+  }
+
   toActions () {
     return [
       new TagUpdateAction(
