@@ -25,6 +25,10 @@ export default class TagCreateIntent extends Intent {
     return false
   }
 
+  shouldPublish(): boolean {
+    return false
+  }
+
   toActions () {
     return [
       new TagCreateAction(this.getTagId())

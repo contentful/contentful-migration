@@ -138,6 +138,10 @@ export default class ComposedIntent implements Intent {
     return false
   }
 
+  getTagId (): string {
+    return ''
+  }
+
   toActions () {
     return flatten(this.intents.map((intent) => intent.toActions()))
   }

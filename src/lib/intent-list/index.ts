@@ -6,6 +6,8 @@ import { OfflineAPI } from '../offline-api/index'
 import { APIAction, EntityAction } from '../action/action'
 import { ContentTypeSaveAction } from '../action/content-type-save'
 import { ContentTypePublishAction } from '../action/content-type-publish'
+import { TagSaveAction } from '../action/tag-save'
+
 import ValidationError from '../interfaces/errors'
 
 class IntentList {
@@ -98,8 +100,9 @@ class IntentList {
       await api.startRecordingRequests(intent)
 
       for (const action of intent.toActions()) {
-
+        console.log('action: ', action);
         if (action instanceof APIAction) {
+          // Here with the TagCreateAction kommt der Fehler
           await action.applyTo(api)
           continue
         }
@@ -125,8 +128,18 @@ class IntentList {
 
       // Auto insert publish and save
 
+      // Here we have to differentiate between contentTypeSaveAction
+      // and other saveActions now.  This isTagIntent check does not
+      // yet work, because we are handling a composedIntent which has
+      // the default isTagIntent => false.
+      console.log('here');
       if (intent.shouldSave()) {
-        const save = new ContentTypeSaveAction(intent.getContentTypeId())
+        let save: any
+        if (intent.isTagIntent()) {
+          save = new TagSaveAction(intent.getTagId())
+        } else {
+          save = new ContentTypeSaveAction(intent.getContentTypeId())
+        }
         await save.applyTo(api)
       }
 

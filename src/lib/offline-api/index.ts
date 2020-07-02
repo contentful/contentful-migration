@@ -152,7 +152,7 @@ class OfflineAPI {
   private locales: string[] = []
   private tags: Tag[] = null
 
-  constructor (contentTypes: Map<String, ContentType> = new Map(), entries: Entry[] = [], locales: string[], editorInterfacesByContentType: Map<String, EditorInterfaces> = new Map<String, EditorInterfaces>()) {
+  constructor (contentTypes: Map<String, ContentType> = new Map(), entries: Entry[] = [], locales: string[], editorInterfacesByContentType: Map<String, EditorInterfaces> = new Map<String, EditorInterfaces>(), tags: Tag[] = []) {
     this.modifiedContentTypes = contentTypes
 
     // Initialize saved and published state
@@ -179,6 +179,7 @@ class OfflineAPI {
 
     this.entries = entries
     this.locales = locales
+    this.tags = tags
   }
 
   async getContentType (id: string): Promise<ContentType> {

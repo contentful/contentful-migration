@@ -9,6 +9,7 @@ interface Intent {
   getRelatedContentTypeIds (): string[]
   getFieldId (): string
   getRawType (): string
+  getTagId (): string
 
   requiresAllEntries (): boolean
 
