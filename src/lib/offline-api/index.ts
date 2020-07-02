@@ -126,6 +126,9 @@ const saveEditorInterfacesRequest = function (contentTypeId: string, editorInter
 }
 
 const saveTagRequest = function (tag: Tag): Request {
+  // TODO: This request is being sent with probably the wrong data,
+  // maybe too early?  Also, the test fails, probably because we need
+  // a nock request in test/integration/fixtures?
   return {
     method: 'PUT',
     url: `/tags/${tag.id}`,
@@ -506,7 +509,7 @@ class OfflineAPI {
     const tagData: APITag = {
       sys: {
         id,
-        version: 1
+        version: 0
       },
       name: undefined
     }

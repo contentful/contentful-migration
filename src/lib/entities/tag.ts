@@ -8,8 +8,8 @@ class Tag {
 
   constructor (tag: APITag) {
     this._id = tag.sys.id
-    this._name = tag.name
     this._version = tag.sys.version
+    this._name = tag.name
   }
 
   get id () {
