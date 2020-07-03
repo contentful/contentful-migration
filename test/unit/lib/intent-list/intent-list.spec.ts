@@ -77,4 +77,21 @@ describe('Intent List', function () {
     expect(compressedList.getIntents().length).to.equal(1)
     expect(compressedIntent.getIntents().length).to.equal(9)
   })
+
+  it('compresses tag create', async function () {
+    const intents = await parseIntoIntents(function up (migration) {
+      migration.createTag('bar', {
+        name: 'foo'
+      })
+    }, noOp, {})
+
+    const intentList = new IntentList(intents)
+    const compressedList = intentList.compressed()
+
+    const compressedIntent = compressedList.getIntents()[0] as ComposedIntent
+
+    expect(compressedList.getIntents().length).to.equal(1)
+    expect(compressedIntent.getIntents().length).to.equal(2)
+  })
+
 })
