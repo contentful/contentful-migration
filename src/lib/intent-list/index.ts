@@ -100,7 +100,6 @@ class IntentList {
       await api.startRecordingRequests(intent)
 
       for (const action of intent.toActions()) {
-        console.log('action: ', action);
         if (action instanceof APIAction) {
           // Here with the TagCreateAction kommt der Fehler
           await action.applyTo(api)
@@ -132,7 +131,6 @@ class IntentList {
       // and other saveActions now.  This isTagIntent check does not
       // yet work, because we are handling a composedIntent which has
       // the default isTagIntent => false.
-      console.log('here');
       if (intent.shouldSave()) {
         let save: any
         if (intent.isTagIntent()) {

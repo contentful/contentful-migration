@@ -8,7 +8,6 @@ export default class TagCreateIntent extends Intent {
     return true
   }
 
-
   isTagCreate () {
     return true
   }

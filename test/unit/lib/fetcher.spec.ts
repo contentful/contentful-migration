@@ -494,4 +494,10 @@ describe('Fetcher', function () {
     const result = ['a', 'b', 'c', 'd', 'e', 'f']
     expect(localeCodes).to.eql(result)
   })
+
+  // TODO Add tag fetcher test
+  // it('fetches all tags in the enviroment', async function () {
+
+  // })
+
 })

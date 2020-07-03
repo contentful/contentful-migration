@@ -125,6 +125,12 @@ export default class Fetcher implements APIFetcher {
     })
   }
 
+  // TODO: Add a getTagsInIntents method here.
+  // async getTagsInIntents(intentList: IntentList): Promise<APITag[]> {
+
+  // }
+
+
   private async fetchEditorInterface (id: string, editorInterfaces: Map<string, APIEditorInterfaces>) {
     try {
       const response = await this.makeRequest({
