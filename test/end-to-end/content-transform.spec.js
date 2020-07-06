@@ -86,7 +86,7 @@ describe('apply content transformation', function () {
       .expect(assert.plans.actions.apply())
       .end(async function () {
         const res = await getEntries(SOURCE_TEST_SPACE, environmentId, 'newsArticle');
-        const entriesWithoutSysAndMetadata = res.items.map(i => _.omit(i, 'sys')).map(i => _.omit(i, 'metadata'));
+        const entriesWithoutSysAndMetadata = res.items.map(i => _.omit(i, ['sys', 'metadata']));
         const expected = [
           {
             fields: {

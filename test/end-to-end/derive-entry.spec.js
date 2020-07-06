@@ -98,12 +98,11 @@ describe('apply derive entry transformation', function () {
         const dogs = await getEntries(SOURCE_TEST_SPACE, environmentId, 'dog');
         const owners = await getEntries(SOURCE_TEST_SPACE, environmentId, 'owner');
         const dogsEntriesWithoutSysAndMetadata = _.sortBy(
-          dogs.items.map(i => _.omit(i, 'sys')).map(i => _.omit(i, 'metadata')),
+          dogs.items.map(i => _.omit(i, ['sys', 'metadata'])),
           sortFn
         );
         const ownersEntriesWithoutSysAndMetadata = owners.items
-          .map(i => _.omit(i, 'sys'))
-          .map(i => _.omit(i, 'metadata'));
+          .map(i => _.omit(i, ['sys', 'metadata']));
 
         const expectedDogs = _.sortBy([
           {
