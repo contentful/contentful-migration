@@ -13,6 +13,7 @@ import ContentTransformIntentValidator from './intent-validator/content-transfor
 import IntentList from './intent-list'
 import * as errors from './errors/index'
 import Entry from './entities/entry'
+import Tag from './entities/tag'
 import Fetcher from './fetcher'
 import OfflineAPI, { RequestBatch } from './offline-api'
 import ValidationError, { InvalidActionError } from './interfaces/errors'
@@ -126,7 +127,23 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
 
     const locales = await fetcher.getLocalesForSpace()
 
-    const api = new OfflineAPI(existingCts, entries, locales, existingEditorInterfaces)
+    let apiTags
+    try {
+      apiTags = await fetcher.getTagsInIntents()
+    } catch (error) {
+      throw new errors.SpaceAccessError()
+    }
+
+    const existingTags: Map<String, Tag> = new Map()
+    for (const apiTag of apiTags) {
+      const tag = new Tag(apiTag)
+      existingTags.set(tag.id, tag)
+    }
+
+    // TODO: This tag fetcher does not work yet.
+    // const tags = await fetcher.getTagsInIntents()
+
+    const api = new OfflineAPI(existingCts, entries, locales, existingEditorInterfaces, existingTags)
 
     await intentList.compressed().applyTo(api)
 

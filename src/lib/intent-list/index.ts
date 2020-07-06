@@ -101,7 +101,6 @@ class IntentList {
 
       for (const action of intent.toActions()) {
         if (action instanceof APIAction) {
-          // Here with the TagCreateAction kommt der Fehler
           await action.applyTo(api)
           continue
         }
@@ -117,6 +116,14 @@ class IntentList {
             try {
               const editorInterfaces = await api.getEditorInterfaces(entityId)
               await action.applyTo(editorInterfaces)
+            } catch {
+              // TODO: maybe a better handling
+            }
+          }
+          if (entityType === 'TAG') {
+            try {
+              const tag = await api.getTag(entityId)
+              await action.applyTo(tag)
             } catch {
               // TODO: maybe a better handling
             }

@@ -28,7 +28,7 @@ class Tag {
     this._version = version
   }
 
-  setName (name: string) {
+  set name (name: string) {
     this._name = name
   }
 
@@ -39,7 +39,7 @@ class Tag {
     }
     return {
       sys,
-      name: this._name
+      name: this.name
     }
   }
 

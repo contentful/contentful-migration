@@ -6,7 +6,7 @@ import { migration as parseIntoIntents } from '../../../../src/lib/migration-ste
 const noOp = () => undefined
 
 describe('Intent List', function () {
-  it.only('initializes correctly', async function () {
+  it('initializes correctly', async function () {
     const intents = await parseIntoIntents(function up (migration) {
       const person = migration.createContentType('person', {
         description: 'A content type for a person',

@@ -126,9 +126,6 @@ const saveEditorInterfacesRequest = function (contentTypeId: string, editorInter
 }
 
 const saveTagRequest = function (tag: Tag): Request {
-  // TODO: This request is being sent with probably the wrong data,
-  // maybe too early?  Also, the test fails, probably because we need
-  // a nock request in test/integration/fixtures?
   return {
     method: 'PUT',
     url: `/tags/${tag.id}`,
@@ -153,10 +150,12 @@ class OfflineAPI {
   private requestBatches: RequestBatch[] = []
   private contentTypeValidators: ContentTypePayloadValidator[] = []
   private locales: string[] = []
-  private tags: Tag[] = null
+  // private tags: Tag[] = null
+  private modifiedTags: Map<String, Tag> = null
 
-  constructor (contentTypes: Map<String, ContentType> = new Map(), entries: Entry[] = [], locales: string[], editorInterfacesByContentType: Map<String, EditorInterfaces> = new Map<String, EditorInterfaces>(), tags: Tag[] = []) {
+  constructor (contentTypes: Map<String, ContentType> = new Map(), entries: Entry[] = [], locales: string[], editorInterfacesByContentType: Map<String, EditorInterfaces> = new Map<String, EditorInterfaces>(), tags: Map<String, Tag> = null) {
     this.modifiedContentTypes = contentTypes
+    this.modifiedTags = tags
 
     // Initialize saved and published state
     // These are (currently) exclusively needed for stateful validations
@@ -182,7 +181,7 @@ class OfflineAPI {
 
     this.entries = entries
     this.locales = locales
-    this.tags = tags
+    // this.tags = tags
   }
 
   async getContentType (id: string): Promise<ContentType> {
@@ -516,7 +515,7 @@ class OfflineAPI {
 
     const tag = new Tag(tagData)
 
-    this.tags.push(tag)
+    this.modifiedTags.set(id, tag)
 
     return tag
   }
@@ -530,13 +529,16 @@ class OfflineAPI {
       throw new Error(`Cannot save the tag (id: ${id}) because it does not exist`)
     }
 
-    const tag = this.tags.find((tag) => tag.id === id)
+    const tag = await this.getTag(id)
     // Store clone as a request
     this.currentRequestsRecorded.push(saveTagRequest(tag.clone()))
 
     // Mutate version bump
     // TODO Check this.
     tag.version = tag.version + 1
+
+    this.modifiedTags.set(id, tag)
+    // this.savedTags.set(id, tag.clone())
 
     // TODO proper tag validation
     // for (const validator of this.contentTypeValidators) {
@@ -551,8 +553,19 @@ class OfflineAPI {
 
 
   async hasTag (id: string): Promise<boolean> {
-    return this.tags.some((tag) => tag.id === id)
+    return this.modifiedTags.has(id)
+    // return this.tags.some((tag) => tag.id === id)
   }
+
+  async getTag (id: string): Promise<Tag> {
+    if (!this.hasTag(id)) {
+      throw new Error(`Cannot get Tag ${id} because it does not exist`)
+    }
+
+    return this.modifiedTags.get(id)
+  }
+
+
 
 
   public async recordRuntimeError (error) {

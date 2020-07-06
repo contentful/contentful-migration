@@ -607,9 +607,6 @@ describe('the migration', function () {
       method: 'GET',
       url: '/tags/sampletag'
     });
-
-    console.log('tag: ', tag);
-
     expect(tag.name).to.eql('marketing');
   }));
 });
