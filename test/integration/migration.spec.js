@@ -475,7 +475,7 @@ describe('the migration', function () {
       }
     });
 
-    const blogEntriesWithoutSys = blogEntries.items.map(i => _.omit(i, 'sys'));
+    const blogEntriesWithoutSysAndMetadata = blogEntries.items.map(i => _.omit(i, ['sys', 'metadata']));
 
     const entries = [
       {
@@ -491,7 +491,7 @@ describe('the migration', function () {
       }
     ];
 
-    expect(blogEntriesWithoutSys).to.eql(entries);
+    expect(blogEntriesWithoutSysAndMetadata).to.eql(entries);
   }));
 
   it('changes the editor interface', co(function * () {

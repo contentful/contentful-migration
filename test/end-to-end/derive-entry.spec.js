@@ -97,8 +97,12 @@ describe('apply derive entry transformation', function () {
 
         const dogs = await getEntries(SOURCE_TEST_SPACE, environmentId, 'dog');
         const owners = await getEntries(SOURCE_TEST_SPACE, environmentId, 'owner');
-        const dogsEntriesWithoutSys = _.sortBy(dogs.items.map(i => _.omit(i, 'sys')), sortFn);
-        const ownersEntriesWithoutSys = owners.items.map(i => _.omit(i, 'sys'));
+        const dogsEntriesWithoutSysAndMetadata = _.sortBy(
+          dogs.items.map(i => _.omit(i, ['sys', 'metadata'])),
+          sortFn
+        );
+        const ownersEntriesWithoutSysAndMetadata = owners.items
+          .map(i => _.omit(i, ['sys', 'metadata']));
 
         const expectedDogs = _.sortBy([
           {
@@ -117,7 +121,7 @@ describe('apply derive entry transformation', function () {
           }
         ], sortFn);
 
-        expect(dogsEntriesWithoutSys).to.eql(expectedDogs);
+        expect(dogsEntriesWithoutSysAndMetadata).to.eql(expectedDogs);
 
         const expectedOwners = [
           {
@@ -127,8 +131,8 @@ describe('apply derive entry transformation', function () {
             }
           }
         ];
-        expect(ownersEntriesWithoutSys.length).to.eql(1);
-        expect(ownersEntriesWithoutSys).to.eql(expectedOwners);
+        expect(ownersEntriesWithoutSysAndMetadata.length).to.eql(1);
+        expect(ownersEntriesWithoutSysAndMetadata).to.eql(expectedOwners);
         done();
       });
   });
