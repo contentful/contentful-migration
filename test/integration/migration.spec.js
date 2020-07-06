@@ -483,11 +483,17 @@ describe('the migration', function () {
         fields: {
           title: { 'en-US': 'hello!' },
           category: { 'en-US': 'hello!' }
+        },
+        metatada: {
+          tags: []
         }
       }, {
         fields: {
           title: { 'en-US': 'hello!' },
           category: { 'en-US': 'hello!' }
+        },
+        metatada: {
+          tags: []
         }
       }
     ];
