@@ -600,7 +600,7 @@ describe('the migration', function () {
     ]);
   }));
 
-  it.only('creates a tag', co(function * () {
+  it('creates a tag', co(function * () {
     yield migrator(createTag);
 
     const tag = yield request({
