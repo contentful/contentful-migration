@@ -495,9 +495,54 @@ describe('Fetcher', function () {
     expect(localeCodes).to.eql(result)
   })
 
-  // TODO Add tag fetcher test
-  // it('fetches all tags in the enviroment', async function () {
+  it('fetches all tags in the enviroment', async function () {
+    const intents = await buildIntents(function up (migration) {
+      migration.createTag('person', {
+        name: 'bar',
+        description: 'A content type for a person'
+      })
+    }, noOp, {})
 
-  // })
+    const request = sinon.stub()
+    request
+      .withArgs({
+        method: 'GET',
+        url: `/tags?limit=${Fetcher.perRequestLimit}`
+      })
+      .resolves({
+        items: [
+          {
+            name: 'Person Tag',
+            sys: {'id': 'person', 'type': 'Tag'}
+          },
+          {
+            name: 'A very goodboy',
+            sys: {'id': 'dog', 'type': 'Tag'}
+          },
+        ],
+        total: 2,
+        limit: 2
+      })
 
+    const intentList = new IntentList(intents)
+
+    const fetcher = new Fetcher(request)
+    const tags = await fetcher.getTagsInIntents()
+
+    expect(request).to.have.been.calledWith({
+      method: 'GET',
+      url: `/tags?limit=${Fetcher.perRequestLimit}`
+    })
+
+    expect(tags).to.eql([
+      {
+        name: 'Person Tag',
+        sys: {'id': 'person', 'type': 'Tag'}
+      },
+      {
+        name: 'A very goodboy',
+        sys: {'id': 'dog', 'type': 'Tag'}
+      }
+    ])
+  })
 })

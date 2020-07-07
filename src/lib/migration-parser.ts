@@ -119,15 +119,6 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
 
     const ctsWithEntryInfo = await fetcher.checkContentTypesForDeletedCts(intentList, contentTypes)
 
-    const payloadValidationErrors = validateChunks(intentList, ctsWithEntryInfo)
-
-    if (payloadValidationErrors.length) {
-      parseResult.payloadValidationErrors = payloadValidationErrors
-      return parseResult
-    }
-
-    const locales = await fetcher.getLocalesForSpace()
-
     let apiTags
     try {
       apiTags = await fetcher.getTagsInIntents()
@@ -140,6 +131,15 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
       const tag = new Tag(apiTag)
       existingTags.set(tag.id, tag)
     }
+
+    const payloadValidationErrors = validateChunks(intentList, ctsWithEntryInfo)
+
+    if (payloadValidationErrors.length) {
+      parseResult.payloadValidationErrors = payloadValidationErrors
+      return parseResult
+    }
+
+    const locales = await fetcher.getLocalesForSpace()
 
     const api = new OfflineAPI(existingCts, entries, locales, existingEditorInterfaces, existingTags)
 
