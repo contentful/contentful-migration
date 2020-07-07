@@ -2,6 +2,7 @@ import { migration as migrationSteps } from '../../../../../src/lib/migration-st
 import IntentList from '../../../../../src/lib/intent-list'
 import validate from '../../../../../src/lib/migration-chunks/validation'
 import { ContentType } from '../../../../../src/lib/entities/content-type'
+import { Tag } from '../../../../../src/lib/entities/tag'
 
 const noOp = () => undefined
 
@@ -15,18 +16,21 @@ const stripCallsites = (errors) => {
   })
 }
 
-const validateChunks = async function (migration, testCts: any[]) {
+const validateChunks = async function (migration, testCts: any[], testTags: any[] = []) {
   const intents = await migrationSteps(migration, noOp, {})
   const list = new IntentList(intents)
 
   const existingCts: ContentType[] = testCts.map((ct) => {
     const contentType = new ContentType(ct)
     contentType.hasEntries = ct.hasEntries
-
     return contentType
   })
 
-  let errors = validate(list, existingCts)
+  const existingTags: Tag[] = testTags.map((tag) => {
+    return new Tag(tag)
+  })
+
+  let errors = validate(list, existingCts, existingTags)
   const stripped = stripCallsites(errors)
   return stripped
 }

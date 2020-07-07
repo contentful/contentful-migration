@@ -147,6 +147,14 @@ export default class ComposedIntent implements Intent {
     return this.tagId
   }
 
+  isTagCreate (): boolean {
+    return false
+  }
+
+  isTagUpdate (): boolean {
+    return false
+  }
+
   toActions () {
     return flatten(this.intents.map((intent) => intent.toActions()))
   }

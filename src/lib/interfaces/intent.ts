@@ -34,6 +34,7 @@ interface Intent {
   isEditorInterfaceUpdate (): boolean
   isSidebarUpdate (): boolean
   isTagIntent (): boolean
+  isTagCreate (): boolean
 
   isComposedIntent (): boolean
 

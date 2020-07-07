@@ -132,7 +132,7 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
       existingTags.set(tag.id, tag)
     }
 
-    const payloadValidationErrors = validateChunks(intentList, ctsWithEntryInfo)
+    const payloadValidationErrors = validateChunks(intentList, ctsWithEntryInfo, apiTags)
 
     if (payloadValidationErrors.length) {
       parseResult.payloadValidationErrors = payloadValidationErrors
