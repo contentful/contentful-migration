@@ -608,5 +608,6 @@ describe('the migration', function () {
       url: '/tags/sampletag'
     });
     expect(tag.name).to.eql('marketing');
+    expect(tag.sys.id).to.eql('sampletag');
   }));
 });

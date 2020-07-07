@@ -10,6 +10,7 @@ import FieldUpdateIntentValidator from './intent-validator/field-update'
 import FieldMovementValidator from './intent-validator/field-movement'
 import EntryDeriveIntentValidator from './intent-validator/entry-derive'
 import ContentTransformIntentValidator from './intent-validator/content-transform'
+import TagUpdateIntentValidator from './intent-validator/tag-update'
 import IntentList from './intent-list'
 import * as errors from './errors/index'
 import Entry from './entities/entry'
@@ -66,7 +67,7 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
     intentList.addValidator(new FieldMovementValidator())
     intentList.addValidator(new ContentTransformIntentValidator())
     intentList.addValidator(new EntryDeriveIntentValidator())
-    // TODO Add a validator for tags
+    intentList.addValidator(new TagUpdateIntentValidator())
 
     const stepsValidationErrors = intentList.validate()
 
