@@ -1,6 +1,7 @@
 import IntentList from './intent-list'
 import { APIContentType, APIEditorInterfaces } from '../lib/interfaces/content-type'
 import APIEntry from '../lib/interfaces/api-entry'
+import APITag from '../lib/interfaces/api-tag'
 import { ContentType } from '../lib/entities/content-type'
 import * as _ from 'lodash'
 import Bluebird from 'bluebird'
@@ -46,6 +47,7 @@ export default class Fetcher implements APIFetcher {
   async getContentTypesInChunks (intentList: IntentList): Promise<APIContentType[]> {
     // Excluding editor interface intents here since, API-wise, editor interfaces don't require
     // to know the full details about the associated content type.
+    // Also excluding tags here as they are independent of cts.
     const ids: string[] = _.uniq(intentList.getIntents()
       .filter((intent) => (!intent.isEditorInterfaceIntent()))
       .filter((intent) => (!intent.isTagIntent()))
@@ -125,10 +127,10 @@ export default class Fetcher implements APIFetcher {
     })
   }
 
-  // TODO: Add a getTagsInIntents method here. This is just a
-  // placeholder that simulates no tags.
-  async getTagsInIntents (): Promise<[]> {
-    return []
+  async getTagsForEnvironment (): Promise<APITag[]> {    
+    // TODO: Does this actually work on env level?
+    const tags = await this.fetchAllPaginatedItems<APITag>('/tags')
+    return tags    
   }
 
   private async fetchEditorInterface (id: string, editorInterfaces: Map<string, APIEditorInterfaces>) {

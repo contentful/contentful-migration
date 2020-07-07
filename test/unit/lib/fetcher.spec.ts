@@ -507,7 +507,7 @@ describe('Fetcher', function () {
     request
       .withArgs({
         method: 'GET',
-        url: `/tags?limit=${Fetcher.perRequestLimit}`
+        url: `/tags?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&skip=0`
       })
       .resolves({
         items: [
@@ -527,11 +527,11 @@ describe('Fetcher', function () {
     const intentList = new IntentList(intents)
 
     const fetcher = new Fetcher(request)
-    const tags = await fetcher.getTagsInIntents()
+    const tags = await fetcher.getTagsForEnvironment()
 
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: `/tags?limit=${Fetcher.perRequestLimit}`
+      url: `/tags?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&skip=0`
     })
 
     expect(tags).to.eql([

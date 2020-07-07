@@ -121,7 +121,7 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
 
     let apiTags
     try {
-      apiTags = await fetcher.getTagsInIntents()
+      apiTags = await fetcher.getTagsForEnvironment()
     } catch (error) {
       throw new errors.SpaceAccessError()
     }
