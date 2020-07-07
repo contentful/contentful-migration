@@ -9,6 +9,14 @@ class TagCreateAction extends APIAction {
     this.tagId = tagId
   }
 
+  getEntityId (): string {
+    return this.tagId
+  }
+
+  getEntityType (): string {
+    return 'TAG'
+  }
+
   async applyTo (api: OfflineAPI) {
     await api.createTag(this.tagId)
   }

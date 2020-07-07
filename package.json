@@ -34,9 +34,7 @@
     "test-typescript-declaration": "tsc --strict --noEmit index.d.ts",
     "lint": "eslint 'examples/**/*.js' 'test/**/*.js' 'src/**/*.js' && tslint --project tsconfig-dev.json --config tslint.json -e '**/*.js'",
     "semantic-release": "semantic-release",
-    "travis-deploy-once": "travis-deploy-once",
-    "test-unit-debug": "NODE_ENV=test mocha debug --require test/setup-unit.js --recursive 'test/unit/**/**/*.spec.{js,ts}'",
-    "test-integration-debug": "NODE_ENV=test mocha debug --require test/integration/setup.js 'test/integration/**/*.spec.js'"
+    "travis-deploy-once": "travis-deploy-once"
   },
   "files": [
     "README.md",

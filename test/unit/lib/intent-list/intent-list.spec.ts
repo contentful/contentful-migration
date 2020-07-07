@@ -39,7 +39,7 @@ describe('Intent List', function () {
 
       const sampleTag = migration.createTag('sampleTagId', {
         name: 'tag name'
-      });
+      })
     }, noOp, {})
 
     const intentList = new IntentList(intents)

@@ -551,7 +551,6 @@ class OfflineAPI {
     return tag
   }
 
-
   async hasTag (id: string): Promise<boolean> {
     return this.modifiedTags.has(id)
     // return this.tags.some((tag) => tag.id === id)
@@ -564,9 +563,6 @@ class OfflineAPI {
 
     return this.modifiedTags.get(id)
   }
-
-
-
 
   public async recordRuntimeError (error) {
     this.currentRuntimeErrorsRecorded.push(error)

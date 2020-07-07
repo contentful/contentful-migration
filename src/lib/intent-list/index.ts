@@ -100,6 +100,7 @@ class IntentList {
       await api.startRecordingRequests(intent)
 
       for (const action of intent.toActions()) {
+
         if (action instanceof APIAction) {
           await action.applyTo(api)
           continue
@@ -134,10 +135,6 @@ class IntentList {
 
       // Auto insert publish and save
 
-      // Here we have to differentiate between contentTypeSaveAction
-      // and other saveActions now.  This isTagIntent check does not
-      // yet work, because we are handling a composedIntent which has
-      // the default isTagIntent => false.
       if (intent.shouldSave()) {
         let save: any
         if (intent.isTagIntent()) {

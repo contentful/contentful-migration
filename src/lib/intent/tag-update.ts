@@ -27,7 +27,7 @@ export default class TagUpdateIntent extends Intent {
     return false
   }
 
-  shouldPublish(): boolean {
+  shouldPublish (): boolean {
     return false
   }
 
@@ -46,7 +46,7 @@ export default class TagUpdateIntent extends Intent {
     // const details = entries(this.payload.props).map(([key, value]) => {
     //   return chalk`{italic ${key}}: ${JSON.stringify(value)}`
     // })
-    const details = [];
+    const details = []
 
     return {
       heading: chalk`Update Tag {bold.yellow ${this.getTagId()}}`,

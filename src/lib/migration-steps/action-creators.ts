@@ -357,7 +357,7 @@ const actionCreators = {
           }
         }
       })
-    },
+    }
   }
 }
 

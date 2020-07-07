@@ -297,70 +297,7 @@ class Tag extends DispatchProxy {
   }
 
   public dispatch? (step: Intent): void
-
-  // createField (id, init) {
-  //   const callsite = getFirstExternalCaller()
-  //   const fieldInstanceId = this.fieldInstanceIds.getNew(id)
-
-  //   this.dispatch(actionCreators.field.create(this.id, this.instanceId, id, fieldInstanceId, callsite))
-
-  //   const updateField = actionCreators.field.update.bind(null, this.id, this.instanceId, id, fieldInstanceId)
-  //   const field = new Field(id, init, {
-  //     dispatchUpdate: (callsite, property, value) => {
-  //       return this.dispatch(updateField(callsite, property, value))
-  //     }
-  //   })
-
-  //   return field
-  // }
-
-  // editField (id, init) {
-  //   const fieldInstanceId = this.fieldInstanceIds.getNew(id)
-
-  //   const updateField = actionCreators.field.update.bind(null, this.id, this.instanceId, id, fieldInstanceId)
-  //   const field = new Field(id, init, {
-  //     dispatchUpdate: (callsite, property, value) => {
-  //       return this.dispatch(updateField(callsite, property, value))
-  //     }
-  //   })
-
-  //   return field
-  // }
-
-  // moveField (id) {
-  //   const fieldInstanceId = this.fieldInstanceIds.getNew(id)
-
-  //   const contentTypeId = this.id
-  //   const contentTypeInstanceId = this.instanceId
-
-  //   const movement = new Movement({
-  //     dispatchUpdate: (callsite, property, value) => {
-  //       const action = actionCreators.field.move(
-  //         contentTypeId,
-  //         contentTypeInstanceId,
-  //         id,
-  //         fieldInstanceId,
-  //         callsite,
-  //         { direction: property, pivot: value }
-  //       )
-
-  //       this.dispatch(action)
-  //     }
-  //   })
-
-  //   return movement
-  // }
-
-  // deleteField (id) {
-  //   const callsite = getFirstExternalCaller()
-  //   const fieldInstanceId = this.fieldInstanceIds.getNew(id)
-
-  //   this.dispatch(actionCreators.field.delete(this.id, this.instanceId, id, fieldInstanceId, callsite))
-  // }
-
 }
-
-
 
 export async function migration (migrationCreator: Function, makeRequest: Function, config: ClientConfig): Promise<Intent[]> {
   const actions: Intent[] = []
@@ -425,7 +362,7 @@ export async function migration (migrationCreator: Function, makeRequest: Functi
       dispatch(actionCreators.tag.create(id, instanceId, callsite))
 
       return new Tag(id, instanceId, init, dispatch)
-    },
+    }
 
   }
 

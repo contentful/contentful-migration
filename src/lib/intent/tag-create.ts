@@ -24,7 +24,7 @@ export default class TagCreateIntent extends Intent {
     return false
   }
 
-  shouldPublish(): boolean {
+  shouldPublish (): boolean {
     return false
   }
 

@@ -140,9 +140,6 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
       existingTags.set(tag.id, tag)
     }
 
-    // TODO: This tag fetcher does not work yet.
-    // const tags = await fetcher.getTagsInIntents()
-
     const api = new OfflineAPI(existingCts, entries, locales, existingEditorInterfaces, existingTags)
 
     await intentList.compressed().applyTo(api)
