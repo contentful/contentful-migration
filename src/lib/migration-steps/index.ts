@@ -273,11 +273,9 @@ class ContentType extends DispatchProxy {
   }
 }
 
-// TODO: This is for now just a basic copy of the content type class!
 class Tag extends DispatchProxy {
   public id: string
   public instanceId: string
-  // public fieldInstanceIds?
 
   constructor (id, instanceId, props = {}, dispatch) {
     const dispatchUpdate = (callsite, propertyName, propertyValue) => {
@@ -288,7 +286,6 @@ class Tag extends DispatchProxy {
     this.id = id
     this.instanceId = instanceId
     this.dispatch = dispatch
-    // this.fieldInstanceIds = createInstanceIdManager()
 
     // Initialize from pros
     Object.keys(props).forEach((propertyName) => {

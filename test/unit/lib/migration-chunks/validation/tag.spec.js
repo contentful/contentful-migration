@@ -40,4 +40,8 @@ describe('content type plan validation', function () {
       ]);
     }));
   });
+
+  // TODO:
+  // describe('when creating a tag that already exists', function () {
+  // })
 });

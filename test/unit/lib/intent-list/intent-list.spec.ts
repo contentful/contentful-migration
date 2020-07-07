@@ -43,9 +43,6 @@ describe('Intent List', function () {
     }, noOp, {})
 
     const intentList = new IntentList(intents)
-    // TODO: I updated this from 15 to 17, because the createTag
-    // method entails one createIntent and one updateIntent (the
-    // latter for setting the name) Is this an acceptable approach?
     expect(intentList.getIntents().length).to.equal(17)
   })
 

@@ -150,7 +150,6 @@ class OfflineAPI {
   private requestBatches: RequestBatch[] = []
   private contentTypeValidators: ContentTypePayloadValidator[] = []
   private locales: string[] = []
-  // private tags: Tag[] = null
   private modifiedTags: Map<String, Tag> = null
 
   constructor (contentTypes: Map<String, ContentType> = new Map(), entries: Entry[] = [], locales: string[], editorInterfacesByContentType: Map<String, EditorInterfaces> = new Map<String, EditorInterfaces>(), tags: Map<String, Tag> = null) {
@@ -181,7 +180,6 @@ class OfflineAPI {
 
     this.entries = entries
     this.locales = locales
-    // this.tags = tags
   }
 
   async getContentType (id: string): Promise<ContentType> {
@@ -534,13 +532,14 @@ class OfflineAPI {
     this.currentRequestsRecorded.push(saveTagRequest(tag.clone()))
 
     // Mutate version bump
-    // TODO Check this.
     tag.version = tag.version + 1
 
     this.modifiedTags.set(id, tag)
+
+    // TODO Do we need the savedTags?
     // this.savedTags.set(id, tag.clone())
 
-    // TODO proper tag validation
+    // TODO What is validated here?
     // for (const validator of this.contentTypeValidators) {
     //   if (validator.hooks.includes(ApiHook.SaveContentType)) {
     //     const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
@@ -553,7 +552,6 @@ class OfflineAPI {
 
   async hasTag (id: string): Promise<boolean> {
     return this.modifiedTags.has(id)
-    // return this.tags.some((tag) => tag.id === id)
   }
 
   async getTag (id: string): Promise<Tag> {

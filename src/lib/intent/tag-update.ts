@@ -42,10 +42,6 @@ export default class TagUpdateIntent extends Intent {
 
   toPlanMessage (): PlanMessage {
 
-    // TODO
-    // const details = entries(this.payload.props).map(([key, value]) => {
-    //   return chalk`{italic ${key}}: ${JSON.stringify(value)}`
-    // })
     const details = []
 
     return {

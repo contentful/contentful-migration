@@ -14,9 +14,6 @@ interface RawStep {
 }
 
 interface RawStepMeta {
-  // TODO: As this will now be reused for tags as well and tags don't
-  // have cts, I made the contentTypeId property optional. Does this
-  // create new problems?
   contentTypeInstanceId?: string
   fieldInstanceId?: string
   tagInstanceId?: string
@@ -29,9 +26,6 @@ interface CallSiteInfo {
 }
 
 interface RawStepPayload {
-  // TODO: As this will now be reused for tags as well and tags don't
-  // have cts, I made the contentTypeId property optional. Does this
-  // create new problems?
   contentTypeId?: string
   fieldId?: string
   props?: RawStepProps
@@ -44,7 +38,6 @@ interface RawStepPayload {
   editorInterface?: EditorInterfaceInfo
   sidebarWidget?: SidebarWidgetInfo
   entryEditor?: EntryEditorInfo
-  // TODO: This should maybe live somewhere else:
   tagId?: string
 }
 
