@@ -127,10 +127,14 @@ export default class Fetcher implements APIFetcher {
     })
   }
 
-  async getTagsForEnvironment (): Promise<APITag[]> {    
-    // TODO: Does this actually work on env level?
+  async getTagsForEnvironment (intentList: IntentList): Promise<APITag[]> {
+    // Don't fetch tags if migration does not use any:
+    if (!(intentList.getIntents().some((intent) => intent.isTagIntent()))) {
+      return []
+    }
+
     const tags = await this.fetchAllPaginatedItems<APITag>('/tags')
-    return tags    
+    return tags
   }
 
   private async fetchEditorInterface (id: string, editorInterfaces: Map<string, APIEditorInterfaces>) {

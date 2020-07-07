@@ -513,12 +513,12 @@ describe('Fetcher', function () {
         items: [
           {
             name: 'Person Tag',
-            sys: {'id': 'person', 'type': 'Tag'}
+            sys: { 'id': 'person', 'type': 'Tag' }
           },
           {
             name: 'A very goodboy',
-            sys: {'id': 'dog', 'type': 'Tag'}
-          },
+            sys: { 'id': 'dog', 'type': 'Tag' }
+          }
         ],
         total: 2,
         limit: 2
@@ -527,7 +527,7 @@ describe('Fetcher', function () {
     const intentList = new IntentList(intents)
 
     const fetcher = new Fetcher(request)
-    const tags = await fetcher.getTagsForEnvironment()
+    const tags = await fetcher.getTagsForEnvironment(intentList)
 
     expect(request).to.have.been.calledWith({
       method: 'GET',
@@ -537,11 +537,11 @@ describe('Fetcher', function () {
     expect(tags).to.eql([
       {
         name: 'Person Tag',
-        sys: {'id': 'person', 'type': 'Tag'}
+        sys: { 'id': 'person', 'type': 'Tag' }
       },
       {
         name: 'A very goodboy',
-        sys: {'id': 'dog', 'type': 'Tag'}
+        sys: { 'id': 'dog', 'type': 'Tag' }
       }
     ])
   })
