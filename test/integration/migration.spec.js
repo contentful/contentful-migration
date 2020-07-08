@@ -600,14 +600,14 @@ describe('the migration', function () {
     ]);
   }));
 
-  it('creates a tag', co(function * () {
-    yield migrator(createTag);
+  it('creates a tag', async function () {
+    await migrator(createTag);
 
-    const tag = yield request({
+    const tag = await request({
       method: 'GET',
       url: '/tags/sampletag'
     });
     expect(tag.name).to.eql('marketing');
     expect(tag.sys.id).to.eql('sampletag');
-  }));
+  });
 });
