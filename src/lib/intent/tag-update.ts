@@ -4,16 +4,16 @@ import { PlanMessage } from '../interfaces/plan-message'
 import chalk from 'chalk'
 
 export default class TagUpdateIntent extends Intent {
-  isTagIntent () {
+  isTagIntent (): boolean {
     return true
   }
 
-  isTagUpdate () {
-    return true
-  }
-
-  getTagId () {
+  getTagId (): string {
     return this.payload.tagId
+  }
+
+  isTagUpdate (): boolean {
+    return true
   }
 
   groupsWith (other: Intent): boolean {

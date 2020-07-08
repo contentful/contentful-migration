@@ -4,16 +4,16 @@ import chalk from 'chalk'
 import { PlanMessage } from '../interfaces/plan-message'
 
 export default class TagCreateIntent extends Intent {
-  isTagIntent () {
+  isTagIntent (): boolean {
     return true
   }
 
-  isTagCreate () {
-    return true
-  }
-
-  getTagId () {
+  getTagId (): string {
     return this.payload.tagId
+  }
+
+  isTagCreate (): boolean {
+    return true
   }
 
   groupsWith (): boolean {
