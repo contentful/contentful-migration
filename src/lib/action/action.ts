@@ -9,14 +9,21 @@ abstract class APIAction {
 
 abstract class EntityAction {
   // Really should be using an ENUM here
-  abstract getEntityType (): string
+  abstract getEntityType (): EntityType
   abstract getEntityId (): string
   // For Entries, we could add `getEntityQuery` or something like that
   // So that we do not need to know Entry IDs to transform them
   abstract applyTo (entity: ContentType | Entry | EditorInterfaces | Tag): Promise<void>
 }
 
+enum EntityType {
+  ContentType = 'CONTENT_TYPE',
+  EditorInterface = 'EDITOR_INTERFACE',
+  Tag = 'TAG'
+}
+
 export {
   APIAction,
-  EntityAction
+  EntityAction,
+  EntityType
 }

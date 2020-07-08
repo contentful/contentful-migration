@@ -1,4 +1,4 @@
-import { APIAction } from './action'
+import { APIAction, EntityType } from './action'
 import OfflineAPI from '../offline-api/index'
 
 class TagCreateAction extends APIAction {
@@ -13,8 +13,8 @@ class TagCreateAction extends APIAction {
     return this.tagId
   }
 
-  getEntityType (): string {
-    return 'TAG'
+  getEntityType (): EntityType {
+    return EntityType.Tag
   }
 
   async applyTo (api: OfflineAPI) {

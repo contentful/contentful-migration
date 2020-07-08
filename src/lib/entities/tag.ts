@@ -1,4 +1,3 @@
-// import { cloneDeep } from 'lodash'
 import APITag from '../interfaces/api-tag'
 
 class Tag {

@@ -1,5 +1,5 @@
 import { EditorInterfaces } from '../entities/content-type'
-import { EntityAction } from './action'
+import { EntityAction, EntityType } from './action'
 
 class CopyEditorInterfaceAction extends EntityAction {
   protected contentTypeId: string
@@ -13,8 +13,8 @@ class CopyEditorInterfaceAction extends EntityAction {
     this.destinationFieldId = destinationFieldId
   }
 
-  getEntityType (): string {
-    return 'EDITOR_INTERFACE'
+  getEntityType (): EntityType {
+    return EntityType.EditorInterface
   }
 
   getEntityId (): string {

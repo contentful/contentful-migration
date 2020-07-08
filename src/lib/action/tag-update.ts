@@ -1,4 +1,4 @@
-import { EntityAction } from './action'
+import { EntityAction, EntityType } from './action'
 import Tag from '../entities/tag'
 
 class TagUpdateAction extends EntityAction {
@@ -15,8 +15,8 @@ class TagUpdateAction extends EntityAction {
     return this.tagId
   }
 
-  getEntityType (): string {
-    return 'TAG'
+  getEntityType (): EntityType {
+    return EntityType.Tag
   }
 
   async applyTo (tag: Tag) {

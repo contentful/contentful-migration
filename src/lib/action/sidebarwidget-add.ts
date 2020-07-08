@@ -1,5 +1,5 @@
 import { EditorInterfaces } from '../entities/content-type'
-import { EntityAction } from './action'
+import { EntityAction, EntityType } from './action'
 import { SidebarWidgetNamespace, SidebarWidgetSettings } from './sidebarwidget'
 
 class SidebarWidgetAddAction extends EntityAction {
@@ -25,8 +25,8 @@ class SidebarWidgetAddAction extends EntityAction {
     this.disabled = disabled
   }
 
-  getEntityType (): string {
-    return 'EDITOR_INTERFACE'
+  getEntityType (): EntityType {
+    return EntityType.EditorInterface
   }
 
   getEntityId (): string {
