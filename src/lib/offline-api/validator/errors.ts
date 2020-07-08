@@ -65,6 +65,11 @@ const errors = {
         return `"${propName}" validation expected to be "${expectedType}", but got "${actualType}"`
       }
     }
+  },
+  tag: {
+    REQUIRED_PROPERTY: (path) => {
+      return `The property "${path}" is required on a tag.`
+    }
   }
 }
 

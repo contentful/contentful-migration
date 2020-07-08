@@ -1,6 +1,7 @@
 import { omit, compact, get } from 'lodash'
 import FieldDeletionValidator from './validator/field-deletion'
 import { ContentTypePayloadValidator } from './validator/content-type'
+import { TagSchemaValidator } from './validator/tag'
 import { ContentType, EditorInterfaces } from '../entities/content-type'
 import Request from '../interfaces/request'
 import { Entry } from '../entities/entry'
@@ -25,7 +26,8 @@ export enum ApiHook {
   SaveContentType = 'SAVE_CONTENT_TYPE',
   PublishContentType = 'PUBLISH_CONTENT_TYPE',
   UnpublishContentType = 'UNPUBLISH_CONTENT_TYPE',
-  DeleteContentType = 'DELETE_CONTENT_TYPE'
+  DeleteContentType = 'DELETE_CONTENT_TYPE',
+  SaveTag = 'SAVE_TAG'
 }
 
 const saveContentTypeRequest = function (ct: ContentType): Request {
@@ -151,8 +153,10 @@ class OfflineAPI {
   private contentTypeValidators: ContentTypePayloadValidator[] = []
   private locales: string[] = []
   private modifiedTags: Map<String, Tag> = null
+  private savedTags: Map<String, Tag> = null
+  private tagValidators: TagSchemaValidator[] = []
 
-  constructor (contentTypes: Map<String, ContentType> = new Map(), entries: Entry[] = [], locales: string[], editorInterfacesByContentType: Map<String, EditorInterfaces> = new Map<String, EditorInterfaces>(), tags: Map<String, Tag> = null) {
+  constructor (contentTypes: Map<String, ContentType> = new Map(), entries: Entry[] = [], locales: string[], editorInterfacesByContentType: Map<String, EditorInterfaces> = new Map<String, EditorInterfaces>(), tags: Map<String, Tag> = new Map<String, Tag>()) {
     this.modifiedContentTypes = contentTypes
     this.modifiedTags = tags
 
@@ -165,6 +169,7 @@ class OfflineAPI {
     // TODO: Build a better abstraction over `Map` that allows easy cloning
     // and also allows us to implement async iterators
     this.savedContentTypes = new Map()
+    this.savedTags = new Map()
     this.publishedContentTypes = new Map()
     this.editorInterfaces = editorInterfacesByContentType
 
@@ -177,6 +182,8 @@ class OfflineAPI {
     this.contentTypeValidators.push(new DisplayFieldValidator())
     this.contentTypeValidators.push(new SchemaValidator())
     this.contentTypeValidators.push(new TypeChangeValidator())
+
+    this.tagValidators.push(new TagSchemaValidator())
 
     this.entries = entries
     this.locales = locales
@@ -535,17 +542,14 @@ class OfflineAPI {
     tag.version = tag.version + 1
 
     this.modifiedTags.set(id, tag)
+    this.savedTags.set(id, tag.clone())
 
-    // TODO Do we need the savedTags?
-    // this.savedTags.set(id, tag.clone())
-
-    // TODO What is validated here?
-    // for (const validator of this.contentTypeValidators) {
-    //   if (validator.hooks.includes(ApiHook.SaveContentType)) {
-    //     const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
-    //     this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
-    //   }
-    // }
+    for (const validator of this.tagValidators) {
+      if (validator.hooks.includes(ApiHook.SaveTag)) {
+        const errors = validator.validate(tag)
+        this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
+      }
+    }
 
     return tag
   }
