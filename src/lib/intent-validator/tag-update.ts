@@ -2,8 +2,7 @@ import SchemaValidator from './schema-validator'
 import * as Joi from 'joi'
 
 class TagUpdateStepValidator extends SchemaValidator {
-  // TODO: What are these protected properties and how can I delete
-  // them?
+  // TODO: Find a way to remove these protected properties as they are not used here.
   protected article = 'a'
   protected displayName = 'tag'
 

@@ -5,13 +5,9 @@ const Bluebird = require('bluebird');
 
 const validateChunks = require('./validate-chunks').default;
 
-describe('content type plan validation', function () {
+describe('tag plan validation', function () {
   describe('when creating a tag twice', function () {
     it('returns an error', Bluebird.coroutine(function * () {
-      const tags = [{
-        sys: { id: 'somethingElse' }
-      }];
-
       const errors = yield validateChunks(function up (migration) {
         migration.createTag('person', {
           name: 'foo'
@@ -19,7 +15,7 @@ describe('content type plan validation', function () {
         migration.createTag('person', {
           name: 'the new name'
         });
-      }, tags);
+      }, []);
 
       expect(errors).to.eql([
         {
@@ -41,7 +37,37 @@ describe('content type plan validation', function () {
     }));
   });
 
-  // TODO:
-  // describe('when creating a tag that already exists', function () {
-  // })
+  describe('when creating a tag that already exists', function () {
+    it('returns an error', Bluebird.coroutine(function * () {
+      const tags = [{
+        sys: { id: 'somethingElse' }
+      }, {
+        sys: { id: 'person' }
+      }];
+
+      const errors = yield validateChunks(function up (migration) {
+        migration.createTag('person', {
+          name: 'foo'
+        });
+      }, [], tags);
+
+      expect(errors).to.eql([
+        {
+          type: 'InvalidAction',
+          message: 'Tag with id "person" already exists.',
+          details: {
+            step: {
+              'type': 'tag/create',
+              'meta': {
+                'tagInstanceId': 'tag/person/0'
+              },
+              'payload': {
+                'tagId': 'person'
+              }
+            }
+          }
+        }
+      ]);
+    }));
+  });
 });

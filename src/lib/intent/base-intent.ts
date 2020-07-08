@@ -155,8 +155,6 @@ export default abstract class Intent implements IntentInterface {
     return this.type
   }
 
-  // TODO: Should these be implemented here or in their own generic
-  // intent base class?
   getTagId (): string {
     return ''
   }

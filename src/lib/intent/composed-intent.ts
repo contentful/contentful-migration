@@ -138,8 +138,8 @@ export default class ComposedIntent implements Intent {
   }
 
   isTagIntent (): boolean {
-    // TODO Is this a viable option? We have to be sure that composed
-    // intents are not a mix of ct intents and tag intents!
+    // TODO Is this a viable option? How can we be sure that composed
+    // intents are not a mix of ct intents and tag intents?
     return this.intents.some(intent => intent.isTagIntent())
   }
 
