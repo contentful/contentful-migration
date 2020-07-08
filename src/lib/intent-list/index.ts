@@ -122,12 +122,8 @@ class IntentList {
             }
           }
           if (entityType === EntityType.Tag) {
-            try {
-              const tag = await api.getTag(entityId)
-              await action.applyTo(tag)
-            } catch {
-              // TODO: maybe a better handling
-            }
+            const tag = await api.getTag(entityId)
+            await action.applyTo(tag)
           }
           continue
         }
