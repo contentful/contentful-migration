@@ -70,4 +70,41 @@ describe('tag plan validation', function () {
       ]);
     }));
   });
+
+  describe('when creating a tag with a name that already exists', function () {
+    it('returns an error', Bluebird.coroutine(function * () {
+      const tags = [{
+        sys: { id: 'somethingElse' }, name: 'foo'
+      }, {
+        sys: { id: 'person' }, name: 'more'
+      }];
+
+      const errors = yield validateChunks(function up (migration) {
+        migration.createTag('differentId', {
+          name: 'foo'
+        });
+      }, [], tags);
+
+      expect(errors).to.eql([
+        {
+          type: 'InvalidAction',
+          message: 'Tag with name "foo" already exists.',
+          details: {
+            step: {
+              'type': 'tag/update',
+              'meta': {
+                'tagInstanceId': 'tag/differentId/0'
+              },
+              'payload': {
+                'tagId': 'differentId',
+                'props': {
+                  'name': 'foo'
+                }
+              }
+            }
+          }
+        }
+      ]);
+    }));
+  });
 });

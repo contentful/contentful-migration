@@ -174,7 +174,7 @@ const errorCreators: ErrorCreators = {
     },
     update: {
       TAG_NAME_ALREADY_EXISTS: (name) => {
-        return `Tag with name "${name}" cannot be created more than once.`
+        return `Tag with name "${name}" already exists.`
       },
     },
   },
