@@ -171,13 +171,18 @@ const errorCreators: ErrorCreators = {
       TAG_ALREADY_EXISTS: (id) => {
         return `Tag with id "${id}" already exists.`
       }
-    }
+    },
+    update: {
+      TAG_NAME_ALREADY_EXISTS: (name) => {
+        return `Tag with name "${name}" cannot be created more than once.`
+      },
+    },
   },
   generic: {
     DUPLICATE_PROP: (prop, type, id) => {
       return `You are setting the property "${prop}" on ${type} "${id}" more than once. Please set it only once.`
     }
   }
-}
+}  
 
 export default errorCreators

@@ -49,9 +49,27 @@ class AlreadyExistingCreates implements TagValidation {
   }
 }
 
+class AlreadyExistingNameUpdates implements TagValidation {
+  message = tagErrors.update.TAG_NAME_ALREADY_EXISTS
+  validate (intent: Intent, context: ValidationContext) {
+    if (!intent.isTagUpdate()) {
+      return
+    }
+
+    const tagName = intent.toRaw().payload.props.name
+
+    if (!context.remoteTags.find(tag => tag.name === tagName)) {
+      return
+    }
+
+    return tagErrors.update.TAG_NAME_ALREADY_EXISTS(tagName)
+  }
+}
+
 const checks: TagValidation[] = [
   new DuplicateCreate(),
-  new AlreadyExistingCreates()
+  new AlreadyExistingCreates(),
+  new AlreadyExistingNameUpdates()
 ]
 
 export default function (intents: Intent[], tags: Tag[]): InvalidActionError[] {

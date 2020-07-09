@@ -40,9 +40,9 @@ describe('tag plan validation', function () {
   describe('when creating a tag that already exists', function () {
     it('returns an error', Bluebird.coroutine(function * () {
       const tags = [{
-        sys: { id: 'somethingElse' }
+        sys: { id: 'somethingElse' }, name: 'bar'
       }, {
-        sys: { id: 'person' }
+        sys: { id: 'person' }, name: 'more'
       }];
 
       const errors = yield validateChunks(function up (migration) {
