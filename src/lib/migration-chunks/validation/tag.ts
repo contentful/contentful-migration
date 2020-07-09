@@ -93,7 +93,6 @@ class EditBeforeCreates implements TagValidation {
   }
 }
 
-
 const checks: TagValidation[] = [
   new DuplicateCreate(),
   new AlreadyExistingIdCreates(),

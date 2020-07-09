@@ -613,6 +613,8 @@ describe('the migration', function () {
   });
 
   it('modifies the name of an existing tag', async function () {
+    // TODO: As with the content type tests, the tag tests depend on
+    // each other to pass. Is this okay?
     await migrator(modifyTag);
     const tag = await request({
       method: 'GET',
