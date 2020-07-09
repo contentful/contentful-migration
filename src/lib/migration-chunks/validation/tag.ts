@@ -32,7 +32,7 @@ class DuplicateCreate implements TagValidation {
   }
 }
 
-class AlreadyExistingCreates implements TagValidation {
+class AlreadyExistingIdCreates implements TagValidation {
   message = tagErrors.create.TAG_ALREADY_EXISTS
   validate (intent: Intent, context: ValidationContext) {
     if (!intent.isTagCreate()) {
@@ -66,10 +66,39 @@ class AlreadyExistingNameUpdates implements TagValidation {
   }
 }
 
+class EditBeforeCreates implements TagValidation {
+  validate (intent: Intent, context: ValidationContext) {
+    const isRelevant = intent.isTagUpdate()
+
+    if (!isRelevant) {
+      return
+    }
+
+    const checkTagId = (tagId) => {
+      const exists = context.remote.has(tagId) || context.created.has(tagId)
+      const willBeCreated = context.toBeCreated.has(tagId)
+      return { tagId, exists, willBeCreated }
+    }
+
+    const tagId = intent.getTagId()
+    const { exists, willBeCreated } = checkTagId(tagId)
+
+    if (exists || !willBeCreated) {
+      return
+    }
+
+    if (intent.isTagUpdate()) {
+      return tagErrors.update.TAG_NOT_YET_CREATED(tagId)
+    }
+  }
+}
+
+
 const checks: TagValidation[] = [
   new DuplicateCreate(),
-  new AlreadyExistingCreates(),
-  new AlreadyExistingNameUpdates()
+  new AlreadyExistingIdCreates(),
+  new AlreadyExistingNameUpdates(),
+  new EditBeforeCreates()
 ]
 
 export default function (intents: Intent[], tags: Tag[]): InvalidActionError[] {

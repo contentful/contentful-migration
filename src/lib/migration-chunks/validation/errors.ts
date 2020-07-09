@@ -175,6 +175,9 @@ const errorCreators: ErrorCreators = {
     update: {
       TAG_NAME_ALREADY_EXISTS: (name) => {
         return `Tag with name "${name}" already exists.`
+      },
+      TAG_NOT_YET_CREATED: (id) => {
+        return `You cannot set a property on tag "${id}" because it has not yet been created.`
       }
     }
   },

@@ -107,4 +107,43 @@ describe('tag plan validation', function () {
       ]);
     }));
   });
+
+  describe('when editing a tag before creating it', function () {
+    it('returns an error', Bluebird.coroutine(function * () {
+      const tags = [{
+        sys: { id: 'somethingElse' }
+      }];
+
+      const errors = yield validateChunks(function up (migration) {
+        migration.editTag('person', {
+          name: 'foo'
+        });
+
+        migration.createTag('person', {
+          name: 'the new name'
+        });
+      }, [], tags);
+
+      expect(errors).to.eql([
+        {
+          type: 'InvalidAction',
+          message: 'You cannot set a property on tag "person" because it has not yet been created.',
+          details: {
+            step: {
+              'type': 'tag/update',
+              'meta': {
+                'tagInstanceId': 'tag/person/0'
+              },
+              'payload': {
+                'tagId': 'person',
+                'props': {
+                  'name': 'foo'
+                }
+              }
+            }
+          }
+        }
+      ]);
+    }));
+  });
 });
