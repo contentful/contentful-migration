@@ -367,7 +367,7 @@ export async function migration (migrationCreator: Function, makeRequest: Functi
       const ct = new Tag(id, instanceId, changes, dispatch)
 
       return ct
-    },
+    }
 
     // TODO
     // deleteTag: function (id) {

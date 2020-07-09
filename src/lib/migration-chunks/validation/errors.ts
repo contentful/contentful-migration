@@ -175,14 +175,14 @@ const errorCreators: ErrorCreators = {
     update: {
       TAG_NAME_ALREADY_EXISTS: (name) => {
         return `Tag with name "${name}" already exists.`
-      },
-    },
+      }
+    }
   },
   generic: {
     DUPLICATE_PROP: (prop, type, id) => {
       return `You are setting the property "${prop}" on ${type} "${id}" more than once. Please set it only once.`
     }
   }
-}  
+}
 
 export default errorCreators
