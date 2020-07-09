@@ -145,7 +145,7 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
 
     const locales = await fetcher.getLocalesForSpace()
 
-    const api = new OfflineAPI(existingCts, entries, locales, existingEditorInterfaces, existingTags)
+    const api = new OfflineAPI({ contentTypes: existingCts, entries, locales, editorInterfacesByContentType: existingEditorInterfaces, tags: existingTags })
 
     await intentList.compressed().applyTo(api)
 
