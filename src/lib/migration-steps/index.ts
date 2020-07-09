@@ -273,6 +273,29 @@ class ContentType extends DispatchProxy {
   }
 }
 
+class Tag extends DispatchProxy {
+  public id: string
+  public instanceId: string
+
+  constructor (id, instanceId, props = {}, dispatch) {
+    const dispatchUpdate = (callsite, propertyName, propertyValue) => {
+      dispatch(actionCreators.tag.update(id, instanceId, callsite, propertyName, propertyValue))
+    }
+    super({ dispatchUpdate })
+
+    this.id = id
+    this.instanceId = instanceId
+    this.dispatch = dispatch
+
+    // Initialize from pros
+    Object.keys(props).forEach((propertyName) => {
+      this[propertyName](props[propertyName])
+    })
+  }
+
+  public dispatch? (step: Intent): void
+}
+
 export async function migration (migrationCreator: Function, makeRequest: Function, config: ClientConfig): Promise<Intent[]> {
   const actions: Intent[] = []
   const instanceIdManager = createInstanceIdManager()
@@ -327,7 +350,17 @@ export async function migration (migrationCreator: Function, makeRequest: Functi
       const instanceId = instanceIdManager.getNew(transformation.sourceContentType)
 
       dispatch(actionCreators.contentType.transformEntriesToType(instanceId, stripped, callsite))
+    },
+
+    createTag: function (id, init) {
+      const callsite = getFirstExternalCaller()
+      const instanceId = instanceIdManager.getNew(id)
+
+      dispatch(actionCreators.tag.create(id, instanceId, callsite))
+
+      return new Tag(id, instanceId, init, dispatch)
     }
+
   }
 
   // Create the migration

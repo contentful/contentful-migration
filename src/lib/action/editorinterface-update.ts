@@ -1,6 +1,6 @@
 import { EditorInterfaces } from '../entities/content-type'
 import { APIControlWidgetNamespace, APIEditorInterfaceSettings } from '../interfaces/content-type'
-import { EntityAction } from './action'
+import { EntityAction, EntityType } from './action'
 
 class UpdateEditorInterfaceAction extends EntityAction {
   protected contentTypeId: string
@@ -24,9 +24,9 @@ class UpdateEditorInterfaceAction extends EntityAction {
     this._widgetNamespace = widgetNamespace
   }
 
-  getEntityType (): string {
+  getEntityType (): EntityType {
     // TODO: enums
-    return 'EDITOR_INTERFACE'
+    return EntityType.EditorInterface
   }
 
   getEntityId (): string {

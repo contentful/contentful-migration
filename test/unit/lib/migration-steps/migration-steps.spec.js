@@ -30,6 +30,9 @@ describe('migration-steps', function () {
         address.createField('houseExtension', {
           type: 'Symbol'
         });
+
+        const newTag = migration.createTag('newTag');
+        newTag.name('my new tag');
       });
 
       expect(stripCallsites(plan)).to.eql([
@@ -153,6 +156,27 @@ describe('migration-steps', function () {
             'fieldId': 'houseExtension',
             'props': {
               'type': 'Symbol'
+            }
+          }
+        },
+        {
+          'type': 'tag/create',
+          'meta': {
+            'tagInstanceId': 'tag/newTag/0'
+          },
+          'payload': {
+            'tagId': 'newTag'
+          }
+        },
+        {
+          'type': 'tag/update',
+          'meta': {
+            'tagInstanceId': 'tag/newTag/0'
+          },
+          'payload': {
+            'tagId': 'newTag',
+            'props': {
+              'name': 'my new tag'
             }
           }
         }

@@ -10,9 +10,11 @@ import FieldUpdateIntentValidator from './intent-validator/field-update'
 import FieldMovementValidator from './intent-validator/field-movement'
 import EntryDeriveIntentValidator from './intent-validator/entry-derive'
 import ContentTransformIntentValidator from './intent-validator/content-transform'
+import TagUpdateIntentValidator from './intent-validator/tag-update'
 import IntentList from './intent-list'
 import * as errors from './errors/index'
 import Entry from './entities/entry'
+import Tag from './entities/tag'
 import Fetcher from './fetcher'
 import OfflineAPI, { RequestBatch } from './offline-api'
 import ValidationError, { InvalidActionError } from './interfaces/errors'
@@ -65,6 +67,7 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
     intentList.addValidator(new FieldMovementValidator())
     intentList.addValidator(new ContentTransformIntentValidator())
     intentList.addValidator(new EntryDeriveIntentValidator())
+    intentList.addValidator(new TagUpdateIntentValidator())
 
     const stepsValidationErrors = intentList.validate()
 
@@ -116,7 +119,24 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
 
     const ctsWithEntryInfo = await fetcher.checkContentTypesForDeletedCts(intentList, contentTypes)
 
-    const payloadValidationErrors = validateChunks(intentList, ctsWithEntryInfo)
+    let apiTags
+    try {
+      apiTags = await fetcher.getTagsForEnvironment(intentList)
+    } catch (error) {
+      throw new errors.SpaceAccessError()
+    }
+
+    const existingTags: Map<String, Tag> = new Map()
+    for (const apiTag of apiTags) {
+      const tag = new Tag(apiTag)
+      existingTags.set(tag.id, tag)
+    }
+
+    const tags: Tag[] = apiTags.map((apiTag) => {
+      return new Tag(apiTag)
+    })
+
+    const payloadValidationErrors = validateChunks(intentList, ctsWithEntryInfo, tags)
 
     if (payloadValidationErrors.length) {
       parseResult.payloadValidationErrors = payloadValidationErrors
@@ -125,7 +145,7 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
 
     const locales = await fetcher.getLocalesForSpace()
 
-    const api = new OfflineAPI(existingCts, entries, locales, existingEditorInterfaces)
+    const api = new OfflineAPI(existingCts, entries, locales, existingEditorInterfaces, existingTags)
 
     await intentList.compressed().applyTo(api)
 

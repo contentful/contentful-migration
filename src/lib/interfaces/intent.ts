@@ -9,6 +9,7 @@ interface Intent {
   getRelatedContentTypeIds (): string[]
   getFieldId (): string
   getRawType (): string
+  getTagId (): string
 
   requiresAllEntries (): boolean
 
@@ -32,6 +33,8 @@ interface Intent {
   isEditorInterfaceIntent (): boolean
   isEditorInterfaceUpdate (): boolean
   isSidebarUpdate (): boolean
+  isTagIntent (): boolean
+  isTagCreate (): boolean
 
   isComposedIntent (): boolean
 

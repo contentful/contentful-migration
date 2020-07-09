@@ -325,6 +325,39 @@ const actionCreators = {
         fieldId
       }
     })
+  },
+  tag: {
+    create: (id, instanceId, callsite): Intents.TagCreate => {
+      return new Intents.TagCreate({
+        type: 'tag/create',
+        meta: {
+          tagInstanceId: `tag/${id}/${instanceId}`,
+          callsite: {
+            file: callsite.getFileName(),
+            line: callsite.getLineNumber()
+          }
+        },
+        payload: { tagId: id }
+      })
+    },
+    update: (id, instanceId, callsite, property, value): Intents.TagUpdate => {
+      return new Intents.TagUpdate({
+        type: 'tag/update',
+        meta: {
+          tagInstanceId: `tag/${id}/${instanceId}`,
+          callsite: {
+            file: callsite.getFileName(),
+            line: callsite.getLineNumber()
+          }
+        },
+        payload: {
+          tagId: id,
+          props: {
+            [property]: value
+          }
+        }
+      })
+    }
   }
 }
 

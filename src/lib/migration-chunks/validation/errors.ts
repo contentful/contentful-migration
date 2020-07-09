@@ -12,7 +12,10 @@ interface ErrorCreators {
   entry: {
     [groupIdentifier: string]: ErrorGroup
   }
-  generic: ErrorGroup
+  tag: {
+    [groupIdentifier: string]: ErrorGroup
+  },
+  generic: ErrorGroup,
 }
 
 const errorCreators: ErrorCreators = {
@@ -157,6 +160,16 @@ const errorCreators: ErrorCreators = {
         const stringifiedFields = fields.map((f) => `"${f}"`).join(', ')
 
         return `You cannot derive entries to content type "${id}" because destination fields ${stringifiedFields} can't be found on it.`
+      }
+    }
+  },
+  tag: {
+    create: {
+      TAG_ALREADY_CREATED: (id) => {
+        return `Tag with id "${id}" cannot be created more than once.`
+      },
+      TAG_ALREADY_EXISTS: (id) => {
+        return `Tag with id "${id}" already exists.`
       }
     }
   },

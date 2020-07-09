@@ -1,4 +1,4 @@
-import { EntityAction } from './action'
+import { EntityAction, EntityType } from './action'
 
 abstract class FieldAction extends EntityAction {
   protected contentTypeId: string
@@ -10,8 +10,8 @@ abstract class FieldAction extends EntityAction {
     this.fieldId = fieldId
   }
 
-  getEntityType (): string {
-    return 'CONTENT_TYPE'
+  getEntityType (): EntityType {
+    return EntityType.ContentType
   }
 
   getEntityId (): string {

@@ -22,11 +22,14 @@ function mergeSections (sections: Section[]): Section {
 
 export default class ComposedIntent implements Intent {
   private contentTypeId: string
+  private tagId: string
+
   private intents: Intent[]
 
   constructor (intents: Intent[]) {
     // Intents share the same content type id
     this.contentTypeId = intents[0].getContentTypeId()
+    this.tagId = intents[0].getTagId()
     this.intents = intents
   }
 
@@ -132,6 +135,24 @@ export default class ComposedIntent implements Intent {
 
   isComposedIntent (): boolean {
     return true
+  }
+
+  isTagIntent (): boolean {
+    // TODO Is this a viable option? How can we be sure that composed
+    // intents are not a mix of ct intents and tag intents?
+    return this.intents.some(intent => intent.isTagIntent())
+  }
+
+  getTagId (): string {
+    return this.tagId
+  }
+
+  isTagCreate (): boolean {
+    return false
+  }
+
+  isTagUpdate (): boolean {
+    return false
   }
 
   toActions () {

@@ -14,8 +14,9 @@ interface RawStep {
 }
 
 interface RawStepMeta {
-  contentTypeInstanceId: string
+  contentTypeInstanceId?: string
   fieldInstanceId?: string
+  tagInstanceId?: string
   callsite: CallSiteInfo
 }
 
@@ -25,7 +26,7 @@ interface CallSiteInfo {
 }
 
 interface RawStepPayload {
-  contentTypeId: string
+  contentTypeId?: string
   fieldId?: string
   props?: RawStepProps
   transformation?: ContentTransform
@@ -37,6 +38,7 @@ interface RawStepPayload {
   editorInterface?: EditorInterfaceInfo
   sidebarWidget?: SidebarWidgetInfo
   entryEditor?: EntryEditorInfo
+  tagId?: string
 }
 
 interface EditorInterfaceInfo {

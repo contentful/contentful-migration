@@ -7,4 +7,5 @@ export default interface APIFetcher {
   getEditorInterfacesInIntents (intentList: IntentList)
   getLocalesForSpace ()
   checkContentTypesForDeletedCts (intentList: IntentList, contentTypes: ContentType[])
+  getTagsForEnvironment (intentList: IntentList)
 }

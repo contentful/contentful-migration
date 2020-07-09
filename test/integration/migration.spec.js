@@ -17,6 +17,7 @@ const changeEditorInterfaceWithExistingContentType = require('../../examples/17-
 const changeEditorInterfaceWithExistingContentTypeAddingHelpText = require('../../examples/18-change-field-control-for-existing-content-type-adding-help-text');
 const addSidebarWidgets = require('../../examples/24-add-sidebar-widgets-to-new-content-type');
 const addSidebarWidgetsToExisting = require('../../examples/27-add-sidebar-widgets-to-existing-content-type');
+const createTag = require('../../examples/28-create-tag');
 
 const { createMigrationParser } = require('../../built/lib/migration-parser');
 const co = Bluebird.coroutine;
@@ -598,4 +599,15 @@ describe('the migration', function () {
       }
     ]);
   }));
+
+  it('creates a tag', async function () {
+    await migrator(createTag);
+
+    const tag = await request({
+      method: 'GET',
+      url: '/tags/sampletag'
+    });
+    expect(tag.name).to.eql('marketing');
+    expect(tag.sys.id).to.eql('sampletag');
+  });
 });

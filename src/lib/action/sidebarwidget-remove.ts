@@ -1,5 +1,5 @@
 import { EditorInterfaces } from '../entities/content-type'
-import { EntityAction } from './action'
+import { EntityAction, EntityType } from './action'
 import { SidebarWidgetNamespace } from './sidebarwidget'
 
 class SidebarWidgetRemoveAction extends EntityAction {
@@ -16,8 +16,8 @@ class SidebarWidgetRemoveAction extends EntityAction {
     this.widgetNamespace = widgetNamespace
   }
 
-  getEntityType (): string {
-    return 'EDITOR_INTERFACE'
+  getEntityType (): EntityType {
+    return EntityType.EditorInterface
   }
 
   getEntityId (): string {

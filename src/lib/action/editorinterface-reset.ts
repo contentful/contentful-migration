@@ -1,5 +1,5 @@
 import { EditorInterfaces } from '../entities/content-type'
-import { EntityAction } from './action'
+import { EntityAction, EntityType } from './action'
 
 class ResetEditorInterfaceAction extends EntityAction {
   protected contentTypeId: string
@@ -11,8 +11,8 @@ class ResetEditorInterfaceAction extends EntityAction {
     this.fieldId = fieldId
   }
 
-  getEntityType (): string {
-    return 'EDITOR_INTERFACE'
+  getEntityType (): EntityType {
+    return EntityType.EditorInterface
   }
 
   getEntityId (): string {

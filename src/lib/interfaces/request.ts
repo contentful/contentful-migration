@@ -3,6 +3,9 @@ interface HttpRequest {
   url: string
   headers?: object
   data?: {
+    name?: string
+    description?: string
+    displayField?: string
     fields?: object
   }
 }
