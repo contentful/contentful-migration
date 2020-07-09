@@ -55,7 +55,7 @@ const checks: TagValidation[] = [
 ]
 
 export default function (intents: Intent[], tags: Tag[]): InvalidActionError[] {
-  const remote = tags.map((ct) => ct.id)
+  const remote = tags.map((tag) => tag.id)
   const toBeCreated = intents.filter((intent) => intent.isTagCreate()).map((intent) => intent.getTagId())
 
   let context = {
