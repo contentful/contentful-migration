@@ -102,12 +102,6 @@ export default function (intents: Intent[], tags: Tag[]): InvalidActionError[] {
       context.deleted.delete(tagId)
     }
 
-    // TODO
-    // if (intent.isTagDelete()) {
-    //   context.deleted.add(tagId)
-    //   context.remote.delete(tagId)
-    //   context.created.delete(tagId)
-    // }
   }
 
   return errors
