@@ -57,7 +57,7 @@ describe('Entry Derive', function () {
       }))
     ];
 
-    const api = new OfflineApi(contentTypes, entries, ['en-US']);
+    const api = new OfflineApi({ contentTypes, entries, locales: ['en-US'] });
     api.startRecordingRequests(null);
     await action.applyTo(api);
     api.stopRecordingRequests();
@@ -120,7 +120,7 @@ describe('Entry Derive', function () {
       }))
     ];
 
-    const api = new OfflineApi(contentTypes, entries, ['en-US']);
+    const api = new OfflineApi({ contentTypes, entries, locales: ['en-US'] });
     api.startRecordingRequests(null);
     await action.applyTo(api);
     api.stopRecordingRequests();
@@ -194,7 +194,7 @@ describe('Entry Derive', function () {
       }))
     ];
 
-    const api = new OfflineApi(contentTypes, entries, ['en-US']);
+    const api = new OfflineApi({ contentTypes, entries, locales: ['en-US'] });
     api.startRecordingRequests(null);
     await action.applyTo(api);
     api.stopRecordingRequests();

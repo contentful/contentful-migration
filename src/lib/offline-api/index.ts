@@ -22,6 +22,14 @@ interface RequestBatch {
   runtimeErrors: Error[],
 }
 
+interface OfflineApiOptions {
+  contentTypes: Map<String, ContentType>
+  entries: Entry[]
+  locales: string[]
+  editorInterfacesByContentType?: Map<String, EditorInterfaces>
+  tags?: Map<String, Tag>
+}
+
 export enum ApiHook {
   SaveContentType = 'SAVE_CONTENT_TYPE',
   PublishContentType = 'PUBLISH_CONTENT_TYPE',
@@ -156,7 +164,15 @@ class OfflineAPI {
   private savedTags: Map<String, Tag> = null
   private tagValidators: TagSchemaValidator[] = []
 
-  constructor (contentTypes: Map<String, ContentType> = new Map(), entries: Entry[] = [], locales: string[], editorInterfacesByContentType: Map<String, EditorInterfaces> = new Map<String, EditorInterfaces>(), tags: Map<String, Tag> = new Map<String, Tag>()) {
+  constructor (options: OfflineApiOptions) {
+    const {
+      contentTypes,
+      entries,
+      locales,
+      editorInterfacesByContentType = new Map<String, EditorInterfaces>(),
+      tags = new Map<String, Tag>()
+    } = options
+
     this.modifiedContentTypes = contentTypes
     this.modifiedTags = tags
 

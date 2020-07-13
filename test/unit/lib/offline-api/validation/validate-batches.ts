@@ -17,7 +17,7 @@ const validateBatches = async function (runMigration, contentTypes) {
     existingCTs.set(contentType.id, contentType)
   }
 
-  const api = new OfflineAPI(existingCTs, [], [])
+  const api = new OfflineAPI({ contentTypes: existingCTs, entries: [], locales: [] })
 
   await list.compressed().applyTo(api)
 

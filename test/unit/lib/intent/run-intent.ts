@@ -28,7 +28,7 @@ const runIntent = async function (
     existingEntries.push(new Entry(apiEntry))
   }
 
-  const api = new OfflineAPI(existingCTs, existingEntries, locales, editorInterfacesByContentType)
+  const api = new OfflineAPI({ contentTypes: existingCTs, entries: existingEntries, locales, editorInterfacesByContentType: editorInterfacesByContentType })
 
   await list.compressed().applyTo(api)
 
