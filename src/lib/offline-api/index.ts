@@ -146,6 +146,17 @@ const saveTagRequest = function (tag: Tag): Request {
   }
 }
 
+const deleteTagRequest = function (tag: Tag): Request {
+  return {
+    method: 'DELETE',
+    url: `/tags/${tag.id}`,
+    headers: {
+      'X-Contentful-Version': tag.version
+    },
+    data: tag.toApiTag()
+  }
+}
+
 class OfflineAPI {
   private modifiedContentTypes: Map<String, ContentType> = null
   private savedContentTypes: Map<String, ContentType> = null
@@ -568,6 +579,25 @@ class OfflineAPI {
     }
 
     return tag
+  }
+
+
+  async deleteTag (id: string) {
+    this.assertRecording()
+
+    const tag = await this.getTag(id)
+    // Store clone as a request
+    this.currentRequestsRecorded.push(deleteTagRequest(tag.clone()))
+
+    this.modifiedTags.delete(id)
+    this.savedTags.delete(id)
+
+    // for (const validator of this.tagValidators) {
+    //   if (validator.hooks.includes(ApiHook.DeleteTag)) {
+    //     const errors = validator.validate(tag, this.savedTags.get(id), this.publishedContentTypes.get(id))
+    //     this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
+    //   }
+    // }
   }
 
   async hasTag (id: string): Promise<boolean> {

@@ -357,6 +357,19 @@ const actionCreators = {
           }
         }
       })
+    },
+    delete: (id, instanceId, callsite): Intents.TagDelete => {
+      return new Intents.TagDelete({
+        type: 'tag/delete',
+        meta: {
+          tagInstanceId: `tag/${id}/${instanceId}`,
+          callsite: {
+            file: callsite.getFileName(),
+            line: callsite.getLineNumber()
+          }
+        },
+        payload: { tagId: id }
+      })
     }
   }
 }

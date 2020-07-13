@@ -21,6 +21,8 @@ import EntryEditorResetToDefaultIntent from './entryeditor-reset-to-default'
 import EntryEditorConfigureIntent from './entryeditor-configure'
 import TagCreateIntent from './tag-create'
 import TagUpdateIntent from './tag-update'
+import TagDeleteIntent from './tag-update'
+
 
 export {
   Intent as default,
@@ -46,5 +48,6 @@ export {
   EntryEditorResetToDefaultIntent as EntryEditorResetToDefault,
   EntryEditorConfigureIntent as EntryEditorConfigure,
   TagCreateIntent as TagCreate,
-  TagUpdateIntent as TagUpdate
+  TagUpdateIntent as TagUpdate,
+  TagDeleteIntent as TagDelete
 }

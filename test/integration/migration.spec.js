@@ -19,6 +19,7 @@ const addSidebarWidgets = require('../../examples/24-add-sidebar-widgets-to-new-
 const addSidebarWidgetsToExisting = require('../../examples/27-add-sidebar-widgets-to-existing-content-type');
 const createTag = require('../../examples/28-create-tag');
 const modifyTag = require('../../examples/29-modify-tag');
+const deleteTag = require('../../examples/30-delete-tag');
 
 const { createMigrationParser } = require('../../built/lib/migration-parser');
 const co = Bluebird.coroutine;
@@ -623,4 +624,23 @@ describe('the migration', function () {
     expect(tag.name).to.eql('better marketing');
     expect(tag.sys.id).to.eql('sampletag');
   });
+
+  it('deletes a tag', co(function * () {
+    let result;
+    yield migrator(deleteTag);
+
+    try {
+      yield request({
+        method: 'GET',
+        url: `/tags/sampletag`,
+        headers: {
+          'X-Contentful-Beta-Dev-Spaces': 1
+        }
+      });
+    } catch (err) {
+      expect(err.name).to.eql('NotFound');
+    }
+
+    expect(result).to.be.undefined();
+  }));
 });

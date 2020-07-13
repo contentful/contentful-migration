@@ -179,6 +179,17 @@ const errorCreators: ErrorCreators = {
       TAG_NOT_YET_CREATED: (id) => {
         return `You cannot set a property on tag "${id}" because it has not yet been created.`
       }
+    },
+    delete: {
+      TAG_DOES_NOT_EXIST: (id) => {
+        return `You cannot delete TAG "${id}" because it does not exist.`
+      },
+      TAG_ALREADY_DELETED: (id) => {
+        return `Tag with id "${id}" cannot be deleted more than once.`
+      },
+      EDIT_AFTER_DELETE: (id) => {
+        return `Tag with id "${id}" cannot be edited because it was deleted before.`
+      }
     }
   },
   generic: {

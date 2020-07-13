@@ -363,18 +363,15 @@ export async function migration (migrationCreator: Function, makeRequest: Functi
 
     editTag: function (id, changes) {
       const instanceId = instanceIdManager.getNew(id)
-
       const ct = new Tag(id, instanceId, changes, dispatch)
-
       return ct
-    }
+    },
 
-    // TODO
-    // deleteTag: function (id) {
-    //   const callsite = getFirstExternalCaller()
-    //   const instanceId = instanceIdManager.getNew(id)
-    //   // dispatch(actionCreators.contentType.delete(id, instanceId, callsite))
-    // }
+    deleteTag: function (id) {
+      const callsite = getFirstExternalCaller()
+      const instanceId = instanceIdManager.getNew(id)
+      dispatch(actionCreators.tag.delete(id, instanceId, callsite))
+    }
   }
 
   // Create the migration
