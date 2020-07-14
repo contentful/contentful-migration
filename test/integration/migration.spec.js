@@ -625,22 +625,18 @@ describe('the migration', function () {
     expect(tag.sys.id).to.eql('sampletag');
   });
 
-  it('deletes a tag', co(function * () {
+  it('deletes a tag', async function () {
     let result;
-    yield migrator(deleteTag);
+    await migrator(deleteTag);
 
     try {
-      yield request({
+      result = await request({
         method: 'GET',
-        url: `/tags/sampletag`,
-        headers: {
-          'X-Contentful-Beta-Dev-Spaces': 1
-        }
+        url: `/tags/sampletag`
       });
     } catch (err) {
       expect(err.name).to.eql('NotFound');
     }
-
     expect(result).to.be.undefined();
-  }));
+  });
 });

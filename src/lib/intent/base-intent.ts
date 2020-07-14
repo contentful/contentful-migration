@@ -167,6 +167,10 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
+  isTagDelete (): boolean {
+    return false
+  }
+
   isTagIntent (): boolean {
     return false
   }

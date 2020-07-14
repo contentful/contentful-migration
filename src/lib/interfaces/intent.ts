@@ -36,6 +36,7 @@ interface Intent {
   isTagIntent (): boolean
   isTagCreate (): boolean
   isTagUpdate (): boolean
+  isTagDelete (): boolean
 
   isComposedIntent (): boolean
 

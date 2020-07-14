@@ -41,7 +41,7 @@ export default class TagDeleteIntent extends Intent {
 
   toPlanMessage (): PlanMessage {
     return {
-      heading: chalk`Delete Content Type {bold.yellow ${this.getTagId()}}`,
+      heading: chalk`Delete Tag {bold.yellow ${this.getTagId()}}`,
       details: [],
       sections: []
     }

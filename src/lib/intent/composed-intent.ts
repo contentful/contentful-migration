@@ -155,6 +155,10 @@ export default class ComposedIntent implements Intent {
     return false
   }
 
+  isTagDelete (): boolean {
+    return false
+  }
+
   toActions () {
     return flatten(this.intents.map((intent) => intent.toActions()))
   }
