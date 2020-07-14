@@ -23,7 +23,6 @@ import TagCreateIntent from './tag-create'
 import TagUpdateIntent from './tag-update'
 import TagDeleteIntent from './tag-delete'
 
-
 export {
   Intent as default,
   Intent,

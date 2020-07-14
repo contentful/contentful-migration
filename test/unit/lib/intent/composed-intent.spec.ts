@@ -86,7 +86,7 @@ describe('ComposedIntent', function () {
       expect(message).to.eql({
         heading: chalk`Create Tag {bold.yellow test}`,
         details: [
-          chalk`{italic name}: "Test Tag"`,
+          chalk`{italic name}: "Test Tag"`
         ],
         sections: []
       })

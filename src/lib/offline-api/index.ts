@@ -581,7 +581,6 @@ class OfflineAPI {
     return tag
   }
 
-
   async deleteTag (id: string) {
     this.assertRecording()
 

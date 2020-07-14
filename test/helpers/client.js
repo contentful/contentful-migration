@@ -105,5 +105,6 @@ module.exports = {
   deleteDevEnvironment,
   getDevContentType,
   getEntries,
-  getDevEditorInterface
+  getDevEditorInterface,
+  getDevTag
 };
