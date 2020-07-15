@@ -1,16 +1,12 @@
 'use strict';
 
 const { expect } = require('chai');
-const Bluebird = require('bluebird');
-
 const validateChunks = require('./validate-chunks').default;
-
-// TODO Replace Bluebird
 
 describe('tag plan validation', function () {
   describe('when creating a tag twice', function () {
-    it('returns an error', Bluebird.coroutine(function * () {
-      const errors = yield validateChunks(function up (migration) {
+    it('returns an error', async function () {
+      const errors = await validateChunks(function up (migration) {
         migration.createTag('person', {
           name: 'foo'
         });
@@ -36,16 +32,16 @@ describe('tag plan validation', function () {
           }
         }
       ]);
-    }));
+    });
   });
 
   describe('when editing a tag before creating it', function () {
-    it('returns an error', Bluebird.coroutine(function * () {
+    it('returns an error', async function () {
       const tags = [{
         sys: { id: 'somethingElse' }
       }];
 
-      const errors = yield validateChunks(function up (migration) {
+      const errors = await validateChunks(function up (migration) {
         migration.editTag('person', {
           name: 'foo'
         });
@@ -75,19 +71,18 @@ describe('tag plan validation', function () {
           }
         }
       ]);
-    }));
+    });
   });
 
-  // TODO
   describe('when editing a tag that already exists and creating it again later on', function () {
-    it('returns an error', Bluebird.coroutine(function * () {
+    it('returns an error', async function () {
       const tags = [{
         sys: { id: 'somethingElse' }
       }, {
         sys: { id: 'person' }
       }];
 
-      const errors = yield validateChunks(function up (migration) {
+      const errors = await validateChunks(function up (migration) {
         migration.editTag('person', {
           name: 'foo'
         });
@@ -118,18 +113,18 @@ describe('tag plan validation', function () {
           }
         }
       ]);
-    }));
+    });
   });
 
   describe('when creating a tag that already exists', function () {
-    it('returns an error', Bluebird.coroutine(function * () {
+    it('returns an error', async function () {
       const tags = [{
         sys: { id: 'somethingElse' }, name: 'bar'
       }, {
         sys: { id: 'person' }, name: 'more'
       }];
 
-      const errors = yield validateChunks(function up (migration) {
+      const errors = await validateChunks(function up (migration) {
         migration.createTag('person', {
           name: 'foo'
         });
@@ -152,18 +147,18 @@ describe('tag plan validation', function () {
           }
         }
       ]);
-    }));
+    });
   });
 
   describe('when creating a tag with a name that already exists', function () {
-    it('returns an error', Bluebird.coroutine(function * () {
+    it('returns an error', async function () {
       const tags = [{
         sys: { id: 'somethingElse' }, name: 'foo'
       }, {
         sys: { id: 'person' }, name: 'more'
       }];
 
-      const errors = yield validateChunks(function up (migration) {
+      const errors = await validateChunks(function up (migration) {
         migration.createTag('differentId', {
           name: 'foo'
         });
@@ -189,16 +184,16 @@ describe('tag plan validation', function () {
           }
         }
       ]);
-    }));
+    });
   });
 
   describe('when editing a tag that does not exist', function () {
-    it('returns an error', Bluebird.coroutine(function * () {
+    it('returns an error', async function () {
       const tags = [{
         sys: { id: 'somethingElse' }
       }];
 
-      const errors = yield validateChunks(function up (migration) {
+      const errors = await validateChunks(function up (migration) {
         migration.editTag('person', {
           name: 'foo'
         });
@@ -250,14 +245,14 @@ describe('tag plan validation', function () {
           }
         }
       ]);
-    }));
+    });
   });
 
   describe('when setting the same prop more than once in one chunk', function () {
-    it('returns an error', Bluebird.coroutine(function * () {
+    it('returns an error', async function () {
       const tags = [];
 
-      const errors = yield validateChunks(function up (migration) {
+      const errors = await validateChunks(function up (migration) {
         const person = migration.createTag('person').name('Person');
         person.name('Person McPersonface');
       }, [], tags);
@@ -282,6 +277,6 @@ describe('tag plan validation', function () {
           }
         }
       ]);
-    }));
+    });
   });
 });

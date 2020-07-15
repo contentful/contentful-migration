@@ -1,20 +1,16 @@
 'use strict';
 
 const { expect } = require('chai');
-const Bluebird = require('bluebird');
-
 const validateChunks = require('./validate-chunks').default;
-
-// TODO Remove Bluebird
 
 describe('tag delete validation', function () {
   describe('when deleting a tag twice', function () {
-    it('returns an error', Bluebird.coroutine(function * () {
+    it('returns an error', async function () {
       const tags = [{
         sys: { id: 'foo' }
       }];
 
-      const errors = yield validateChunks(function up (migration) {
+      const errors = await validateChunks(function up (migration) {
         migration.deleteTag('foo');
         migration.deleteTag('foo');
       }, [], tags);
@@ -36,18 +32,18 @@ describe('tag delete validation', function () {
           }
         }
       ]);
-    }));
+    });
   });
 
   describe('when deleting several tags several times', function () {
-    it('returns the right errors', Bluebird.coroutine(function * () {
+    it('returns the right errors', async function () {
       const tags = [
         { sys: { id: 'foo' } },
         { sys: { id: 'bar' } },
         { sys: { id: 'baz' } }
       ];
 
-      const errors = yield validateChunks(function up (migration) {
+      const errors = await validateChunks(function up (migration) {
         migration.deleteTag('foo');
         migration.deleteTag('bar');
         migration.deleteTag('baz');
@@ -151,18 +147,18 @@ describe('tag delete validation', function () {
           }
         }
       ]);
-    }));
+    });
   });
 
   describe('when deleting a tag that does not exist', function () {
-    it('returns an error', Bluebird.coroutine(function * () {
+    it('returns an error', async function () {
       const tags = [{
         sys: { id: 'foo' }
       }, {
         sys: { id: 'bar' }
       }];
 
-      const errors = yield validateChunks(function up (migration) {
+      const errors = await validateChunks(function up (migration) {
         migration.deleteTag('baz');
       }, [], tags);
 
@@ -183,16 +179,16 @@ describe('tag delete validation', function () {
           }
         }
       ]);
-    }));
+    });
   });
 
   describe('when editing a tag that has been deleted earlier', function () {
-    it('returns an error', Bluebird.coroutine(function * () {
+    it('returns an error', async function () {
       const tags = [{
         sys: { id: 'foo' }
       }];
 
-      const errors = yield validateChunks(function up (migration) {
+      const errors = await validateChunks(function up (migration) {
         migration.deleteTag('foo');
         migration.editTag('foo').name('another name');
       }, [], tags);
@@ -217,9 +213,9 @@ describe('tag delete validation', function () {
           }
         }
       ]);
-    }));
+    });
 
-    it('returns an error also when several edits after several deletes', Bluebird.coroutine(function * () {
+    it('returns an error also when several edits after several deletes', async function () {
       const tags = [{
         sys: { id: 'foo' },
         name: 'tag name'
@@ -227,7 +223,7 @@ describe('tag delete validation', function () {
         sys: { id: 'bar' }
       }];
 
-      const errors = yield validateChunks(function up (migration) {
+      const errors = await validateChunks(function up (migration) {
         migration.editTag('bar').name('confusedYet?');
         migration.deleteTag('foo');
         migration.editTag('foo').name('yet?');
@@ -273,6 +269,6 @@ describe('tag delete validation', function () {
           }
         }
       ]);
-    }));
+    });
   });
 });
