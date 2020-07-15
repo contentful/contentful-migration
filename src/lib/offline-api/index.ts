@@ -35,7 +35,8 @@ export enum ApiHook {
   PublishContentType = 'PUBLISH_CONTENT_TYPE',
   UnpublishContentType = 'UNPUBLISH_CONTENT_TYPE',
   DeleteContentType = 'DELETE_CONTENT_TYPE',
-  SaveTag = 'SAVE_TAG'
+  SaveTag = 'SAVE_TAG',
+  DeleteTag = 'DELETE_TAG'
 }
 
 const saveContentTypeRequest = function (ct: ContentType): Request {
@@ -337,6 +338,7 @@ class OfflineAPI {
     await this.publishedContentTypes.delete(id)
     await this.savedContentTypes.delete(id)
 
+    // TODO: Where is the DeleteContentType hook actually being implemented?
     for (const validator of this.contentTypeValidators) {
       if (validator.hooks.includes(ApiHook.DeleteContentType)) {
         const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
@@ -591,12 +593,14 @@ class OfflineAPI {
     this.modifiedTags.delete(id)
     this.savedTags.delete(id)
 
-    // for (const validator of this.tagValidators) {
-    //   if (validator.hooks.includes(ApiHook.DeleteTag)) {
-    //     const errors = validator.validate(tag, this.savedTags.get(id), this.publishedContentTypes.get(id))
-    //     this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
-    //   }
-    // }
+    // TODO Do we need this in the case of tags? What does it validate
+    // that has not been validated before and were does the DeleteTag hook actually need to be implemented?
+    for (const validator of this.tagValidators) {
+      if (validator.hooks.includes(ApiHook.DeleteTag)) {
+        const errors = validator.validate(tag)
+        this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
+      }
+    }
   }
 
   async hasTag (id: string): Promise<boolean> {

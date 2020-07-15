@@ -125,9 +125,6 @@ class AlreadyExistingNameUpdates implements TagValidation {
   }
 }
 
-// TODO: Is all the deleted logic tested?
-
-// TODO
 class NonExistingDeletes implements TagValidation {
   validate (intent: Intent, context: ValidationContext) {
     if (!intent.isTagDelete()) {
@@ -143,8 +140,6 @@ class NonExistingDeletes implements TagValidation {
     return tagErrors.delete.TAG_DOES_NOT_EXIST(tagId)
   }
 }
-
-// // TODO Adjust and test:
 
 class DuplicateDeletes implements TagValidation {
   validate (intent: Intent, context: ValidationContext) {
