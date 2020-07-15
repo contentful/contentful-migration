@@ -32,6 +32,98 @@ class DuplicateCreate implements TagValidation {
   }
 }
 
+class EditBeforeCreates implements TagValidation {
+  validate (intent: Intent, context: ValidationContext) {
+    const isRelevant = intent.isTagUpdate()
+
+    if (!isRelevant) {
+      return
+    }
+
+    const checkTagId = (tagId) => {
+      const exists = context.remote.has(tagId) || context.created.has(tagId)
+      const willBeCreated = context.toBeCreated.has(tagId)
+      return { tagId, exists, willBeCreated }
+    }
+
+    const tagId = intent.getTagId()
+    const { exists, willBeCreated } = checkTagId(tagId)
+
+    if (exists || !willBeCreated) {
+      return
+    }
+
+    if (intent.isTagUpdate()) {
+      return tagErrors.update.TAG_NOT_YET_CREATED(tagId)
+    }
+  }
+}
+
+class EditBeforeCreate implements TagValidation {
+  validate (intent: Intent, context: ValidationContext) {
+    const isRelevant = intent.isTagUpdate()
+
+    if (!isRelevant) {
+      return
+    }
+
+    const checkTagId = (tagId) => {
+      const exists = context.remote.has(tagId) || context.created.has(tagId)
+      // TODO Check to be created
+      const willBeCreated = context.toBeCreated.has(tagId)
+
+      return { tagId, exists, willBeCreated }
+    }
+
+    const tagId = intent.getTagId()
+    const { exists, willBeCreated } = checkTagId(tagId)
+
+    if (exists || !willBeCreated) {
+      return
+    }
+
+    if (intent.isTagUpdate()) {
+      return tagErrors.update.TAG_NOT_YET_CREATED(tagId)
+    }
+
+    if (intent.isContentTransform()) {
+      return tagErrors.transformEntries.TRANSFORM_BEFORE_TAG_CREATE(tagId)
+    }
+  }
+}
+
+class NonExistingEdits implements TagValidation {
+  validate (intent: Intent, context: ValidationContext) {
+    const isRelevant = intent.isTagUpdate()
+
+    if (!isRelevant) {
+      return
+    }
+
+    const checkTagId = (tagId) => {
+      const exists = context.remote.has(tagId) || context.created.has(tagId)
+      const willBeCreated = context.toBeCreated.has(tagId)
+
+      return { tagId, exists, willBeCreated }
+    }
+
+    const tagId = intent.getTagId()
+    const { exists, willBeCreated } = checkTagId(tagId)
+
+    if (exists || willBeCreated) {
+      return
+    }
+
+    if (intent.isTagUpdate()) {
+      return tagErrors.update.TAG_DOES_NOT_EXIST(tagId)
+    }
+
+    if (intent.isContentTransform()) {
+      return tagErrors.transformEntries.TAG_DOES_NOT_EXIST(tagId)
+    }
+  }
+}
+
 class AlreadyExistingIdCreates implements TagValidation {
   message = tagErrors.create.TAG_ALREADY_EXISTS
   validate (intent: Intent, context: ValidationContext) {
@@ -66,38 +158,90 @@ class AlreadyExistingNameUpdates implements TagValidation {
   }
 }
 
-class EditBeforeCreates implements TagValidation {
+// TODO: Is all the deleted logic tested?
+
+// TODO
+class NonExistingDeletes implements TagValidation {
   validate (intent: Intent, context: ValidationContext) {
-    const isRelevant = intent.isTagUpdate()
-
-    if (!isRelevant) {
+    if (!intent.isTagDelete()) {
       return
-    }
-
-    const checkTagId = (tagId) => {
-      const exists = context.remote.has(tagId) || context.created.has(tagId)
-      const willBeCreated = context.toBeCreated.has(tagId)
-      return { tagId, exists, willBeCreated }
     }
 
     const tagId = intent.getTagId()
-    const { exists, willBeCreated } = checkTagId(tagId)
 
-    if (exists || !willBeCreated) {
+    if (context.remote.has(tagId) || context.deleted.has(tagId)) {
       return
     }
 
-    if (intent.isTagUpdate()) {
-      return tagErrors.update.TAG_NOT_YET_CREATED(tagId)
-    }
+    return tagErrors.delete.TAG_DOES_NOT_EXIST(tagId)
   }
 }
+
+// // TODO Adjust and test:
+
+// class DuplicateDeletes implements TagValidation {
+//   validate (intent: Intent, context: ValidationContext) {
+//     if (!intent.isTagDelete()) {
+//       return
+//     }
+
+//     const tagId = intent.getTagId()
+
+//     if (!context.deleted.has(tagId)) {
+//       return
+//     }
+
+//     return tagErrors.delete.TAG_ALREADY_DELETED(tagId)
+//   }
+// }
+
+// class EditsAfterDeletes implements TagValidation {
+//   validate (intent: Intent, context: ValidationContext) {
+//     const isRelevant = intent.isFieldUpdate() || intent.isTagUpdate() || intent.isContentTransform() || intent.isEntryDerive()
+
+//     if (!isRelevant) {
+//       return
+//     }
+
+//     const checkTagId = (tagId) => {
+//       const deleted = context.deleted.has(tagId)
+//       return { tagId, deleted }
+//     }
+
+//     if (intent.isEntryDerive()) {
+//       return intent.getRelatedTagIds()
+//         .map(checkTagId)
+//         .filter(({ deleted }) => {
+//           return deleted
+//         })
+//         .map(({ tagId }) => tagErrors.deriveEntries.DERIVE_AFTER_TAG_DELETE(tagId))
+//     }
+
+//     const tagId = intent.getTagId()
+//     const { deleted } = checkTagId(tagId)
+
+//     if (!deleted) {
+//       return
+//     }
+
+//     if (intent.isTagUpdate() || intent.isFieldUpdate()) {
+//       return tagErrors.delete.EDIT_AFTER_DELETE(tagId)
+//     }
+
+//     if (intent.isContentTransform()) {
+//       return Errors.transformEntries.TRANSFORM_AFTER_TAG_DELETE(tagId)
+//     }
+//   }
+// }
 
 const checks: TagValidation[] = [
   new DuplicateCreate(),
   new AlreadyExistingIdCreates(),
   new AlreadyExistingNameUpdates(),
-  new EditBeforeCreates()
+  new EditBeforeCreates(),
+  new NonExistingEdits(),
+  new EditBeforeCreate(),
+  new NonExistingDeletes()
 ]
 
 export default function (intents: Intent[], tags: Tag[]): InvalidActionError[] {
@@ -148,6 +292,11 @@ export default function (intents: Intent[], tags: Tag[]): InvalidActionError[] {
       context.deleted.delete(tagId)
     }
 
+    if (intent.isTagDelete()) {
+      context.deleted.add(tagId)
+      context.remote.delete(tagId)
+      context.created.delete(tagId)
+    }
   }
 
   return errors

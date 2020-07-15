@@ -173,16 +173,19 @@ const errorCreators: ErrorCreators = {
       }
     },
     update: {
-      TAG_NAME_ALREADY_EXISTS: (name) => {
-        return `Tag with name "${name}" already exists.`
-      },
       TAG_NOT_YET_CREATED: (id) => {
         return `You cannot set a property on tag "${id}" because it has not yet been created.`
+      },
+      TAG_DOES_NOT_EXIST: (id) => {
+        return `You cannot set a property on tag "${id}" because it does not exist.`
+      },
+      TAG_NAME_ALREADY_EXISTS: (name) => {
+        return `Tag with name "${name}" already exists.`
       }
     },
     delete: {
       TAG_DOES_NOT_EXIST: (id) => {
-        return `You cannot delete TAG "${id}" because it does not exist.`
+        return `You cannot delete tag "${id}" because it does not exist.`
       },
       TAG_ALREADY_DELETED: (id) => {
         return `Tag with id "${id}" cannot be deleted more than once.`
