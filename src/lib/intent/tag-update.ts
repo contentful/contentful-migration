@@ -2,6 +2,7 @@ import Intent from './base-intent'
 import { TagUpdateAction } from '../action/tag-update'
 import { PlanMessage } from '../interfaces/plan-message'
 import chalk from 'chalk'
+import { entries } from 'lodash'
 
 export default class TagUpdateIntent extends Intent {
   isTagIntent (): boolean {
@@ -41,8 +42,9 @@ export default class TagUpdateIntent extends Intent {
   }
 
   toPlanMessage (): PlanMessage {
-
-    const details = []
+    const details = entries(this.payload.props).map(([key, value]) => {
+      return chalk`{italic ${key}}: ${JSON.stringify(value)}`
+    })
 
     return {
       heading: chalk`Update Tag {bold.yellow ${this.getTagId()}}`,

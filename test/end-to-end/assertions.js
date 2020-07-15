@@ -220,6 +220,41 @@ module.exports = {
         const withoutAnsiCodes = stripAnsi(result.stdout);
         expect(withoutAnsiCodes).to.include(`Derive entries from ${id}`);
       };
+    },
+    tag: {
+      create: function (id, params) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Create Tag ${id}`);
+          if (params != null) {
+            Object.keys(params).forEach((param) => {
+              expect(withoutAnsiCodes).to.include(`- ${param}: ${JSON.stringify(params[param])}`);
+            });
+          }
+        };
+      },
+      update: function (id, params) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Update Tag ${id}`);
+          if (params != null) {
+            return Object.keys(params).forEach((param) => {
+              expect(withoutAnsiCodes).to.include(`- ${param}: ${JSON.stringify(params[param])}`);
+            });
+          }
+        };
+      },
+      delete: function (id) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Delete Tag ${id}`);
+        };
+      }
     }
   },
   help: {

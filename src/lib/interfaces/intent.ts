@@ -35,6 +35,8 @@ interface Intent {
   isSidebarUpdate (): boolean
   isTagIntent (): boolean
   isTagCreate (): boolean
+  isTagUpdate (): boolean
+  isTagDelete (): boolean
 
   isComposedIntent (): boolean
 

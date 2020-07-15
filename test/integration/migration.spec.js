@@ -18,6 +18,8 @@ const changeEditorInterfaceWithExistingContentTypeAddingHelpText = require('../.
 const addSidebarWidgets = require('../../examples/24-add-sidebar-widgets-to-new-content-type');
 const addSidebarWidgetsToExisting = require('../../examples/27-add-sidebar-widgets-to-existing-content-type');
 const createTag = require('../../examples/28-create-tag');
+const modifyTag = require('../../examples/29-modify-tag');
+const deleteTag = require('../../examples/30-delete-tag');
 
 const { createMigrationParser } = require('../../built/lib/migration-parser');
 const co = Bluebird.coroutine;
@@ -323,6 +325,14 @@ describe('the migration', function () {
       }
     });
 
+    const tag = yield request({
+      method: 'GET',
+      url: '/tags/longexampletag',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1
+      }
+    });
+
     expect(person.name).to.eql('Person');
     expect(person.description).to.eql('A content type for a person');
     expect(person.fields).to.eql([
@@ -393,6 +403,8 @@ describe('the migration', function () {
         validations: []
       }
     ]);
+
+    expect(tag.name).to.eql('long example marketing');
   }));
 
   it('returns an error when the script is invalid', co(function * () {
@@ -609,5 +621,32 @@ describe('the migration', function () {
     });
     expect(tag.name).to.eql('marketing');
     expect(tag.sys.id).to.eql('sampletag');
+  });
+
+  it('modifies the name of an existing tag', async function () {
+    // TODO: As with the content type tests, the tag tests depend on
+    // each other to pass. Is this okay?
+    await migrator(modifyTag);
+    const tag = await request({
+      method: 'GET',
+      url: '/tags/sampletag'
+    });
+    expect(tag.name).to.eql('better marketing');
+    expect(tag.sys.id).to.eql('sampletag');
+  });
+
+  it('deletes a tag', async function () {
+    let result;
+    await migrator(deleteTag);
+
+    try {
+      result = await request({
+        method: 'GET',
+        url: `/tags/sampletag`
+      });
+    } catch (err) {
+      expect(err.name).to.eql('NotFound');
+    }
+    expect(result).to.be.undefined();
   });
 });

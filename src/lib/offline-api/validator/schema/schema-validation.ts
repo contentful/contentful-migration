@@ -54,7 +54,6 @@ const validateContentType = function (contentType: ContentType): PayloadValidati
   })
 }
 
-// Should this function live here?
 const validateTag = function (tag: Tag): PayloadValidationError[] {
   const { error } = Joi.validate(_.omit(tag.toApiTag(), ['sys']), tagSchema, {
     abortEarly: false

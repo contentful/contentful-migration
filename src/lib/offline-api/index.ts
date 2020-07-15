@@ -146,6 +146,16 @@ const saveTagRequest = function (tag: Tag): Request {
   }
 }
 
+const deleteTagRequest = function (tag: Tag): Request {
+  return {
+    method: 'DELETE',
+    url: `/tags/${tag.id}`,
+    headers: {
+      'X-Contentful-Version': tag.version
+    }
+  }
+}
+
 class OfflineAPI {
   private modifiedContentTypes: Map<String, ContentType> = null
   private savedContentTypes: Map<String, ContentType> = null
@@ -326,6 +336,7 @@ class OfflineAPI {
     await this.publishedContentTypes.delete(id)
     await this.savedContentTypes.delete(id)
 
+    // TODO: Is the DeleteContentType hook actually being implemented?
     for (const validator of this.contentTypeValidators) {
       if (validator.hooks.includes(ApiHook.DeleteContentType)) {
         const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
@@ -568,6 +579,16 @@ class OfflineAPI {
     }
 
     return tag
+  }
+
+  async deleteTag (id: string) {
+    this.assertRecording()
+
+    const tag = await this.getTag(id)
+    this.currentRequestsRecorded.push(deleteTagRequest(tag.clone()))
+
+    this.modifiedTags.delete(id)
+    this.savedTags.delete(id)
   }
 
   async hasTag (id: string): Promise<boolean> {
