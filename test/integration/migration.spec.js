@@ -325,6 +325,14 @@ describe('the migration', function () {
       }
     });
 
+    const tag = yield request({
+      method: 'GET',
+      url: '/tags/longexampletag',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1
+      }
+    });
+
     expect(person.name).to.eql('Person');
     expect(person.description).to.eql('A content type for a person');
     expect(person.fields).to.eql([
@@ -395,6 +403,8 @@ describe('the migration', function () {
         validations: []
       }
     ]);
+
+    expect(tag.name).to.eql('long example marketing');
   }));
 
   it('returns an error when the script is invalid', co(function * () {

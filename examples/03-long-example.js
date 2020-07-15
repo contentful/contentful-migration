@@ -35,6 +35,9 @@ module.exports = function (migration) {
     required: false
   });
 
+  const tag = migration.createTag('longexampletag');
+  tag.name('long example marketing');
+
   person.createField('pet', {
     name: 'Their pet',
     type: 'Link',
