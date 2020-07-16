@@ -70,6 +70,8 @@
       - [`createTag(id[, opts])`](#createtagid-opts)
       - [`editTag(id[, opts])`](#edittagid-opts)
       - [`deleteTag(id)`](#deletetagid)
+      - [`setTagsForEntries(config)`](#settagsforentriesconfig)
+        - [`setTagsForEntries` Example](#settagsforentries-example)
     - [`context`](#context)
       - [`makeRequest(config)`](#makerequestconfig)
       - [`spaceId` : `string`](#spaceid--string)
@@ -113,6 +115,7 @@
 - Entries
   - Transform Entries for a Given Content type
   - Derives a new entry and sets up a reference to it on the source entry
+  - Updates tags on entries for a given Content Type
 - Fields
   - Create a field
   - Edit a field
@@ -388,6 +391,48 @@ Uses the same options as [`createTag`](#createtagid-opts).
 #### `deleteTag(id)`
 
 Deletes the tag with the provided id and returns `undefined`. Note that this deletes the tag even if it is still attached to entries or assets.
+
+#### `setTagsForEntries(config)`
+
+For the given content type, updates the tags that are attached to its entries according to the user-provided `setTagsForEntry` function. For each entry, the CLI will call this function once, passing in the `from` fields, link objects of all tags that already are attached to the entry and link objects of all tags available in the environment. The `setTagsForEntry` function is expected to return an array with link objects for all tags that are to be added to the entry. If it returns `undefined`, the entry will be left untouched.
+
+**`config : Object`** – Content transformation definition, with the following properties:
+
+- **`contentType : string`** _(required)_ – Content type ID
+- **`from : array`** _(required)_ – Array of the source field IDs
+- **`setTagsForEntry : function (entryFields, entryTags, apiTags): object`** _(required)_ – Transformation function to be applied.
+    - `entryFields` is an object containing each of the `from` fields.
+    - `entryTags` is an array containing link objects of all tags
+already attached to the entry.
+    - `apiTags` is an array containing link objects of all tags
+available in the environment.
+
+##### `setTagsForEntries` Example
+
+``` javascript
+migration.createTag('department-sf').name('Department: San Francisco')
+migration.createTag('department-ldn').name('Department: London')
+
+const departmentMapping = {
+  'san-francisco': 'department-sf',
+  'london': 'department-ldn'
+}
+
+migration.setTagsForEntries({
+  contentType: 'news-article',
+  from: ['department'],
+  setTagsForEntry: (entryFields: any, entryTags: tagLink[], apiTags tagLink[]): tagLink[] => {
+    const departmentField = entryFields.department['en-US']
+    const newTag = apiTags.find((tag) => tag.sys.id === departmentMapping[departmentField])
+
+    return [
+      ...entryTags,
+      newTag,
+    ]
+
+  }
+})
+```
 
 ### `context`
 

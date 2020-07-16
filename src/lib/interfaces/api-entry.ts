@@ -12,4 +12,5 @@ export default interface APIEntry {
     }
   },
   fields: object
+  metadata?: {tags: object[]}
 }
