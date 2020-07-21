@@ -56,7 +56,7 @@ class ParseResult {
 
 const createMigrationParser = function (makeRequest: Function, config: ClientConfig): (migrationCreator: (migration: any) => any) => Promise<ParseResult> {
   return async function migration (migrationCreator) {
-    const fetcher = new Fetcher(makeRequest)
+    const fetcher = new Fetcher(makeRequest, config.requestBatchSize)
     const parseResult = new ParseResult()
     const intents = await buildIntents(migrationCreator, makeRequest, config)
 

@@ -30,7 +30,7 @@ describe('Fetcher', function () {
     request
       .withArgs({
         method: 'GET',
-        url: `/entries?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=newsArticle&skip=0`
+        url: `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=newsArticle&skip=0`
       })
       .resolves({
         skip: 0,
@@ -41,7 +41,7 @@ describe('Fetcher', function () {
     request
       .withArgs({
         method: 'GET',
-        url: `/entries?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=newsArticle&skip=4`
+        url: `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=newsArticle&skip=4`
       })
       .resolves({
         skip: 4,
@@ -57,11 +57,11 @@ describe('Fetcher', function () {
 
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: `/entries?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=newsArticle&skip=0`
+      url: `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=newsArticle&skip=0`
     })
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: `/entries?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=newsArticle&skip=4`
+      url: `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=newsArticle&skip=4`
     })
 
     const result = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6']
@@ -87,7 +87,7 @@ describe('Fetcher', function () {
     request
       .withArgs({
         method: 'GET',
-        url: `/entries?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&sys.archivedAt[exists]=false&skip=0`
+        url: `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&skip=0`
       })
       .resolves({
         skip: 0,
@@ -98,7 +98,7 @@ describe('Fetcher', function () {
     request
       .withArgs({
         method: 'GET',
-        url: `/entries?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&sys.archivedAt[exists]=false&skip=4`
+        url: `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&skip=4`
       })
       .resolves({
         skip: 4,
@@ -114,11 +114,11 @@ describe('Fetcher', function () {
 
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: `/entries?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&sys.archivedAt[exists]=false&skip=0`
+      url: `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&skip=0`
     })
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: `/entries?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&sys.archivedAt[exists]=false&skip=4`
+      url: `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&skip=4`
     })
 
     const result = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6']
@@ -253,7 +253,7 @@ describe('Fetcher', function () {
 
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: `/content_types?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&sys.id[in]=person,dog,cat,plant&skip=0`
+      url: `/content_types?limit=100&order=sys.createdAt&sys.id[in]=person,dog,cat,plant&skip=0`
     })
     expect(contentTypes).to.eql([
       {
@@ -353,7 +353,7 @@ describe('Fetcher', function () {
 
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: `/content_types?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&sys.id[in]=dog,owner&skip=0`
+      url: `/content_types?limit=100&order=sys.createdAt&sys.id[in]=dog,owner&skip=0`
     })
   })
 
@@ -444,7 +444,7 @@ describe('Fetcher', function () {
     request
       .withArgs({
         method: 'GET',
-        url: `/locales?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&skip=0`
+        url: `/locales?limit=100&order=sys.createdAt&skip=0`
       })
       .resolves({
         skip: 0,
@@ -455,7 +455,7 @@ describe('Fetcher', function () {
     request
       .withArgs({
         method: 'GET',
-        url: `/locales?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&skip=2`
+        url: `/locales?limit=100&order=sys.createdAt&skip=2`
       })
       .resolves({
         skip: 2,
@@ -466,7 +466,7 @@ describe('Fetcher', function () {
     request
       .withArgs({
         method: 'GET',
-        url: `/locales?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&skip=4`
+        url: `/locales?limit=100&order=sys.createdAt&skip=4`
       })
       .resolves({
         skip: 4,
@@ -480,15 +480,15 @@ describe('Fetcher', function () {
 
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: `/locales?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&skip=0`
+      url: `/locales?limit=100&order=sys.createdAt&skip=0`
     })
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: `/locales?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&skip=2`
+      url: `/locales?limit=100&order=sys.createdAt&skip=2`
     })
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: `/locales?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&skip=4`
+      url: `/locales?limit=100&order=sys.createdAt&skip=4`
     })
 
     const result = ['a', 'b', 'c', 'd', 'e', 'f']
@@ -507,7 +507,7 @@ describe('Fetcher', function () {
     request
       .withArgs({
         method: 'GET',
-        url: `/tags?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&skip=0`
+        url: `/tags?limit=100&order=sys.createdAt&skip=0`
       })
       .resolves({
         items: [
@@ -531,7 +531,7 @@ describe('Fetcher', function () {
 
     expect(request).to.have.been.calledWith({
       method: 'GET',
-      url: `/tags?limit=${Fetcher.perRequestLimit}&order=sys.createdAt&skip=0`
+      url: `/tags?limit=100&order=sys.createdAt&skip=0`
     })
 
     expect(tags).to.eql([
@@ -544,5 +544,45 @@ describe('Fetcher', function () {
         sys: { 'id': 'dog', 'type': 'Tag' }
       }
     ])
+  })
+
+  it('fetches with a given limit', async function () {
+    const intents = await buildIntents(function up (migration) {
+      migration.createTag('person', {
+        name: 'bar',
+        description: 'A content type for a person'
+      })
+    }, noOp, {})
+
+    const request = sinon.stub()
+    request
+        .withArgs({
+          method: 'GET',
+          url: `/tags?limit=99&order=sys.createdAt&skip=0`
+        })
+        .resolves({
+          items: [
+            {
+              name: 'Person Tag',
+              sys: { 'id': 'person', 'type': 'Tag' }
+            },
+            {
+              name: 'A very goodboy',
+              sys: { 'id': 'dog', 'type': 'Tag' }
+            }
+          ],
+          total: 2,
+          limit: 2
+        })
+
+    const intentList = new IntentList(intents)
+
+    const fetcher = new Fetcher(request, 99)
+    await fetcher.getTagsForEnvironment(intentList)
+
+    expect(request).to.have.been.calledWith({
+      method: 'GET',
+      url: `/tags?limit=99&order=sys.createdAt&skip=0`
+    })
   })
 })

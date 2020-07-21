@@ -45,7 +45,7 @@ describe('the migration', function () {
     this.timeout(30000);
     yield createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
     request = makeRequest.bind(null, SOURCE_TEST_SPACE, ENVIRONMENT_ID);
-    migrationParser = createMigrationParser(request);
+    migrationParser = createMigrationParser(request, {});
     migrator = co(function * (migration) {
       const parseResult = yield migrationParser(migration);
       const batches = parseResult.batches;
