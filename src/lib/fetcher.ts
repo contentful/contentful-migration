@@ -8,11 +8,12 @@ import Bluebird from 'bluebird'
 import APIFetcher from './interfaces/api-fetcher'
 
 export default class Fetcher implements APIFetcher {
-  static perRequestLimit = 100
+  private requestBatchSize: number
   private makeRequest: Function
 
-  constructor (makeRequest: Function) {
+  constructor (makeRequest: Function, requestBatchSize: number = 100) {
     this.makeRequest = makeRequest
+    this.requestBatchSize = requestBatchSize
   }
 
   async getEntriesInIntents (intentList: IntentList): Promise<APIEntry[]> {
@@ -168,7 +169,7 @@ export default class Fetcher implements APIFetcher {
 
     while (true) {
       const paramsWithSkip = {
-        limit: Fetcher.perRequestLimit,
+        limit: this.requestBatchSize,
         order: 'sys.createdAt',
         ...params,
         skip: skip.toString(10)

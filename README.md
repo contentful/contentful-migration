@@ -174,13 +174,14 @@ module.exports = function (migration, context) {
 
 ### Configuration
 
-| Name          | Default    | Type    | Description                                                 | Required |
-|---------------|------------|---------|-------------------------------------------------------------|----------|
-| filePath      |            | string  | The path to the migration file                              | true     |
-| spaceId       |            | string  | ID of the space to run the migration script on              | true     |
-| environmentId | `'master'` | string  | ID of the environment within the space to run the           | false    |
-| accessToken   |            | string  | The access token to use                                     | true     |
-| yes           | false      | boolean | Skips any confirmation before applying the migration,script | false    |
+| Name              | Default    | Type    | Description                                                 | Required |
+|-------------------|------------|---------|-------------------------------------------------------------|----------|
+| filePath          |            | string  | The path to the migration file                              | true     |
+| spaceId           |            | string  | ID of the space to run the migration script on              | true     |
+| environmentId     | `'master'` | string  | ID of the environment within the space to run the           | false    |
+| accessToken       |            | string  | The access token to use                                     | true     |
+| yes               | false      | boolean | Skips any confirmation before applying the migration,script | false    |
+| requestBatchSize  | 100        | number  | Limit for every single request                              | false    |
 
 ### Chaining vs Object notation
 

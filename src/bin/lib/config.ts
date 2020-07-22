@@ -11,6 +11,7 @@ interface ClientConfig {
   environmentId?: string,
   proxy?: string,
   rawProxy?: boolean
+  requestBatchSize?: number
 }
 
 function getFileConfig (): ClientConfig {
@@ -31,13 +32,14 @@ function getEnvConfig (): ClientConfig {
     {}
 }
 
-function getArgvConfig ({ spaceId, environmentId = 'master', accessToken, proxy, rawProxy }): ClientConfig {
+function getArgvConfig ({ spaceId, environmentId = 'master', accessToken, proxy, rawProxy, requestBatchSize }): ClientConfig {
   const config = {
     spaceId,
     environmentId,
     accessToken,
     proxy,
-    rawProxy
+    rawProxy,
+    requestBatchSize
   }
 
   if (!config.accessToken) {
