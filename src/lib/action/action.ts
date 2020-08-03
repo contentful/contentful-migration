@@ -8,7 +8,6 @@ abstract class APIAction {
 }
 
 abstract class EntityAction {
-  // Really should be using an ENUM here
   abstract getEntityType (): EntityType
   abstract getEntityId (): string
   // For Entries, we could add `getEntityQuery` or something like that

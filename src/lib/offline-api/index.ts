@@ -2,6 +2,7 @@ import { omit, compact, get } from 'lodash'
 import FieldDeletionValidator from './validator/field-deletion'
 import { ContentTypePayloadValidator } from './validator/content-type'
 import { TagSchemaValidator } from './validator/tag'
+import { EntryValidator } from './validator/entry'
 import { ContentType, EditorInterfaces } from '../entities/content-type'
 import Request from '../interfaces/request'
 import { Entry } from '../entities/entry'
@@ -10,6 +11,7 @@ import { PayloadValidationError, InvalidActionError } from '../interfaces/errors
 import DisplayFieldValidator from './validator/display-field'
 import SchemaValidator from './validator/schema/index'
 import TypeChangeValidator from './validator/type-change'
+import TagsOnEntryValidator from './validator/tags-on-entry'
 import { Intent } from '../interfaces/intent'
 import APIEntry from '../interfaces/api-entry'
 import APITag from '../interfaces/api-tag'
@@ -34,8 +36,8 @@ export enum ApiHook {
   SaveContentType = 'SAVE_CONTENT_TYPE',
   PublishContentType = 'PUBLISH_CONTENT_TYPE',
   UnpublishContentType = 'UNPUBLISH_CONTENT_TYPE',
-  DeleteContentType = 'DELETE_CONTENT_TYPE',
-  SaveTag = 'SAVE_TAG'
+  SaveTag = 'SAVE_TAG',
+  SaveEntry = 'SAVE_ENTRY'
 }
 
 const saveContentTypeRequest = function (ct: ContentType): Request {
@@ -173,6 +175,7 @@ class OfflineAPI {
   private modifiedTags: Map<String, Tag> = null
   private savedTags: Map<String, Tag> = null
   private tagValidators: TagSchemaValidator[] = []
+  private entryValidators: EntryValidator[] = []
 
   constructor (options: OfflineApiOptions) {
     const {
@@ -211,6 +214,10 @@ class OfflineAPI {
 
     this.tagValidators.push(new TagSchemaValidator())
 
+    // TODO We skip a schema validator for now, because in order to
+    // properly implement it, we would need to bump joi.
+    this.entryValidators.push(new TagsOnEntryValidator(this.modifiedTags))
+
     this.entries = entries
     this.locales = locales
   }
@@ -240,7 +247,7 @@ class OfflineAPI {
 
     const ct = new ContentType({ sys: { id, version: 0 }, fields: [], name: undefined })
 
-    await this.modifiedContentTypes.set(id, ct)
+    this.modifiedContentTypes.set(id, ct)
 
     return ct
   }
@@ -261,8 +268,8 @@ class OfflineAPI {
     // Mutate version bump
     ct.version = ct.version + 1
 
-    await this.modifiedContentTypes.set(id, ct)
-    await this.savedContentTypes.set(id, ct.clone())
+    this.modifiedContentTypes.set(id, ct)
+    this.savedContentTypes.set(id, ct.clone())
 
     for (const validator of this.contentTypeValidators) {
       if (validator.hooks.includes(ApiHook.SaveContentType)) {
@@ -283,9 +290,9 @@ class OfflineAPI {
 
     // Mutate version bump
     ct.version = ct.version + 1
-    await this.modifiedContentTypes.set(id, ct)
-    await this.savedContentTypes.set(id, ct.clone())
-    await this.publishedContentTypes.set(id, ct.clone())
+    this.modifiedContentTypes.set(id, ct)
+    this.savedContentTypes.set(id, ct.clone())
+    this.publishedContentTypes.set(id, ct.clone())
     if (this.editorInterfaces.has(id)) {
       const editorInterfaces = this.editorInterfaces.get(id)
       editorInterfaces.version = editorInterfaces.version + 1
@@ -311,9 +318,9 @@ class OfflineAPI {
     // Mutate version bump
     ct.version = ct.version + 1
 
-    await this.modifiedContentTypes.set(id, ct)
-    await this.savedContentTypes.set(id, ct)
-    await this.publishedContentTypes.delete(id)
+    this.modifiedContentTypes.set(id, ct)
+    this.savedContentTypes.set(id, ct)
+    this.publishedContentTypes.delete(id)
 
     for (const validator of this.contentTypeValidators) {
       if (validator.hooks.includes(ApiHook.UnpublishContentType)) {
@@ -332,17 +339,10 @@ class OfflineAPI {
     // Store clone as a request
     this.currentRequestsRecorded.push(deleteRequest(ct.clone()))
 
-    await this.modifiedContentTypes.delete(id)
-    await this.publishedContentTypes.delete(id)
-    await this.savedContentTypes.delete(id)
+    this.modifiedContentTypes.delete(id)
+    this.publishedContentTypes.delete(id)
+    this.savedContentTypes.delete(id)
 
-    // TODO: Is the DeleteContentType hook actually being implemented?
-    for (const validator of this.contentTypeValidators) {
-      if (validator.hooks.includes(ApiHook.DeleteContentType)) {
-        const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
-        this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
-      }
-    }
   }
 
   async saveEditorInterfaces (contentTypeId: string) {
@@ -372,7 +372,7 @@ class OfflineAPI {
 
     const entry = new Entry(entryData)
 
-    await this.entries.push(entry)
+    this.entries.push(entry)
 
     return entry
   }
@@ -394,7 +394,14 @@ class OfflineAPI {
     entry.version = entry.version + 1
 
     // TODO: Add a validator for entries here that checks their final
-    // payload and checks it against existing tags.
+    // payload and checks it against existing tags
+
+    for (const validator of this.entryValidators) {
+      if (validator.hooks.includes(ApiHook.SaveEntry)) {
+        const errors = validator.validate(entry)
+        this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
+      }
+    }
 
     return entry
   }
@@ -463,7 +470,6 @@ class OfflineAPI {
 
   async getEntriesForContentType (ctId: string): Promise<Entry[]> {
     const entries = this.entries.filter((entry) => entry.contentTypeId === ctId)
-
     return entries
   }
 
