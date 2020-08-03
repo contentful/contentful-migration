@@ -400,7 +400,7 @@ For the given content type, updates the tags that are attached to its entries ac
 
 - **`contentType : string`** _(required)_ – Content type ID
 - **`from : array`** _(required)_ – Array of the source field IDs
-- **`setTagsForEntry : function (entryFields, entryTags, apiTags): object`** _(required)_ – Transformation function to be applied.
+- **`setTagsForEntry : function (entryFields, entryTags, apiTags): array`** _(required)_ – Transformation function to be applied.
     - `entryFields` is an object containing each of the `from` fields.
     - `entryTags` is an array containing link objects of all tags
 already attached to the entry.
@@ -421,7 +421,7 @@ const departmentMapping = {
 migration.setTagsForEntries({
   contentType: 'news-article',
   from: ['department'],
-  setTagsForEntry: (entryFields: any, entryTags: tagLink[], apiTags tagLink[]): tagLink[] => {
+  setTagsForEntry: (entryFields: any, entryTags: TagLink[], apiTags: TagLink[]): TagLink[] => {
     const departmentField = entryFields.department['en-US']
     const newTag = apiTags.find((tag) => tag.sys.id === departmentMapping[departmentField])
 

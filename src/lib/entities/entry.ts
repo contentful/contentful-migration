@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash'
 import APIEntry from '../interfaces/api-entry'
+import APITagLink from '../interfaces/api-tag-link'
 import isDefined from '../utils/is-defined'
 
 class Entry {
@@ -8,7 +9,7 @@ class Entry {
   private _version: number
   private _fields: object
   private _publishedVersion?: number
-  private _tags?: object[]
+  private _tags?: APITagLink[]
 
   constructor (entry: APIEntry) {
     this._id = entry.sys.id
@@ -77,11 +78,11 @@ class Entry {
     this._publishedVersion = version
   }
 
-  get tags () {
+  get tags (): APITagLink[] {
     return this._tags
   }
 
-  set tags (tags: object[]) {
+  set tags (tags: APITagLink[]) {
     this._tags = tags
   }
 

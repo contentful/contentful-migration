@@ -84,7 +84,7 @@ describe('apply set tags transformation', function () {
           tags: [
             {
               sys: {
-                id: 'new',
+                id: 'old',
                 type: 'Link',
                 linkType: 'Tag'
               }

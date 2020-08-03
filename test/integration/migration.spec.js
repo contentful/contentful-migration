@@ -716,7 +716,7 @@ describe('the migration', function () {
           tags: [
             {
               sys: {
-                id: 'new',
+                id: 'old',
                 type: 'Link',
                 linkType: 'Tag'
               }
