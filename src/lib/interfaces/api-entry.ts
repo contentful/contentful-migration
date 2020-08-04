@@ -1,3 +1,5 @@
+import APITagLink from './api-tag-link'
+
 export default interface APIEntry {
   sys: {
     id: string,
@@ -12,4 +14,5 @@ export default interface APIEntry {
     }
   },
   fields: object
+  metadata?: {tags: APITagLink[]}
 }

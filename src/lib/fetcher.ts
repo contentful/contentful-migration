@@ -20,9 +20,16 @@ export default class Fetcher implements APIFetcher {
     const loadAllEntries = intentList.getIntents().some((intent) => intent.requiresAllEntries())
 
     const ids: string[] = _.uniq(
-      intentList.getIntents()
-      .filter((intent) => intent.isContentTransform() || intent.isEntryDerive() || intent.isEntryTransformToType())
-      .map((intent) => intent.getContentTypeId())
+      intentList
+        .getIntents()
+        .filter(
+          intent =>
+            intent.isContentTransform() ||
+            intent.isEntryDerive() ||
+            intent.isEntryTransformToType() ||
+            intent.isEntrySetTags()
+        )
+        .map(intent => intent.getContentTypeId())
     )
 
     if (!loadAllEntries && ids.length === 0) {
@@ -129,7 +136,7 @@ export default class Fetcher implements APIFetcher {
 
   async getTagsForEnvironment (intentList: IntentList): Promise<APITag[]> {
     // Don't fetch tags if migration does not use any.
-    if (!(intentList.getIntents().some((intent) => intent.isTagIntent()))) {
+    if (!(intentList.getIntents().some((intent) => intent.isTagIntent() || intent.isEntrySetTags()))) {
       return []
     }
 

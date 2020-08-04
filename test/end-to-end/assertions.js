@@ -221,6 +221,15 @@ module.exports = {
         expect(withoutAnsiCodes).to.include(`Derive entries from ${id}`);
       };
     },
+    entriesSetTags: function (id) {
+      return result => {
+        expect(result.stdout).not.to.be.empty();
+
+        const withoutAnsiCodes = stripAnsi(result.stdout);
+        expect(withoutAnsiCodes).to.include(`Updating tags on entries for ${id}`);
+      };
+    },
+
     tag: {
       create: function (id, params) {
         return result => {

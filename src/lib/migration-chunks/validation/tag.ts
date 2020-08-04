@@ -16,6 +16,13 @@ interface TagValidation {
   validate (intent: Intent, context: ValidationContext): string | string[]
 }
 
+const checkTagId = (tagId, context) => {
+  const exists = context.remote.has(tagId) || context.created.has(tagId)
+  const willBeCreated = context.toBeCreated.has(tagId)
+  const deleted = context.deleted.has(tagId)
+  return { tagId, exists, willBeCreated, deleted }
+}
+
 class DuplicateCreate implements TagValidation {
   validate (intent: Intent, context: ValidationContext) {
     if (!intent.isTagCreate()) {
@@ -40,14 +47,8 @@ class EditBeforeCreates implements TagValidation {
       return
     }
 
-    const checkTagId = (tagId) => {
-      const exists = context.remote.has(tagId) || context.created.has(tagId)
-      const willBeCreated = context.toBeCreated.has(tagId)
-      return { tagId, exists, willBeCreated }
-    }
-
     const tagId = intent.getTagId()
-    const { exists, willBeCreated } = checkTagId(tagId)
+    const { exists, willBeCreated } = checkTagId(tagId, context)
 
     if (exists || !willBeCreated) {
       return
@@ -67,15 +68,8 @@ class NonExistingEdits implements TagValidation {
       return
     }
 
-    const checkTagId = (tagId) => {
-      const exists = context.remote.has(tagId) || context.created.has(tagId)
-      const willBeCreated = context.toBeCreated.has(tagId)
-
-      return { tagId, exists, willBeCreated }
-    }
-
     const tagId = intent.getTagId()
-    const { exists, willBeCreated } = checkTagId(tagId)
+    const { exists, willBeCreated } = checkTagId(tagId, context)
 
     if (exists || willBeCreated) {
       return
@@ -165,13 +159,8 @@ class EditsAfterDeletes implements TagValidation {
       return
     }
 
-    const checkTagId = (tagId) => {
-      const deleted = context.deleted.has(tagId)
-      return { tagId, deleted }
-    }
-
     const tagId = intent.getTagId()
-    const { deleted } = checkTagId(tagId)
+    const { deleted } = checkTagId(tagId, context)
 
     if (!deleted) {
       return

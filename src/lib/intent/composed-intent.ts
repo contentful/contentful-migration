@@ -159,6 +159,10 @@ export default class ComposedIntent implements Intent {
     return false
   }
 
+  isEntrySetTags (): boolean {
+    return false
+  }
+
   toActions () {
     return flatten(this.intents.map((intent) => intent.toActions()))
   }

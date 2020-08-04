@@ -1,5 +1,6 @@
 import ContentTransform from './content-transform'
 import EntryDerive from './entry-derive'
+import EntrySetTags from './entry-set-tags'
 import TransformEntryToType from './entry-transform-to-type'
 import { SidebarWidgetNamespace, SidebarWidgetSettings } from '../action/sidebarwidget'
 import {
@@ -39,6 +40,7 @@ interface RawStepPayload {
   sidebarWidget?: SidebarWidgetInfo
   entryEditor?: EntryEditorInfo
   tagId?: string
+  entryTransformationForTags?: EntrySetTags
 }
 
 interface EditorInterfaceInfo {

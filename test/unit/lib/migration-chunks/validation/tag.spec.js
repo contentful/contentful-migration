@@ -1,5 +1,4 @@
 'use strict';
-
 const { expect } = require('chai');
 const validateChunks = require('./validate-chunks').default;
 

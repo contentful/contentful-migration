@@ -354,6 +354,46 @@ export interface IDeriveLinkedEntriesConfig {
   deriveEntryForLocale: (inputFields: ContentFields, locale: string) => { [field: string]: any }
 }
 
+export interface ITag {
+  id: string
+  instanceId: string
+
+  /** Name of the tag. */
+  name(name: string): ITag
+}
+
+export interface ITagOptions {
+  /** Name of the tag. */
+  name: string,
+}
+
+export interface ITagLink {
+  sys: {
+    id: string,
+    type: 'Link'
+    linkType: 'Tag'
+  }
+}
+
+export interface ISetTagsForEntriesConfig {
+  /** (required) – Content type ID */
+  contentType: string,
+  /** (required) – Array of the source field IDs */
+  from: string[],
+  /**
+   * (required) – Transformation function to be applied.
+   *
+   * entryFields is an object containing each of the from fields.
+   * entryTags is an array containing link objects of all tags already attached to the entry.
+   * apiTags is an array containing link objects of all tags available in the environment.
+   *
+   * The return value must be an array with TagLinks. The corresponding tags will be attached to the entry. If the transformation function returns undefined, the entry will be left untouched.
+   *
+  */
+  setTagsForEntry: (entryFields: ContentFields, entryTags: ITagLink[], apiTags: ITagLink[]) => ITagLink[] | undefined
+}
+
+
 /**
  * The main interface for creating and editing content types.
  */
@@ -404,6 +444,40 @@ export default interface Migration {
    * @param transformation
    */
   deriveLinkedEntries (transformation: IDeriveLinkedEntriesConfig): void
+
+  /**
+   * Creates a tag with provided id and returns a reference to the newly created tag.
+   *
+   * id : string – The ID of the tag.
+   *
+   * opts : Object – tag definition, with the following options:
+   *
+   *  * name : string – Name of the tag.
+   *
+   * @param id string – The ID of the tag.
+   * @param init Object – Tag definition
+   */
+  createTag (id: string, init?: ITagOptions): ITag
+
+  /**
+   * Edits an existing tag of provided id and returns a reference to the tag. Uses the same options as createTag.
+   * @param id string – The ID of the tag.
+   * @param changes Object – Tag definition
+   */
+  editTag (id: string, changes?: ITagOptions): ITag
+
+  /**
+   * Deletes the tag with the provided id and returns undefined.
+   * @param id string – The ID of the tag.
+   */
+  deleteTag (id: string): void
+
+  /**
+   * For the given content type, transforms all its entries according to the user-provided transformEntryForLocale function. For each entry, the CLI will call this function once per locale in the space, passing in the from fields and the locale as arguments. The transform function is expected to return an object with the desired target fields. If it returns undefined, this entry locale will be left untouched.
+   * @param transformation
+   */
+  setTagsForEntries (transformation: ISetTagsForEntriesConfig): void
+
 }
 
 export interface ClientConfig {

@@ -137,7 +137,19 @@ const errorCreators: ErrorCreators = {
       DERIVE_BEFORE_CONTENT_TYPE_CREATE: (id) => {
         return `You cannot derive entries for content type "${id}" because it has not yet been created.`
       }
+    },
+    setTagsForEntries: {
+      CONTENT_TYPE_DOES_NOT_EXIST: (id) => {
+        return `You cannot update tags on entries for content type "${id}" because it does not exist.`
+      },
+      SET_TAGS_AFTER_CONTENT_TYPE_DELETE: (id) => {
+        return `You cannot update tags on entries for content type "${id}" because it was deleted.`
+      },
+      SET_TAGS_BEFORE_CONTENT_TYPE_CREATE: (id) => {
+        return `You cannot update tags on entries for content type "${id}" because it has not yet been created.`
+      }
     }
+
   },
   entry: {
     transformation: {

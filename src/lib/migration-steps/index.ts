@@ -8,6 +8,7 @@ import DispatchProxy from './dispatch-proxy'
 import { omit } from 'lodash'
 import ContentTransform from '../interfaces/content-transform'
 import EntryDerive from '../interfaces/entry-derive'
+import EntrySetTags from '../interfaces/entry-set-tags'
 import TransformEntryToType from '../interfaces/entry-transform-to-type'
 import { ClientConfig } from '../../bin/lib/config'
 import { deprecatedMethod } from '../utils/deprecated'
@@ -371,6 +372,15 @@ export async function migration (migrationCreator: Function, makeRequest: Functi
       const callsite = getFirstExternalCaller()
       const instanceId = instanceIdManager.getNew(id)
       dispatch(actionCreators.tag.delete(id, instanceId, callsite))
+    },
+
+    setTagsForEntries: function (transformation) {
+      const callsite = getFirstExternalCaller()
+      const id = transformation.contentType
+      const stripped = omit(transformation, 'contentType') as EntrySetTags
+      const instanceId = instanceIdManager.getNew(id)
+
+      dispatch(actionCreators.contentType.setTagsForEntries(id, instanceId, stripped, callsite))
     }
   }
 
