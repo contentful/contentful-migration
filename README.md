@@ -421,7 +421,7 @@ const departmentMapping = {
 migration.setTagsForEntries({
   contentType: 'news-article',
   from: ['department'],
-  setTagsForEntry: (entryFields: any, entryTags: TagLink[], apiTags: TagLink[]): TagLink[] => {
+  setTagsForEntry: (entryFields, entryTags, apiTags) => {
     const departmentField = entryFields.department['en-US']
     const newTag = apiTags.find((tag) => tag.sys.id === departmentMapping[departmentField])
 
