@@ -100,7 +100,6 @@ class IntentList {
       await api.startRecordingRequests(intent)
 
       for (const action of intent.toActions()) {
-
         if (action instanceof APIAction) {
           await action.applyTo(api)
           continue

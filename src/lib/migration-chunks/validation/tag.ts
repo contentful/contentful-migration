@@ -202,7 +202,6 @@ export default function (intents: Intent[], tags: Tag[]): InvalidActionError[] {
 
     for (const check of checks) {
       error = check.validate(intent, context)
-
       if (error && error.length) {
         // proceed with next intent
         break
