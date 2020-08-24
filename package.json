@@ -96,7 +96,7 @@
     "source-map-support": "^0.5.16",
     "strip-ansi": "^6.0.0",
     "travis-deploy-once": "^5.0.11",
-    "ts-node": "^8.8.1",
+    "ts-node": "^9.0.0",
     "tslint": "^6.1.1",
     "tslint-config-standard": "^9.0.0",
     "typescript": "^3.8.3",
