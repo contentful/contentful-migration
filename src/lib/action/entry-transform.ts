@@ -1,3 +1,4 @@
+import shouldPublishLocalChanges from '../utils/should-publish-local-changes'
 import { APIAction } from './action'
 import { OfflineAPI } from '../offline-api'
 import Entry from '../entities/entry'
@@ -50,7 +51,7 @@ class EntryTransformAction extends APIAction {
       }
       if (changesForThisEntry) {
         await api.saveEntry(entry.id)
-        if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && entry.isPublished)) {
+        if (shouldPublishLocalChanges(this.shouldPublish ,entry)) {
           await api.publishEntry(entry.id)
         }
       }
