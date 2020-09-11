@@ -21,6 +21,10 @@ const getErrorMsgParams = (step) => {
     contentType: {
       type: 'content type',
       id: step.payload.contentTypeId
+    },
+    tag: {
+      type: 'tag',
+      id: step.payload.tagId
     }
   }
   return params[type]

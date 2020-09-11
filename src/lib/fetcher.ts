@@ -1,26 +1,35 @@
 import IntentList from './intent-list'
 import { APIContentType, APIEditorInterfaces } from '../lib/interfaces/content-type'
 import APIEntry from '../lib/interfaces/api-entry'
+import APITag from '../lib/interfaces/api-tag'
 import { ContentType } from '../lib/entities/content-type'
 import * as _ from 'lodash'
 import Bluebird from 'bluebird'
 import APIFetcher from './interfaces/api-fetcher'
 
 export default class Fetcher implements APIFetcher {
-  static perRequestLimit = 100
+  private requestBatchSize: number
   private makeRequest: Function
 
-  constructor (makeRequest: Function) {
+  constructor (makeRequest: Function, requestBatchSize: number = 100) {
     this.makeRequest = makeRequest
+    this.requestBatchSize = requestBatchSize
   }
 
   async getEntriesInIntents (intentList: IntentList): Promise<APIEntry[]> {
     const loadAllEntries = intentList.getIntents().some((intent) => intent.requiresAllEntries())
 
     const ids: string[] = _.uniq(
-      intentList.getIntents()
-      .filter((intent) => intent.isContentTransform() || intent.isEntryDerive() || intent.isEntryTransformToType())
-      .map((intent) => intent.getContentTypeId())
+      intentList
+        .getIntents()
+        .filter(
+          intent =>
+            intent.isContentTransform() ||
+            intent.isEntryDerive() ||
+            intent.isEntryTransformToType() ||
+            intent.isEntrySetTags()
+        )
+        .map(intent => intent.getContentTypeId())
     )
 
     if (!loadAllEntries && ids.length === 0) {
@@ -46,8 +55,9 @@ export default class Fetcher implements APIFetcher {
   async getContentTypesInChunks (intentList: IntentList): Promise<APIContentType[]> {
     // Excluding editor interface intents here since, API-wise, editor interfaces don't require
     // to know the full details about the associated content type.
+    // Also excluding tags here as they are independent of cts.
     const ids: string[] = _.uniq(intentList.getIntents()
-      .filter((intent) => (!intent.isEditorInterfaceIntent()))
+      .filter((intent) => (!intent.isEditorInterfaceIntent() && !intent.isTagIntent()))
       .reduce((ids, intent) => {
         const intentIds = intent.getRelatedContentTypeIds()
         return ids.concat(intentIds)
@@ -124,6 +134,20 @@ export default class Fetcher implements APIFetcher {
     })
   }
 
+  async getTagsForEnvironment (intentList: IntentList): Promise<APITag[]> {
+    // Don't fetch tags if migration does not use any.
+    if (!(intentList.getIntents().some((intent) => intent.isTagIntent() || intent.isEntrySetTags()))) {
+      return []
+    }
+
+    // We always fetch all tags if any intent is a tag intent. As soon
+    // as we introduce attaching tags on entries this will have to be
+    // refactored to account for different states (e.g. tag exists, has or
+    // has not yet been created).
+    const tags = await this.fetchAllPaginatedItems<APITag>('/tags')
+    return tags
+  }
+
   private async fetchEditorInterface (id: string, editorInterfaces: Map<string, APIEditorInterfaces>) {
     try {
       const response = await this.makeRequest({
@@ -152,7 +176,7 @@ export default class Fetcher implements APIFetcher {
 
     while (true) {
       const paramsWithSkip = {
-        limit: Fetcher.perRequestLimit,
+        limit: this.requestBatchSize,
         order: 'sys.createdAt',
         ...params,
         skip: skip.toString(10)

@@ -1,4 +1,5 @@
 import EntryTransformToType from '../interfaces/entry-transform-to-type'
+import shouldPublishLocalChanges from '../utils/should-publish-local-changes'
 import { APIAction } from './action'
 import { OfflineAPI } from '../offline-api'
 import Entry from '../entities/entry'
@@ -91,7 +92,7 @@ class EntryTransformToTypeAction extends APIAction {
 
       }
       await api.saveEntry(targetEntry.id)
-      if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && entry.isPublished)) {
+      if (shouldPublishLocalChanges(this.shouldPublish, entry)) {
         await api.publishEntry(targetEntry.id)
       }
 
@@ -106,7 +107,7 @@ class EntryTransformToTypeAction extends APIAction {
           }
 
           await api.saveEntry(link.element.id)
-          if (this.shouldPublish === true || (this.shouldPublish === 'preserve' && link.element.isPublished)) {
+          if (shouldPublishLocalChanges(this.shouldPublish, link.element)) {
             await api.publishEntry(link.element.id)
           }
         }

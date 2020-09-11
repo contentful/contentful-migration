@@ -22,11 +22,14 @@ function mergeSections (sections: Section[]): Section {
 
 export default class ComposedIntent implements Intent {
   private contentTypeId: string
+  private tagId: string
+
   private intents: Intent[]
 
   constructor (intents: Intent[]) {
     // Intents share the same content type id
     this.contentTypeId = intents[0].getContentTypeId()
+    this.tagId = intents[0].getTagId()
     this.intents = intents
   }
 
@@ -134,6 +137,32 @@ export default class ComposedIntent implements Intent {
     return true
   }
 
+  isTagIntent (): boolean {
+    // TODO Is this a viable option? How can we be sure that composed
+    // intents are not a mix of ct intents and tag intents?
+    return this.intents.some(intent => intent.isTagIntent())
+  }
+
+  getTagId (): string {
+    return this.tagId
+  }
+
+  isTagCreate (): boolean {
+    return false
+  }
+
+  isTagUpdate (): boolean {
+    return false
+  }
+
+  isTagDelete (): boolean {
+    return false
+  }
+
+  isEntrySetTags (): boolean {
+    return false
+  }
+
   toActions () {
     return flatten(this.intents.map((intent) => intent.toActions()))
   }
@@ -157,7 +186,7 @@ export default class ComposedIntent implements Intent {
 
     const mainHeading = firstIntent.toPlanMessage().heading
 
-    const contentTypeUpdates = this.intents.filter((intent) => intent.isContentTypeUpdate())
+    const contentTypeOrTagUpdates = this.intents.filter((intent) => intent.isContentTypeUpdate() || intent.isTagUpdate())
 
     const fieldCreates = this.intents.filter((intent) => intent.isFieldCreate())
     const editorInterfaceUpdates = this.intents.filter((intent) => intent.isEditorInterfaceUpdate())
@@ -172,7 +201,7 @@ export default class ComposedIntent implements Intent {
     const onlyFieldUpdatesByField = groupBy(onlyFieldUpdates, (intent) => intent.getFieldId())
     const createdFieldUpdatesByField = groupBy(createdFieldUpdates, (intent) => intent.getFieldId())
 
-    const topLevelDetails = flatten(contentTypeUpdates.map((updateIntent) => updateIntent.toPlanMessage().details))
+    const topLevelDetails = flatten(contentTypeOrTagUpdates.map((updateIntent) => updateIntent.toPlanMessage().details))
 
     const sidebarUpdates = flatten(this.intents
       .filter((intent) => intent.isSidebarUpdate())

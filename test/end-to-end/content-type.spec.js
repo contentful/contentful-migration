@@ -6,7 +6,7 @@ const co = Bluebird.coroutine;
 const { expect } = require('chai');
 const assert = require('./assertions');
 const cli = require('./cli');
-const { createDevEnvironment, deleteDevEnvironment, getDevContentType } = require('../helpers/client');
+const { createDevEnvironment, deleteDevEnvironment, getDevContentType, getDevTag } = require('../helpers/client');
 
 const uuid = require('uuid');
 const ENVIRONMENT_ID = uuid.v4();
@@ -98,10 +98,12 @@ describe('apply content-type migration examples', function () {
       .expect(assert.plans.field.create('pet', { type: 'Link', name: 'Their pet', linkType: 'Entry', required: false }))
       .expect(assert.plans.contentType.update('animal'))
       .expect(assert.plans.field.create('name', { type: 'Symbol', name: 'The name of the animal', required: true, localized: true }))
+      .expect(assert.plans.tag.create('longexampletag', { name: 'long example marketing' }))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
         const contentTypePerson = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'person');
         const contentTypeAnimal = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'animal');
+        const tag = yield getDevTag(SOURCE_TEST_SPACE, environmentId, 'longexampletag');
 
         expect(contentTypePerson.name).to.eql('Person');
         expect(contentTypePerson.description).to.eql('A content type for a person');
@@ -109,6 +111,7 @@ describe('apply content-type migration examples', function () {
         expect(contentTypeAnimal.name).to.eql('Animal');
         expect(contentTypeAnimal.description).to.eql('An animal');
         expect(contentTypeAnimal.fields.length).to.eql(3);
+        expect(tag.name).to.eql('long example marketing');
         done();
       }));
   });

@@ -5,7 +5,9 @@ import kindOf from 'kind-of'
 import errorMessages from '../errors'
 import { PayloadValidationError } from '../../../interfaces/errors'
 import { ContentType } from '../../../entities/content-type'
+import { Tag } from '../../../entities/tag'
 import { contentTypeSchema, MAX_FIELDS } from './content-type-schema'
+import { tagSchema } from './tag-schema'
 import fieldsSchema from './fields-schema'
 
 interface SimplifiedValidationError {
@@ -47,6 +49,25 @@ const validateContentType = function (contentType: ContentType): PayloadValidati
       return {
         type: 'InvalidPayload',
         message: errorMessages.contentType.TOO_MANY_FIELDS(contentTypeId, MAX_FIELDS)
+      }
+    }
+  })
+}
+
+const validateTag = function (tag: Tag): PayloadValidationError[] {
+  const { error } = Joi.validate(_.omit(tag.toApiTag(), ['sys']), tagSchema, {
+    abortEarly: false
+  })
+
+  if (!error) {
+    return []
+  }
+
+  return error.details.map(({ path, type }): PayloadValidationError => {
+    if (type === 'any.required') {
+      return {
+        type: 'InvalidPayload',
+        message: errorMessages.tag.REQUIRED_PROPERTY(path)
       }
     }
   })
@@ -235,5 +256,6 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
 
 export {
   validateContentType,
-  validateFields
+  validateFields,
+  validateTag
 }

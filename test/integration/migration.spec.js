@@ -17,6 +17,10 @@ const changeEditorInterfaceWithExistingContentType = require('../../examples/17-
 const changeEditorInterfaceWithExistingContentTypeAddingHelpText = require('../../examples/18-change-field-control-for-existing-content-type-adding-help-text');
 const addSidebarWidgets = require('../../examples/24-add-sidebar-widgets-to-new-content-type');
 const addSidebarWidgetsToExisting = require('../../examples/27-add-sidebar-widgets-to-existing-content-type');
+const createTag = require('../../examples/28-create-tag');
+const modifyTag = require('../../examples/29-modify-tag');
+const deleteTag = require('../../examples/30-delete-tag');
+const setTagsForEntries = require('../../examples/31-set-tags-for-entries');
 
 const { createMigrationParser } = require('../../built/lib/migration-parser');
 const co = Bluebird.coroutine;
@@ -42,7 +46,7 @@ describe('the migration', function () {
     this.timeout(30000);
     yield createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
     request = makeRequest.bind(null, SOURCE_TEST_SPACE, ENVIRONMENT_ID);
-    migrationParser = createMigrationParser(request);
+    migrationParser = createMigrationParser(request, {});
     migrator = co(function * (migration) {
       const parseResult = yield migrationParser(migration);
       const batches = parseResult.batches;
@@ -322,6 +326,14 @@ describe('the migration', function () {
       }
     });
 
+    const tag = yield request({
+      method: 'GET',
+      url: '/tags/longexampletag',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1
+      }
+    });
+
     expect(person.name).to.eql('Person');
     expect(person.description).to.eql('A content type for a person');
     expect(person.fields).to.eql([
@@ -392,6 +404,8 @@ describe('the migration', function () {
         validations: []
       }
     ]);
+
+    expect(tag.name).to.eql('long example marketing');
   }));
 
   it('returns an error when the script is invalid', co(function * () {
@@ -475,7 +489,7 @@ describe('the migration', function () {
       }
     });
 
-    const blogEntriesWithoutSys = blogEntries.items.map(i => _.omit(i, 'sys'));
+    const blogEntriesWithoutSysAndMetadata = blogEntries.items.map(i => _.omit(i, ['sys', 'metadata']));
 
     const entries = [
       {
@@ -491,7 +505,7 @@ describe('the migration', function () {
       }
     ];
 
-    expect(blogEntriesWithoutSys).to.eql(entries);
+    expect(blogEntriesWithoutSysAndMetadata).to.eql(entries);
   }));
 
   it('changes the editor interface', co(function * () {
@@ -598,4 +612,155 @@ describe('the migration', function () {
       }
     ]);
   }));
+
+  it('creates a tag', async function () {
+    await migrator(createTag);
+
+    const tag = await request({
+      method: 'GET',
+      url: '/tags/sampletag'
+    });
+    expect(tag.name).to.eql('marketing');
+    expect(tag.sys.id).to.eql('sampletag');
+  });
+
+  it('modifies the name of an existing tag', async function () {
+    // TODO: As with the content type tests, the tag tests depend on
+    // each other to pass. Is this okay?
+    await migrator(modifyTag);
+    const tag = await request({
+      method: 'GET',
+      url: '/tags/sampletag'
+    });
+    expect(tag.name).to.eql('better marketing');
+    expect(tag.sys.id).to.eql('sampletag');
+  });
+
+  it('deletes a tag', async function () {
+    let result;
+    await migrator(deleteTag);
+
+    try {
+      result = await request({
+        method: 'GET',
+        url: `/tags/sampletag`
+      });
+    } catch (err) {
+      expect(err.name).to.eql('NotFound');
+    }
+    expect(result).to.be.undefined();
+  });
+
+  it('adds tags to entry', async function () {
+    await request({
+      method: 'PUT',
+      url: '/content_types/article',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1
+      },
+      data: {
+        name: 'blog post',
+        fields: [
+          {
+            name: 'title',
+            id: 'title',
+            type: 'Symbol'
+          }
+        ]
+      }
+    });
+
+    await request({
+      method: 'PUT',
+      url: '/content_types/article/published',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1,
+        'X-Contentful-Version': 1
+      }
+    });
+
+    await request({
+      method: 'PUT',
+      url: '/tags/new',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1
+      },
+      data: {
+        name: 'new',
+        sys: { id: 'new' }
+      }
+    });
+
+    await request({
+      method: 'PUT',
+      url: '/tags/old',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1
+      },
+      data: {
+        name: 'old',
+        sys: { id: 'old' }
+      }
+    });
+
+    await request({
+      method: 'POST',
+      url: '/entries',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1,
+        'X-Contentful-Content-Type': 'article'
+      },
+      data: {
+        fields: { title: { 'en-US': 'hello!' } },
+        metadata: {
+          tags: [
+            {
+              sys: {
+                id: 'old',
+                type: 'Link',
+                linkType: 'Tag'
+              }
+            }
+          ]
+        }
+      }
+    });
+
+    await migrator(setTagsForEntries);
+
+    const blogEntries = await request({
+      method: 'GET',
+      url: '/entries?content_type=article',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1
+      }
+    });
+
+    const blogEntriesWithoutSysAndFields = blogEntries.items.map(i => _.omit(i, ['sys', 'fields']));
+
+    expect(blogEntriesWithoutSysAndFields[0].metadata.tags.length).to.eql(2);
+    expect(blogEntriesWithoutSysAndFields[0].metadata.tags.some((tag) => tag.sys.id === 'new')).to.eql(true);
+    expect(blogEntriesWithoutSysAndFields[0].metadata.tags.some((tag) => tag.sys.id === 'old')).to.eql(true);
+  });
+
+  it('removes all tags from entry ', async function () {
+    await migrator(function (migration) {
+      migration.setTagsForEntries({
+        contentType: 'article',
+        from: ['title'],
+        setTagsForEntry: () => {
+          return [];
+        } });
+    });
+
+    const blogEntries = await request({
+      method: 'GET',
+      url: '/entries?content_type=article',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1
+      }
+    });
+
+    expect(blogEntries.items[0].metadata.tags).to.eql([]);
+  });
 });

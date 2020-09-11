@@ -1,5 +1,6 @@
 import ContentTransform from './content-transform'
 import EntryDerive from './entry-derive'
+import EntrySetTags from './entry-set-tags'
 import TransformEntryToType from './entry-transform-to-type'
 import { SidebarWidgetNamespace, SidebarWidgetSettings } from '../action/sidebarwidget'
 import {
@@ -14,8 +15,9 @@ interface RawStep {
 }
 
 interface RawStepMeta {
-  contentTypeInstanceId: string
+  contentTypeInstanceId?: string
   fieldInstanceId?: string
+  tagInstanceId?: string
   callsite: CallSiteInfo
 }
 
@@ -25,7 +27,7 @@ interface CallSiteInfo {
 }
 
 interface RawStepPayload {
-  contentTypeId: string
+  contentTypeId?: string
   fieldId?: string
   props?: RawStepProps
   transformation?: ContentTransform
@@ -37,6 +39,8 @@ interface RawStepPayload {
   editorInterface?: EditorInterfaceInfo
   sidebarWidget?: SidebarWidgetInfo
   entryEditor?: EntryEditorInfo
+  tagId?: string
+  entryTransformationForTags?: EntrySetTags
 }
 
 interface EditorInterfaceInfo {

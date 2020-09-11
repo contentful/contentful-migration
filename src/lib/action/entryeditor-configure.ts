@@ -1,5 +1,5 @@
 import { EditorInterfaces } from '../entities/content-type'
-import { EntityAction } from './action'
+import { EntityAction, EntityType } from './action'
 
 export type EntryEditorNamespace = 'extension'
 export interface EntryEditorSettings {
@@ -20,8 +20,8 @@ class EntryEditorConfigureAction extends EntityAction {
     this.settings = settings
   }
 
-  getEntityType (): string {
-    return 'EDITOR_INTERFACE'
+  getEntityType (): EntityType {
+    return EntityType.EditorInterface
   }
 
   getEntityId (): string {

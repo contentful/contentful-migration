@@ -1,0 +1,53 @@
+import APITag from '../interfaces/api-tag'
+
+class Tag {
+  private _id: string
+  private _name: string
+  private _version: number
+
+  constructor (tag: APITag) {
+    this._id = tag.sys.id
+    this._version = tag.sys.version
+    this._name = tag.name
+  }
+
+  get id () {
+    return this._id
+  }
+
+  get name () {
+    return this._name
+  }
+
+  get version () {
+    return this._version
+  }
+
+  set version (version: number) {
+    this._version = version
+  }
+
+  set name (name: string) {
+    this._name = name
+  }
+
+  toApiTag (): APITag {
+    const sys = {
+      id: this.id,
+      version: this.version
+    }
+    return {
+      sys,
+      name: this.name
+    }
+  }
+
+  clone (): Tag {
+    return new Tag(this.toApiTag())
+  }
+}
+
+export {
+  Tag as default,
+  Tag
+}

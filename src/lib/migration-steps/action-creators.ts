@@ -1,6 +1,7 @@
 import * as Intents from '../intent/index'
 import ContentTransform from '../interfaces/content-transform'
 import EntryDerive from '../interfaces/entry-derive'
+import EntrySetTags from '../interfaces/entry-set-tags'
 import TransformEntryToType from '../interfaces/entry-transform-to-type'
 
 const actionCreators = {
@@ -240,6 +241,20 @@ const actionCreators = {
       payload: {
         contentTypeId: id
       }
+    }),
+    setTagsForEntries: (id, instanceId, entryTransformationForTags: EntrySetTags, callsite): Intents.EntrySetTags => new Intents.EntrySetTags({
+      type: 'contentType/setTagsForEntries',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        entryTransformationForTags,
+        contentTypeId: id
+      }
     })
   },
   field: {
@@ -325,6 +340,52 @@ const actionCreators = {
         fieldId
       }
     })
+  },
+  tag: {
+    create: (id, instanceId, callsite): Intents.TagCreate => {
+      return new Intents.TagCreate({
+        type: 'tag/create',
+        meta: {
+          tagInstanceId: `tag/${id}/${instanceId}`,
+          callsite: {
+            file: callsite.getFileName(),
+            line: callsite.getLineNumber()
+          }
+        },
+        payload: { tagId: id }
+      })
+    },
+    update: (id, instanceId, callsite, property, value): Intents.TagUpdate => {
+      return new Intents.TagUpdate({
+        type: 'tag/update',
+        meta: {
+          tagInstanceId: `tag/${id}/${instanceId}`,
+          callsite: {
+            file: callsite.getFileName(),
+            line: callsite.getLineNumber()
+          }
+        },
+        payload: {
+          tagId: id,
+          props: {
+            [property]: value
+          }
+        }
+      })
+    },
+    delete: (id, instanceId, callsite): Intents.TagDelete => {
+      return new Intents.TagDelete({
+        type: 'tag/delete',
+        meta: {
+          tagInstanceId: `tag/${id}/${instanceId}`,
+          callsite: {
+            file: callsite.getFileName(),
+            line: callsite.getLineNumber()
+          }
+        },
+        payload: { tagId: id }
+      })
+    }
   }
 }
 

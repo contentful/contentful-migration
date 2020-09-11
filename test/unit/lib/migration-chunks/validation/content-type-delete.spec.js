@@ -339,37 +339,6 @@ describe('content type delete validation', function () {
     }));
   });
 
-  describe('when deleting a content type twice', function () {
-    it('returns an error', Bluebird.coroutine(function * () {
-      const contentTypes = [{
-        sys: { id: 'foo' }
-      }];
-
-      const errors = yield validateChunks(function up (migration) {
-        migration.deleteContentType('foo');
-        migration.deleteContentType('foo');
-      }, contentTypes);
-
-      expect(errors).to.eql([
-        {
-          type: 'InvalidAction',
-          message: 'Content type with id "foo" cannot be deleted more than once.',
-          details: {
-            step: {
-              type: 'contentType/delete',
-              meta: {
-                contentTypeInstanceId: 'contentType/foo/1'
-              },
-              payload: {
-                contentTypeId: 'foo'
-              }
-            }
-          }
-        }
-      ]);
-    }));
-  });
-
   describe('when deleting a content type that still has entries', function () {
     it('returns an error', Bluebird.coroutine(function * () {
       const contentTypes = [{

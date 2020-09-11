@@ -65,6 +65,19 @@ const errors = {
         return `"${propName}" validation expected to be "${expectedType}", but got "${actualType}"`
       }
     }
+  },
+  entry: {
+    REQUIRED_PROPERTY: (path) => {
+      return `The property "${path}" is required on an entry.`
+    },
+    TAGS_DO_NOT_EXIST: (entryId) => {
+      return `You cannot update tags on entry "${entryId}" because some of the tags do not exist.`
+    }
+  },
+  tag: {
+    REQUIRED_PROPERTY: (path) => {
+      return `The property "${path}" is required on a tag.`
+    }
   }
 }
 

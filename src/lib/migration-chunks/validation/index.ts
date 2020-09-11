@@ -1,15 +1,16 @@
 import IntentList from '../../intent-list'
 import contentTypeValidations from './content-type'
+import tagValidations from './tag'
 import fieldValidations from './field'
 import checkForDuplicatePropsErrors from './duplicate-props'
 import { ContentType } from '../../entities/content-type'
+import { Tag } from '../../entities/tag'
 import { Intent } from '../../interfaces/intent'
 import ValidationError, { InvalidActionError } from '../../interfaces/errors'
 
-function validateIntents (intentList: IntentList, contentTypes: ContentType[]): ValidationError[] | InvalidActionError[] {
+function validateIntents (intentList: IntentList, contentTypes: ContentType[], tags: Tag[]): ValidationError[] | InvalidActionError[] {
   const intents: Intent[] = intentList.getIntents()
   const ctErrors = contentTypeValidations(intents, contentTypes)
-
   if (ctErrors.length > 0) {
     return ctErrors
   }
@@ -24,6 +25,11 @@ function validateIntents (intentList: IntentList, contentTypes: ContentType[]): 
 
   if (fieldErrors.length > 0) {
     return fieldErrors
+  }
+
+  const tagErrors = tagValidations(intents, tags)
+  if (tagErrors.length > 0) {
+    return tagErrors
   }
 
   return []

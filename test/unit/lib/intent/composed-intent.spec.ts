@@ -16,7 +16,7 @@ const composedIntent = async function (migration): Promise<ComposedIntent> {
 
 describe('ComposedIntent', function () {
   describe('making a composed intent', function () {
-    it('creates the right plan message', async function () {
+    it('creates the right plan message for composed ct intent', async function () {
       const intent = await composedIntent((migration) => {
         const ct = migration.createContentType('test')
         ct.name('Test CT')
@@ -72,6 +72,23 @@ describe('ComposedIntent', function () {
             details: []
           }
         ]
+      })
+    }),
+
+    it('creates the right plan message for composed tag intent', async function () {
+      const intent = await composedIntent((migration) => {
+        const ct = migration.createTag('test')
+        ct.name('Test Tag')
+      })
+
+      const message: PlanMessage = intent.toPlanMessage()
+
+      expect(message).to.eql({
+        heading: chalk`Create Tag {bold.yellow test}`,
+        details: [
+          chalk`{italic name}: "Test Tag"`
+        ],
+        sections: []
       })
     })
   })

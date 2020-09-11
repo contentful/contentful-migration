@@ -49,6 +49,13 @@ export default yargs
     describe: 'Reduce verbosity of information for the execution',
     default: false
   })
+  .option('request-batch-size', {
+    alias: 'l',
+    boolean: false,
+    describe: 'Batch size per request',
+    type: 'number',
+    default: 100
+  })
   .demandOption(['space-id'], 'Please provide a space ID')
   .help('h')
   .alias('h', 'help')

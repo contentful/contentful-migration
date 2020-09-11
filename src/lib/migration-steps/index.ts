@@ -8,6 +8,7 @@ import DispatchProxy from './dispatch-proxy'
 import { omit } from 'lodash'
 import ContentTransform from '../interfaces/content-transform'
 import EntryDerive from '../interfaces/entry-derive'
+import EntrySetTags from '../interfaces/entry-set-tags'
 import TransformEntryToType from '../interfaces/entry-transform-to-type'
 import { ClientConfig } from '../../bin/lib/config'
 import { deprecatedMethod } from '../utils/deprecated'
@@ -273,6 +274,29 @@ class ContentType extends DispatchProxy {
   }
 }
 
+class Tag extends DispatchProxy {
+  public id: string
+  public instanceId: string
+
+  constructor (id, instanceId, props = {}, dispatch) {
+    const dispatchUpdate = (callsite, propertyName, propertyValue) => {
+      dispatch(actionCreators.tag.update(id, instanceId, callsite, propertyName, propertyValue))
+    }
+    super({ dispatchUpdate })
+
+    this.id = id
+    this.instanceId = instanceId
+    this.dispatch = dispatch
+
+    // Initialize from pros
+    Object.keys(props).forEach((propertyName) => {
+      this[propertyName](props[propertyName])
+    })
+  }
+
+  public dispatch? (step: Intent): void
+}
+
 export async function migration (migrationCreator: Function, makeRequest: Function, config: ClientConfig): Promise<Intent[]> {
   const actions: Intent[] = []
   const instanceIdManager = createInstanceIdManager()
@@ -327,6 +351,36 @@ export async function migration (migrationCreator: Function, makeRequest: Functi
       const instanceId = instanceIdManager.getNew(transformation.sourceContentType)
 
       dispatch(actionCreators.contentType.transformEntriesToType(instanceId, stripped, callsite))
+    },
+
+    createTag: function (id, init) {
+      const callsite = getFirstExternalCaller()
+      const instanceId = instanceIdManager.getNew(id)
+
+      dispatch(actionCreators.tag.create(id, instanceId, callsite))
+
+      return new Tag(id, instanceId, init, dispatch)
+    },
+
+    editTag: function (id, changes) {
+      const instanceId = instanceIdManager.getNew(id)
+      const ct = new Tag(id, instanceId, changes, dispatch)
+      return ct
+    },
+
+    deleteTag: function (id) {
+      const callsite = getFirstExternalCaller()
+      const instanceId = instanceIdManager.getNew(id)
+      dispatch(actionCreators.tag.delete(id, instanceId, callsite))
+    },
+
+    setTagsForEntries: function (transformation) {
+      const callsite = getFirstExternalCaller()
+      const id = transformation.contentType
+      const stripped = omit(transformation, 'contentType') as EntrySetTags
+      const instanceId = instanceIdManager.getNew(id)
+
+      dispatch(actionCreators.contentType.setTagsForEntries(id, instanceId, stripped, callsite))
     }
   }
 

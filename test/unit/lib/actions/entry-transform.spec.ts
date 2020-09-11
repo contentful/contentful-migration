@@ -3,6 +3,8 @@
 import { expect } from 'chai'
 
 import { EntryTransformAction } from '../../../../src/lib/action/entry-transform'
+import { EntryTransformToTypeAction } from '../../../../src/lib/action/entry-transform-to-type'
+import TransformEntryToType from '../../../../src/lib/interfaces/entry-transform-to-type'
 import OfflineApi from '../../../../src/lib/offline-api/index'
 import { Entry } from '../../../../src/lib/entities/entry'
 
@@ -37,7 +39,7 @@ describe('Entry Action', function () {
         }
       }))
     ]
-    const api = new OfflineApi(new Map(), entries, ['en-US'])
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US'] })
     await api.startRecordingRequests(null)
 
     try {
@@ -56,7 +58,7 @@ describe('Entry Action', function () {
         return
       }
       return {
-        name:  fields.name[locale] + '!'
+        name: fields.name[locale] + '!'
       }
     }
 
@@ -85,7 +87,7 @@ describe('Entry Action', function () {
         }
       }))
     ]
-    const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
     await api.startRecordingRequests(null)
 
     await action.applyTo(api)
@@ -135,7 +137,7 @@ describe('Entry Action', function () {
         }
       }))
     ]
-    const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
     await api.startRecordingRequests(null)
 
     await action.applyTo(api)
@@ -143,4 +145,58 @@ describe('Entry Action', function () {
     const batches = await api.getRequestBatches()
     expect(batches[0].requests).to.eql([])
   })
+
+  async function shouldPublishTest (shouldPublish, version, publishedVersion, expectPublish) {
+    const transformation: TransformEntryToType = {
+      sourceContentType: 'dog',
+      targetContentType: 'copycat',
+      from: ['name'],
+      shouldPublish,
+      identityKey: async () => '345',
+      transformEntryForLocale: async (fields, locale) => {
+        return { name: fields['name'][locale] }
+      }
+    }
+    const action = new EntryTransformToTypeAction(transformation)
+    const entries = [
+      new Entry(makeApiEntry({
+        contentTypeId: 'dog',
+        version,
+        publishedVersion,
+        fields: {
+          name: {
+            'en-US': 'bob',
+            'hawaii': 'haukea'
+          }
+        }
+      }))
+    ]
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US'] })
+    await api.startRecordingRequests(null)
+
+    await action.applyTo(api)
+    await api.stopRecordingRequests()
+    const batches = await api.getRequestBatches()
+
+    const requestUrls = batches[0].requests.map(r => r.url)
+
+    expect(requestUrls).include('/entries/345')
+
+    if (expectPublish) {
+      expect(requestUrls).include('/entries/345/published')
+    } else {
+      expect(requestUrls).not.include('/entries/345/published')
+    }
+  }
+
+  it('preservers CHANGED state with unpublished remote changes', async () => {
+    await shouldPublishTest('preserve', 4, 1, false)
+    await shouldPublishTest('preserve', 5, 1, false)
+  })
+
+  it('preservers PUBLISH state with no unpublished remote changes', async () => {
+    return shouldPublishTest('preserve', 2, 1, true)
+    return shouldPublishTest('preserve', 3, 1, true)
+  })
+
 })

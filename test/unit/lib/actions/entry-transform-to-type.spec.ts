@@ -34,7 +34,7 @@ describe('Transform Entry to Type Action', function () {
         }
       }))
     ]
-    const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
     await api.startRecordingRequests(null)
 
     await action.applyTo(api)
@@ -88,7 +88,7 @@ describe('Transform Entry to Type Action', function () {
         }
       }))
     ]
-    const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
     await api.startRecordingRequests(null)
 
     await action.applyTo(api)
@@ -125,7 +125,7 @@ describe('Transform Entry to Type Action', function () {
         }
       }))
     ]
-    const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
     await api.startRecordingRequests(null)
 
     await action.applyTo(api)
@@ -180,7 +180,7 @@ describe('Transform Entry to Type Action', function () {
         }
       }))
     ]
-    const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
     await api.startRecordingRequests(null)
 
     await action.applyTo(api)
@@ -238,7 +238,7 @@ describe('Transform Entry to Type Action', function () {
       }))
     ]
 
-    const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
     await api.startRecordingRequests(null)
 
     await action.applyTo(api)
@@ -265,6 +265,7 @@ describe('Transform Entry to Type Action', function () {
 
     const action = new EntryTransformToTypeAction(transformation)
     const entries = [
+      // has never been published
       new Entry(makeApiEntry({
         id: '246',
         contentTypeId: 'dog',
@@ -276,6 +277,7 @@ describe('Transform Entry to Type Action', function () {
           }
         }
       })),
+      // published, but with pending changes
       new Entry(makeApiEntry({
         id: '123',
         contentTypeId: 'person',
@@ -294,7 +296,7 @@ describe('Transform Entry to Type Action', function () {
       }))
     ]
 
-    const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
     await api.startRecordingRequests(null)
 
     await action.applyTo(api)
@@ -350,7 +352,7 @@ describe('Transform Entry to Type Action', function () {
       }))
     ]
 
-    const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
     await api.startRecordingRequests(null)
 
     await action.applyTo(api)
@@ -387,7 +389,7 @@ describe('Transform Entry to Type Action', function () {
       }))
     ]
 
-    const api = new OfflineApi(new Map(), entries, ['en-US', 'hawaii'])
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
     await api.startRecordingRequests(null)
 
     await action.applyTo(api)
@@ -426,7 +428,7 @@ describe('Transform Entry to Type Action', function () {
         }
       }))
     ]
-    const api = new OfflineApi(new Map(), entries, ['en-US' ])
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US' ] })
     await api.startRecordingRequests(null)
 
     await action.applyTo(api)
@@ -464,7 +466,7 @@ describe('Transform Entry to Type Action', function () {
         }
       }))
     ]
-    const api = new OfflineApi(new Map(), entries, ['en-US' ])
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US' ] })
     await api.startRecordingRequests(null)
 
     await action.applyTo(api)

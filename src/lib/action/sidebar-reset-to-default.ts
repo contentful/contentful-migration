@@ -1,5 +1,5 @@
 import { EditorInterfaces } from '../entities/content-type'
-import { EntityAction } from './action'
+import { EntityAction, EntityType } from './action'
 
 class SidebarResetToDefaultAction extends EntityAction {
   protected contentTypeId: string
@@ -9,8 +9,8 @@ class SidebarResetToDefaultAction extends EntityAction {
     this.contentTypeId = contentTypeId
   }
 
-  getEntityType (): string {
-    return 'EDITOR_INTERFACE'
+  getEntityType (): EntityType {
+    return EntityType.EditorInterface
   }
 
   getEntityId (): string {

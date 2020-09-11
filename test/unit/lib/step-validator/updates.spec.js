@@ -5,14 +5,16 @@ const Bluebird = require('bluebird');
 
 const FieldUpdateValidator = require('../../../../src/lib/intent-validator/field-update').default;
 const ContentTypeUpdateValidator = require('../../../../src/lib/intent-validator/content-type-update').default;
+const TagUpdateValidator = require('../../../../src/lib/intent-validator/tag-update').default;
 const validateSteps = require('./validate-steps').bind(null, [
   FieldUpdateValidator,
-  ContentTypeUpdateValidator
+  ContentTypeUpdateValidator,
+  TagUpdateValidator
 ]);
 
 describe('migration-steps validation', function () {
   describe('when invoking methods for invalid props', function () {
-    it('returns all the validation errors', Bluebird.coroutine(function * () {
+    it('returns all the validation errors for content types and fields', Bluebird.coroutine(function * () {
       const validationErrors = yield validateSteps(function up (migration) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
@@ -101,6 +103,55 @@ describe('migration-steps validation', function () {
                 'fieldId': 'fullName',
                 'props': {
                   'bla': 'a person'
+                }
+              }
+            }
+          }
+        }
+      ]);
+    }));
+
+    it('returns validation errors for tags', Bluebird.coroutine(function * () {
+      const validationErrors = yield validateSteps(function up (migration) {
+        const marketing = migration.createTag('marketing', {
+          name: 'marketing tag',
+          invalidProp: 'Totally invalid'
+        });
+        marketing.somethingElse('Also invalid');
+      });
+
+      expect(validationErrors).to.eql([
+        {
+          type: 'InvalidProperty',
+          message: '"invalidProp" is not a valid property name for a tag.',
+          details: {
+            step: {
+              'type': 'tag/update',
+              'meta': {
+                'tagInstanceId': 'tag/marketing/0'
+              },
+              'payload': {
+                'tagId': 'marketing',
+                'props': {
+                  'invalidProp': 'Totally invalid'
+                }
+              }
+            }
+          }
+        },
+        {
+          type: 'InvalidProperty',
+          message: '"somethingElse" is not a valid property name for a tag.',
+          details: {
+            step: {
+              'type': 'tag/update',
+              'meta': {
+                'tagInstanceId': 'tag/marketing/0'
+              },
+              'payload': {
+                'tagId': 'marketing',
+                'props': {
+                  'somethingElse': 'Also invalid'
                 }
               }
             }

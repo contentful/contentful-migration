@@ -36,4 +36,9 @@ describe('Config', function () {
     expect(config.proxy).to.eql('https://foo.bar:443')
     expect(config.rawProxy).to.eql(true)
   })
+
+  it('exposes requestBatchSize from argv', function () {
+    const config = getConfig({ requestBatchSize: 99 })
+    expect(config.requestBatchSize).to.eql(99)
+  })
 })

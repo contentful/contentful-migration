@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash'
 import APIEntry from '../interfaces/api-entry'
+import APITagLink from '../interfaces/api-tag-link'
 import isDefined from '../utils/is-defined'
 
 class Entry {
@@ -8,6 +9,7 @@ class Entry {
   private _version: number
   private _fields: object
   private _publishedVersion?: number
+  private _tags?: APITagLink[]
 
   constructor (entry: APIEntry) {
     this._id = entry.sys.id
@@ -15,6 +17,7 @@ class Entry {
     this._version = entry.sys.version
     this._contentTypeId = entry.sys.contentType.sys.id
     this._publishedVersion = entry.sys.publishedVersion
+    this._tags = entry.metadata?.tags
   }
 
   get id () {
@@ -75,6 +78,14 @@ class Entry {
     this._publishedVersion = version
   }
 
+  get tags (): APITagLink[] {
+    return this._tags
+  }
+
+  set tags (tags: APITagLink[]) {
+    this._tags = tags
+  }
+
   toApiEntry (): APIEntry {
     const sys = {
       id: this.id,
@@ -89,10 +100,20 @@ class Entry {
       }
     }
 
-    return {
-      sys,
-      fields: cloneDeep(this.fields)
+    let payload: APIEntry
+    if (this.tags !== undefined) {
+      payload = {
+        sys,
+        fields: cloneDeep(this.fields),
+        metadata: { tags: cloneDeep(this.tags) }
+      }
+    } else {
+      payload = {
+        sys,
+        fields: cloneDeep(this.fields)
+      }
     }
+    return payload
   }
 
   clone (): Entry {

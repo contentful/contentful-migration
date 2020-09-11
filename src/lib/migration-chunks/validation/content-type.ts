@@ -34,7 +34,10 @@ class DuplicateCreate implements ContentTypeValidation {
 
 class EditBeforeCreate implements ContentTypeValidation {
   validate (intent: Intent, context: ValidationContext) {
-    const isRelevant = intent.isContentTypeUpdate() || intent.isContentTransform() || intent.isEntryDerive()
+    const isRelevant = intent.isContentTypeUpdate() ||
+      intent.isContentTransform() ||
+      intent.isEntryDerive() ||
+      intent.isEntrySetTags()
 
     if (!isRelevant) {
       return
@@ -70,12 +73,19 @@ class EditBeforeCreate implements ContentTypeValidation {
     if (intent.isContentTransform()) {
       return ctErrors.transformEntries.TRANSFORM_BEFORE_CONTENT_TYPE_CREATE(contentTypeId)
     }
+
+    if (intent.isEntrySetTags()) {
+      return ctErrors.setTagsForEntries.SET_TAGS_BEFORE_CONTENT_TYPE_CREATE(contentTypeId)
+    }
   }
 }
 
 class NonExistingEdits implements ContentTypeValidation {
   validate (intent: Intent, context: ValidationContext) {
-    const isRelevant = intent.isContentTypeUpdate() || intent.isContentTransform() || intent.isEntryDerive()
+    const isRelevant = intent.isContentTypeUpdate() ||
+      intent.isContentTransform() ||
+      intent.isEntryDerive() ||
+      intent.isEntrySetTags()
 
     if (!isRelevant) {
       return
@@ -111,6 +121,11 @@ class NonExistingEdits implements ContentTypeValidation {
     if (intent.isContentTransform()) {
       return ctErrors.transformEntries.CONTENT_TYPE_DOES_NOT_EXIST(contentTypeId)
     }
+
+    if (intent.isEntrySetTags()) {
+      return ctErrors.setTagsForEntries.CONTENT_TYPE_DOES_NOT_EXIST(contentTypeId)
+    }
+
   }
 }
 
@@ -165,7 +180,11 @@ class DuplicateDeletes implements ContentTypeValidation {
 
 class EditsAfterDeletes implements ContentTypeValidation {
   validate (intent: Intent, context: ValidationContext) {
-    const isRelevant = intent.isFieldUpdate() || intent.isContentTypeUpdate() || intent.isContentTransform() || intent.isEntryDerive()
+    const isRelevant = intent.isFieldUpdate() ||
+      intent.isContentTypeUpdate() ||
+      intent.isContentTransform() ||
+      intent.isEntryDerive() ||
+      intent.isEntrySetTags()
 
     if (!isRelevant) {
       return
@@ -198,6 +217,10 @@ class EditsAfterDeletes implements ContentTypeValidation {
 
     if (intent.isContentTransform()) {
       return ctErrors.transformEntries.TRANSFORM_AFTER_CONTENT_TYPE_DELETE(contentTypeId)
+    }
+
+    if (intent.isEntrySetTags()) {
+      return ctErrors.setTagsForEntries.SET_TAGS_AFTER_CONTENT_TYPE_CREATE(contentTypeId)
     }
   }
 }

@@ -1,4 +1,4 @@
-import { EntityAction } from './action'
+import { EntityAction, EntityType } from './action'
 import ContentType from '../entities/content-type'
 
 interface FieldRenameProps { newId: string }
@@ -19,8 +19,8 @@ class FieldRenameAction extends EntityAction {
     return this.contentTypeId
   }
 
-  getEntityType (): string {
-    return 'CONTENT_TYPE'
+  getEntityType (): EntityType {
+    return EntityType.ContentType
   }
 
   async applyTo (ct: ContentType) {
