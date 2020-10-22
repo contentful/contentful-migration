@@ -48,7 +48,7 @@
     "docs"
   ],
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.20.0",
     "bluebird": "^3.7.2",
     "callsites": "^3.1.0",
     "cardinal": "^2.1.1",
