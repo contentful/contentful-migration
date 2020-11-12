@@ -1,101 +1,117 @@
-'use strict';
+"use strict";
 
-const Bluebird = require('bluebird');
+const Bluebird = require("bluebird");
 
-const path = require('path');
-const packageVersion = require('../../package.json').version;
-const { createManagementClient } = require('../../built/bin/lib/contentful-client');
+const path = require("path");
+const packageVersion = require("../../package.json").version;
+const {
+  createManagementClient,
+} = require("../../built/bin/lib/contentful-client");
 
 const config = {
   accessToken: process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN,
-  application: `contentful.migration-cli.e2e-test/${packageVersion}`
+  application: `contentful.migration-cli.e2e-test/${packageVersion}`,
 };
-
 
 const client = createManagementClient(config);
 
 const makeRequest = function (spaceId, environmentId, requestConfig) {
-  requestConfig.url = path.join(spaceId, 'environments', environmentId, requestConfig.url);
+  // console.log({ url: requestConfig.url });
+  requestConfig.url = path.join(
+    spaceId,
+    "environments",
+    environmentId,
+    requestConfig.url
+  );
+
+  // console.log("after path join", requestConfig);
   return client.rawRequest(requestConfig);
 };
 
-const waitForJobCompletion = Bluebird.coroutine(function * (makeRequest, spaceId, environmentId) {
+const waitForJobCompletion = Bluebird.coroutine(function* (
+  makeRequest,
+  spaceId,
+  environmentId
+) {
   while (true) {
     try {
       const environmentJob = yield makeRequest(spaceId, environmentId, {
-        method: 'GET',
-        url: ``
+        method: "GET",
+        url: ``,
       });
 
       const status = environmentJob.sys.status.sys.id;
-      if (status === 'failed') {
-        throw new Error('Could not create dev env');
+      if (status === "failed") {
+        throw new Error("Could not create dev env");
       }
 
-      if (status === 'ready') {
+      if (status === "ready") {
         return;
       }
 
       yield Bluebird.delay(1000);
     } catch (error) {
-      console.log('Env job failed');
+      console.log("Env job failed");
       console.log(JSON.stringify(error));
       throw error;
     }
   }
 });
 
-const createDevEnvironment = Bluebird.coroutine(function * (spaceId, environmentId) {
+const createDevEnvironment = Bluebird.coroutine(function* (
+  spaceId,
+  environmentId
+) {
   try {
     yield makeRequest(spaceId, environmentId, {
-      method: 'PUT',
-      url: '',
+      method: "PUT",
+      url: "",
       data: {
-        name: environmentId
-      }
+        name: environmentId,
+      },
     });
 
     yield waitForJobCompletion(makeRequest, spaceId, environmentId);
   } catch (error) {
-    console.log('Could not initiate dev env job');
+    console.log("Could not initiate dev env job");
     console.log(JSON.stringify(error));
     throw error;
   }
   return environmentId;
 });
 
-function getDevContentType (spaceId, environmentId, id) {
+function getDevContentType(spaceId, environmentId, id) {
   return makeRequest(spaceId, environmentId, {
-    method: 'GET',
-    url: `/content_types/${id}`
+    method: "GET",
+    url: `/content_types/${id}`,
   });
 }
 
-function getDevEditorInterface (spaceId, environmentId, id) {
+function getDevEditorInterface(spaceId, environmentId, id) {
   return makeRequest(spaceId, environmentId, {
-    method: 'GET',
-    url: `/content_types/${id}/editor_interface`
+    method: "GET",
+    url: `/content_types/${id}/editor_interface`,
   });
 }
 
-function getEntries (spaceId, environmentId, id) {
+function getEntries(spaceId, environmentId, id) {
   return makeRequest(spaceId, environmentId, {
-    method: 'GET',
-    url: `/entries?content_type=${id}`
+    method: "GET",
+    url: `/entries?content_type=${id}`,
   });
 }
 
-function deleteDevEnvironment (spaceId, environmentId) {
+function deleteDevEnvironment(spaceId, environmentId) {
   return makeRequest(spaceId, environmentId, {
-    method: 'DELETE',
-    url: ''
+    method: "DELETE",
+    url: "",
   });
 }
 
-function getDevTag (spaceId, environmentId, id) {
+function getDevTag(spaceId, environmentId, id) {
   return makeRequest(spaceId, environmentId, {
-    method: 'GET',
-    url: `/tags/${id}`
+    method: "GET",
+    url: `/tags/${id}`,
   });
 }
 
@@ -106,5 +122,5 @@ module.exports = {
   getDevContentType,
   getEntries,
   getDevEditorInterface,
-  getDevTag
+  getDevTag,
 };
