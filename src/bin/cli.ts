@@ -64,8 +64,8 @@ const createRun = ({ shouldThrow }) => async function run (argv) {
 
   const client = createManagementClient(clientConfig)
   const makeRequest = function (requestConfig) {
-    const config = Object.assign({}, requestConfig, {
-      url: [clientConfig.spaceId, 'environments', clientConfig.environmentId, requestConfig.url].join('/')
+      const config = Object.assign({}, requestConfig, {
+        url: path.join(clientConfig.spaceId, 'environments', clientConfig.environmentId, requestConfig.url)
     })
     return client.rawRequest(config)
   }
