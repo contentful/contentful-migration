@@ -41,6 +41,21 @@ const makeTerminatingFunction = ({ shouldThrow }) => (error: Error) => {
     process.exit(1)
   }
 }
+export const createMakeRequest = (client, { spaceId, environmentId }) => {
+  return function (requestConfig) {
+    let requestUrl = [spaceId, 'environments', environmentId].join('/')
+    if (requestConfig.url) {
+      const normalizedConfigUrl = requestConfig.url.replace(/(^\/)+/, '')
+      requestUrl = `${requestUrl}/${normalizedConfigUrl}`
+    }
+
+    const config = Object.assign({}, requestConfig, {
+      url: requestUrl
+    })
+
+    return client.rawRequest(config)
+  }
+}
 
 const createRun = ({ shouldThrow }) => async function run (argv) {
   let migrationFunction
@@ -63,12 +78,7 @@ const createRun = ({ shouldThrow }) => async function run (argv) {
   }, getConfig(argv))
 
   const client = createManagementClient(clientConfig)
-  const makeRequest = function (requestConfig) {
-    const config = Object.assign({}, requestConfig, {
-      url: [clientConfig.spaceId, 'environments', clientConfig.environmentId, requestConfig.url].join('/')
-    })
-    return client.rawRequest(config)
-  }
+  const makeRequest = createMakeRequest(client, { spaceId: clientConfig.spaceId, environmentId: clientConfig.environmentId })
 
   const migrationParser = createMigrationParser(makeRequest, clientConfig)
 

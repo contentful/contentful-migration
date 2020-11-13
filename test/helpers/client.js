@@ -1,10 +1,9 @@
 'use strict';
 
 const Bluebird = require('bluebird');
-
-const path = require('path');
 const packageVersion = require('../../package.json').version;
 const { createManagementClient } = require('../../built/bin/lib/contentful-client');
+const createMakeRequest = require('../../built/bin/cli').createMakeRequest;
 
 const config = {
   accessToken: process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN,
@@ -15,8 +14,7 @@ const config = {
 const client = createManagementClient(config);
 
 const makeRequest = function (spaceId, environmentId, requestConfig) {
-  requestConfig.url = path.join(spaceId, 'environments', environmentId, requestConfig.url);
-  return client.rawRequest(requestConfig);
+  return createMakeRequest(client, { spaceId, environmentId })(requestConfig);
 };
 
 const waitForJobCompletion = Bluebird.coroutine(function * (makeRequest, spaceId, environmentId) {
