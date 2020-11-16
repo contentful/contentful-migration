@@ -163,21 +163,21 @@ export interface ContentType {
 
   /**
    * 
-   * @param widgetNamespace The namespace of the widget. Use 'builtin' for standard widgets or 'extension' for UI extensions.
+   * @param widgetNamespace The namespace of the widget. Use 'builtin' for standard widgets,  'extension' for UI extensions or 'app' for installed apps.
    * @param widgetId The new widget ID for the field.
    * @param settings Widget settings
    */
-  configureEntryEditor(widgetNamespace: 'builtin' | 'extension', widgetId: string, settings?: IEditorInterfaceOptions): void
+  configureEntryEditor(widgetNamespace: 'builtin' | 'extension' | 'app', widgetId: string, settings?: IEditorInterfaceOptions): void
 
   /**
    * Changes the control of given field's ID.
    *
    * @param fieldId The ID of the field.
-   * @param widgetNamespace The namespace of the widget. Use 'builtin' for standard widgets or 'extension' for UI extensions.
+   * @param widgetNamespace The namespace of the widget. Use 'builtin' for standard widgets,  'extension' for UI extensions or 'app' for installed apps.
    * @param widgetId The new widget ID for the field.
    * @param settings Widget settings
    */
-  changeFieldControl (fieldId: string, widgetNamespace: 'builtin' | 'extension', widgetId: string, settings?: IEditorInterfaceOptions): void
+  changeFieldControl (fieldId: string, widgetNamespace: 'builtin' | 'extension' | 'app', widgetId: string, settings?: IEditorInterfaceOptions): void
 
   /**
    * @deprecated
