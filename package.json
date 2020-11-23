@@ -37,7 +37,8 @@
     "travis-deploy-once": "travis-deploy-once",
     "test-unit-debug": "NODE_ENV=test mocha debug --require test/setup-unit.js --recursive 'test/unit/**/**/*.spec.{js,ts}'",
     "test-integration-debug": "NODE_ENV=test mocha debug --require test/integration/setup.js 'test/integration/**/*.spec.js'",
-    "test-e2e-debug": "NODE_ENV=test mocha debug 'test/end-to-end/**/*.spec.js'"
+    "test-e2e-debug": "NODE_ENV=test mocha debug 'test/end-to-end/**/*.spec.js'",
+    "cm": "git-cz"
   },
   "files": [
     "README.md",
@@ -78,6 +79,8 @@
     "@types/sinon-chai": "^3.2.4",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "commitizen": "^4.2.2",
+    "cz-conventional-changelog": "^3.3.0",
     "dirty-chai": "^2.0.1",
     "eslint": "^7.7.0",
     "eslint-plugin-import": "^2.20.2",
@@ -128,5 +131,10 @@
       "@semantic-release/npm",
       "@semantic-release/github"
     ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
