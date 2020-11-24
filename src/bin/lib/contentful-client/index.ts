@@ -2,6 +2,7 @@ import { loadProxyFromEnv, agentFromProxy, proxyStringToObject } from './proxy'
 // One cannot rewire const's
 // eslint-disable-next-line
 import { createClient as _createClient } from 'contentful-management'
+// for rewiring during tests
 let createClient = _createClient
 
 function createManagementClient (params) {
@@ -25,7 +26,7 @@ function createManagementClient (params) {
     delete params.proxy
   }
 
-  return createClient(params)
+  return createClient(params, { type: 'plain' })
 }
 
 export {

@@ -8,12 +8,7 @@ import Bluebird from 'bluebird'
 import APIFetcher from './interfaces/api-fetcher'
 
 export default class Fetcher implements APIFetcher {
-  private requestBatchSize: number
-  private makeRequest: Function
-
-  constructor (makeRequest: Function, requestBatchSize: number = 100) {
-    this.makeRequest = makeRequest
-    this.requestBatchSize = requestBatchSize
+  constructor (private makeRequest: Function, private requestBatchSize: number = 100) {
   }
 
   async getEntriesInIntents (intentList: IntentList): Promise<APIEntry[]> {
