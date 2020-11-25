@@ -17,7 +17,7 @@ import { RequestBatch } from '../lib/offline-api/index'
 import { getConfig } from './lib/config'
 import ValidationError from '../lib/interfaces/errors'
 import { PlainClientAPI } from 'contentful-management'
-import { trim } from 'lodash'
+import trim from 'lodash/trim'
 
 class ManyError extends Error {
   public errors: (Error | ValidationError)[]
