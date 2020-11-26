@@ -1,5 +1,5 @@
 
-version: 2
+version: 2.1
 orbs:
   polaris-scan: contentful/polaris-scan@1
 
@@ -72,13 +72,13 @@ jobs:
       - run: npm run semantic-release
 
 workflows:
-  version: 2
   test-and-release:
     jobs:
       - check
       - test-unit
       - test-integration
       - polaris-scan/run-polaris-scan:
+          requires_build: false
           context:
             - sast-scan
       - test-e2e
