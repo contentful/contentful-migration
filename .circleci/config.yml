@@ -82,3 +82,7 @@ workflows:
             - test-unit
             - test-integration
             - test-e2e
+          filters:
+            branches:
+              only:
+                - master

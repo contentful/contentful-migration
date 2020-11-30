@@ -453,7 +453,7 @@ module.exports = async function (migration, { makeRequest, spaceId, accessToken 
 
 The function used by the migration object to talk to the Contentful Management API. This can be useful if you want to use API features that may not be supported by the `migration` object.
 
-`config : Object` - Configuration for the request based on [the Contentful management SDK](https://contentful.github.io/contentful-management.js/contentful-management/5.10.2/ContentfulClientAPI.html#.rawRequest)
+`config : Object` - Configuration for the request based on [the Contentful management SDK](https://contentful.github.io/contentful-management.js/contentful-management/7.3.0/globals.html#http)
   - `method` : `string` – HTTP method
   - `url` : `string` - HTTP endpoint
 
