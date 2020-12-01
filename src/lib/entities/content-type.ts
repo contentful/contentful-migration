@@ -94,12 +94,14 @@ class EditorInterfaces {
   private _controls: APIEditorInterfaceControl[]
   private _sidebar?: APIEditorInterfaceSidebar[]
   private _editor?: APIEditorIntefaceEditor
+  private _editors?: APIEditorIntefaceEditor[]
 
   constructor (apiEditorInterfaces: APIEditorInterfaces) {
     this._version = apiEditorInterfaces.sys.version
     this._controls = apiEditorInterfaces.controls
     this._sidebar = apiEditorInterfaces.sidebar || undefined
     this._editor = apiEditorInterfaces.editor || undefined
+    this._editors = apiEditorInterfaces.editors || undefined
   }
 
   get version () {
@@ -116,6 +118,10 @@ class EditorInterfaces {
 
   getEditor () {
     return this._editor
+  }
+
+  getEditors () {
+    return this._editors
   }
 
   getControls () {
@@ -233,10 +239,15 @@ class EditorInterfaces {
 
   resetEditorToDefault () {
     this._editor = undefined
+    this._editors = undefined
   }
 
   setEditor (editor: APIEditorIntefaceEditor) {
     this._editor = editor
+  }
+
+  setEditors (editors: APIEditorIntefaceEditor[]) {
+    this._editors = editors
   }
 
   toAPI (): object {
@@ -253,7 +264,8 @@ class EditorInterfaces {
     const result: {
       controls: APIEditorInterfaceControl[],
       sidebar?: APIEditorInterfaceSidebar[],
-      editor?: APIEditorIntefaceEditor
+      editor?: APIEditorIntefaceEditor,
+      editors?: APIEditorIntefaceEditor[]
     } = {
       controls
     }
@@ -263,6 +275,9 @@ class EditorInterfaces {
     }
     if (this._editor) {
       result.editor = this._editor
+    }
+    if (this._editors) {
+      result.editors = this._editors
     }
 
     return result

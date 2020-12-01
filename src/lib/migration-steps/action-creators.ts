@@ -175,6 +175,20 @@ const actionCreators = {
         }
       }
     }),
+    configureEntryEditors: (id, instanceId, callsite, editors): Intents.EntryEditorsConfigure => new Intents.EntryEditorsConfigure({
+      type: 'contentType/configureEntryEditors',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id,
+        entryEditors: editors
+      }
+    }),
     addSidebarWidget: (id, instanceId, callsite, widgetId, widgetNamespace, insertBeforeWidgetId, settings = {}): Intents.SidebarWidgetAdd => new Intents.SidebarWidgetAdd({
       type: 'contentType/addSidebarWidget',
       meta: {

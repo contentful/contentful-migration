@@ -1,7 +1,7 @@
 import { EditorInterfaces } from '../entities/content-type'
 import { EntityAction, EntityType } from './action'
 
-export type EntryEditorNamespace = 'extension'
+export type EntryEditorNamespace = 'extension' | 'app'
 export interface EntryEditorSettings {
   [key: string]: any
 }
@@ -12,7 +12,7 @@ class EntryEditorConfigureAction extends EntityAction {
   protected widgetNamespace?: EntryEditorNamespace
   protected settings?: EntryEditorSettings
 
-  constructor (contentTypeId: string, widgetNamespace, widgetId, settings) {
+  constructor (contentTypeId: string, widgetNamespace: EntryEditorNamespace, widgetId: string, settings: EntryEditorSettings) {
     super()
     this.contentTypeId = contentTypeId
     this.widgetId = widgetId

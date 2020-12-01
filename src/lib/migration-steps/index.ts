@@ -224,6 +224,17 @@ class ContentType extends DispatchProxy {
     return this
   }
 
+  configureEntryEditors (editors) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.contentType.configureEntryEditors(
+      this.id,
+      this.instanceId,
+      callsite,
+      editors
+    ))
+    return this
+  }
+
   addSidebarWidget (widgetNamespace, widgetId, settings = {}, insertBeforeWidgetId = null) {
     const callsite = getFirstExternalCaller()
     this.dispatch(actionCreators.contentType.addSidebarWidget(

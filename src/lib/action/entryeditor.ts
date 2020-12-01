@@ -7,4 +7,4 @@ export interface EntryEditorSettings {
   [key: string]: any
 }
 
-export type EntryEditorNamespace = 'extension'
+export type EntryEditorNamespace = 'extension' | 'app'
