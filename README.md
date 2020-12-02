@@ -90,6 +90,7 @@
       - [`removeSidebarWidget (widgetNamespace, widgetId)` : void](#removesidebarwidget-widgetnamespace-widgetid--void)
       - [`resetSidebarToDefault ()` : void](#resetsidebartodefault---void)
       - [`configureEntryEditor (widgetNamespace, widgetId[, settings])` : void](#configureentryeditor-widgetnamespace-widgetid-settings--void)
+      - [`configureEntryEditors (EntryEditor[])` : void](#configureentryeditors-entryeditor--void)
       - [`resetEntryEditorToDefault ()` : void](#resetentryeditortodefault---void)
     - [Field](#field)
   - [Validation errors](#validation-errors)
@@ -678,6 +679,16 @@ Sets the entry editor to specified widget.
 **`widgetNamespace: string`** – The namespace of the widget.
 **`widgetId : string`** – The ID of the builtin or extension widget to add.
 **`settings : Object`** – Instance settings for the widget. Key-value pairs of type (string, number | boolean | string). Optional.
+
+#### `configureEntryEditors (EntryEditor[])` : void
+
+As opposed to `configureEntryEditor` which only sets one editor, this sets a list of editors to the current editor interface of a content-type.
+
+Each `EntryEditor` has the following properties:
+
+- `widgetNamespace: string` – The namespace of the widget (i.e: `app`, `extension` or `builtin-editor`).
+- `widgetId : string` – The ID of the builtin, extension or app widget to add.
+- `settings : Object` – Instance settings for the widget. Key-value pairs of type (string, number | boolean | string). Optional.
 
 #### `resetEntryEditorToDefault ()` : void
 

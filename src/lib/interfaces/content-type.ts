@@ -34,8 +34,8 @@ interface APIEditorInterfaceSettings {
   [setting: string]: APIParameterValue
 }
 
-type APISidebarWidgetNamespace = 'builtin' | 'extension'
-type APIControlWidgetNamespace = 'builtin' | 'extension'
+type APISidebarWidgetNamespace = 'builtin' | 'extension' | 'app'
+type APIControlWidgetNamespace = 'builtin' | 'extension' | 'app'
 
 interface APIEditorInterfaceControl {
   fieldId: string,
@@ -68,6 +68,7 @@ interface APIEditorInterfaces {
   controls: APIEditorInterfaceControl[],
   sidebar?: APIEditorInterfaceSidebar[],
   editor?: APIEditorIntefaceEditor
+  editors?: APIEditorIntefaceEditor[]
 }
 
 export {

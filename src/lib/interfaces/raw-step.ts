@@ -7,6 +7,9 @@ import {
   EntryEditorNamespace,
   EntryEditorSettings
 } from '../action/entryeditor-configure'
+import {
+  EntryEditor
+} from '../action/entryeditors-configure'
 
 interface RawStep {
   type: string
@@ -39,6 +42,7 @@ interface RawStepPayload {
   editorInterface?: EditorInterfaceInfo
   sidebarWidget?: SidebarWidgetInfo
   entryEditor?: EntryEditorInfo
+  entryEditors?: EntryEditor[]
   tagId?: string
   entryTransformationForTags?: EntrySetTags
 }

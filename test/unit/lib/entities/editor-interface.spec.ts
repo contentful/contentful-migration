@@ -158,4 +158,31 @@ describe('EditorInterfaces', () => {
     expect(editorInterface.getEditor().settings.key).to.eql('value')
   })
 
+  it('configures editors', () => {
+    const editorInterface = makeEditorInterface([existingWidget, testWidget])
+
+    editorInterface.setEditors([
+      {
+        widgetId: 'test-widget-id',
+        widgetNamespace: 'extension',
+        settings: { key: 'value' }
+      },
+      {
+        widgetId: 'builtin-editor',
+        widgetNamespace: 'builtin'
+      }
+    ])
+
+    expect(editorInterface.getEditors().length).to.eql(2)
+    expect(editorInterface.getEditors()[0]).to.eql({
+      widgetId: 'test-widget-id',
+      widgetNamespace: 'extension',
+      settings: { key: 'value' }
+    })
+    expect(editorInterface.getEditors()[1]).to.eql({
+      widgetId: 'builtin-editor',
+      widgetNamespace: 'builtin'
+    })
+  })
+
 })
