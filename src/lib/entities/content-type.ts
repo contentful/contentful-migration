@@ -273,11 +273,12 @@ class EditorInterfaces {
     if (this._sidebar) {
       result.sidebar = this._sidebar
     }
-    if (this._editor) {
-      result.editor = this._editor
-    }
+
+    // prefer editors over editor
     if (this._editors) {
       result.editors = this._editors
+    } else if (this._editor) {
+      result.editor = this._editor
     }
 
     return result
