@@ -102,9 +102,8 @@ describe('Migration parser', function () {
 
       expect(result.length).to.eql(2)
 
-      expect(result[0].requests.length).to.eql(2)
+      expect(result[0].requests.length).to.eql(1)
       expect(result[0].requests[0].url).to.eql('/entries/456')
-      expect(result[0].requests[1].url).to.eql('/entries/456/published')
       expect(result[0].runtimeErrors.length).to.eql(1)
       expect(result[0].runtimeErrors).to.eql([fooError])
 

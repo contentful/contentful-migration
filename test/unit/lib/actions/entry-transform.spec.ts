@@ -99,7 +99,7 @@ describe('Entry Action', function () {
         'hawaii': 'haukea'
       }
     })
-    expect(batches[0].requests[2].data.fields).to.eql({
+    expect(batches[0].requests[1].data.fields).to.eql({
       name: {
         'en-US': 'jim!',
         'hawaii': 'aloha'
