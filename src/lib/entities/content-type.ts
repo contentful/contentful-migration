@@ -10,7 +10,7 @@ import {
   APISidebarWidgetNamespace, APIControlWidgetNamespace
 } from '../interfaces/content-type'
 import { cloneDeep, find, filter, findIndex, pull, forEach } from 'lodash'
-import { SidebarWidgetNamespace } from '../action/sidebarwidget'
+import { SidebarWidgetNamespace, DEFAULT_SIDEBAR_LIST } from '../action/sidebarwidget'
 
 class Fields {
   private _fields: Field[]
@@ -180,11 +180,11 @@ class EditorInterfaces {
   }
 
   addSidebarWidget (widgetId: string,
-                    widgetNamespace: APISidebarWidgetNamespace,
-                    insertBeforeWidgetId: string,
-                    settings: APISidebarWidgetSettings,
-                    disabled: boolean) {
-    this._sidebar = Array.isArray(this._sidebar) ? this._sidebar : []
+    widgetNamespace: APISidebarWidgetNamespace,
+    insertBeforeWidgetId: string,
+    settings: APISidebarWidgetSettings,
+    disabled: boolean) {
+    this._sidebar = Array.isArray(this._sidebar) ? this._sidebar : [].concat(DEFAULT_SIDEBAR_LIST)
 
     const nextWidgetIndex = this._sidebar.map(w => w.widgetId).indexOf(insertBeforeWidgetId)
 
@@ -203,9 +203,9 @@ class EditorInterfaces {
   }
 
   updateSidebarWidget (widgetId: string,
-                       widgetNamespace: SidebarWidgetNamespace,
-                       settings?: APISidebarWidgetSettings,
-                       disabled?: boolean) {
+    widgetNamespace: SidebarWidgetNamespace,
+    settings?: APISidebarWidgetSettings,
+    disabled?: boolean) {
 
     if (!Array.isArray(this._sidebar)) {
       return

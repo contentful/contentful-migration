@@ -2,6 +2,7 @@ import { expect } from 'chai'
 
 import { EditorInterfaces } from '../../../../src/lib/entities/content-type'
 import { APIEditorInterfaceSidebar } from '../../../../src/lib/interfaces/content-type'
+import { DEFAULT_SIDEBAR_LIST } from '../../../../src/lib/action/sidebarwidget'
 
 describe('EditorInterfaces', () => {
   const testWidget: APIEditorInterfaceSidebar = {
@@ -37,7 +38,7 @@ describe('EditorInterfaces', () => {
       testWidget.disabled
     )
 
-    expect(editorInterface.getSidebar()).to.eql([testWidget])
+    expect(editorInterface.getSidebar()).to.eql([...DEFAULT_SIDEBAR_LIST, testWidget])
   })
 
   it('adds sidebar widget at the end of custom sidebar', () => {
