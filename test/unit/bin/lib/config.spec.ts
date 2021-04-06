@@ -41,4 +41,9 @@ describe('Config', function () {
     const config = getConfig({ requestBatchSize: 99 })
     expect(config.requestBatchSize).to.eql(99)
   })
+
+  it('exposes headers from argv', function () {
+    const config = getConfig({ headers: { test: true } })
+    expect(config.headers).to.eql({ test: true })
+  })
 })
