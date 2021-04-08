@@ -1,4 +1,5 @@
 import * as Joi from 'joi'
+import { hasAlphaHeader } from '../../../../bin/lib/config'
 
 const validation = (name, constraint) => Joi.object({
   [name]: constraint,
@@ -18,6 +19,7 @@ const rangeForDate = () => Joi.object({
 })
 
 const linkContentType = validation('linkContentType', Joi.array().items(Joi.string()))
+const relationshipType = validation('relationshipType', Joi.array().items(Joi.string().valid('Composition')))
 const inValidation = validation('in', Joi.array())
 const linkMimetypeGroup = validation('linkMimetypeGroup', Joi.array().items(Joi.string()))
 const size = validation('size', range('number'))
@@ -73,7 +75,8 @@ const enabledNodeTypes = validation('enabledNodeTypes', Joi.array().items(Joi.st
   'embedded-entry-inline'
 )))
 
-const fieldValidations = Joi.alternatives().try(
+const getFieldValidations = () => Joi.alternatives().try(
+  ...[
   linkContentType,
   inValidation,
   linkMimetypeGroup,
@@ -87,7 +90,9 @@ const fieldValidations = Joi.alternatives().try(
   assetFileSize,
   nodes,
   enabledMarks,
-  enabledNodeTypes
+  enabledNodeTypes,
+  hasAlphaHeader('assembly-types') ? relationshipType : undefined,
+  ].filter(Boolean)
 )
 
-export default fieldValidations
+export default getFieldValidations

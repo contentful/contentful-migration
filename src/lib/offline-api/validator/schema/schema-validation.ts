@@ -8,7 +8,7 @@ import { ContentType } from '../../../entities/content-type'
 import { Tag } from '../../../entities/tag'
 import { contentTypeSchema, MAX_FIELDS } from './content-type-schema'
 import { tagSchema } from './tag-schema'
-import fieldsSchema from './fields-schema'
+import getFieldsSchema from './fields-schema'
 
 interface SimplifiedValidationError {
   message: string
@@ -142,7 +142,7 @@ const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): Simplifie
 
 const validateFields = function (contentType: ContentType): PayloadValidationError[] {
   const fields = contentType.fields.toRaw()
-  const { error } = Joi.validate(fields, fieldsSchema, {
+  const { error } = Joi.validate(fields, getFieldsSchema(), {
     abortEarly: false
   })
 

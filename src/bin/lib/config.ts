@@ -4,6 +4,7 @@ import * as os from 'os'
 // TODO: I'm ugly, maybe change me
 const homedir = process.env.NODE_ENV === 'test' ? '/tmp' : os.homedir()
 const configPath = path.resolve(homedir, '.contentfulrc.json')
+let globalConfig: ClientConfig;
 
 interface ClientConfig {
   accessToken?: string
@@ -56,12 +57,16 @@ function getConfig (argv) {
   const envConfig = getEnvConfig()
   const argvConfig = getArgvConfig(argv || {})
 
-  return Object.assign(fileConfig, envConfig, argvConfig)
+  globalConfig = Object.assign(fileConfig, envConfig, argvConfig)
+  return globalConfig;
 }
+
+const hasAlphaHeader = (alphaHeader: 'assembly-types') => (globalConfig.headers?.['x-contentful-enable-alpha-feature'] as string)?.includes(alphaHeader)
 
 export default getConfig
 
 export {
   getConfig,
-  ClientConfig
+  ClientConfig,
+  hasAlphaHeader
 }
