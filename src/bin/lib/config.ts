@@ -4,6 +4,12 @@ import * as os from 'os'
 // TODO: I'm ugly, maybe change me
 const homedir = process.env.NODE_ENV === 'test' ? '/tmp' : os.homedir()
 const configPath = path.resolve(homedir, '.contentfulrc.json')
+
+// We need to keep track of the config the user passes down
+// to getConfig, because alpha headers can be used to conditionally
+// enable/disable certain behaviors:
+// e.g. the relationshipType field validation can be used only when
+// the assembly-types alpha header is present in the config.
 let globalConfig: ClientConfig;
 
 interface ClientConfig {

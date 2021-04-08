@@ -75,6 +75,10 @@ const enabledNodeTypes = validation('enabledNodeTypes', Joi.array().items(Joi.st
   'embedded-entry-inline'
 )))
 
+// The field validation need to be wrapped in a getter as opposed
+// to being defined as a plain constant, because the usage of some of
+// the validations (e.g. relationshipType) is dynamically enabled/disabled
+// based on the presence of an alpha header, which is known at runtime.
 const getFieldValidations = () => Joi.alternatives().try(
   ...[
   linkContentType,
