@@ -6,7 +6,7 @@ import sinon from 'sinon'
 import * as configModule from '../../../../src/bin/lib/config';
 import getFieldValidations from '../../../../src/lib/offline-api/validator/schema/field-validations-schema'
 
-describe.only('makeFieldValidations', function () {
+describe('makeFieldValidations', function () {
   const hasAlphaHeaderStub = sinon.stub(configModule, "hasAlphaHeader")
   describe('with the assembly-types alpha header defined', () => {
     it('should include the relationshipType validation', () => {
