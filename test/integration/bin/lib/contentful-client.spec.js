@@ -63,21 +63,4 @@ describe('contentful-client', function () {
     const invocation = () => createManagementClient({ accessToken: 'something-random' });
     expect(invocation).to.throw('specify the application name');
   });
-
-  it('passes down headers option to contentful-management', function () {
-    const headers = {
-      myHeader: true
-    };
-
-    const clientConfig = Object.assign({
-      application: `contentful.migration-cli/0.0.0`,
-      headers
-    }, getConfig());
-
-    contentfulClient.__set__('createClient', (params) => {
-      expect(params.headers).to.eql(headers);
-    });
-
-    createManagementClient(clientConfig);
-  });
 });
