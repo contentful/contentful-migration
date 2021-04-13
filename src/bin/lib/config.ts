@@ -109,7 +109,7 @@ function getConfig (argv) {
   return globalConfig;
 }
 
-const hasAlphaHeader = (alphaHeader: 'assembly-types') => (globalConfig.headers?.['x-contentful-enable-alpha-feature'] as string)?.includes(alphaHeader)
+const hasAlphaHeader = (alphaHeader: 'assembly-types') => (globalConfig?.headers?.['x-contentful-enable-alpha-feature'] as string)?.includes(alphaHeader)
 
 export default getConfig
 
