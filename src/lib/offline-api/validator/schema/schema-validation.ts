@@ -45,7 +45,7 @@ const validateContentType = function (contentType: ContentType): PayloadValidati
         message: errorMessages.contentType.REQUIRED_PROPERTY(path)
       }
     }
-    if (type === 'array.max' && path === 'fields') {
+    if (type === 'array.max' && path.join() === 'fields') {
       return {
         type: 'InvalidPayload',
         message: errorMessages.contentType.TOO_MANY_FIELDS(contentTypeId, MAX_FIELDS)
@@ -78,7 +78,7 @@ const unknownCombinationError = function ({ path, keys }): SimplifiedValidationE
   const message = `"${keys.join()}" is not allowed`
   const context = { keys }
 
-  return { message, path, type, context }
+  return { message, path: path.split('.'), type, context }
 }
 
 // Receives ValidationError[] with this structure:
@@ -90,7 +90,8 @@ const unknownCombinationError = function ({ path, keys }): SimplifiedValidationE
 // }]
 const combineErrors = function (fieldValidationsErrors: SimplifiedValidationError[]): SimplifiedValidationError[] {
   const byItemPath: _.Dictionary<SimplifiedValidationError[]> = _.groupBy(fieldValidationsErrors, ({ path }) => {
-    return path.split('.').slice(0, -1).join('.')
+    // @ts-expect-error
+    return path.slice(0, -1).join('.')
   })
 
   const pathErrorTuples: [string, SimplifiedValidationError[]][] = _.entries(byItemPath)
@@ -119,25 +120,26 @@ const combineErrors = function (fieldValidationsErrors: SimplifiedValidationErro
 // They are noise, execept when all error types are the same.
 const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): SimplifiedValidationError[] {
   const [normalErrors, fieldValidationsErrors] = _.partition(error.details, (detail) => {
-    const [, fieldProp] = detail.path.split('.')
+    const [, fieldProp] = detail.path
     return fieldProp !== 'validations'
   })
 
   if (!fieldValidationsErrors.length) {
-    return normalErrors
+
+    return normalErrors as any
   }
 
   const isUnknownValidationsProp = fieldValidationsErrors.every(({ type }) => type === 'object.allowUnknown')
 
   if (isUnknownValidationsProp) {
-    const combinedErrors = combineErrors(fieldValidationsErrors)
+    const combinedErrors = combineErrors(fieldValidationsErrors as any)
 
-    return [...normalErrors, ...combinedErrors]
+    return [...normalErrors, ...combinedErrors] as any
   }
 
   const remainingFieldValidationsErrors = fieldValidationsErrors.filter(({ type }) => type !== 'object.allowUnknown')
 
-  return [...normalErrors, ...remainingFieldValidationsErrors]
+  return [...normalErrors, ...remainingFieldValidationsErrors] as any
 }
 
 const validateFields = function (contentType: ContentType): PayloadValidationError[] {
@@ -155,7 +157,7 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
 
     // `path` looks like `0.field`
     // look up the field
-    const [index, ...fieldNames] = path.split('.')
+    const [index, ...fieldNames] = path
     const prop = fieldNames.join('.')
     const field = fields[index]
 

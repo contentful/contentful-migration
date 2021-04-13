@@ -7,12 +7,11 @@ const enforceDependency = function ({ valid, when, is }) {
   }).error((errors) => {
     return errors.map((error) => {
       const path = error.path
-      const splitPath = path.split('.')
       // top level would be 0.foo
       // anything nested would be 0.foo.bar
       let subPath = [when]
-      if (splitPath.length >= 3) {
-        subPath = splitPath.slice(1, splitPath.length - 1).concat(subPath)
+      if (path.length >= 3) {
+        subPath = path.slice(1, path.length - 1).concat(subPath)
       }
       const keyPath = subPath.join('.')
 
