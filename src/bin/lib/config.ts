@@ -58,10 +58,52 @@ function getArgvConfig ({ spaceId, environmentId = 'master', accessToken, proxy,
   return config
 }
 
+/**
+ * Turn header option into an object. Invalid header values
+ * are ignored.
+ *
+ * @example
+ * getHeadersConfig('Accept: Any')
+ * // -> {Accept: 'Any'}
+ *
+ * @example
+ * getHeadersConfig(['Accept: Any', 'X-Version: 1'])
+ * // -> {Accept: 'Any', 'X-Version': '1'}
+ */
+function getHeadersConfig (value?: string | string[]) {
+  if (!value) {
+    return {}
+  }
+
+  const values = Array.isArray(value) ? value : [value]
+
+  return values.reduce((headers, value) => {
+    value = value.trim()
+
+    const separatorIndex = value.indexOf(':')
+
+    // Invalid header format
+    if (separatorIndex === -1) {
+      return headers
+    }
+
+    const headerKey = value.slice(0, separatorIndex).trim()
+    const headerValue = value.slice(separatorIndex + 1).trim()
+
+    return {
+      ...headers,
+      [headerKey]: headerValue
+    }
+  }, {})
+}
+
 function getConfig (argv) {
   const fileConfig = getFileConfig()
   const envConfig = getEnvConfig()
-  const argvConfig = getArgvConfig(argv || {})
+  const argvConfig = getArgvConfig({
+    ...argv,
+    headers: argv?.headers || getHeadersConfig(argv?.header)
+  })
 
   globalConfig = Object.assign(fileConfig, envConfig, argvConfig)
   return globalConfig;
