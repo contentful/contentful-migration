@@ -81,21 +81,21 @@ const enabledNodeTypes = validation('enabledNodeTypes', Joi.array().items(Joi.st
 // based on the presence of an alpha header, which is known at runtime.
 const getFieldValidations = () => Joi.alternatives().try(
   ...[
-  linkContentType,
-  inValidation,
-  linkMimetypeGroup,
-  size,
-  rangeValidation,
-  regexp,
-  prohibitRegexp,
-  unique,
-  dateRange,
-  assetImageDimensions,
-  assetFileSize,
-  nodes,
-  enabledMarks,
-  enabledNodeTypes,
-  hasAlphaHeader('assembly-types') ? relationshipType : undefined,
+    linkContentType,
+    inValidation,
+    linkMimetypeGroup,
+    size,
+    rangeValidation,
+    regexp,
+    prohibitRegexp,
+    unique,
+    dateRange,
+    assetImageDimensions,
+    assetFileSize,
+    nodes,
+    enabledMarks,
+    enabledNodeTypes,
+    hasAlphaHeader('assembly-types') ? relationshipType : undefined
   ].filter(Boolean)
 )
 

@@ -3,11 +3,11 @@
 import { expect } from 'chai'
 import * as Joi from 'joi'
 import sinon from 'sinon'
-import * as configModule from '../../../../src/bin/lib/config';
+import * as configModule from '../../../../src/bin/lib/config'
 import getFieldValidations from '../../../../src/lib/offline-api/validator/schema/field-validations-schema'
 
 describe('makeFieldValidations', function () {
-  const hasAlphaHeaderStub = sinon.stub(configModule, "hasAlphaHeader")
+  const hasAlphaHeaderStub = sinon.stub(configModule, 'hasAlphaHeader')
   describe('with the assembly-types alpha header defined', () => {
     it('should include the relationshipType validation', () => {
       hasAlphaHeaderStub.returns(true)

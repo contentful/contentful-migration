@@ -10,7 +10,7 @@ const configPath = path.resolve(homedir, '.contentfulrc.json')
 // enable/disable certain behaviors:
 // e.g. the relationshipType field validation can be used only when
 // the assembly-types alpha header is present in the config.
-let globalConfig: ClientConfig;
+let globalConfig: ClientConfig
 
 interface ClientConfig {
   accessToken?: string
@@ -106,7 +106,7 @@ function getConfig (argv) {
   })
 
   globalConfig = Object.assign(fileConfig, envConfig, argvConfig)
-  return globalConfig;
+  return globalConfig
 }
 
 const hasAlphaHeader = (feature: 'assembly-types') => {
@@ -114,8 +114,8 @@ const hasAlphaHeader = (feature: 'assembly-types') => {
     const alphaHeader = globalConfig.headers['x-contentful-enable-alpha-feature'] as string || ''
     return alphaHeader.includes(feature)
   }
-  return false;
-} 
+  return false
+}
 
 export default getConfig
 
