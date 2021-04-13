@@ -75,7 +75,7 @@ function getHeadersConfig (value?: string | string[]) {
 
     const separatorIndex = value.indexOf(':')
 
-		// Invalid header format
+    // Invalid header format
     if (separatorIndex === -1) {
       return headers
     }
