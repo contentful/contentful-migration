@@ -95,7 +95,7 @@ function getConfig (argv) {
   const envConfig = getEnvConfig()
   const argvConfig = getArgvConfig({
     ...argv,
-    headers: argv.headers || getHeadersConfig(argv.header)
+    headers: argv?.headers || getHeadersConfig(argv?.header)
   })
 
   return Object.assign(fileConfig, envConfig, argvConfig)
