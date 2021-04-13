@@ -56,6 +56,11 @@ export default yargs
     type: 'number',
     default: 100
   })
+  .option('header', {
+    alias: 'H',
+    type: 'string',
+    describe: 'Pass an additional HTTP Header'
+  })
   .demandOption(['space-id'], 'Please provide a space ID')
   .help('h')
   .alias('h', 'help')
