@@ -186,6 +186,7 @@ module.exports = function (migration, context) {
 | accessToken       |            | string  | The access token to use                                     | true     |
 | yes               | false      | boolean | Skips any confirmation before applying the migration,script | false    |
 | requestBatchSize  | 100        | number  | Limit for every single request                              | false    |
+| headers           |            | object  | Additional headers to attach to the requests                | false    |
 
 ### Chaining vs Object notation
 
