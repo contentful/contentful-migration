@@ -1,7 +1,7 @@
 // In this example, we want to turn the dog's owner field into its own entry
 // and link it back to the dog. To do this, we create an "owner"
 // content type and a link field on the "dog" content type.
-// The link field is a singular Entry link field. (See example 19 if you want to create an Array link field.)
+// The link field is a singular Entry link field. (See example 20 if you want to create an Array link field.)
 // In the identity function, we define the criterion for when a new owner should
 // be created: If the name joined by a hyphen is the same, then the same owner entry is
 // linked.
