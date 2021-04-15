@@ -113,6 +113,14 @@
     "node": ">=8.0.0"
   },
   "release": {
+    "branches": [
+      "master",
+      {
+        "name": "experimental",
+        "channel": "experimental",
+        "prerelease": true
+      }
+    ],
     "plugins": [
       [
         "@semantic-release/commit-analyzer",
