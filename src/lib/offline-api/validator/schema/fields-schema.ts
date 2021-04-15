@@ -1,5 +1,5 @@
 import * as Joi from 'joi'
-import fieldValidations from './field-validations-schema'
+import getFieldValidations from './field-validations-schema'
 
 const enforceDependency = function ({ valid, when, is }) {
   return valid.when(when, {
@@ -7,12 +7,11 @@ const enforceDependency = function ({ valid, when, is }) {
   }).error((errors) => {
     return errors.map((error) => {
       const path = error.path
-      const splitPath = path.split('.')
       // top level would be 0.foo
       // anything nested would be 0.foo.bar
       let subPath = [when]
-      if (splitPath.length >= 3) {
-        subPath = splitPath.slice(1, splitPath.length - 1).concat(subPath)
+      if (path.length >= 3) {
+        subPath = path.slice(1, path.length - 1).concat(subPath)
       }
       const keyPath = subPath.join('.')
 
@@ -42,17 +41,17 @@ const enforceDependency = function ({ valid, when, is }) {
   })
 }
 
-const itemsValid = Joi.object().keys({
+const getValidItems = () => Joi.object().keys({
   type: Joi.string().valid('Symbol', 'Link').required(),
   linkType: enforceDependency({
     valid: Joi.string().valid('Asset', 'Entry'),
     when: 'type',
     is: 'Link'
   }),
-  validations: Joi.array().unique().items(fieldValidations)
+  validations: Joi.array().unique().items(getFieldValidations())
 })
 
-const fieldSchema = Joi.object().keys({
+const getFieldSchema = () => Joi.object().keys({
   id: Joi.string().required(),
   newId: Joi.string()
     .invalid(Joi.ref('id'))
@@ -79,7 +78,7 @@ const fieldSchema = Joi.object().keys({
     is: 'Link'
   }),
   items: enforceDependency({
-    valid: itemsValid,
+    valid: getValidItems(),
     when: 'type',
     is: 'Array'
   }),
@@ -87,10 +86,10 @@ const fieldSchema = Joi.object().keys({
   deleted: Joi.boolean(),
   localized: Joi.boolean(),
   required: Joi.boolean(),
-  validations: Joi.array().unique().items(fieldValidations),
+  validations: Joi.array().unique().items(getFieldValidations()),
   disabled: Joi.boolean()
 })
 
-const fieldsSchema = Joi.array().items(fieldSchema)
+const getFieldsSchema = () => Joi.array().items(getFieldSchema())
 
-export default fieldsSchema
+export default getFieldsSchema
