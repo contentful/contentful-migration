@@ -161,19 +161,19 @@ describe('Entry Action', function () {
     const entries = [
       new Entry(
         makeApiEntry({
-          id: "246",
-          contentTypeId: "dog",
+          id: '246',
+          contentTypeId: 'dog',
           version,
           publishedVersion,
           fields: {
             name: {
-              "en-US": "bob",
-              hawaii: "haukea",
-            },
-          },
+              'en-US': 'bob',
+              hawaii: 'haukea'
+            }
+          }
         })
-      ),
-    ];
+      )
+    ]
     const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US'] })
     await api.startRecordingRequests(null)
 

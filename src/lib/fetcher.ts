@@ -139,11 +139,11 @@ export default class Fetcher implements APIFetcher {
             intent.requiresAllTags()
         )
     ) {
-      return [];
+      return []
     }
 
-    const tags = await this.fetchAllPaginatedItems<APITag>("/tags");
-    return tags;
+    const tags = await this.fetchAllPaginatedItems<APITag>('/tags')
+    return tags
   }
 
   private async fetchEditorInterface (id: string, editorInterfaces: Map<string, APIEditorInterfaces>) {

@@ -496,75 +496,75 @@ describe('Fetcher', function () {
     expect(localeCodes).to.eql(result)
   })
 
-  it("fetches all tags in the enviroment", async function () {
+  it('fetches all tags in the enviroment', async function () {
     const intents = await buildIntents(
-      function up(migration) {
-        migration.createTag("person", {
-          name: "bar",
-          description: "A content type for a person",
-        });
+      function up (migration) {
+        migration.createTag('person', {
+          name: 'bar',
+          description: 'A content type for a person'
+        })
       },
       noOp,
       {}
-    );
+    )
 
-    const request = sinon.stub();
+    const request = sinon.stub()
     request
       .withArgs({
-        method: "GET",
-        url: `/tags?limit=100&order=sys.createdAt&skip=0`,
+        method: 'GET',
+        url: `/tags?limit=100&order=sys.createdAt&skip=0`
       })
       .resolves({
         items: [
           {
-            name: "Person Tag",
-            sys: { id: "person", type: "Tag", visbility: 'private' },
+            name: 'Person Tag',
+            sys: { id: 'person', type: 'Tag', visbility: 'private' }
           },
           {
-            name: "A very goodboy",
-            sys: { id: "dog", type: "Tag", visbility: 'public' },
-          },
+            name: 'A very goodboy',
+            sys: { id: 'dog', type: 'Tag', visbility: 'public' }
+          }
         ],
         total: 2,
-        limit: 2,
-      });
+        limit: 2
+      })
 
-    const intentList = new IntentList(intents);
+    const intentList = new IntentList(intents)
 
-    const fetcher = new Fetcher(request);
-    const tags = await fetcher.getTagsForEnvironment(intentList);
+    const fetcher = new Fetcher(request)
+    const tags = await fetcher.getTagsForEnvironment(intentList)
 
     expect(request).to.have.been.calledWith({
-      method: "GET",
-      url: `/tags?limit=100&order=sys.createdAt&skip=0`,
-    });
+      method: 'GET',
+      url: `/tags?limit=100&order=sys.createdAt&skip=0`
+    })
 
     expect(tags).to.eql([
       {
-        name: "Person Tag",
-        sys: { id: "person", type: "Tag", visbility: 'private' },
+        name: 'Person Tag',
+        sys: { id: 'person', type: 'Tag', visbility: 'private' }
       },
       {
-        name: "A very goodboy",
-        sys: { id: "dog", type: "Tag", visbility: 'public' },
-      },
-    ]);
-  });
+        name: 'A very goodboy',
+        sys: { id: 'dog', type: 'Tag', visbility: 'public' }
+      }
+    ])
+  })
 
   it('fetches intents with \'requiresAllTags\'', async function () {
     class FakeIntent extends Intent {
-      constructor() {
-        super({ type: 'test', meta: { callsite: { line: 1, file: ' '}}, payload: {} })
+      constructor () {
+        super({ type: 'test', meta: { callsite: { line: 1, file: ' ' } }, payload: {} })
       }
-      requiresAllTags() {
+      requiresAllTags () {
         return true
       }
 
-      toActions() {
+      toActions () {
         return []
       }
 
-      endsGroup() {
+      endsGroup () {
         return true
       }
 
@@ -575,48 +575,45 @@ describe('Fetcher', function () {
           sections: []
         }
       }
-     }
-
+    }
 
     const request = sinon.stub()
     request
     .withArgs({
-      method: "GET",
-      url: `/tags?limit=100&order=sys.createdAt&skip=0`,
+      method: 'GET',
+      url: `/tags?limit=100&order=sys.createdAt&skip=0`
     })
     .resolves({
       items: [
         {
-          name: "Person Tag",
-          sys: { id: "person", type: "Tag", visibility: 'private' },
+          name: 'Person Tag',
+          sys: { id: 'person', type: 'Tag', visibility: 'private' }
         },
         {
-          name: "A very goodboy",
-          sys: { id: "dog", type: "Tag", visibility: 'public' },
-        },
+          name: 'A very goodboy',
+          sys: { id: 'dog', type: 'Tag', visibility: 'public' }
+        }
       ],
       total: 2,
-      limit: 2,
-    });
+      limit: 2
+    })
 
     const intentList = new IntentList([new FakeIntent()])
     const fetcher = new Fetcher(request)
 
-    const tags = await fetcher.getTagsForEnvironment(intentList);
+    const tags = await fetcher.getTagsForEnvironment(intentList)
 
     expect(tags).to.eql([
       {
-        name: "Person Tag",
-        sys: { id: "person", type: "Tag", visibility: 'private' },
+        name: 'Person Tag',
+        sys: { id: 'person', type: 'Tag', visibility: 'private' }
       },
       {
-        name: "A very goodboy",
-        sys: { id: "dog", type: "Tag", visibility: 'public' },
-      },
-    ]);
+        name: 'A very goodboy',
+        sys: { id: 'dog', type: 'Tag', visibility: 'public' }
+      }
+    ])
   })
-
-
 
   it('fetches with a given limit', async function () {
     const intents = await buildIntents(function up (migration) {

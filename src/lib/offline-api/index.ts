@@ -183,11 +183,11 @@ class OfflineAPI {
       entries,
       locales,
       editorInterfacesByContentType = new Map<String, EditorInterfaces>(),
-      tags = new Map<String, Tag>(),
-    } = options;
+      tags = new Map<String, Tag>()
+    } = options
 
-    this.modifiedContentTypes = contentTypes;
-    this.modifiedTags = tags;
+    this.modifiedContentTypes = contentTypes
+    this.modifiedTags = tags
 
     // Initialize saved and published state
     // These are (currently) exclusively needed for stateful validations
@@ -197,30 +197,30 @@ class OfflineAPI {
     // we need to perform a clone.
     // TODO: Build a better abstraction over `Map` that allows easy cloning
     // and also allows us to implement async iterators
-    this.savedContentTypes = new Map();
-    this.savedTags = new Map();
-    this.publishedContentTypes = new Map();
-    this.editorInterfaces = editorInterfacesByContentType;
+    this.savedContentTypes = new Map()
+    this.savedTags = new Map()
+    this.publishedContentTypes = new Map()
+    this.editorInterfaces = editorInterfacesByContentType
 
     for (const [id, contentType] of contentTypes.entries()) {
-      this.savedContentTypes.set(id, contentType.clone());
-      this.publishedContentTypes.set(id, contentType.clone());
+      this.savedContentTypes.set(id, contentType.clone())
+      this.publishedContentTypes.set(id, contentType.clone())
     }
 
-    this.contentTypeValidators.push(new FieldDeletionValidator());
-    this.contentTypeValidators.push(new DisplayFieldValidator());
-    this.contentTypeValidators.push(new SchemaValidator());
-    this.contentTypeValidators.push(new TypeChangeValidator());
+    this.contentTypeValidators.push(new FieldDeletionValidator())
+    this.contentTypeValidators.push(new DisplayFieldValidator())
+    this.contentTypeValidators.push(new SchemaValidator())
+    this.contentTypeValidators.push(new TypeChangeValidator())
 
-    this.tagValidators.push(new TagSchemaValidator());
+    this.tagValidators.push(new TagSchemaValidator())
 
     // TODO We skip a schema validator for now, because in order to
     // properly implement it, we would need to bump joi.
     // TagsOnEntryValidator will failed if modifiedTags (tags in environment) is empty
-    this.entryValidators.push(new TagsOnEntryValidator(this.modifiedTags));
+    this.entryValidators.push(new TagsOnEntryValidator(this.modifiedTags))
 
-    this.entries = entries;
-    this.locales = locales;
+    this.entries = entries
+    this.locales = locales
   }
 
   async getContentType (id: string): Promise<ContentType> {
@@ -379,20 +379,20 @@ class OfflineAPI {
   }
 
   async saveEntry (id: string) {
-    this.assertRecording();
+    this.assertRecording()
 
-    const hasEntry = await this.hasEntry(id);
+    const hasEntry = await this.hasEntry(id)
 
     if (!hasEntry) {
-      throw new Error(`Cannot save Entry ${id} because it does not exist`);
+      throw new Error(`Cannot save Entry ${id} because it does not exist`)
     }
 
-    const entry = this.entries.find((entry) => entry.id === id);
+    const entry = this.entries.find((entry) => entry.id === id)
     // Store clone as a request
-    this.currentRequestsRecorded.push(saveEntryRequest(entry.clone()));
+    this.currentRequestsRecorded.push(saveEntryRequest(entry.clone()))
 
     // Mutate version bump
-    entry.version = entry.version + 1;
+    entry.version = entry.version + 1
 
     // TODO: Add a validator for entries here that checks their final
     // payload and checks it against existing tags
@@ -404,7 +404,7 @@ class OfflineAPI {
       }
     }
 
-    return entry;
+    return entry
   }
 
   async hasEntry (id: string): Promise<boolean> {
