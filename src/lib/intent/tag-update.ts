@@ -32,6 +32,10 @@ export default class TagUpdateIntent extends Intent {
     return false
   }
 
+  requiresAllTags () {
+    return true
+  }
+
   toActions () {
     return [
       new TagUpdateAction(

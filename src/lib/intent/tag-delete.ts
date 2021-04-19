@@ -33,6 +33,10 @@ export default class TagDeleteIntent extends Intent {
     return false
   }
 
+  requiresAllTags () {
+    return true
+  }
+
   toActions () {
     return [
       new TagDeleteAction(this.getTagId())

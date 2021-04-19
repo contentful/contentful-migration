@@ -28,6 +28,10 @@ export default class TagCreateIntent extends Intent {
     return false
   }
 
+  requiresAllTags () {
+    return true
+  }
+
   toActions () {
     return [
       new TagCreateAction(this.getTagId())

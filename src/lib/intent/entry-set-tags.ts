@@ -16,6 +16,10 @@ export default class EntrySetTagsIntent extends Intent {
     return false
   }
 
+  requiresAllTags (): boolean {
+    return true
+  }
+
   toActions () {
     return [
       new EntrySetTagsAction(

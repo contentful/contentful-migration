@@ -131,14 +131,17 @@ export default class Fetcher implements APIFetcher {
 
   async getTagsForEnvironment (intentList: IntentList): Promise<APITag[]> {
     // Don't fetch tags if migration does not use any.
-    if (!(intentList.getIntents().some((intent) => intent.isTagIntent() || intent.isEntrySetTags()))) {
+    if (
+      !intentList
+        .getIntents()
+        .some(
+          (intent) =>
+            intent.requiresAllTags()
+        )
+    ) {
       return []
     }
 
-    // We always fetch all tags if any intent is a tag intent. As soon
-    // as we introduce attaching tags on entries this will have to be
-    // refactored to account for different states (e.g. tag exists, has or
-    // has not yet been created).
     const tags = await this.fetchAllPaginatedItems<APITag>('/tags')
     return tags
   }

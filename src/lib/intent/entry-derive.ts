@@ -22,6 +22,10 @@ export default class EntryDeriveIntent extends Intent {
     return false
   }
 
+  requiresAllTags () {
+    return true
+  }
+
   toActions () {
     return [
       new EntryDeriveAction(
