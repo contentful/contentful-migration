@@ -34,6 +34,10 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
+  requiresAllTags () {
+    return false
+  }
+
   isContentTypeUpdate () {
     return false
   }

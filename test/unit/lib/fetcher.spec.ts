@@ -6,6 +6,7 @@ import IntentList from '../../../src/lib/intent-list'
 import Fetcher from '../../../src/lib/fetcher'
 import { ContentType } from '../../../src/lib/entities/content-type'
 import { APIEditorInterfaces } from '../../../src/lib/interfaces/content-type'
+import Intent from '../../../src/lib/intent/base-intent'
 
 const noOp = () => undefined
 
@@ -550,74 +551,59 @@ describe('Fetcher', function () {
     ]);
   });
 
-  it('fetches tags in the environment when the intent is \'entry-transform\'', async function () {
-    const intents = await buildIntents(function up (migration) {
-      migration.transformEntries({
-        contentType: 'newsArticle',
-        from: ['author', 'authorCity'],
-        to: ['byline'],
-        transformEntryForLocale: function (fromFields, currentLocale) {
-          if (currentLocale === 'de-DE') {
-            return
-          }
-          const newByline = `${fromFields.author[currentLocale]} ${fromFields.authorCity[currentLocale]}`
-          return { byline: newByline }
+  it('fetches intents with \'requiresAllTags\'', async function () {
+    class FakeIntent extends Intent {
+      constructor() {
+        super({ type: 'test', meta: { callsite: { line: 1, file: ' '}}, payload: {} })
+      }
+      requiresAllTags() {
+        return true
+      }
+
+      toActions() {
+        return []
+      }
+
+      endsGroup() {
+        return true
+      }
+
+      toPlanMessage () {
+        return {
+          heading: '',
+          details: [],
+          sections: []
         }
-      })
-    }, null, null)
+      }
+     }
+
 
     const request = sinon.stub()
     request
-      .withArgs({
-        method: 'GET',
-        url: `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=newsArticle&skip=0`
-      })
-      .resolves({
-        skip: 0,
-        limit: 4,
-        total: 6,
-        items: ['item1', 'item2', 'item3', 'item4']
-      })
-    request
-      .withArgs({
-        method: 'GET',
-        url: `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=newsArticle&skip=4`
-      })
-      .resolves({
-        skip: 4,
-        limit: 4,
-        total: 6,
-        items: ['item5', 'item6']
-      })
-      request
-      .withArgs({
-        method: "GET",
-        url: `/tags?limit=100&order=sys.createdAt&skip=0`,
-      })
-      .resolves({
-        items: [
-          {
-            name: "Person Tag",
-            sys: { id: "person", type: "Tag", visibility: 'private' },
-          },
-          {
-            name: "A very goodboy",
-            sys: { id: "dog", type: "Tag", visibility: 'public' },
-          },
-        ],
-        total: 2,
-        limit: 2,
-      });
+    .withArgs({
+      method: "GET",
+      url: `/tags?limit=100&order=sys.createdAt&skip=0`,
+    })
+    .resolves({
+      items: [
+        {
+          name: "Person Tag",
+          sys: { id: "person", type: "Tag", visibility: 'private' },
+        },
+        {
+          name: "A very goodboy",
+          sys: { id: "dog", type: "Tag", visibility: 'public' },
+        },
+      ],
+      total: 2,
+      limit: 2,
+    });
 
-    const intentList = new IntentList(intents)
-
+    const intentList = new IntentList([new FakeIntent()])
     const fetcher = new Fetcher(request)
-    const entries = await fetcher.getEntriesInIntents(intentList)
+
     const tags = await fetcher.getTagsForEnvironment(intentList);
 
-
-    const result = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6']
-    expect(entries).to.eql(result)
     expect(tags).to.eql([
       {
         name: "Person Tag",
@@ -629,6 +615,8 @@ describe('Fetcher', function () {
       },
     ]);
   })
+
+
 
   it('fetches with a given limit', async function () {
     const intents = await buildIntents(function up (migration) {

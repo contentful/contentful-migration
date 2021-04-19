@@ -136,9 +136,7 @@ export default class Fetcher implements APIFetcher {
         .getIntents()
         .some(
           (intent) =>
-            intent.isTagIntent() ||
-            intent.isEntrySetTags() ||
-            intent.isContentTransform()
+            intent.requiresAllTags()
         )
     ) {
       return [];

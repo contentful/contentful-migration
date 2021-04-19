@@ -12,6 +12,7 @@ interface Intent {
   getTagId (): string
 
   requiresAllEntries (): boolean
+  requiresAllTags (): boolean
 
   shouldSave (): boolean
   shouldPublish (): boolean

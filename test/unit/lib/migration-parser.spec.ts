@@ -65,6 +65,15 @@ describe('Migration parser', function () {
             items: [{ code: 'en-US' }]
           }
         }
+
+        if (config.url === `/tags?limit=100&order=sys.createdAt&skip=0`) {
+          return {
+            total: 0,
+            skip: 0,
+            limit: 0,
+            items: []
+          }
+        }
       }
       const migrationParser = createMigrationParser(fakeMakeRequest, {})
 
@@ -160,6 +169,15 @@ describe('Migration parser', function () {
             skip: 0,
             limit: 0,
             items: [{ code: 'en-US' }]
+          }
+        }
+
+        if (config.url === `/tags?limit=100&order=sys.createdAt&skip=0`) {
+          return {
+            total: 0,
+            skip: 0,
+            limit: 0,
+            items: []
           }
         }
       }
