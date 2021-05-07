@@ -299,7 +299,7 @@ The derive function is expected to return an object with the desired target fiel
 
   The return value must be an object with the same keys as specified in `derivedFields`. Their values will be written to the respective new entry fields for the current locale (i.e. `{nameField: 'myNewValue'}`)
 
-- **`shouldPublish : bool`** _(optional)_ – Flag that specifies publishing of target entries. (default `true`)
+- **`shouldPublish : bool|'preserve'`** _(optional)_ – If true, both the source and the derived entries will be published. If false, both will remain in draft state. If preserve, will keep current states of the source entries (default `true`)
 
 
 ##### `deriveLinkedEntries(config)` Example
