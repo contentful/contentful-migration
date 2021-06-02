@@ -288,6 +288,8 @@ The derive function is expected to return an object with the desired target fiel
 
 - **`toReferenceField : string`** _(required)_ – ID of the field on the source content type in which to insert the reference
 
+- **`shouldReferenceSource : bool`** _(optional)_ – Flag that changes the `toReferenceField` behavior to use the target content type instead of the source.  Derived reference field will reference the source. (default `false`)
+
 - **`derivedFields : array`** _(required)_ – Array of the field IDs on the target content type
 
 - **`identityKey: function (fields): string`** _(required)_ - Called once per source entry. Returns the ID used for the derived entry, which is also used for de-duplication so that multiple source entries can link to the same derived entry.
@@ -310,6 +312,7 @@ migration.deriveLinkedEntries({
     derivedContentType: 'owner',
     from: ['owner'],
     toReferenceField: 'ownerRef',
+    shouldReferenceSource: true,
     derivedFields: ['firstName', 'lastName'],
     identityKey: async (fromFields) => {
       return fromFields.owner['en-US'].toLowerCase().replace(' ', '-');

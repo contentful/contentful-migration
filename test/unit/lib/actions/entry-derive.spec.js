@@ -72,6 +72,73 @@ describe('Entry Derive', function () {
     expect(updateEntryWithLinkFields.ownerRef['en-US'].sys.id).to.eq(batches[0].requests[0].data.sys.id); // id of linked object is same as id of target object
   });
 
+  it('respects shouldReferenceSource', async function () {
+    const action = new EntryDeriveAction('dog', {
+      derivedContentType: 'owner',
+      from: ['owner'],
+      toReferenceField: 'dogRef',
+      shouldReferenceSource: true,
+      derivedFields: ['firstName', 'lastName'],
+      identityKey: async (fromFields) => {
+        return fromFields.owner['en-US'].toLowerCase().replace(' ', '-');
+      },
+      shouldPublish: true,
+      deriveEntryForLocale: async (inputFields, locale) => {
+        if (locale !== 'en-US') {
+          return;
+        }
+        const [firstName, lastName] = inputFields.owner[locale].split(' ');
+        return {
+          firstName,
+          lastName
+        };
+      }
+    });
+
+    const contentTypes = new Map();
+    contentTypes.set('dog', new ContentType({
+      sys: {
+        id: 'dog'
+      }
+    }));
+    contentTypes.set('owner', new ContentType({
+      sys: {
+        id: 'owner'
+      },
+      fields: [{
+        name: 'dogRef',
+        id: 'dogRef',
+        type: 'Symbol'
+      }]
+    }));
+
+    const entries = [
+      new Entry(makeApiEntry({
+        id: '246',
+        contentTypeId: 'dog',
+        version: 1,
+        fields: {
+          owner: {
+            'en-US': 'john doe'
+          }
+        }
+      }))
+    ];
+
+    const api = new OfflineApi({ contentTypes, entries, locales: ['en-US'] });
+    api.startRecordingRequests(null);
+    await action.applyTo(api);
+    api.stopRecordingRequests();
+    const batches = await api.getRequestBatches();
+    expect(batches[0].requests.length).to.eq(2);
+    const createTargetEntryFields = batches[0].requests[0].data.fields;
+    expect(createTargetEntryFields.firstName['en-US']).to.eq('john'); // target entry has first and last name
+    expect(createTargetEntryFields.lastName['en-US']).to.eq('doe');
+    expect(typeof createTargetEntryFields.dogRef['en-US'].sys).to.eq('object'); // request to update entry is n to 1 link
+    expect(createTargetEntryFields.dogRef['en-US'].sys.type).to.eq('Link');
+    expect(createTargetEntryFields.dogRef['en-US'].sys.id).to.eq('246'); // id of linked object is same as id of target object
+  });
+
   it('respects shouldPublish', async function () {
     const action = new EntryDeriveAction('dog', {
       derivedContentType: 'owner',
