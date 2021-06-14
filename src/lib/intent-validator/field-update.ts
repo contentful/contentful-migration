@@ -18,6 +18,7 @@ class FieldUpdateStepValidator extends SchemaValidator {
       localized: Joi.boolean().required().strict(),
       required: Joi.boolean().required().strict(),
       validations: Joi.array().required(),
+      initialValue: Joi.object().required().strict(),
       disabled: Joi.boolean().required().strict(),
       omitted: Joi.boolean().required().strict(),
       deleted: Joi.boolean().required().strict(),
