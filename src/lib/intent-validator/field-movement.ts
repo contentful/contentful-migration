@@ -45,6 +45,7 @@ class FieldMovementStepValidator implements IntentValidator {
   }
 
   validate (intent: FieldMoveIntent): ValidationError[] {
+    console.log("field-movement validate")
     const validationErrors = this.validationErrors
     const fieldMovementValidations = this.schema
     const validMoves = Object.keys(fieldMovementValidations)
@@ -53,7 +54,7 @@ class FieldMovementStepValidator implements IntentValidator {
     if (validMoves.includes(movement)) {
       const pivot = intent.getPivotId()
       const schema = fieldMovementValidations[movement]
-      const { error } = Joi.validate(pivot, schema)
+      const { error } = schema.validate(pivot)
       const pivotType = kindOf(pivot)
       const sourceFieldId = intent.getFieldId()
 

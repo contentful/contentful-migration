@@ -8,6 +8,7 @@ export default class SchemaValidator implements ContentTypePayloadValidator {
   public hooks = [ApiHook.SaveContentType]
 
   public validate (contentType: ContentType): PayloadValidationError[] {
+    console.log("offline schema validate")
     const ctErrors = validateContentType(contentType)
     const fieldErrors = validateFields(contentType)
 

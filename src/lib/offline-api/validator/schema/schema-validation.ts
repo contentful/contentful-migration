@@ -12,7 +12,7 @@ import fieldsSchema from './fields-schema'
 
 interface SimplifiedValidationError {
   message: string
-  path: string
+  path: (string | number)[]
   type: string
   context?: {
     isRequiredDependency?: boolean
@@ -30,7 +30,7 @@ interface SimplifiedValidationError {
 
 const validateContentType = function (contentType: ContentType): PayloadValidationError[] {
   const contentTypeId = contentType.id
-  const { error } = Joi.validate(_.omit(contentType.toAPI(), ['sys']), contentTypeSchema, {
+  const { error } = contentTypeSchema.validate(_.omit(contentType.toAPI(), ['sys']), {
     abortEarly: false
   })
 
@@ -45,7 +45,7 @@ const validateContentType = function (contentType: ContentType): PayloadValidati
         message: errorMessages.contentType.REQUIRED_PROPERTY(path)
       }
     }
-    if (type === 'array.max' && path === 'fields') {
+    if (type === 'array.max' && path[0] === 'fields' && path.length === 1) {
       return {
         type: 'InvalidPayload',
         message: errorMessages.contentType.TOO_MANY_FIELDS(contentTypeId, MAX_FIELDS)
@@ -55,7 +55,7 @@ const validateContentType = function (contentType: ContentType): PayloadValidati
 }
 
 const validateTag = function (tag: Tag): PayloadValidationError[] {
-  const { error } = Joi.validate(_.omit(tag.toApiTag(), ['sys']), tagSchema, {
+  const { error } = tagSchema.validate(_.omit(tag.toApiTag(), ['sys']), {
     abortEarly: false
   })
 
@@ -90,7 +90,7 @@ const unknownCombinationError = function ({ path, keys }): SimplifiedValidationE
 // }]
 const combineErrors = function (fieldValidationsErrors: SimplifiedValidationError[]): SimplifiedValidationError[] {
   const byItemPath: _.Dictionary<SimplifiedValidationError[]> = _.groupBy(fieldValidationsErrors, ({ path }) => {
-    return path.split('.').slice(0, -1).join('.')
+    return path.slice(0, -1)
   })
 
   const pathErrorTuples: [string, SimplifiedValidationError[]][] = _.entries(byItemPath)
@@ -118,8 +118,9 @@ const combineErrors = function (fieldValidationsErrors: SimplifiedValidationErro
 // non-matched field validation in `Joi.alternatives.try()`.
 // They are noise, execept when all error types are the same.
 const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): SimplifiedValidationError[] {
+  console.log("cleanNoiseFromJoiErrors")
   const [normalErrors, fieldValidationsErrors] = _.partition(error.details, (detail) => {
-    const [, fieldProp] = detail.path.split('.')
+    const [, fieldProp] = detail.path
     return fieldProp !== 'validations'
   })
 
@@ -141,21 +142,25 @@ const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): Simplifie
 }
 
 const validateFields = function (contentType: ContentType): PayloadValidationError[] {
+  console.log("validate fields")
   const fields = contentType.fields.toRaw()
-  const { error } = Joi.validate(fields, fieldsSchema, {
+  const validateResult = fieldsSchema.validate(fields, {
     abortEarly: false
   })
+
+  const { error } = validateResult
 
   if (!error) {
     return []
   }
 
   return cleanNoiseFromJoiErrors(error).map((details: SimplifiedValidationError): PayloadValidationError => {
+    console.log({newError: details})
     const { path, type, context } = details
 
     // `path` looks like `0.field`
     // look up the field
-    const [index, ...fieldNames] = path.split('.')
+    const [index, ...fieldNames] = path
     const prop = fieldNames.join('.')
     const field = fields[index]
 
@@ -177,6 +182,7 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
     }
 
     if (type === 'any.unknown') {
+      console.log({context})
       if (context.isForbiddenDependency) {
         const dependentProp = context.dependsOn.key
         const dependentValue = context.dependsOn.value
@@ -193,7 +199,7 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
       }
     }
 
-    if (type === 'any.allowOnly') {
+    if (type === 'any.only') {
       return {
         type: 'InvalidPayload',
         message: errorMessages.field.PROPERTY_MUST_BE_ONE_OF(prop, field.id, context.valids)
