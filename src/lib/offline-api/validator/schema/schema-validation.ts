@@ -161,13 +161,18 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
     abortEarly: false
   })
 
+  console.log(validateResult)
+
   const { error } = validateResult
 
   if (!error) {
     return []
   }
 
-  return cleanNoiseFromJoiErrors(error).map((details: Joi.ValidationErrorItem): PayloadValidationError => {
+  const cleanErrors = cleanNoiseFromJoiErrors(error)
+  console.log(cleanErrors)
+
+  return cleanErrors.map((details: Joi.ValidationErrorItem): PayloadValidationError => {
     const { path, type, context } = details
 
     // `path` looks like [0, 'field']
@@ -176,6 +181,7 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
     const prop = fieldNames.join('.')
     const field = fields[index]
 
+    // 'string.base'
     if (type === 'any.required') {
       if (context.isRequiredDependency) {
         const dependentProp = context.dependsOn.key
