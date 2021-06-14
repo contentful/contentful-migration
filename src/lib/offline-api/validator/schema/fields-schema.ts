@@ -95,6 +95,35 @@ const fieldSchema = Joi.object().keys({
   localized: Joi.boolean(),
   required: Joi.boolean(),
   validations: Joi.array().unique().items(fieldValidations),
+  initialValue: Joi.object().keys({
+    "en-US": Joi.string(),
+  }),
+  
+  // Joi.object().when('type', {
+  //   is: 'Symbol',
+  //   then: Joi.object().pattern(/.*/, Joi.string()),
+  //   otherwise: Joi.any().forbidden()
+  // }),
+  
+  // enforceDependency({
+  //   valid: Joi.object().keys({
+  //     "en-US": Joi.string(),
+  //   }),//Joi.object().pattern(/.*/, Joi.string()),
+  //   when: 'type',
+  //   is: 'Symbol'
+  // }),
+  
+  // Joi.object().pattern(/.*/, enforceDependency({
+  //     valid: Joi.string(),
+  //     when: Joi.ref('...type'),
+  //     is: 'Symbol'
+  //   })),
+  
+  // }).concat(),
+
+  // locales are valid
+  // type of values is correct
+  // field type allowes initial values
   disabled: Joi.boolean()
 })
 
