@@ -95,16 +95,16 @@ const fieldSchema = Joi.object().keys({
   localized: Joi.boolean(),
   required: Joi.boolean(),
   validations: Joi.array().unique().items(fieldValidations),
-  initialValue: Joi.object().keys({
-    "en-US": Joi.string(),
-  }),
-  
+  // initialValue: Joi.object().keys({
+  //   "en-US": Joi.string(),
+  // }),
+
   // Joi.object().when('type', {
   //   is: 'Symbol',
   //   then: Joi.object().pattern(/.*/, Joi.string()),
   //   otherwise: Joi.any().forbidden()
   // }),
-  
+
   // enforceDependency({
   //   valid: Joi.object().keys({
   //     "en-US": Joi.string(),
@@ -112,13 +112,50 @@ const fieldSchema = Joi.object().keys({
   //   when: 'type',
   //   is: 'Symbol'
   // }),
-  
-  // Joi.object().pattern(/.*/, enforceDependency({
+  initialValue: Joi.object().strict().pattern(/.*/, Joi.when(
+    Joi.ref('...type'),
+    {
+      otherwise: Joi.forbidden(),
+      switch: [
+        {
+          is: 'Symbol',
+          then: Joi.string(),
+        },
+        {
+          is: 'Text',
+          then: Joi.string(),
+        },
+        {
+          is: 'Number',
+          then: Joi.number(),
+        },
+        {
+          is: 'Integer',
+          then: Joi.number().integer(),
+        },
+        {
+          is: 'Boolean',
+          then: Joi.boolean(),
+        },
+        {
+          is: 'Date',
+          then: Joi.date().iso().strict(false),
+        },
+      ]
+    }
+  )),
+
+  // initialValue: Joi.object().pattern(/.*/, enforceDependency({
   //     valid: Joi.string(),
   //     when: Joi.ref('...type'),
   //     is: 'Symbol'
-  //   })),
-  
+  //   }))
+  //   .concat( Joi.object().pattern(/.*/, enforceDependency({
+  //     valid: Joi.number(),
+  //     when: Joi.ref('...type'),
+  //     is: 'Number'
+  //   }))),
+
   // }).concat(),
   disabled: Joi.boolean()
 })

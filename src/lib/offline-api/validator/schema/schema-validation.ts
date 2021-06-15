@@ -18,13 +18,14 @@ interface SimplifiedValidationError {
     isRequiredDependency?: boolean
     isForbiddenDependency?: boolean
     dependsOn?: {
-      key: string,
+      key: string
       value: any
     }
     dupeValue?: any
     key?: any
-    keys?: any[],
+    keys?: any[]
     valids?: any[]
+    value: any
   }
 }
 
@@ -160,8 +161,6 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
     abortEarly: false
   })
 
-  console.log(validateResult)
-
   const { error } = validateResult
 
   if (!error) {
@@ -169,7 +168,6 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
   }
 
   const cleanErrors = cleanNoiseFromJoiErrors(error)
-  console.log(cleanErrors)
 
   return cleanErrors.map((details: SimplifiedValidationError): PayloadValidationError => {
     const { path, type, context } = details
@@ -179,6 +177,19 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
     const [index, ...fieldNames] = path
     const prop = fieldNames.join('.')
     const field = fields[index]
+
+    if(prop.startsWith('initialValue')){
+      if(field.type === 'Date'){
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.initialValue.DATE_TYPE_MISMATCH(field.id, kindOf(context.value), context.value, context.key, field.type)
+        }
+      }
+      return {
+        type: 'InvalidPayload',
+        message: errorMessages.field.initialValue.TYPE_MISMATCH(field.id, kindOf(context.value), context.key, field.type)
+      }
+    }
 
     // 'string.base'
     if (type === 'any.required') {
