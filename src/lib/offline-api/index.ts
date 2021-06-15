@@ -274,7 +274,12 @@ class OfflineAPI {
 
     for (const validator of this.contentTypeValidators) {
       if (validator.hooks.includes(ApiHook.SaveContentType)) {
-        const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
+        const errors = validator.validate({
+          contentType: ct, 
+          savedContentType: this.savedContentTypes.get(id),
+          publishedContentType: this.publishedContentTypes.get(id),
+          locales: this.locales
+        })
         this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
       }
     }
@@ -301,7 +306,12 @@ class OfflineAPI {
 
     for (const validator of this.contentTypeValidators) {
       if (validator.hooks.includes(ApiHook.PublishContentType)) {
-        const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
+        const errors = validator.validate({
+          contentType: ct, 
+          savedContentType: this.savedContentTypes.get(id),
+          publishedContentType: this.publishedContentTypes.get(id),
+          locales: this.locales
+        })
         this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
       }
     }
@@ -325,7 +335,12 @@ class OfflineAPI {
 
     for (const validator of this.contentTypeValidators) {
       if (validator.hooks.includes(ApiHook.UnpublishContentType)) {
-        const errors = validator.validate(ct, this.savedContentTypes.get(id), this.publishedContentTypes.get(id))
+        const errors = validator.validate({
+          contentType: ct, 
+          savedContentType: this.savedContentTypes.get(id),
+          publishedContentType: this.publishedContentTypes.get(id),
+          locales: this.locales
+        })
         this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
       }
     }

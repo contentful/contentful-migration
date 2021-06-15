@@ -8,7 +8,7 @@ import { ContentType } from '../../../entities/content-type'
 import { Tag } from '../../../entities/tag'
 import { contentTypeSchema, MAX_FIELDS } from './content-type-schema'
 import { tagSchema } from './tag-schema'
-import fieldsSchema from './fields-schema'
+import { createFieldsSchema } from './fields-schema'
 
 interface SimplifiedValidationError {
   message: string
@@ -25,7 +25,7 @@ interface SimplifiedValidationError {
     key?: any
     keys?: any[]
     valids?: any[]
-    value: any
+    value?: any
   }
 }
 
@@ -155,9 +155,9 @@ const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): Simplifie
   return allErrors
 }
 
-const validateFields = function (contentType: ContentType): PayloadValidationError[] {
+const validateFields = function (contentType: ContentType, locales: string[]): PayloadValidationError[] {
   const fields = contentType.fields.toRaw()
-  const validateResult = fieldsSchema.validate(fields, {
+  const validateResult = createFieldsSchema(locales).validate(fields, {
     abortEarly: false
   })
 
@@ -177,8 +177,22 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
     const [index, ...fieldNames] = path
     const prop = fieldNames.join('.')
     const field = fields[index]
-
     if(prop.startsWith('initialValue')){
+
+      if (type === 'object.unknown') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.initialValue.INVALID_LOCALE(field.id, context.key)
+        }
+      }
+
+      if (type === 'any.unknown') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.initialValue.UNSUPPORTED_FIELD_TYPE(field.id, path[1], field.type)
+        }
+      }
+
       if(field.type === 'Date'){
         return {
           type: 'InvalidPayload',
@@ -284,6 +298,7 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
         }
       }
     }
+   
   })
 }
 

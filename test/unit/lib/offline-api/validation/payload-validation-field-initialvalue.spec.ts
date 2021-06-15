@@ -3,34 +3,61 @@
 import { expect } from 'chai'
 import validateBatches from './validate-batches'
 
-  // locales are invalid
-  // type of values is correct > string, number, integer, boolean
-  // field type allowes initial values > [ShortText, "Text ..."]
 
-describe('payload validation (initial value)', function () {
-  describe.only('when initial value does not match the field type', function () {
-    it('returns an error for Symbol', async function () {
+
+describe.only('payload validation (initial value)', function () {
+
+  describe('when setting initial value for non existing locales', function(){
+    it('returns an error', async function () {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('lunch')
         lunch.createField('mainCourse')
         .name('mainCourse')
         .type('Symbol')
         .initialValue({
-          'en-US': 1234,
-          'de-DE': false,
-          'fr-FR': 'A string',
+          'en-US': 'A Symbol',
+          'de-DE': 'A Symbol',
+          'fr-FR': 'A Symbol',
         })
-      }, [])
+      }, [], [], [], [ 'en-US'])
 
       expect(errors).to.eql([
         [
           {
             type: 'InvalidPayload',
-            message: 'Cannot set initial value of type "number" for locale "en-US" on field "mainCourse". The initial value must match the field type "Symbol".'
+            message: 'Cannot set initial value for locale "de-DE" on field "mainCourse". The locale does not exist.'
           },
           {
             type: 'InvalidPayload',
-            message: 'Cannot set initial value of type "boolean" for locale "de-DE" on field "mainCourse". The initial value must match the field type "Symbol".'
+            message: 'Cannot set initial value for locale "fr-FR" on field "mainCourse". The locale does not exist.'
+          }
+        ],
+      ])
+    })
+  })
+  describe('when initial value does not match the field type', function () {
+    it('returns an error for Symbol', async function () {
+      const errors = await validateBatches(function (migration) {
+        const lunch = migration.createContentType('lunch').name('lunch')
+        lunch.createField('aSymbol')
+        .name('aSymbol')
+        .type('Symbol')
+        .initialValue({
+          'en-US': 1234,
+          'de-DE': false,
+          'fr-FR': 'A string',
+        })
+      }, [], [], [], [ 'en-US', 'de-DE', 'fr-FR'])
+
+      expect(errors).to.eql([
+        [
+          {
+            type: 'InvalidPayload',
+            message: 'Cannot set initial value of type "number" for locale "en-US" on field "aSymbol". The initial value must match the field type "Symbol".'
+          },
+          {
+            type: 'InvalidPayload',
+            message: 'Cannot set initial value of type "boolean" for locale "de-DE" on field "aSymbol". The initial value must match the field type "Symbol".'
           }
         ],
       ])
@@ -46,7 +73,7 @@ describe('payload validation (initial value)', function () {
           'de-DE': 'A string',
           'fr-FR': 555,
         })
-      }, [])
+      }, [], [], [], [ 'en-US', 'de-DE', 'fr-FR'])
 
       expect(errors).to.eql([
         [
@@ -73,7 +100,7 @@ describe('payload validation (initial value)', function () {
           'it-IT': '9999',
           'fr-FR': 555,
         })
-      }, [])
+      }, [], [], [], [ 'en-US', 'de-DE', 'fr-FR', 'it-IT'])
 
       expect(errors).to.eql([
         [
@@ -105,7 +132,7 @@ describe('payload validation (initial value)', function () {
           'it-IT': true,
           'fr-FR': false,
         })
-      }, [])
+      }, [], [], [], [ 'en-US', 'de-DE', 'fr-FR', 'it-IT'])
 
       expect(errors).to.eql([
         [
@@ -132,7 +159,7 @@ describe('payload validation (initial value)', function () {
           'de-DE': false,
           'fr-FR': 'A string',
         })
-      }, [])
+      }, [], [], [], [ 'en-US', 'de-DE', 'fr-FR'])
 
       expect(errors).to.eql([
         [
@@ -148,7 +175,7 @@ describe('payload validation (initial value)', function () {
       ])
     })
 
-    it.only('returns an error for Date', async function () {
+    it('returns an error for Date', async function () {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('lunch')
         lunch.createField('aDate')
@@ -161,7 +188,7 @@ describe('payload validation (initial value)', function () {
           'es-ES': '1234',
           'it-IT': '2013-05-02T13:00:00Z',
         })
-      }, [])
+      }, [], [], [], [ 'en-US', 'de-DE', 'fr-FR', 'it-IT', 'es-ES'])
 
       expect(errors).to.eql([
         [
@@ -172,6 +199,29 @@ describe('payload validation (initial value)', function () {
           {
             type: 'InvalidPayload',
             message: 'Cannot set initial value of type "boolean" to "false" for locale "de-DE" on field "aDate". The initial value must match the field type "Date" using a valid ISO date.'
+          }
+        ],
+      ])
+    })
+  })
+
+  describe('when setting initial value a field where is not supported', function(){
+    it('returns an error', async function () {
+      const errors = await validateBatches(function (migration) {
+        const lunch = migration.createContentType('lunch').name('lunch')
+        lunch.createField('mainCourse')
+        .name('mainCourse')
+        .type('RichText')
+        .initialValue({
+          'en-US': 'A Text',
+        })
+      }, [], [], [], [ 'en-US'])
+
+      expect(errors).to.eql([
+        [
+          {
+            type: 'InvalidPayload',
+            message: 'Cannot set "initialValue" in field "mainCourse" because it is not supported by field type "RichText".'
           }
         ],
       ])
