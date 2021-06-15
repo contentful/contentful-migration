@@ -138,10 +138,10 @@ const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): Simplifie
     }
 
     const isUnknownValidationsProp = errorDetails.every(({ type }) => type === 'object.unknown')
-  
+
     if (isUnknownValidationsProp) {
       const combinedErrors = combineErrors(errorDetails)
-  
+
       allErrors = [...allErrors, ...combinedErrors]
       continue
     }

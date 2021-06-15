@@ -77,7 +77,7 @@ abstract class SchemaValidator implements IntentValidator {
         const schema = validations[propName]
         const valueToValidate = propertyToValidate[propName]
         const result = schema.validate(valueToValidate)
-        const { error} = result
+        const { error } = result
 
         if (error) {
           let expectedType = schema.type

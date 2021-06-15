@@ -116,47 +116,47 @@ describe('payload validation', function () {
     })
 
     it('handles mixed validation errors', async function () {
-       const errors = await validateBatches(function up (migration) {
+      const errors = await validateBatches(function up (migration) {
         const person = migration.createContentType('person')
           .name('Person')
           .description('A Person')
 
         person
-          .createField("fullName")
-          .name("Full Name")
-          .type("Symbol")
+          .createField('fullName')
+          .name('Full Name')
+          .type('Symbol')
           .validations([
-            { unique: "nope" },
+            { unique: 'nope' },
             { size: 2 },
             { foo: true },
             {
               size: { min: 5, max: 10 },
-              somethingUnknown: "foo",
-              msg: "error",
-            },
-          ]);
+              somethingUnknown: 'foo',
+              msg: 'error'
+            }
+          ])
       }, [])
 
       expect(errors).to.eql([
         [
           {
-            type: "InvalidPayload",
-            message: `"unique" validation expected to be "boolean", but got "string"`,
+            type: 'InvalidPayload',
+            message: `"unique" validation expected to be "boolean", but got "string"`
           },
           {
-            type: "InvalidPayload",
-            message: `"size" validation expected to be "object", but got "number"`,
+            type: 'InvalidPayload',
+            message: `"size" validation expected to be "object", but got "number"`
           },
           {
-            type: "InvalidPayload",
-            message: `A field can't have "foo" as a validation.`,
+            type: 'InvalidPayload',
+            message: `A field can't have "foo" as a validation.`
           },
           {
-            type: "InvalidPayload",
-            message: `A field can't have the combination "size", "somethingUnknown" and "msg" as a validation.`,
-          },
-        ],
-      ]);
+            type: 'InvalidPayload',
+            message: `A field can't have the combination "size", "somethingUnknown" and "msg" as a validation.`
+          }
+        ]
+      ])
     })
 
     it('allows custom error message key', async function () {
