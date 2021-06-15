@@ -90,7 +90,7 @@ const unknownCombinationError = function ({ path, keys }): SimplifiedValidationE
 // }]
 const combineErrors = function (fieldValidationsErrors: SimplifiedValidationError[]): SimplifiedValidationError[] {
   const byItemPath: _.Dictionary<SimplifiedValidationError[]> = _.groupBy(fieldValidationsErrors, ({ path }) => {
-    return path.slice(0, -1)
+    return path.slice(0, -1).join('.')
   })
 
   const pathErrorTuples: [string, SimplifiedValidationError[]][] = _.entries(byItemPath)
@@ -110,11 +110,11 @@ const combineErrors = function (fieldValidationsErrors: SimplifiedValidationErro
     }
 
     // Invalid combined properties
-    return unknownCombinationError({ path, keys })
+    return unknownCombinationError({ path: path.split('.'), keys })
   })
 }
 
-// Joi might return an `object.allowUnknown` error for each
+// Joi might return an `object.unknown` error for each
 // non-matched field validation in `Joi.alternatives.try()`.
 // They are noise, execept when all error types are the same.
 const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): SimplifiedValidationError[] {
@@ -127,17 +127,31 @@ const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): Simplifie
     return normalErrors
   }
 
-  const isUnknownValidationsProp = fieldValidationsErrors.every(({ type }) => type === 'object.allowUnknown')
+  let allErrors = [...normalErrors]
 
-  if (isUnknownValidationsProp) {
-    const combinedErrors = combineErrors(fieldValidationsErrors)
+  for (const fieldValidationsError of fieldValidationsErrors) {
+    const errorDetails = fieldValidationsError.context.details
 
-    return [...normalErrors, ...combinedErrors]
+    if (!errorDetails) {
+      allErrors = [...allErrors, fieldValidationsError]
+      continue
+    }
+
+    const isUnknownValidationsProp = errorDetails.every(({ type }) => type === 'object.unknown')
+  
+    if (isUnknownValidationsProp) {
+      const combinedErrors = combineErrors(errorDetails)
+  
+      allErrors = [...allErrors, ...combinedErrors]
+      continue
+    }
+
+    const remainingFieldValidationsErrors = errorDetails.filter(({ type }) => type !== 'object.unknown')
+    allErrors = [...allErrors, ...remainingFieldValidationsErrors]
+
   }
 
-  const remainingFieldValidationsErrors = fieldValidationsErrors.filter(({ type }) => type !== 'object.allowUnknown')
-
-  return [...normalErrors, ...remainingFieldValidationsErrors]
+  return allErrors
 }
 
 const validateFields = function (contentType: ContentType): PayloadValidationError[] {
@@ -229,7 +243,7 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
         }
       }
 
-      if (type === 'object.allowUnknown') {
+      if (type === 'object.unknown') {
         return {
           type: 'InvalidPayload',
           message: errorMessages.field.validations.INVALID_VALIDATION_PROPERTY(context.key)
