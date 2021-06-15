@@ -6,7 +6,7 @@ import { migration } from '../../../../../src/lib/migration-steps'
 
 const noOp = () => undefined
 
-const validateBatches = async function (runMigration, contentTypes, tags = [], entries = []) {
+const validateBatches = async function (runMigration, contentTypes, tags = [], entries = [], locales = []) {
   const intents = await migration(runMigration, noOp, {})
   const list = new IntentList(intents)
 
@@ -24,7 +24,7 @@ const validateBatches = async function (runMigration, contentTypes, tags = [], e
     existingTags.set(tag.id, tag)
   }
 
-  const api = new OfflineAPI({ contentTypes: existingCTs, tags: existingTags, entries, locales: [] })
+  const api = new OfflineAPI({ contentTypes: existingCTs, tags: existingTags, entries, locales })
 
   await list.compressed().applyTo(api)
 

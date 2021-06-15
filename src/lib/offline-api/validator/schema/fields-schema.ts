@@ -1,6 +1,84 @@
 import * as Joi from 'joi'
 import getFieldValidations from './field-validations-schema'
 
+
+export function createFieldsSchema(locales: string[]) {
+  const fieldSchema = Joi.object().keys({
+    id: Joi.string().required(),
+    newId: Joi.string()
+      .invalid(Joi.ref('id'))
+      .max(64)
+      // the empty case will be caught by joi by default, we don't want duplicate errors
+      .regex(/^$|^[a-zA-Z][a-zA-Z0-9_]*$/),
+    name: Joi.string().required(),
+    type: Joi.string().valid(
+      'Symbol',
+      'Text',
+      'Integer',
+      'Number',
+      'Date',
+      'Boolean',
+      'Object',
+      'Link',
+      'Array',
+      'Location',
+      'RichText'
+    ).required(),
+    linkType: enforceDependency({
+      valid: Joi.string().valid('Asset', 'Entry'),
+      when: 'type',
+      is: 'Link'
+    }),
+    items: enforceDependency({
+      valid: getValidItems(),
+      when: 'type',
+      is: 'Array'
+    }),
+    omitted: Joi.boolean(),
+    deleted: Joi.boolean(),
+    localized: Joi.boolean(),
+    required: Joi.boolean(),
+    validations: Joi.array().unique().items(getFieldValidations()),
+    initialValue: Joi.object().strict().pattern(Joi.valid(...locales), Joi.when(
+      Joi.ref('...type'),
+      {
+        otherwise: Joi.forbidden(),
+        switch: [
+          {
+            is: 'Symbol',
+            then: Joi.string(),
+          },
+          {
+            is: 'Text',
+            then: Joi.string(),
+          },
+          {
+            is: 'Number',
+            then: Joi.number(),
+          },
+          {
+            is: 'Integer',
+            then: Joi.number().integer(),
+          },
+          {
+            is: 'Boolean',
+            then: Joi.boolean(),
+          },
+          {
+            is: 'Date',
+            then: Joi.date().iso().strict(false),
+          },
+        ]
+      }
+    )),
+    disabled: Joi.boolean()
+  })
+
+  const fieldsSchema = Joi.array().items(fieldSchema)
+
+  return fieldsSchema
+}
+
 const enforceDependency = function ({ valid, when, is }) {
   return valid.when(when, {
     is: is, then: Joi.any().required(), otherwise: Joi.any().forbidden()
@@ -58,108 +136,3 @@ const getValidItems = () => Joi.object().keys({
   }),
   validations: Joi.array().unique().items(getFieldValidations())
 })
-
-const getFieldSchema = () => Joi.object().keys({
-  id: Joi.string().required(),
-  newId: Joi.string()
-    .invalid(Joi.ref('id'))
-    .max(64)
-    // the empty case will be caught by joi by default, we don't want duplicate errors
-    .regex(/^$|^[a-zA-Z][a-zA-Z0-9_]*$/),
-  name: Joi.string().required(),
-  type: Joi.string().valid(
-    'Symbol',
-    'Text',
-    'Integer',
-    'Number',
-    'Date',
-    'Boolean',
-    'Object',
-    'Link',
-    'Array',
-    'Location',
-    'RichText'
-  ).required(),
-  linkType: enforceDependency({
-    valid: Joi.string().valid('Asset', 'Entry'),
-    when: 'type',
-    is: 'Link'
-  }),
-  items: enforceDependency({
-    valid: getValidItems(),
-    when: 'type',
-    is: 'Array'
-  }),
-  omitted: Joi.boolean(),
-  deleted: Joi.boolean(),
-  localized: Joi.boolean(),
-  required: Joi.boolean(),
-  validations: Joi.array().unique().items(getFieldValidations()),
-  // initialValue: Joi.object().keys({
-  //   "en-US": Joi.string(),
-  // }),
-
-  // Joi.object().when('type', {
-  //   is: 'Symbol',
-  //   then: Joi.object().pattern(/.*/, Joi.string()),
-  //   otherwise: Joi.any().forbidden()
-  // }),
-
-  // enforceDependency({
-  //   valid: Joi.object().keys({
-  //     "en-US": Joi.string(),
-  //   }),//Joi.object().pattern(/.*/, Joi.string()),
-  //   when: 'type',
-  //   is: 'Symbol'
-  // }),
-  initialValue: Joi.object().strict().pattern(/.*/, Joi.when(
-    Joi.ref('...type'),
-    {
-      otherwise: Joi.forbidden(),
-      switch: [
-        {
-          is: 'Symbol',
-          then: Joi.string(),
-        },
-        {
-          is: 'Text',
-          then: Joi.string(),
-        },
-        {
-          is: 'Number',
-          then: Joi.number(),
-        },
-        {
-          is: 'Integer',
-          then: Joi.number().integer(),
-        },
-        {
-          is: 'Boolean',
-          then: Joi.boolean(),
-        },
-        {
-          is: 'Date',
-          then: Joi.date().iso().strict(false),
-        },
-      ]
-    }
-  )),
-
-  // initialValue: Joi.object().pattern(/.*/, enforceDependency({
-  //     valid: Joi.string(),
-  //     when: Joi.ref('...type'),
-  //     is: 'Symbol'
-  //   }))
-  //   .concat( Joi.object().pattern(/.*/, enforceDependency({
-  //     valid: Joi.number(),
-  //     when: Joi.ref('...type'),
-  //     is: 'Number'
-  //   }))),
-
-  // }).concat(),
-  disabled: Joi.boolean()
-})
-
-const getFieldsSchema = () => Joi.array().items(getFieldSchema())
-
-export default getFieldsSchema

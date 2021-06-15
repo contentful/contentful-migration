@@ -1,15 +1,14 @@
 import { Field } from '../../interfaces/content-type'
 import { ApiHook } from '../'
-import { ContentTypePayloadValidator } from './content-type'
+import { ContentTypePayloadValidator, ContentTypePayloadValidatorOptions } from './content-type';
 import { InvalidActionError } from '../../interfaces/errors'
-import { ContentType } from '../../entities/content-type'
 import errorMessages from './errors'
 import { keyBy } from 'lodash'
 
 export default class TypeChangeValidator implements ContentTypePayloadValidator {
   public hooks = [ApiHook.SaveContentType]
 
-  public validate (contentType: ContentType, _savedContentType: ContentType, publishedContentType: ContentType): InvalidActionError[] {
+  public validate ({ contentType, publishedContentType }: ContentTypePayloadValidatorOptions): InvalidActionError[] {
     const errors: InvalidActionError[] = []
 
     if (!publishedContentType) {
