@@ -3,11 +3,9 @@
 import { expect } from 'chai'
 import validateBatches from './validate-batches'
 
-
-
 describe.only('payload validation (initial value)', function () {
 
-  describe('when setting initial value for non existing locales', function(){
+  describe('when setting initial value for non existing locales', function () {
     it('returns an error', async function () {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('lunch')
@@ -17,7 +15,7 @@ describe.only('payload validation (initial value)', function () {
         .initialValue({
           'en-US': 'A Symbol',
           'de-DE': 'A Symbol',
-          'fr-FR': 'A Symbol',
+          'fr-FR': 'A Symbol'
         })
       }, [], [], [], [ 'en-US'])
 
@@ -31,7 +29,7 @@ describe.only('payload validation (initial value)', function () {
             type: 'InvalidPayload',
             message: 'Cannot set initial value for locale "fr-FR" on field "mainCourse". The locale does not exist.'
           }
-        ],
+        ]
       ])
     })
   })
@@ -45,7 +43,7 @@ describe.only('payload validation (initial value)', function () {
         .initialValue({
           'en-US': 1234,
           'de-DE': false,
-          'fr-FR': 'A string',
+          'fr-FR': 'A string'
         })
       }, [], [], [], [ 'en-US', 'de-DE', 'fr-FR'])
 
@@ -59,7 +57,7 @@ describe.only('payload validation (initial value)', function () {
             type: 'InvalidPayload',
             message: 'Cannot set initial value of type "boolean" for locale "de-DE" on field "aSymbol". The initial value must match the field type "Symbol".'
           }
-        ],
+        ]
       ])
     })
     it('returns an error for Number', async function () {
@@ -71,7 +69,7 @@ describe.only('payload validation (initial value)', function () {
         .initialValue({
           'en-US': '1.234',
           'de-DE': 'A string',
-          'fr-FR': 555,
+          'fr-FR': 555
         })
       }, [], [], [], [ 'en-US', 'de-DE', 'fr-FR'])
 
@@ -85,7 +83,7 @@ describe.only('payload validation (initial value)', function () {
             type: 'InvalidPayload',
             message: 'Cannot set initial value of type "string" for locale "de-DE" on field "aNumber". The initial value must match the field type "Number".'
           }
-        ],
+        ]
       ])
     })
     it('returns an error for Integer', async function () {
@@ -98,7 +96,7 @@ describe.only('payload validation (initial value)', function () {
           'en-US': 1.234,
           'de-DE': 'A string',
           'it-IT': '9999',
-          'fr-FR': 555,
+          'fr-FR': 555
         })
       }, [], [], [], [ 'en-US', 'de-DE', 'fr-FR', 'it-IT'])
 
@@ -116,7 +114,7 @@ describe.only('payload validation (initial value)', function () {
             type: 'InvalidPayload',
             message: 'Cannot set initial value of type "string" for locale "it-IT" on field "anInteger". The initial value must match the field type "Integer".'
           }
-        ],
+        ]
       ])
     })
 
@@ -130,7 +128,7 @@ describe.only('payload validation (initial value)', function () {
           'en-US': 1,
           'de-DE': 'A string',
           'it-IT': true,
-          'fr-FR': false,
+          'fr-FR': false
         })
       }, [], [], [], [ 'en-US', 'de-DE', 'fr-FR', 'it-IT'])
 
@@ -143,8 +141,8 @@ describe.only('payload validation (initial value)', function () {
           {
             type: 'InvalidPayload',
             message: 'Cannot set initial value of type "string" for locale "de-DE" on field "aBool". The initial value must match the field type "Boolean".'
-          },
-        ],
+          }
+        ]
       ])
     })
 
@@ -157,7 +155,7 @@ describe.only('payload validation (initial value)', function () {
         .initialValue({
           'en-US': 1234,
           'de-DE': false,
-          'fr-FR': 'A string',
+          'fr-FR': 'A string'
         })
       }, [], [], [], [ 'en-US', 'de-DE', 'fr-FR'])
 
@@ -171,7 +169,7 @@ describe.only('payload validation (initial value)', function () {
             type: 'InvalidPayload',
             message: 'Cannot set initial value of type "boolean" for locale "de-DE" on field "aText". The initial value must match the field type "Text".'
           }
-        ],
+        ]
       ])
     })
 
@@ -186,7 +184,7 @@ describe.only('payload validation (initial value)', function () {
           'de-DE': false,
           'fr-FR': 1234,
           'es-ES': '1234',
-          'it-IT': '2013-05-02T13:00:00Z',
+          'it-IT': '2013-05-02T13:00:00Z'
         })
       }, [], [], [], [ 'en-US', 'de-DE', 'fr-FR', 'it-IT', 'es-ES'])
 
@@ -200,12 +198,12 @@ describe.only('payload validation (initial value)', function () {
             type: 'InvalidPayload',
             message: 'Cannot set initial value of type "boolean" to "false" for locale "de-DE" on field "aDate". The initial value must match the field type "Date" using a valid ISO date.'
           }
-        ],
+        ]
       ])
     })
   })
 
-  describe('when setting initial value a field where is not supported', function(){
+  describe('when setting initial value a field where is not supported', function () {
     it('returns an error', async function () {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('lunch')
@@ -213,7 +211,7 @@ describe.only('payload validation (initial value)', function () {
         .name('mainCourse')
         .type('RichText')
         .initialValue({
-          'en-US': 'A Text',
+          'en-US': 'A Text'
         })
       }, [], [], [], [ 'en-US'])
 
@@ -223,7 +221,7 @@ describe.only('payload validation (initial value)', function () {
             type: 'InvalidPayload',
             message: 'Cannot set "initialValue" in field "mainCourse" because it is not supported by field type "RichText".'
           }
-        ],
+        ]
       ])
     })
   })
