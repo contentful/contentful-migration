@@ -135,13 +135,3 @@ const itemsValid = Joi.object().keys({
   }),
   validations: Joi.array().unique().items(fieldValidations)
 })
-
-// object
-// string
-// boolean
-// max(64)
-// .keys
-//  .invalid(Joi.ref('id'))
-// .regex(/^$|^[a-zA-Z][a-zA-Z0-9_]*$/),
-//     valid('Asset', 'Entry'),
-//   validations: Joi.array().unique().items(fieldValidations)

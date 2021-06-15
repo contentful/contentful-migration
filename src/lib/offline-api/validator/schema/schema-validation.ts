@@ -205,7 +205,6 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
       }
     }
 
-    // 'string.base'
     if (type === 'any.required') {
       if (context.isRequiredDependency) {
         const dependentProp = context.dependsOn.key
@@ -298,7 +297,6 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
         }
       }
     }
-
   })
 }
 
