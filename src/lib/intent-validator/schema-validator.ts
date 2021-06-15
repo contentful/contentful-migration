@@ -45,7 +45,6 @@ abstract class SchemaValidator implements IntentValidator {
   }
 
   validate (intent: Intent): ValidationError[] {
-    console.log("schema-movement validate")
     const step = intent.toRaw()
     const validations = this.schema
     const validationErrors = this.validationErrors

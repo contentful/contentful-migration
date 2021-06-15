@@ -45,7 +45,6 @@ class FieldMovementStepValidator implements IntentValidator {
   }
 
   validate (intent: FieldMoveIntent): ValidationError[] {
-    console.log("field-movement validate")
     const validationErrors = this.validationErrors
     const fieldMovementValidations = this.schema
     const validMoves = Object.keys(fieldMovementValidations)
