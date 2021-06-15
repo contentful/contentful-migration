@@ -84,7 +84,7 @@ const unknownCombinationError = function ({ path, keys }): SimplifiedValidationE
 // Receives ValidationError[] with this structure:
 // [{
 //   message: '"foo" is not allowed',
-//   path: '0.validations.2.foo',
+//   path: [0, 'validations', 2, 'foo'],
 //   type: 'object.allowUnknown',
 //   context: { child: 'foo', key: 'foo' }
 // }]
@@ -118,7 +118,6 @@ const combineErrors = function (fieldValidationsErrors: SimplifiedValidationErro
 // non-matched field validation in `Joi.alternatives.try()`.
 // They are noise, execept when all error types are the same.
 const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): SimplifiedValidationError[] {
-  console.log("cleanNoiseFromJoiErrors")
   const [normalErrors, fieldValidationsErrors] = _.partition(error.details, (detail) => {
     const [, fieldProp] = detail.path
     return fieldProp !== 'validations'
@@ -142,7 +141,6 @@ const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): Simplifie
 }
 
 const validateFields = function (contentType: ContentType): PayloadValidationError[] {
-  console.log("validate fields")
   const fields = contentType.fields.toRaw()
   const validateResult = fieldsSchema.validate(fields, {
     abortEarly: false
@@ -155,10 +153,9 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
   }
 
   return cleanNoiseFromJoiErrors(error).map((details: SimplifiedValidationError): PayloadValidationError => {
-    console.log({newError: details})
     const { path, type, context } = details
 
-    // `path` looks like `0.field`
+    // `path` looks like [0, 'field']
     // look up the field
     const [index, ...fieldNames] = path
     const prop = fieldNames.join('.')
@@ -182,7 +179,6 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
     }
 
     if (type === 'any.unknown') {
-      console.log({context})
       if (context.isForbiddenDependency) {
         const dependentProp = context.dependsOn.key
         const dependentValue = context.dependsOn.value

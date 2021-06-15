@@ -29,7 +29,7 @@ describe('payload validation (dependencies)', function () {
   })
 
   describe('when setting a field to Symbol but specifying the linkType', function () {
-    it.only('returns an error', async function () {
+    it('returns an error', async function () {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch')

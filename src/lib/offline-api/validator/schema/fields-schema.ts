@@ -15,10 +15,9 @@ const enforceDependency = function ({ valid, when, is }) {
       }
       const keyPath = subPath.join('.')
 
-      console.log(error)
-
       if (error.code === 'any.required') {
-        Object.assign(error.context, {
+        error.context = {}
+        Object.assign(error.local, {
           isRequiredDependency: true,
           dependsOn: {
             key: keyPath,
@@ -28,10 +27,8 @@ const enforceDependency = function ({ valid, when, is }) {
       }
 
       if (error.code === 'any.unknown' && error.flags.presence === 'forbidden') {
-        error.details = {
-          context: {}
-        }
-        Object.assign(error.details.context, {
+        error.context = {}
+        Object.assign(error.local, {
           isForbiddenDependency: true,
           dependsOn: {
             key: keyPath,
