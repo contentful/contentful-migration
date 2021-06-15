@@ -1,11 +1,11 @@
 
-import * as Joi from 'joi'
 import didYouMean from 'didyoumean2'
 import kindOf from 'kind-of'
 
 import IntentValidator from '../interfaces/intent-validator'
 import ValidationError from '../interfaces/errors'
 import Intent from '../interfaces/intent'
+import Joi from 'joi'
 
 const validationErrors = {
   INVALID_PROPERTY_NAME: (propName, article, typeName) => {
@@ -17,11 +17,7 @@ const validationErrors = {
   INVALID_PROPERTY_TYPE: (propName, typeName, actualType, expectedType) => {
     return `"${actualType}" is not a valid type for the ${typeName} property "${propName}". Expected "${expectedType}".`
   },
-  INVALID_VALUE_IN_ALTERNATIVES: (propName, typeName, value, schemaInnerMatches) => {
-    const expectedTypes = schemaInnerMatches.map((match) => {
-      const validsSet = match.schema._valids._set
-      return validsSet.length > 0 ? `${match.schema._type} value ${validsSet.map(validValue => `"${validValue}"`).join(' or ')}` : `type ${match.schema._type}`
-    })
+  INVALID_VALUE_IN_ALTERNATIVES: (propName, typeName, value, expectedTypes) => {
     return `"${value}" is not a valid value for the ${typeName} property "${propName}". Expected ${expectedTypes.join(' or ')}.`
   }
 }
@@ -44,7 +40,7 @@ abstract class SchemaValidator implements IntentValidator {
     return 'props'
   }
 
-  get schema () {
+  get schema (): Record<string, Joi.Schema> {
     return {}
   }
 
@@ -79,18 +75,20 @@ abstract class SchemaValidator implements IntentValidator {
         })
       } else {
         const schema = validations[propName]
-        const { value, error } = Joi.validate(propertyToValidate[propName], schema)
+        const valueToValidate = propertyToValidate[propName]
+        const result = schema.validate(valueToValidate)
+        const { error } = result
 
         if (error) {
-          let expectedType = schema._type
+          let expectedType = schema.type
           // Joi's schema type for a function is `object` with a `func` flag
           if (schema._flags.func) {
             expectedType = 'function'
           }
-          const actualType = kindOf(value)
+          const actualType = kindOf(valueToValidate)
           const message =
               expectedType === 'alternatives' ?
-                validationErrors.INVALID_VALUE_IN_ALTERNATIVES(propName, displayName, error._object, schema._inner.matches)
+                validationErrors.INVALID_VALUE_IN_ALTERNATIVES(propName, displayName, valueToValidate, error.details[0].context.types)
                 : validationErrors.INVALID_PROPERTY_TYPE(propName, displayName, actualType, expectedType)
           errors.push({
             type: 'InvalidType',

@@ -12,7 +12,7 @@ import fieldsSchema from './fields-schema'
 
 interface SimplifiedValidationError {
   message: string
-  path: string
+  path: (string | number)[]
   type: string
   context?: {
     isRequiredDependency?: boolean
@@ -30,7 +30,7 @@ interface SimplifiedValidationError {
 
 const validateContentType = function (contentType: ContentType): PayloadValidationError[] {
   const contentTypeId = contentType.id
-  const { error } = Joi.validate(_.omit(contentType.toAPI(), ['sys']), contentTypeSchema, {
+  const { error } = contentTypeSchema.validate(_.omit(contentType.toAPI(), ['sys']), {
     abortEarly: false
   })
 
@@ -45,7 +45,7 @@ const validateContentType = function (contentType: ContentType): PayloadValidati
         message: errorMessages.contentType.REQUIRED_PROPERTY(path)
       }
     }
-    if (type === 'array.max' && path === 'fields') {
+    if (type === 'array.max' && path[0] === 'fields' && path.length === 1) {
       return {
         type: 'InvalidPayload',
         message: errorMessages.contentType.TOO_MANY_FIELDS(contentTypeId, MAX_FIELDS)
@@ -55,7 +55,7 @@ const validateContentType = function (contentType: ContentType): PayloadValidati
 }
 
 const validateTag = function (tag: Tag): PayloadValidationError[] {
-  const { error } = Joi.validate(_.omit(tag.toApiTag(), ['sys']), tagSchema, {
+  const { error } = tagSchema.validate(_.omit(tag.toApiTag(), ['sys']), {
     abortEarly: false
   })
 
@@ -84,13 +84,13 @@ const unknownCombinationError = function ({ path, keys }): SimplifiedValidationE
 // Receives ValidationError[] with this structure:
 // [{
 //   message: '"foo" is not allowed',
-//   path: '0.validations.2.foo',
+//   path: [0, 'validations', 2, 'foo'],
 //   type: 'object.allowUnknown',
 //   context: { child: 'foo', key: 'foo' }
 // }]
 const combineErrors = function (fieldValidationsErrors: SimplifiedValidationError[]): SimplifiedValidationError[] {
   const byItemPath: _.Dictionary<SimplifiedValidationError[]> = _.groupBy(fieldValidationsErrors, ({ path }) => {
-    return path.split('.').slice(0, -1).join('.')
+    return path.slice(0, -1).join('.')
   })
 
   const pathErrorTuples: [string, SimplifiedValidationError[]][] = _.entries(byItemPath)
@@ -110,16 +110,16 @@ const combineErrors = function (fieldValidationsErrors: SimplifiedValidationErro
     }
 
     // Invalid combined properties
-    return unknownCombinationError({ path, keys })
+    return unknownCombinationError({ path: path.split('.'), keys })
   })
 }
 
-// Joi might return an `object.allowUnknown` error for each
+// Joi might return an `object.unknown` error for each
 // non-matched field validation in `Joi.alternatives.try()`.
 // They are noise, execept when all error types are the same.
 const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): SimplifiedValidationError[] {
   const [normalErrors, fieldValidationsErrors] = _.partition(error.details, (detail) => {
-    const [, fieldProp] = detail.path.split('.')
+    const [, fieldProp] = detail.path
     return fieldProp !== 'validations'
   })
 
@@ -127,24 +127,40 @@ const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): Simplifie
     return normalErrors
   }
 
-  const isUnknownValidationsProp = fieldValidationsErrors.every(({ type }) => type === 'object.allowUnknown')
+  let allErrors = [...normalErrors]
 
-  if (isUnknownValidationsProp) {
-    const combinedErrors = combineErrors(fieldValidationsErrors)
+  for (const fieldValidationsError of fieldValidationsErrors) {
+    const errorDetails = fieldValidationsError.context.details
 
-    return [...normalErrors, ...combinedErrors]
+    if (!errorDetails) {
+      allErrors = [...allErrors, fieldValidationsError]
+      continue
+    }
+
+    const isUnknownValidationsProp = errorDetails.every(({ type }) => type === 'object.unknown')
+
+    if (isUnknownValidationsProp) {
+      const combinedErrors = combineErrors(errorDetails)
+
+      allErrors = [...allErrors, ...combinedErrors]
+      continue
+    }
+
+    const remainingFieldValidationsErrors = errorDetails.filter(({ type }) => type !== 'object.unknown')
+    allErrors = [...allErrors, ...remainingFieldValidationsErrors]
+
   }
 
-  const remainingFieldValidationsErrors = fieldValidationsErrors.filter(({ type }) => type !== 'object.allowUnknown')
-
-  return [...normalErrors, ...remainingFieldValidationsErrors]
+  return allErrors
 }
 
 const validateFields = function (contentType: ContentType): PayloadValidationError[] {
   const fields = contentType.fields.toRaw()
-  const { error } = Joi.validate(fields, fieldsSchema, {
+  const validateResult = fieldsSchema.validate(fields, {
     abortEarly: false
   })
+
+  const { error } = validateResult
 
   if (!error) {
     return []
@@ -153,9 +169,9 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
   return cleanNoiseFromJoiErrors(error).map((details: SimplifiedValidationError): PayloadValidationError => {
     const { path, type, context } = details
 
-    // `path` looks like `0.field`
+    // `path` looks like [0, 'field']
     // look up the field
-    const [index, ...fieldNames] = path.split('.')
+    const [index, ...fieldNames] = path
     const prop = fieldNames.join('.')
     const field = fields[index]
 
@@ -193,7 +209,7 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
       }
     }
 
-    if (type === 'any.allowOnly') {
+    if (type === 'any.only') {
       return {
         type: 'InvalidPayload',
         message: errorMessages.field.PROPERTY_MUST_BE_ONE_OF(prop, field.id, context.valids)
@@ -208,7 +224,7 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
     }
 
     const isIdSchemaError = (type) => {
-      return ['string.max', 'any.empty', 'string.regex.base'].includes(type)
+      return ['string.max', 'string.empty', 'string.pattern.base'].includes(type)
     }
 
     if (path.includes('newId') && isIdSchemaError(type)) {
@@ -227,7 +243,7 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
         }
       }
 
-      if (type === 'object.allowUnknown') {
+      if (type === 'object.unknown') {
         return {
           type: 'InvalidPayload',
           message: errorMessages.field.validations.INVALID_VALIDATION_PROPERTY(context.key)

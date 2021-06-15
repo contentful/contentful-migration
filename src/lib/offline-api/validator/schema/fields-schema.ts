@@ -7,34 +7,41 @@ const enforceDependency = function ({ valid, when, is }) {
   }).error((errors) => {
     return errors.map((error) => {
       const path = error.path
-      const splitPath = path.split('.')
       // top level would be 0.foo
       // anything nested would be 0.foo.bar
       let subPath = [when]
-      if (splitPath.length >= 3) {
-        subPath = splitPath.slice(1, splitPath.length - 1).concat(subPath)
+      if (path.length >= 3) {
+        subPath = path.slice(1, path.length - 1).concat(subPath)
       }
       const keyPath = subPath.join('.')
 
-      if (error.type === 'any.required') {
-        error.type = 'any.required'
-        Object.assign(error.context, {
-          isRequiredDependency: true,
-          dependsOn: {
-            key: keyPath,
-            value: is
-          }
-        })
+      if (error.code === 'any.required') {
+        // When there are nested `enforceDependency` calls
+        // the error handler is invoked multiple times for every level
+        // but the same error `local` is propagated
+        // Thus we only assign this once, at the earliest failing level,
+        // and leave it in place for the rest of the chain
+        if (!error.local.isRequiredDependency) {
+          Object.assign(error.local, {
+            isRequiredDependency: true,
+            dependsOn: {
+              key: keyPath,
+              value: is
+            }
+          })
+        }
       }
 
-      if (error.type === 'any.unknown' && error.flags.presence === 'forbidden') {
-        Object.assign(error.context, {
-          isForbiddenDependency: true,
-          dependsOn: {
-            key: keyPath,
-            value: is
-          }
-        })
+      if (error.code === 'any.unknown' && error.flags.presence === 'forbidden') {
+        if (!error.local.isForbiddenDependency) {
+          Object.assign(error.local, {
+            isForbiddenDependency: true,
+            dependsOn: {
+              key: keyPath,
+              value: is
+            }
+          })
+        }
       }
 
       return error
