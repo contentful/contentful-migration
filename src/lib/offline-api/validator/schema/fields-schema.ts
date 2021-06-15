@@ -120,13 +120,20 @@ const fieldSchema = Joi.object().keys({
   //   })),
   
   // }).concat(),
-
-  // locales are valid
-  // type of values is correct
-  // field type allowes initial values
   disabled: Joi.boolean()
 })
 
 const fieldsSchema = Joi.array().items(fieldSchema)
 
 export default fieldsSchema
+
+
+// object
+// string
+// boolean
+// max(64)
+// .keys
+//  .invalid(Joi.ref('id'))
+// .regex(/^$|^[a-zA-Z][a-zA-Z0-9_]*$/),
+//     valid('Asset', 'Entry'),
+//   validations: Joi.array().unique().items(fieldValidations)
