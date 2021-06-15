@@ -178,7 +178,7 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
     const [index, ...fieldNames] = path
     const prop = fieldNames.join('.')
     const field = fields[index]
-    if(prop.startsWith('initialValue')){
+    if (prop.startsWith('initialValue')) {
 
       if (type === 'object.unknown') {
         return {
@@ -194,7 +194,7 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
         }
       }
 
-      if(field.type === 'Date'){
+      if (field.type === 'Date') {
         return {
           type: 'InvalidPayload',
           message: errorMessages.field.initialValue.DATE_TYPE_MISMATCH(field.id, kindOf(context.value), context.value, context.key, field.type)
@@ -206,7 +206,6 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
       }
     }
 
-    // 'string.base'
     if (type === 'any.required') {
       if (context.isRequiredDependency) {
         const dependentProp = context.dependsOn.key
@@ -299,7 +298,6 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
         }
       }
     }
-   
   })
 }
 

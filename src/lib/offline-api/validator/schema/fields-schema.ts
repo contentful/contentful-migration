@@ -1,8 +1,7 @@
 import * as Joi from 'joi'
 import getFieldValidations from './field-validations-schema'
 
-
-export function createFieldsSchema(locales: string[]) {
+export function createFieldsSchema (locales: string[]) {
   const fieldSchema = Joi.object().keys({
     id: Joi.string().required(),
     newId: Joi.string()
@@ -46,28 +45,28 @@ export function createFieldsSchema(locales: string[]) {
         switch: [
           {
             is: 'Symbol',
-            then: Joi.string(),
+            then: Joi.string()
           },
           {
             is: 'Text',
-            then: Joi.string(),
+            then: Joi.string()
           },
           {
             is: 'Number',
-            then: Joi.number(),
+            then: Joi.number()
           },
           {
             is: 'Integer',
-            then: Joi.number().integer(),
+            then: Joi.number().integer()
           },
           {
             is: 'Boolean',
-            then: Joi.boolean(),
+            then: Joi.boolean()
           },
           {
             is: 'Date',
-            then: Joi.date().iso().strict(false),
-          },
+            then: Joi.date().iso().strict(false)
+          }
         ]
       }
     )),

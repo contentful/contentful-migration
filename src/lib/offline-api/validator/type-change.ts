@@ -1,6 +1,6 @@
 import { Field } from '../../interfaces/content-type'
 import { ApiHook } from '../'
-import { ContentTypePayloadValidator, ContentTypePayloadValidatorOptions } from './content-type';
+import { ContentTypePayloadValidator, ContentTypePayloadValidatorOptions } from './content-type'
 import { InvalidActionError } from '../../interfaces/errors'
 import errorMessages from './errors'
 import { keyBy } from 'lodash'
