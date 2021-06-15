@@ -224,7 +224,7 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
     }
 
     const isIdSchemaError = (type) => {
-      return ['string.max', 'any.empty', 'string.regex.base'].includes(type)
+      return ['string.max', 'string.empty', 'string.pattern.base'].includes(type)
     }
 
     if (path.includes('newId') && isIdSchemaError(type)) {
