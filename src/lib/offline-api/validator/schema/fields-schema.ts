@@ -16,25 +16,32 @@ const enforceDependency = function ({ valid, when, is }) {
       const keyPath = subPath.join('.')
 
       if (error.code === 'any.required') {
-        error.context = {}
-        Object.assign(error.local, {
-          isRequiredDependency: true,
-          dependsOn: {
-            key: keyPath,
-            value: is
-          }
-        })
+        // When there are nested `enforceDependency` calls
+        // the error handler is invoked multiple times for every level
+        // but the same error `local` is propagated
+        // Thus we only assign this once, at the earliest failing level,
+        // and leave it in place for the rest of the chain
+        if (!error.local.isRequiredDependency) {
+          Object.assign(error.local, {
+            isRequiredDependency: true,
+            dependsOn: {
+              key: keyPath,
+              value: is
+            }
+          })
+        }
       }
 
       if (error.code === 'any.unknown' && error.flags.presence === 'forbidden') {
-        error.context = {}
-        Object.assign(error.local, {
-          isForbiddenDependency: true,
-          dependsOn: {
-            key: keyPath,
-            value: is
-          }
-        })
+        if (!error.local.isForbiddenDependency) {
+          Object.assign(error.local, {
+            isForbiddenDependency: true,
+            dependsOn: {
+              key: keyPath,
+              value: is
+            }
+          })
+        }
       }
 
       return error
