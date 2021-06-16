@@ -8,7 +8,7 @@ import { ContentType } from '../../../entities/content-type'
 import { Tag } from '../../../entities/tag'
 import { contentTypeSchema, MAX_FIELDS } from './content-type-schema'
 import { tagSchema } from './tag-schema'
-import fieldsSchema from './fields-schema'
+import getFieldsSchema from './fields-schema'
 
 interface SimplifiedValidationError {
   message: string
@@ -73,7 +73,7 @@ const validateTag = function (tag: Tag): PayloadValidationError[] {
   })
 }
 
-const unknownCombinationError = function ({ path, keys }): SimplifiedValidationError {
+const unknownCombinationError = function ({ path, keys }): Joi.ValidationErrorItem {
   const type = 'object.unknownCombination'
   const message = `"${keys.join()}" is not allowed`
   const context = { keys }
@@ -93,10 +93,10 @@ const combineErrors = function (fieldValidationsErrors: SimplifiedValidationErro
     return path.slice(0, -1).join('.')
   })
 
-  const pathErrorTuples: [string, SimplifiedValidationError[]][] = _.entries(byItemPath)
+  const pathErrorTuples: [string, Joi.ValidationErrorItem[]][] = _.entries(byItemPath)
 
-  const uniqPropErrorsByPath: [string, SimplifiedValidationError[]][] = _.map(pathErrorTuples, ([path, itemErrors]): [string, SimplifiedValidationError[]] => {
-    const uniqErrors: SimplifiedValidationError[] = _.uniqBy(itemErrors, 'context.key')
+  const uniqPropErrorsByPath: [string, Joi.ValidationErrorItem[]][] = _.map(pathErrorTuples, ([path, itemErrors]): [string, Joi.ValidationErrorItem[]] => {
+    const uniqErrors: Joi.ValidationErrorItem[] = _.uniqBy(itemErrors, 'context.key')
     return [path, uniqErrors]
   })
 
@@ -117,13 +117,14 @@ const combineErrors = function (fieldValidationsErrors: SimplifiedValidationErro
 // Joi might return an `object.unknown` error for each
 // non-matched field validation in `Joi.alternatives.try()`.
 // They are noise, execept when all error types are the same.
-const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): SimplifiedValidationError[] {
+const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): Joi.ValidationErrorItem[] {
   const [normalErrors, fieldValidationsErrors] = _.partition(error.details, (detail) => {
     const [, fieldProp] = detail.path
     return fieldProp !== 'validations'
   })
 
   if (!fieldValidationsErrors.length) {
+
     return normalErrors
   }
 
@@ -156,7 +157,7 @@ const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): Simplifie
 
 const validateFields = function (contentType: ContentType): PayloadValidationError[] {
   const fields = contentType.fields.toRaw()
-  const validateResult = fieldsSchema.validate(fields, {
+  const validateResult = getFieldsSchema().validate(fields, {
     abortEarly: false
   })
 
@@ -166,7 +167,7 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
     return []
   }
 
-  return cleanNoiseFromJoiErrors(error).map((details: SimplifiedValidationError): PayloadValidationError => {
+  return cleanNoiseFromJoiErrors(error).map((details: Joi.ValidationErrorItem): PayloadValidationError => {
     const { path, type, context } = details
 
     // `path` looks like [0, 'field']

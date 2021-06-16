@@ -5,6 +5,13 @@ import * as os from 'os'
 const homedir = process.env.NODE_ENV === 'test' ? '/tmp' : os.homedir()
 const configPath = path.resolve(homedir, '.contentfulrc.json')
 
+// We need to keep track of the config the user passes down
+// to getConfig, because alpha headers can be used to conditionally
+// enable/disable certain behaviors:
+// e.g. the relationshipType field validation can be used only when
+// the assembly-types alpha header is present in the config.
+let globalConfig: ClientConfig = { headers: {} }
+
 interface ClientConfig {
   accessToken?: string
   spaceId?: string
@@ -98,12 +105,19 @@ function getConfig (argv) {
     headers: argv?.headers || getHeadersConfig(argv?.header)
   })
 
-  return Object.assign(fileConfig, envConfig, argvConfig)
+  globalConfig = Object.assign(fileConfig, envConfig, argvConfig)
+  return globalConfig
+}
+
+const hasAlphaHeader = (feature: 'assembly-types') => {
+  const alphaHeader = globalConfig.headers['x-contentful-enable-alpha-feature'] as string || ''
+  return alphaHeader.includes(feature)
 }
 
 export default getConfig
 
 export {
   getConfig,
-  ClientConfig
+  ClientConfig,
+  hasAlphaHeader
 }

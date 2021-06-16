@@ -1,4 +1,5 @@
 import * as Joi from 'joi'
+import { hasAlphaHeader } from '../../../../bin/lib/config'
 
 const validation = (name, constraint) => Joi.object({
   [name]: constraint,
@@ -18,6 +19,7 @@ const rangeForDate = () => Joi.object({
 })
 
 const linkContentType = validation('linkContentType', Joi.array().items(Joi.string()))
+const relationshipType = validation('relationshipType', Joi.array().items(Joi.string().valid('Composition')))
 const inValidation = validation('in', Joi.array())
 const linkMimetypeGroup = validation('linkMimetypeGroup', Joi.array().items(Joi.string()))
 const size = validation('size', range('number'))
@@ -73,21 +75,28 @@ const enabledNodeTypes = validation('enabledNodeTypes', Joi.array().items(Joi.st
   'embedded-entry-inline'
 )))
 
-const fieldValidations = Joi.alternatives().try(
-  linkContentType,
-  inValidation,
-  linkMimetypeGroup,
-  size,
-  rangeValidation,
-  regexp,
-  prohibitRegexp,
-  unique,
-  dateRange,
-  assetImageDimensions,
-  assetFileSize,
-  nodes,
-  enabledMarks,
-  enabledNodeTypes
+// The field validation need to be wrapped in a getter as opposed
+// to being defined as a plain constant, because the usage of some of
+// the validations (e.g. relationshipType) is dynamically enabled/disabled
+// based on the presence of an alpha header, which is known at runtime.
+const getFieldValidations = () => Joi.alternatives().try(
+  ...[
+    linkContentType,
+    inValidation,
+    linkMimetypeGroup,
+    size,
+    rangeValidation,
+    regexp,
+    prohibitRegexp,
+    unique,
+    dateRange,
+    assetImageDimensions,
+    assetFileSize,
+    nodes,
+    enabledMarks,
+    enabledNodeTypes,
+    hasAlphaHeader('assembly-types') ? relationshipType : undefined
+  ].filter(Boolean)
 )
 
-export default fieldValidations
+export default getFieldValidations

@@ -1,5 +1,5 @@
 import * as Joi from 'joi'
-import fieldValidations from './field-validations-schema'
+import getFieldValidations from './field-validations-schema'
 
 const enforceDependency = function ({ valid, when, is }) {
   return valid.when(when, {
@@ -49,17 +49,17 @@ const enforceDependency = function ({ valid, when, is }) {
   })
 }
 
-const itemsValid = Joi.object().keys({
+const getValidItems = () => Joi.object().keys({
   type: Joi.string().valid('Symbol', 'Link').required(),
   linkType: enforceDependency({
     valid: Joi.string().valid('Asset', 'Entry'),
     when: 'type',
     is: 'Link'
   }),
-  validations: Joi.array().unique().items(fieldValidations)
+  validations: Joi.array().unique().items(getFieldValidations())
 })
 
-const fieldSchema = Joi.object().keys({
+const getFieldSchema = () => Joi.object().keys({
   id: Joi.string().required(),
   newId: Joi.string()
     .invalid(Joi.ref('id'))
@@ -86,7 +86,7 @@ const fieldSchema = Joi.object().keys({
     is: 'Link'
   }),
   items: enforceDependency({
-    valid: itemsValid,
+    valid: getValidItems(),
     when: 'type',
     is: 'Array'
   }),
@@ -94,10 +94,10 @@ const fieldSchema = Joi.object().keys({
   deleted: Joi.boolean(),
   localized: Joi.boolean(),
   required: Joi.boolean(),
-  validations: Joi.array().unique().items(fieldValidations),
+  validations: Joi.array().unique().items(getFieldValidations()),
   disabled: Joi.boolean()
 })
 
-const fieldsSchema = Joi.array().items(fieldSchema)
+const getFieldsSchema = () => Joi.array().items(getFieldSchema())
 
-export default fieldsSchema
+export default getFieldsSchema
