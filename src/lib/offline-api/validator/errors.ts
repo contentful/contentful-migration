@@ -64,6 +64,21 @@ const errors = {
       INVALID_VALIDATION_PARAMETER: (propName, expectedType, actualType) => {
         return `"${propName}" validation expected to be "${expectedType}", but got "${actualType}"`
       }
+    },
+    initialValue: {
+      TYPE_MISMATCH: (fieldId, valueType, locale, fieldType) => {
+        return `Cannot set initial value of type "${valueType}" for locale "${locale}" on field "${fieldId}". The initial value must match the field type "${fieldType}".`
+      },
+      DATE_TYPE_MISMATCH: (fieldId, valueType, value, locale, fieldType) => {
+        return `Cannot set initial value of type "${valueType}" to "${value}" for locale "${locale}" on field "${fieldId}". The initial value must match the field type "${fieldType}" using a valid ISO date.`
+      },
+      INVALID_LOCALE: (fieldId, locale) => {
+        return `Cannot set initial value for locale "${locale}" on field "${fieldId}". The locale does not exist.`
+      },
+
+      UNSUPPORTED_FIELD_TYPE: (fieldId, key, fieldType) => {
+        return `Cannot set "${key}" in field "${fieldId}" because it is not supported by field type "${fieldType}".`
+      }
     }
   },
   entry: {

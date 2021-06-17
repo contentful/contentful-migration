@@ -1,7 +1,6 @@
 import { ApiHook } from '../'
 import { ContentTypePayloadValidator } from './content-type'
 import { InvalidActionError } from '../../interfaces/errors'
-import { ContentType } from '../../entities/content-type'
 import errorMessages from './errors'
 
 const isDisplayFieldAndHasBeenDeleted = function (field, displayField) {
@@ -15,7 +14,7 @@ const fieldIsDisplayField = function (field, displayField) {
 export default class DisplayFieldValidator implements ContentTypePayloadValidator {
   public hooks = [ApiHook.SaveContentType]
 
-  public validate (contentType: ContentType): InvalidActionError[] {
+  public validate ({ contentType }): InvalidActionError[] {
     const errors: InvalidActionError[] = []
 
     const displayField = contentType.displayField

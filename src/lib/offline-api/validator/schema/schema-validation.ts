@@ -8,7 +8,7 @@ import { ContentType } from '../../../entities/content-type'
 import { Tag } from '../../../entities/tag'
 import { contentTypeSchema, MAX_FIELDS } from './content-type-schema'
 import { tagSchema } from './tag-schema'
-import getFieldsSchema from './fields-schema'
+import { createFieldsSchema } from './fields-schema'
 
 interface SimplifiedValidationError {
   message: string
@@ -18,13 +18,14 @@ interface SimplifiedValidationError {
     isRequiredDependency?: boolean
     isForbiddenDependency?: boolean
     dependsOn?: {
-      key: string,
+      key: string
       value: any
     }
     dupeValue?: any
     key?: any
-    keys?: any[],
+    keys?: any[]
     valids?: any[]
+    value?: any
   }
 }
 
@@ -155,9 +156,9 @@ const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): Joi.Valid
   return allErrors
 }
 
-const validateFields = function (contentType: ContentType): PayloadValidationError[] {
+const validateFields = function (contentType: ContentType, locales: string[]): PayloadValidationError[] {
   const fields = contentType.fields.toRaw()
-  const validateResult = getFieldsSchema().validate(fields, {
+  const validateResult = createFieldsSchema(locales).validate(fields, {
     abortEarly: false
   })
 
@@ -167,7 +168,9 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
     return []
   }
 
-  return cleanNoiseFromJoiErrors(error).map((details: Joi.ValidationErrorItem): PayloadValidationError => {
+  const cleanErrors = cleanNoiseFromJoiErrors(error)
+
+  return cleanErrors.map((details: Joi.ValidationErrorItem): PayloadValidationError => {
     const { path, type, context } = details
 
     // `path` looks like [0, 'field']
@@ -175,6 +178,33 @@ const validateFields = function (contentType: ContentType): PayloadValidationErr
     const [index, ...fieldNames] = path
     const prop = fieldNames.join('.')
     const field = fields[index]
+    if (prop.startsWith('initialValue')) {
+
+      if (type === 'object.unknown') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.initialValue.INVALID_LOCALE(field.id, context.key)
+        }
+      }
+
+      if (type === 'any.unknown') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.initialValue.UNSUPPORTED_FIELD_TYPE(field.id, path[1], field.type)
+        }
+      }
+
+      if (field.type === 'Date') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.initialValue.DATE_TYPE_MISMATCH(field.id, kindOf(context.value), context.value, context.key, field.type)
+        }
+      }
+      return {
+        type: 'InvalidPayload',
+        message: errorMessages.field.initialValue.TYPE_MISMATCH(field.id, kindOf(context.value), context.key, field.type)
+      }
+    }
 
     if (type === 'any.required') {
       if (context.isRequiredDependency) {
