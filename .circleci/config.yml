@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   check:
     docker:
-      - image: circleci/node:12
+      - image: circleci/node:14
     steps:
       - checkout
       - run:
@@ -23,7 +23,7 @@ jobs:
             npm run test-typescript-declaration
   test-unit:
     docker:
-      - image: circleci/node:12
+      - image: circleci/node:14
     steps:
       - checkout
       - run:
@@ -36,7 +36,7 @@ jobs:
 
   test-integration:
     docker:
-      - image: circleci/node:12
+      - image: circleci/node:14
     steps:
       - checkout
       - run:
@@ -49,7 +49,7 @@ jobs:
 
   test-e2e:
     docker:
-      - image: circleci/node:12
+      - image: circleci/node:14
     steps:
       - checkout
       - run:
@@ -62,7 +62,7 @@ jobs:
 
   release:
     docker:
-      - image: circleci/node:12
+      - image: circleci/node:14
     steps:
       - checkout
       - run: npm install
