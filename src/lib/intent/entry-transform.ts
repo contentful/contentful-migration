@@ -16,6 +16,10 @@ export default class EntryTransformIntent extends Intent {
     return false
   }
 
+  requiresAllTags () {
+    return true
+  }
+
   toActions () {
     return [
       new EntryTransformAction(

@@ -43,11 +43,33 @@ describe('apply content transformation', function () {
         ]
       }
     });
+
+
     await request({
       method: 'PUT',
       url: '/content_types/newsArticle/published',
       headers: {
         'X-Contentful-Version': 1
+      }
+    });
+
+
+    await request({
+      method: 'PUT',
+      url: '/tags/test',
+      data: {
+        name: 'test',
+        sys: { id: 'test' }
+      }
+    });
+
+
+    await request({
+      method: 'PUT',
+      url: '/tags/old',
+      data: {
+        name: 'old',
+        sys: { id: 'old' }
       }
     });
 
@@ -61,6 +83,17 @@ describe('apply content transformation', function () {
         fields: {
           'author': { 'en-US': 'Jane Austen' },
           'authorCity': { 'en-US': 'Steventon' }
+        },
+        metadata: {
+          tags: [
+            {
+              sys: {
+                id: 'old',
+                type: 'Link',
+                linkType: 'Tag'
+              }
+            }
+          ]
         }
       }
     });
@@ -87,6 +120,7 @@ describe('apply content transformation', function () {
       .end(async function () {
         const res = await getEntries(SOURCE_TEST_SPACE, environmentId, 'newsArticle');
         const entriesWithoutSysAndMetadata = res.items.map(i => _.omit(i, ['sys', 'metadata']));
+        const metadata = res.items[0].metadata;
         const expected = [
           {
             fields: {
@@ -97,6 +131,7 @@ describe('apply content transformation', function () {
           }
         ];
         expect(entriesWithoutSysAndMetadata).to.eql(expected);
+        expect(metadata.tags.length).to.eql(1);
         done();
       });
   });

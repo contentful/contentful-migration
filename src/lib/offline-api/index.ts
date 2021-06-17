@@ -216,6 +216,7 @@ class OfflineAPI {
 
     // TODO We skip a schema validator for now, because in order to
     // properly implement it, we would need to bump joi.
+    // TagsOnEntryValidator will failed if modifiedTags (tags in environment) is empty
     this.entryValidators.push(new TagsOnEntryValidator(this.modifiedTags))
 
     this.entries = entries

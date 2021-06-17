@@ -12,15 +12,15 @@ describe('makeFieldValidations', function () {
     it('should include the relationshipType validation', () => {
       hasAlphaHeaderStub.returns(true)
       const schema = getFieldValidations()
-      expect(Joi.validate({ relationshipType: ['Composition'] }, schema).error).eq(null)
-      expect(Joi.validate({ relationshipType: ['invalid'] }, schema).error).not.to.eq(null)
+      expect(schema.validate({ relationshipType: ['Composition'] }).error).eq(undefined)
+      expect(schema.validate({ relationshipType: ['invalid'] }).error).not.to.eq(undefined)
     })
   })
   describe('without the assembly-types alpha header defined', () => {
     it('should not include the relationshipType validation', () => {
       hasAlphaHeaderStub.returns(false)
       const schema = getFieldValidations()
-      expect(Joi.validate({ relationshipType: ['Composition'] }, schema).error).not.to.eq(null)
+      expect(schema.validate({ relationshipType: ['Composition'] }).error).not.to.eq(undefined)
     })
   })
 })

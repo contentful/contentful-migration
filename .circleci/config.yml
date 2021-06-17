@@ -76,6 +76,7 @@ workflows:
       - test-integration
       - test-e2e
       - release:
+          context: dev-workflows-release
           requires:
             - check
             - test-unit

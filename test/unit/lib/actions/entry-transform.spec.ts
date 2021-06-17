@@ -159,17 +159,20 @@ describe('Entry Action', function () {
     }
     const action = new EntryTransformToTypeAction(transformation)
     const entries = [
-      new Entry(makeApiEntry({
-        contentTypeId: 'dog',
-        version,
-        publishedVersion,
-        fields: {
-          name: {
-            'en-US': 'bob',
-            'hawaii': 'haukea'
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version,
+          publishedVersion,
+          fields: {
+            name: {
+              'en-US': 'bob',
+              hawaii: 'haukea'
+            }
           }
-        }
-      }))
+        })
+      )
     ]
     const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US'] })
     await api.startRecordingRequests(null)
