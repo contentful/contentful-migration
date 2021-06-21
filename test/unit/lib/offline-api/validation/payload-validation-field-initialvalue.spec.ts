@@ -3,7 +3,7 @@
 import { expect } from 'chai'
 import validateBatches from './validate-batches'
 
-describe.only('payload validation (initial value)', function () {
+describe('payload validation (initial value)', function () {
 
   describe('when setting initial value for non existing locales', function () {
     it('returns an error', async function () {
