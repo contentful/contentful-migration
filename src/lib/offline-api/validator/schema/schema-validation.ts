@@ -188,6 +188,13 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
       }
 
       if (type === 'any.unknown') {
+
+        if (field.type === 'Array') {
+          return {
+            type: 'InvalidPayload',
+            message: errorMessages.field.initialValue.UNSUPPORTED_ARRAY_ITEMS_TYPE(field.id, path[1], field.items.type)
+          }
+        }
         return {
           type: 'InvalidPayload',
           message: errorMessages.field.initialValue.UNSUPPORTED_FIELD_TYPE(field.id, path[1], field.type)

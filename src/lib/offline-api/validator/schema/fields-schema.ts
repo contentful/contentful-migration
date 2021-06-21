@@ -66,6 +66,14 @@ export function createFieldsSchema (locales: string[]) {
           {
             is: 'Date',
             then: Joi.date().iso().strict(false)
+          },
+          {
+            is: 'Array',
+            then: Joi.when(Joi.ref('...items.type'), {
+              is: 'Symbol',
+              then: Joi.array().items(Joi.string()),
+              otherwise: Joi.forbidden()
+            })
           }
         ]
       }

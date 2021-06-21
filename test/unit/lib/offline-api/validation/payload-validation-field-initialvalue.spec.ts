@@ -10,14 +10,14 @@ describe('payload validation (initial value)', function () {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('lunch')
         lunch.createField('mainCourse')
-        .name('mainCourse')
-        .type('Symbol')
-        .initialValue({
-          'en-US': 'A Symbol',
-          'de-DE': 'A Symbol',
-          'fr-FR': 'A Symbol'
-        })
-      }, [], [], [], [ 'en-US'])
+          .name('mainCourse')
+          .type('Symbol')
+          .initialValue({
+            'en-US': 'A Symbol',
+            'de-DE': 'A Symbol',
+            'fr-FR': 'A Symbol'
+          })
+      }, [], [], [], ['en-US'])
 
       expect(errors).to.eql([
         [
@@ -38,14 +38,14 @@ describe('payload validation (initial value)', function () {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('lunch')
         lunch.createField('aSymbol')
-        .name('aSymbol')
-        .type('Symbol')
-        .initialValue({
-          'en-US': 1234,
-          'de-DE': false,
-          'fr-FR': 'A string'
-        })
-      }, [], [], [], [ 'en-US', 'de-DE', 'fr-FR'])
+          .name('aSymbol')
+          .type('Symbol')
+          .initialValue({
+            'en-US': 1234,
+            'de-DE': false,
+            'fr-FR': 'A string'
+          })
+      }, [], [], [], ['en-US', 'de-DE', 'fr-FR'])
 
       expect(errors).to.eql([
         [
@@ -64,14 +64,14 @@ describe('payload validation (initial value)', function () {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('lunch')
         lunch.createField('aNumber')
-        .name('aNumber')
-        .type('Number')
-        .initialValue({
-          'en-US': '1.234',
-          'de-DE': 'A string',
-          'fr-FR': 555
-        })
-      }, [], [], [], [ 'en-US', 'de-DE', 'fr-FR'])
+          .name('aNumber')
+          .type('Number')
+          .initialValue({
+            'en-US': '1.234',
+            'de-DE': 'A string',
+            'fr-FR': 555
+          })
+      }, [], [], [], ['en-US', 'de-DE', 'fr-FR'])
 
       expect(errors).to.eql([
         [
@@ -90,15 +90,15 @@ describe('payload validation (initial value)', function () {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('lunch')
         lunch.createField('anInteger')
-        .name('anInteger')
-        .type('Integer')
-        .initialValue({
-          'en-US': 1.234,
-          'de-DE': 'A string',
-          'it-IT': '9999',
-          'fr-FR': 555
-        })
-      }, [], [], [], [ 'en-US', 'de-DE', 'fr-FR', 'it-IT'])
+          .name('anInteger')
+          .type('Integer')
+          .initialValue({
+            'en-US': 1.234,
+            'de-DE': 'A string',
+            'it-IT': '9999',
+            'fr-FR': 555
+          })
+      }, [], [], [], ['en-US', 'de-DE', 'fr-FR', 'it-IT'])
 
       expect(errors).to.eql([
         [
@@ -122,15 +122,15 @@ describe('payload validation (initial value)', function () {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('lunch')
         lunch.createField('aBool')
-        .name('aBool')
-        .type('Boolean')
-        .initialValue({
-          'en-US': 1,
-          'de-DE': 'A string',
-          'it-IT': true,
-          'fr-FR': false
-        })
-      }, [], [], [], [ 'en-US', 'de-DE', 'fr-FR', 'it-IT'])
+          .name('aBool')
+          .type('Boolean')
+          .initialValue({
+            'en-US': 1,
+            'de-DE': 'A string',
+            'it-IT': true,
+            'fr-FR': false
+          })
+      }, [], [], [], ['en-US', 'de-DE', 'fr-FR', 'it-IT'])
 
       expect(errors).to.eql([
         [
@@ -150,14 +150,14 @@ describe('payload validation (initial value)', function () {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('lunch')
         lunch.createField('aText')
-        .name('aText')
-        .type('Text')
-        .initialValue({
-          'en-US': 1234,
-          'de-DE': false,
-          'fr-FR': 'A string'
-        })
-      }, [], [], [], [ 'en-US', 'de-DE', 'fr-FR'])
+          .name('aText')
+          .type('Text')
+          .initialValue({
+            'en-US': 1234,
+            'de-DE': false,
+            'fr-FR': 'A string'
+          })
+      }, [], [], [], ['en-US', 'de-DE', 'fr-FR'])
 
       expect(errors).to.eql([
         [
@@ -177,16 +177,16 @@ describe('payload validation (initial value)', function () {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('lunch')
         lunch.createField('aDate')
-        .name('aDate')
-        .type('Date')
-        .initialValue({
-          'en-US': 'A string',
-          'de-DE': false,
-          'fr-FR': 1234,
-          'es-ES': '1234',
-          'it-IT': '2013-05-02T13:00:00Z'
-        })
-      }, [], [], [], [ 'en-US', 'de-DE', 'fr-FR', 'it-IT', 'es-ES'])
+          .name('aDate')
+          .type('Date')
+          .initialValue({
+            'en-US': 'A string',
+            'de-DE': false,
+            'fr-FR': 1234,
+            'es-ES': '1234',
+            'it-IT': '2013-05-02T13:00:00Z'
+          })
+      }, [], [], [], ['en-US', 'de-DE', 'fr-FR', 'it-IT', 'es-ES'])
 
       expect(errors).to.eql([
         [
@@ -201,28 +201,110 @@ describe('payload validation (initial value)', function () {
         ]
       ])
     })
-  })
 
-  describe('when setting initial value a field where is not supported', function () {
-    it('returns an error', async function () {
+    it('returns an error for Array when items are not Symbols', async function () {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('lunch')
-        lunch.createField('mainCourse')
-        .name('mainCourse')
-        .type('RichText')
-        .initialValue({
-          'en-US': 'A Text'
-        })
-      }, [], [], [], [ 'en-US'])
+        lunch.createField('aNumberArray')
+          .name('aNumberArray')
+          .type('Array')
+          .items({
+            type: 'Link',
+            linkType: 'Entry'
+          })
+          .initialValue({
+            'en-US': [{}, {}]
+          })
+      }, [], [], [], ['en-US'])
 
       expect(errors).to.eql([
         [
           {
             type: 'InvalidPayload',
-            message: 'Cannot set "initialValue" in field "mainCourse" because it is not supported by field type "RichText".'
+            message: 'Cannot set "initialValue" in field "aNumberArray" because it is not supported in array with items of type "Link".'
           }
         ]
       ])
     })
+
+    describe('when setting initial value a field where is not supported', function () {
+      it('returns an error', async function () {
+        const errors = await validateBatches(function (migration) {
+          const lunch = migration.createContentType('lunch').name('lunch')
+          lunch.createField('mainCourse')
+            .name('mainCourse')
+            .type('RichText')
+            .initialValue({
+              'en-US': 'A Text'
+            })
+        }, [], [], [], ['en-US'])
+
+        expect(errors).to.eql([
+          [
+            {
+              type: 'InvalidPayload',
+              message: 'Cannot set "initialValue" in field "mainCourse" because it is not supported by field type "RichText".'
+            }
+          ]
+        ])
+      })
+    })
   })
+
+
+  it('allows initial value to be set for supported field types', async function () {
+    const errors = await validateBatches(function (migration) {
+      const lunch = migration.createContentType('lunch').name('lunch')
+      lunch.createField('aSymbol')
+        .name('aSymbol')
+        .type('Symbol')
+        .initialValue({
+          'en-US': 'Valid symbol',
+        })
+      lunch.createField('aNumber')
+        .name('aNumber')
+        .type('Number')
+        .initialValue({
+          'en-US': 1234.213,
+        })
+      lunch.createField('aBoolean')
+        .name('aBoolean')
+        .type('Boolean')
+        .initialValue({
+          'en-US': true,
+        })
+      lunch.createField('anInteger')
+        .name('anInteger')
+        .type('Integer')
+        .initialValue({
+          'en-US': -20,
+        })
+      lunch.createField('aText')
+        .name('aText')
+        .type('Text')
+        .initialValue({
+          'en-US': 'A valid Text',
+        })
+      lunch.createField('aDate')
+        .name('aDate')
+        .type('Date')
+        .initialValue({
+          'en-US': '2013-05-02T13:00:00Z'
+        })
+      lunch.createField('anArray')
+        .name('anArray')
+        .type('Array')
+        .items({
+          type: 'Symbol'
+        })
+        .initialValue({
+          'en-US': ['a', 'b', 'c'],
+        })
+    }, [], [], [], ['en-US'])
+
+    expect(errors).to.eql([
+      []
+    ])
+  })
+
 })
