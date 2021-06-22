@@ -25,4 +25,15 @@ module.exports = function (migration) {
     .initialValue({
       'en-US': '2021-06-15T13:46:06Z'
     });
+
+  Event.createField('categories')
+    .name('Categories')
+    .type('Array')
+    .items({
+      type: 'Symbol'
+    })
+    .localized(false)
+    .initialValue({
+      'en-US': ['Culture', 'Local History']
+    });
 };
