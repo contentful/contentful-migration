@@ -7,10 +7,27 @@ import isDefined from '../utils/is-defined'
 import Entry from '../entities/entry'
 import * as _ from 'lodash'
 
+/**
+ * Helper function that sets a link field to another entry
+ */
+function setReferenceField(entry: Entry, contentType: ContentType, referenceField: string, referenceValue: string, locales: string[]): void {
+  const field = contentType.fields.getField(referenceField)
+  entry.setField(referenceField, {})
+  for (const locale of locales) {
+    const sys = {
+      type: 'Link',
+      linkType: 'Entry',
+      id: referenceValue
+    }
+    const fieldValue = (field.type === 'Array') ? [{ sys }] : { sys }
+    entry.setFieldForLocale(referenceField, locale, fieldValue)
+  }
+}
 class EntryDeriveAction extends APIAction {
   private contentTypeId: string
   private fromFields: string[]
   private referenceField: string
+  private shouldReferenceSource: boolean
   private derivedContentType: string
   private deriveEntryForLocale: (inputFields: any, locale: string) => Promise<any>
   private identityKey: (fromFields: any) => Promise<string>
@@ -21,6 +38,7 @@ class EntryDeriveAction extends APIAction {
     this.contentTypeId = contentTypeId
     this.fromFields = entryDerivation.from
     this.referenceField = entryDerivation.toReferenceField
+    this.shouldReferenceSource = entryDerivation.shouldReferenceSource
     this.derivedContentType = entryDerivation.derivedContentType
     this.deriveEntryForLocale = entryDerivation.deriveEntryForLocale
     this.identityKey = entryDerivation.identityKey
@@ -31,6 +49,7 @@ class EntryDeriveAction extends APIAction {
     const entries: Entry[] = await api.getEntriesForContentType(this.contentTypeId)
     const locales: string[] = await api.getLocalesForSpace()
     const sourceContentType: ContentType = await api.getContentType(this.contentTypeId)
+    const derivedContentType: ContentType = await api.getContentType(this.derivedContentType)
 
     for (const entry of entries) {
       const inputs = _.pick(entry.fields, this.fromFields)
@@ -92,26 +111,24 @@ class EntryDeriveAction extends APIAction {
           }
 
         }
+
+        if (this.shouldReferenceSource) {
+          setReferenceField(targetEntry, derivedContentType, this.referenceField, entry.id, locales)
+        }
+
         await api.saveEntry(targetEntry.id)
         if (this.shouldPublish) {
           await api.publishEntry(targetEntry.id)
         }
       }
-      const field = sourceContentType.fields.getField(this.referenceField)
-      entry.setField(this.referenceField, {})
-      for (const locale of locales) {
-        const sys = {
-          type: 'Link',
-          linkType: 'Entry',
-          id: newEntryId
-        }
-        const fieldValue = (field.type === 'Array') ? [{ sys }] : { sys }
-        entry.setFieldForLocale(this.referenceField, locale, fieldValue)
-      }
 
-      await api.saveEntry(entry.id)
-      if (this.shouldPublish) {
-        await api.publishEntry(entry.id)
+      if (!this.shouldReferenceSource) {
+        setReferenceField(entry, sourceContentType, this.referenceField, newEntryId, locales)
+  
+        await api.saveEntry(entry.id)
+        if (this.shouldPublish) {
+          await api.publishEntry(entry.id)
+        }
       }
     }
   }

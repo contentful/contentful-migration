@@ -344,6 +344,8 @@ export interface IDeriveLinkedEntriesConfig {
   identityKey: (fromFields: ContentFields) => string,
   /** (optional) – If true, both the source and the derived entries will be published. If false, both will remain in draft state (default true) */
   shouldPublish?: boolean,
+  /** (optional) - If true, changes reference field from source->target to target->source (default: false) */
+  shouldReferenceSource?: boolean,
   /**
    * (required) – Function that generates the field values for the derived entry.
    *  fields is an object containing each of the from fields. Each field will contain their current localized values (i.e. fields == {myField: {'en-US': 'my field value'}})
