@@ -221,7 +221,7 @@ describe('payload validation (initial value)', function () {
         [
           {
             type: 'InvalidPayload',
-            message: 'Cannot set "initialValue" in field "aNumberArray" because it is not supported in array with items of type "Link".'
+            message: 'Cannot set "initialValue" in field "aNumberArray" because it is not supported by field type "Array" with items type "Link".'
           }
         ]
       ])
@@ -251,7 +251,6 @@ describe('payload validation (initial value)', function () {
     })
   })
 
-
   it('allows initial value to be set for supported field types', async function () {
     const errors = await validateBatches(function (migration) {
       const lunch = migration.createContentType('lunch').name('lunch')
@@ -259,31 +258,31 @@ describe('payload validation (initial value)', function () {
         .name('aSymbol')
         .type('Symbol')
         .initialValue({
-          'en-US': 'Valid symbol',
+          'en-US': 'Valid symbol'
         })
       lunch.createField('aNumber')
         .name('aNumber')
         .type('Number')
         .initialValue({
-          'en-US': 1234.213,
+          'en-US': 1234.213
         })
       lunch.createField('aBoolean')
         .name('aBoolean')
         .type('Boolean')
         .initialValue({
-          'en-US': true,
+          'en-US': true
         })
       lunch.createField('anInteger')
         .name('anInteger')
         .type('Integer')
         .initialValue({
-          'en-US': -20,
+          'en-US': -20
         })
       lunch.createField('aText')
         .name('aText')
         .type('Text')
         .initialValue({
-          'en-US': 'A valid Text',
+          'en-US': 'A valid Text'
         })
       lunch.createField('aDate')
         .name('aDate')
@@ -298,7 +297,7 @@ describe('payload validation (initial value)', function () {
           type: 'Symbol'
         })
         .initialValue({
-          'en-US': ['a', 'b', 'c'],
+          'en-US': ['a', 'b', 'c']
         })
     }, [], [], [], ['en-US'])
 

@@ -80,7 +80,7 @@ const errors = {
         return `Cannot set "${key}" in field "${fieldId}" because it is not supported by field type "${fieldType}".`
       },
       UNSUPPORTED_ARRAY_ITEMS_TYPE: (fieldId, key, itemsType) => {
-        return `Cannot set "${key}" in field "${fieldId}" because it is not supported in array with items of type "${itemsType}".`
+        return `Cannot set "${key}" in field "${fieldId}" because it is not supported by field type "Array" with items type "${itemsType}".`
       }
     }
   },
