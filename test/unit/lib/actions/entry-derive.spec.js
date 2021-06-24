@@ -133,7 +133,7 @@ describe('Entry Derive', function () {
 
     expect(batches[0].requests[3].method).to.eql('PUT');
     expect(batches[0].requests[3].url).to.eql('/entries/246/published');
-  })
+  });
 
   it('disable publishing of any entry', async function () {
     const action = new EntryDeriveAction('dog', {

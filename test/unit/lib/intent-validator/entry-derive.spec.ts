@@ -187,7 +187,7 @@ describe('Entry derivation', function () {
         },
         {
           type: 'InvalidType',
-          message: '"48" is not a valid value for the entry derivation property "shouldPublish". Expected type boolean or string value "preserve".',
+          message: '"48" is not a valid value for the entry derivation property "shouldPublish". Expected boolean or preserve.',
           details: {
             step: {
               type: 'contentType/deriveEntries',
