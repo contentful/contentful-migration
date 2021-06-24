@@ -95,7 +95,7 @@ class EntryDeriveAction extends APIAction {
         }
         await api.saveEntry(targetEntry.id)
         if (shouldPublishLocalChanges(this.shouldPublish, entry)) {
-          await api.publishEntry(targetEntry.id);
+          await api.publishEntry(targetEntry.id)
         }
       }
       const field = sourceContentType.fields.getField(this.referenceField)
@@ -112,7 +112,7 @@ class EntryDeriveAction extends APIAction {
 
       await api.saveEntry(entry.id)
       if (shouldPublishLocalChanges(this.shouldPublish, entry)) {
-          await api.publishEntry(entry.id);
+        await api.publishEntry(entry.id)
       }
     }
   }
