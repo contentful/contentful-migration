@@ -72,7 +72,70 @@ describe('Entry Derive', function () {
     expect(updateEntryWithLinkFields.ownerRef['en-US'].sys.id).to.eq(batches[0].requests[0].data.sys.id); // id of linked object is same as id of target object
   });
 
-  it('respects shouldPublish', async function () {
+  it('publishes all changed entries', async function () {
+    const action = new EntryDeriveAction('dog', {
+      derivedContentType: 'owner',
+      from: ['owner'],
+      toReferenceField: 'ownerRef',
+      derivedFields: ['firstName', 'lastName'],
+      identityKey: async (fromFields) => {
+        return fromFields.owner['en-US'].toLowerCase().replace(' ', '-');
+      },
+      shouldPublish: true,
+      deriveEntryForLocale: async (inputFields, locale) => {
+        if (locale !== 'en-US') {
+          return;
+        }
+        const [firstName, lastName] = inputFields.owner[locale].split(' ');
+        return {
+          firstName,
+          lastName
+        };
+      }
+    });
+
+    const contentTypes = new Map();
+    contentTypes.set('dog', new ContentType({
+      sys: {
+        id: 'dog'
+      },
+      fields: [{
+        name: 'ownerRef',
+        id: 'ownerRef',
+        type: 'Symbol'
+      }]
+    })
+    );
+
+    const entries = [
+      new Entry(makeApiEntry({
+        id: '246',
+        contentTypeId: 'dog',
+        version: 1,
+        fields: {
+          owner: {
+            'en-US': 'john doe'
+          }
+        }
+      }))
+    ];
+
+    const api = new OfflineApi({ contentTypes, entries, locales: ['en-US'] });
+    api.startRecordingRequests(null);
+    await action.applyTo(api);
+    api.stopRecordingRequests();
+    const batches = await api.getRequestBatches();
+
+    expect(batches[0].requests.length).to.eq(4);
+
+    expect(batches[0].requests[1].method).to.eql('PUT');
+    expect(batches[0].requests[1].url).to.eql('/entries/john-doe/published');
+
+    expect(batches[0].requests[3].method).to.eql('PUT');
+    expect(batches[0].requests[3].url).to.eql('/entries/246/published');
+  })
+
+  it('disable publishing of any entry', async function () {
     const action = new EntryDeriveAction('dog', {
       derivedContentType: 'owner',
       from: ['owner'],
@@ -125,12 +188,139 @@ describe('Entry Derive', function () {
     await action.applyTo(api);
     api.stopRecordingRequests();
     const batches = await api.getRequestBatches();
+
     expect(batches[0].requests.length).to.eq(2);
 
     expect(batches[0].requests[0].data.sys.publishedVersion).to.eql(undefined);
     expect(batches[0].requests[0].data.sys.version).to.eql(0);
     expect(batches[0].requests[1].data.sys.publishedVersion).to.eql(undefined);
     expect(batches[0].requests[1].data.sys.version).to.eql(1);
+  });
+
+  it('preserves publish state of parent entry when is not published', async function () {
+    const action = new EntryDeriveAction('dog', {
+      derivedContentType: 'owner',
+      from: ['owner'],
+      toReferenceField: 'ownerRef',
+      derivedFields: ['firstName', 'lastName'],
+      identityKey: async (fromFields) => {
+        return fromFields.owner['en-US'].toLowerCase().replace(' ', '-');
+      },
+      shouldPublish: 'preserve',
+      deriveEntryForLocale: async (inputFields, locale) => {
+        if (locale !== 'en-US') {
+          return;
+        }
+        const [firstName, lastName] = inputFields.owner[locale].split(' ');
+        return {
+          firstName,
+          lastName
+        };
+      }
+    });
+
+    const contentTypes = new Map();
+    contentTypes.set('dog', new ContentType({
+      sys: {
+        id: 'dog'
+      },
+      fields: [{
+        name: 'ownerRef',
+        id: 'ownerRef',
+        type: 'Symbol'
+      }]
+    })
+    );
+
+    const entries = [
+      new Entry(makeApiEntry({
+        id: '246',
+        contentTypeId: 'dog',
+        version: 1,
+        fields: {
+          owner: {
+            'en-US': 'john doe'
+          }
+        }
+      }))
+    ];
+
+    const api = new OfflineApi({ contentTypes, entries, locales: ['en-US'] });
+    api.startRecordingRequests(null);
+    await action.applyTo(api);
+    api.stopRecordingRequests();
+    const batches = await api.getRequestBatches();
+
+    expect(batches[0].requests.length).to.eq(2);
+
+    expect(batches[0].requests[0].data.sys.publishedVersion).to.eql(undefined);
+    expect(batches[0].requests[0].data.sys.version).to.eql(0);
+    expect(batches[0].requests[1].data.sys.publishedVersion).to.eql(undefined);
+    expect(batches[0].requests[1].data.sys.version).to.eql(1);
+  });
+
+  it('preserves publish state of parent entry when is published', async function () {
+    const action = new EntryDeriveAction('dog', {
+      derivedContentType: 'owner',
+      from: ['owner'],
+      toReferenceField: 'ownerRef',
+      derivedFields: ['firstName', 'lastName'],
+      identityKey: async (fromFields) => {
+        return fromFields.owner['en-US'].toLowerCase().replace(' ', '-');
+      },
+      shouldPublish: 'preserve',
+      deriveEntryForLocale: async (inputFields, locale) => {
+        if (locale !== 'en-US') {
+          return;
+        }
+        const [firstName, lastName] = inputFields.owner[locale].split(' ');
+        return {
+          firstName,
+          lastName
+        };
+      }
+    });
+
+    const contentTypes = new Map();
+    contentTypes.set('dog', new ContentType({
+      sys: {
+        id: 'dog'
+      },
+      fields: [{
+        name: 'ownerRef',
+        id: 'ownerRef',
+        type: 'Symbol'
+      }]
+    })
+    );
+
+    const entries = [
+      new Entry(makeApiEntry({
+        id: '246',
+        contentTypeId: 'dog',
+        version: 2,
+        publishedVersion: 1,
+        fields: {
+          owner: {
+            'en-US': 'john doe'
+          }
+        }
+      }))
+    ];
+
+    const api = new OfflineApi({ contentTypes, entries, locales: ['en-US'] });
+    api.startRecordingRequests(null);
+    await action.applyTo(api);
+    api.stopRecordingRequests();
+    const batches = await api.getRequestBatches();
+
+    expect(batches[0].requests.length).to.eq(4);
+
+    expect(batches[0].requests[1].method).to.eql('PUT');
+    expect(batches[0].requests[1].url).to.eql('/entries/john-doe/published');
+
+    expect(batches[0].requests[3].method).to.eql('PUT');
+    expect(batches[0].requests[3].url).to.eql('/entries/246/published');
   });
 
   it('derives an entry from n to n', async function () {

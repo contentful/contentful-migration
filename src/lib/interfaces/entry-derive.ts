@@ -4,6 +4,6 @@ export default interface EntryDerive {
   toReferenceField: string,
   derivedFields: string[],
   identityKey: (fromFields: any) => Promise<string>
-  shouldPublish?: boolean,
+  shouldPublish?: boolean | 'preserve',
   deriveEntryForLocale (inputFields: any, locale: string): Promise<any>
 }

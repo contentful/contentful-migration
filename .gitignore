@@ -23,3 +23,4 @@ npm-debug.log
 contentful-migration-cli-*.tgz
 errors-*
 .idea
+.DS_Store
