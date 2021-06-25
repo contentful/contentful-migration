@@ -122,10 +122,12 @@ export interface IEditorInterfaceOptions {
   stars?: number
   /** (only for fields of type datePicker) – One of "dateonly", "time", "timeZ" (default). Specifies whether to show the clock and/or timezone inputs. */
   format?: 'dateonly' | 'time' | 'timeZ'
-  /** string (only for fields of type datePicker) – Specifies which type of clock to use. Must be one of the strings "12" or "24" (default). */
+  /** (only for fields of type datePicker) – Specifies which type of clock to use. Must be one of the strings "12" or "24" (default). */
   ampm?: '12' | '24'
   /** (only for References, many) Select whether to enable Bulk Editing mode */
   bulkEditing?: boolean
+  /** (only for fields of type slugEditor) – Specifies the ID of the field that will be used to generate the slug value. */
+  trackingFieldId?: string
 
   /** Instance settings for the sidebar widget as key-value pairs. */
   [setting: string]: WidgetSettingsValue
