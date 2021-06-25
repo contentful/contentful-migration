@@ -1,3 +1,5 @@
+import { cloneDeep, find, filter, findIndex, pull, forEach } from 'lodash'
+
 import {
   APIContentType,
   Field,
@@ -9,7 +11,6 @@ import {
   APIEditorIntefaceEditor,
   APISidebarWidgetNamespace, APIControlWidgetNamespace
 } from '../interfaces/content-type'
-import { cloneDeep, find, filter, findIndex, pull, forEach } from 'lodash'
 import { SidebarWidgetNamespace, DEFAULT_SIDEBAR_LIST } from '../action/sidebarwidget'
 
 class Fields {
@@ -224,13 +225,14 @@ class EditorInterfaces {
   }
 
   removeSidebarWidget (widgetId: string, widgetNamespace: APISidebarWidgetNamespace) {
-    if (!Array.isArray(this._sidebar)) {
+    const currentSidebarWidgets = Array.isArray(this._sidebar) ? this._sidebar : [].concat(DEFAULT_SIDEBAR_LIST)
+    const widgetToDisable = currentSidebarWidgets.find(widget => widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace)
+
+    if (!widgetToDisable) {
       return
     }
 
-    this._sidebar = this._sidebar.filter(
-      widget => !(widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace)
-    )
+    this._sidebar = currentSidebarWidgets.filter(widget => widget.widgetId !== widgetId || widget.widgetNamespace !== widgetNamespace)
   }
 
   resetSidebarToDefault () {

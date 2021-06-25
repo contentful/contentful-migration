@@ -2,16 +2,16 @@ module.exports = function (migration) {
   const richTextTest = migration.editContentType('richTextTest');
 
   richTextTest
-    .addSidebarWidget('sidebar-builtin', 'not-needed');
+    .addSidebarWidget('not-needed', 'sidebar-builtin');
 
   richTextTest
-    .addSidebarWidget('extension', 'imageTaggingExtensionId', {
+    .addSidebarWidget('imageTaggingExtensionId', 'extension', {
       imageField: 'image'
     })
-    .addSidebarWidget('sidebar-builtin', 'publication-widget', {}, 'imageTaggingExtensionId')
+    .addSidebarWidget('publication-widget', 'sidebar-builtin', {}, 'imageTaggingExtensionId')
     .updateSidebarWidget(
-      'extension',
       'imageTaggingExtensionId',
+      'extension',
       {
         tagField: 'tags',
         imageField: 'image'
@@ -19,5 +19,5 @@ module.exports = function (migration) {
     );
 
   richTextTest
-    .removeSidebarWidget('sidebar-builtin', 'not-needed');
+    .removeSidebarWidget('not-needed', 'sidebar-builtin');
 };

@@ -7,7 +7,7 @@ import { DEFAULT_SIDEBAR_LIST } from '../../../../src/lib/action/sidebarwidget'
 describe('EditorInterfaces', () => {
   const testWidget: APIEditorInterfaceSidebar = {
     widgetId: 'test',
-    widgetNamespace: 'builtin',
+    widgetNamespace: 'sidebar-builtin',
     settings: { set: 1 },
     disabled: true
   }
@@ -92,6 +92,17 @@ describe('EditorInterfaces', () => {
     expect(editorInterface.getSidebar()).to.eql([
       existingWidget
     ])
+  })
+
+  it('allows removoing built-in sidebar widgets with default settings', () => {
+    const editorInterface = makeEditorInterface()
+    const sidebarWidgets = [...DEFAULT_SIDEBAR_LIST]
+    const translationWidget = sidebarWidgets.find(widget => widget.widgetId === 'translation-widget')
+    const expectedWidgets = sidebarWidgets.filter(widget => widget.widgetId !== translationWidget.widgetId)
+
+    editorInterface.removeSidebarWidget(translationWidget.widgetId, translationWidget.widgetNamespace)
+
+    expect(editorInterface.getSidebar()).to.eql(expectedWidgets)
   })
 
   it('does not fail when removing non-existing sidebar widget', () => {
