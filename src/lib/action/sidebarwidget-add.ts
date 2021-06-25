@@ -37,8 +37,8 @@ class SidebarWidgetAddAction extends EntityAction {
     editorInterfaces.addSidebarWidget(
       this.widgetId,
       this.widgetNamespace,
-      this.insertBeforeWidgetId,
       this.settings,
+      this.insertBeforeWidgetId,
       this.disabled
     )
   }

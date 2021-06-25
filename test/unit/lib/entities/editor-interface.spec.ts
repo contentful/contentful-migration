@@ -33,8 +33,8 @@ describe('EditorInterfaces', () => {
     editorInterface.addSidebarWidget(
       testWidget.widgetId,
       testWidget.widgetNamespace,
-      null,
       testWidget.settings,
+      null,
       testWidget.disabled
     )
 
@@ -47,8 +47,8 @@ describe('EditorInterfaces', () => {
     editorInterface.addSidebarWidget(
       testWidget.widgetId,
       testWidget.widgetNamespace,
-      null,
       testWidget.settings,
+      null,
       testWidget.disabled
     )
 
@@ -72,8 +72,8 @@ describe('EditorInterfaces', () => {
     editorInterface.addSidebarWidget(
       testWidget.widgetId,
       testWidget.widgetNamespace,
-      beforeWidget.widgetId,
       testWidget.settings,
+      beforeWidget.widgetId,
       testWidget.disabled
     )
 

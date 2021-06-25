@@ -182,8 +182,8 @@ class EditorInterfaces {
 
   addSidebarWidget (widgetId: string,
     widgetNamespace: APISidebarWidgetNamespace,
-    insertBeforeWidgetId: string,
     settings: APISidebarWidgetSettings,
+    insertBeforeWidgetId: string,
     disabled: boolean) {
     this._sidebar = Array.isArray(this._sidebar) ? this._sidebar : [].concat(DEFAULT_SIDEBAR_LIST)
 
