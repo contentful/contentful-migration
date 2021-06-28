@@ -180,12 +180,20 @@ class EditorInterfaces {
     }
   }
 
-  addSidebarWidget (widgetId: string,
+  addSidebarWidget (
+    widgetId: string,
     widgetNamespace: APISidebarWidgetNamespace,
     settings: APISidebarWidgetSettings,
     insertBeforeWidgetId: string,
-    disabled: boolean) {
+    disabled: boolean
+  ) {
+
     this._sidebar = Array.isArray(this._sidebar) ? this._sidebar : [].concat(DEFAULT_SIDEBAR_LIST)
+    const isDuplicateWidget = this._sidebar.find(widget => widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace)
+
+    if (isDuplicateWidget) {
+      return
+    }
 
     const nextWidgetIndex = this._sidebar.map(w => w.widgetId).indexOf(insertBeforeWidgetId)
 
@@ -203,25 +211,22 @@ class EditorInterfaces {
     }
   }
 
-  updateSidebarWidget (widgetId: string,
+  updateSidebarWidget (
+    widgetId: string,
     widgetNamespace: SidebarWidgetNamespace,
     settings?: APISidebarWidgetSettings,
-    disabled?: boolean) {
+    disabled?: boolean
+  ) {
 
-    if (!Array.isArray(this._sidebar)) {
+    this._sidebar = Array.isArray(this._sidebar) ? this._sidebar : [].concat(DEFAULT_SIDEBAR_LIST)
+    const existingWidget = this._sidebar.find(widget => widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace)
+
+    if (!existingWidget) {
       return
     }
 
-    const widget = this._sidebar.find(widget =>
-      widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace
-    )
-
-    if (!widget) {
-      return
-    }
-
-    widget.settings = settings ? settings : widget.settings
-    widget.disabled = typeof disabled === 'boolean' ? disabled : widget.disabled
+    existingWidget.settings = settings ? settings : existingWidget.settings
+    existingWidget.disabled = typeof disabled === 'boolean' ? disabled : existingWidget.disabled
   }
 
   removeSidebarWidget (widgetId: string, widgetNamespace: APISidebarWidgetNamespace) {

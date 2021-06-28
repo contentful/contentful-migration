@@ -5,16 +5,16 @@ module.exports = function (migration) {
   });
 
   customSidebar
-    .addSidebarWidget('not-needed', 'sidebar-builtin');
+    .addSidebarWidget('sidebar-builtin', 'not-needed');
 
   customSidebar
-    .addSidebarWidget('imageTaggingExtensionId', 'extension', {
+    .addSidebarWidget('extension', 'imageTaggingExtensionId', {
       imageField: 'image'
     })
-    .addSidebarWidget('publication-widget', 'sidebar-builtin', {}, 'imageTaggingExtensionId')
+    .addSidebarWidget('sidebar-builtin', 'publication-widget', {}, 'imageTaggingExtensionId') // will be ignored as its duplicate
     .updateSidebarWidget(
-      'imageTaggingExtensionId',
       'extension',
+      'imageTaggingExtensionId',
       {
         tagField: 'tags',
         imageField: 'image'
@@ -22,5 +22,5 @@ module.exports = function (migration) {
     );
 
   customSidebar
-    .removeSidebarWidget('not-needed', 'sidebar-builtin');
+    .removeSidebarWidget('sidebar-builtin', 'not-needed');
 };

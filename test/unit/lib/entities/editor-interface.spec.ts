@@ -41,6 +41,20 @@ describe('EditorInterfaces', () => {
     expect(editorInterface.getSidebar()).to.eql([...DEFAULT_SIDEBAR_LIST, testWidget])
   })
 
+  it('avoid adding duplicates to default sidebar', () => {
+    const editorInterface = makeEditorInterface()
+
+    editorInterface.addSidebarWidget(
+      'translation-widget',
+      'sidebar-builtin',
+      null,
+      null,
+      false
+    )
+
+    expect(editorInterface.getSidebar()).to.eql(DEFAULT_SIDEBAR_LIST)
+  })
+
   it('adds sidebar widget at the end of custom sidebar', () => {
     const editorInterface = makeEditorInterface([existingWidget])
 
@@ -94,7 +108,7 @@ describe('EditorInterfaces', () => {
     ])
   })
 
-  it('allows removoing built-in sidebar widgets with default settings', () => {
+  it('allows removing built-in sidebar widgets with default settings', () => {
     const editorInterface = makeEditorInterface()
     const sidebarWidgets = [...DEFAULT_SIDEBAR_LIST]
     const translationWidget = sidebarWidgets.find(widget => widget.widgetId === 'translation-widget')

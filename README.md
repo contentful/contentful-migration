@@ -773,6 +773,9 @@ runMigration({
 })
 ```
 
+## Updating Integration tests fixtures
+*  To add new/update integration tests, you need to set environment variable `NOCK_RECORD=1` which should automatically update fixtures
+
 
 ## Reach out to us
 

@@ -23,6 +23,7 @@ const deleteTag = require('../../examples/30-delete-tag');
 const setTagsForEntries = require('../../examples/31-set-tags-for-entries');
 
 const { createMigrationParser } = require('../../built/lib/migration-parser');
+const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget');
 const co = Bluebird.coroutine;
 
 const record = require('../record');
@@ -568,12 +569,7 @@ describe('the migration', function () {
     });
 
     expect(editorInterfaces.sidebar).to.eql([
-      {
-        'disabled': false,
-        'settings': {},
-        'widgetId': 'publication-widget',
-        'widgetNamespace': 'sidebar-builtin'
-      },
+      ...DEFAULT_SIDEBAR_LIST,
       {
         'disabled': false,
         'settings': {
@@ -595,12 +591,7 @@ describe('the migration', function () {
     });
 
     expect(editorInterfaces.sidebar).to.eql([
-      {
-        'disabled': false,
-        'settings': {},
-        'widgetId': 'publication-widget',
-        'widgetNamespace': 'sidebar-builtin'
-      },
+      ...DEFAULT_SIDEBAR_LIST,
       {
         'disabled': false,
         'settings': {
