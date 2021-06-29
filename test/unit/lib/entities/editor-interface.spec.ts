@@ -2,11 +2,12 @@ import { expect } from 'chai'
 
 import { EditorInterfaces } from '../../../../src/lib/entities/content-type'
 import { APIEditorInterfaceSidebar } from '../../../../src/lib/interfaces/content-type'
+import { DEFAULT_SIDEBAR_LIST } from '../../../../src/lib/action/sidebarwidget'
 
 describe('EditorInterfaces', () => {
   const testWidget: APIEditorInterfaceSidebar = {
     widgetId: 'test',
-    widgetNamespace: 'builtin',
+    widgetNamespace: 'sidebar-builtin',
     settings: { set: 1 },
     disabled: true
   }
@@ -32,12 +33,26 @@ describe('EditorInterfaces', () => {
     editorInterface.addSidebarWidget(
       testWidget.widgetId,
       testWidget.widgetNamespace,
-      null,
       testWidget.settings,
+      null,
       testWidget.disabled
     )
 
-    expect(editorInterface.getSidebar()).to.eql([testWidget])
+    expect(editorInterface.getSidebar()).to.eql([...DEFAULT_SIDEBAR_LIST, testWidget])
+  })
+
+  it('avoid adding duplicates to default sidebar', () => {
+    const editorInterface = makeEditorInterface()
+
+    editorInterface.addSidebarWidget(
+      'translation-widget',
+      'sidebar-builtin',
+      null,
+      null,
+      false
+    )
+
+    expect(editorInterface.getSidebar()).to.eql(DEFAULT_SIDEBAR_LIST)
   })
 
   it('adds sidebar widget at the end of custom sidebar', () => {
@@ -46,8 +61,8 @@ describe('EditorInterfaces', () => {
     editorInterface.addSidebarWidget(
       testWidget.widgetId,
       testWidget.widgetNamespace,
-      null,
       testWidget.settings,
+      null,
       testWidget.disabled
     )
 
@@ -71,8 +86,8 @@ describe('EditorInterfaces', () => {
     editorInterface.addSidebarWidget(
       testWidget.widgetId,
       testWidget.widgetNamespace,
-      beforeWidget.widgetId,
       testWidget.settings,
+      beforeWidget.widgetId,
       testWidget.disabled
     )
 
@@ -91,6 +106,17 @@ describe('EditorInterfaces', () => {
     expect(editorInterface.getSidebar()).to.eql([
       existingWidget
     ])
+  })
+
+  it('allows removing built-in sidebar widgets with default settings', () => {
+    const editorInterface = makeEditorInterface()
+    const sidebarWidgets = [...DEFAULT_SIDEBAR_LIST]
+    const translationWidget = sidebarWidgets.find(widget => widget.widgetId === 'translation-widget')
+    const expectedWidgets = sidebarWidgets.filter(widget => widget.widgetId !== translationWidget.widgetId)
+
+    editorInterface.removeSidebarWidget(translationWidget.widgetId, translationWidget.widgetNamespace)
+
+    expect(editorInterface.getSidebar()).to.eql(expectedWidgets)
   })
 
   it('does not fail when removing non-existing sidebar widget', () => {

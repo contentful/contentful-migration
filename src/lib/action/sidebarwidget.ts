@@ -1,3 +1,5 @@
+import { editorInterfaceDefaults } from 'contentful-management'
+
 export interface SidebarWidget {
   widgetId: string,
   widgetNamespace?: SidebarWidgetNamespace,
@@ -11,4 +13,9 @@ export interface SidebarWidgetSettings {
   [key: string]: SidebarWidgetSettingValue
 }
 
-export type SidebarWidgetNamespace = 'builtin' | 'extension'
+export type SidebarWidgetNamespace = 'sidebar-builtin' | 'extension'
+
+export const DEFAULT_SIDEBAR_LIST = editorInterfaceDefaults.default.SidebarEntryConfiguration.map(({ widgetId, widgetNamespace }) => ({
+  widgetId,
+  widgetNamespace
+})) as SidebarWidget[]

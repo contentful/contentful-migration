@@ -11,7 +11,7 @@ module.exports = function (migration) {
     .addSidebarWidget('extension', 'imageTaggingExtensionId', {
       imageField: 'image'
     })
-    .addSidebarWidget('sidebar-builtin', 'publication-widget', {}, 'imageTaggingExtensionId')
+    .addSidebarWidget('sidebar-builtin', 'publication-widget', {}, 'imageTaggingExtensionId') // will be ignored as its duplicate
     .updateSidebarWidget(
       'extension',
       'imageTaggingExtensionId',

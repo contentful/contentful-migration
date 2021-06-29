@@ -3,6 +3,7 @@
 const { expect } = require('chai');
 const cli = require('./cli');
 const { createDevEnvironment, deleteDevEnvironment, getDevEditorInterface } = require('../helpers/client');
+const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget');
 
 const uuid = require('uuid');
 const ENVIRONMENT_ID = uuid.v4();
@@ -29,13 +30,9 @@ describe('apply sidebar migration examples', function () {
       .end(async () => {
         const editorInterfaces = await getDevEditorInterface(SOURCE_TEST_SPACE, environmentId, 'customSidebar');
         const sidebar = editorInterfaces.sidebar;
+
         expect(sidebar).to.eql([
-          {
-            'disabled': false,
-            'settings': {},
-            'widgetId': 'publication-widget',
-            'widgetNamespace': 'sidebar-builtin'
-          },
+          ...DEFAULT_SIDEBAR_LIST,
           {
             'disabled': false,
             'settings': {
@@ -58,12 +55,7 @@ describe('apply sidebar migration examples', function () {
         const editorInterfaces = await getDevEditorInterface(SOURCE_TEST_SPACE, environmentId, 'richTextTest');
         const sidebar = editorInterfaces.sidebar;
         expect(sidebar).to.eql([
-          {
-            'disabled': false,
-            'settings': {},
-            'widgetId': 'publication-widget',
-            'widgetNamespace': 'sidebar-builtin'
-          },
+          ...DEFAULT_SIDEBAR_LIST,
           {
             'disabled': false,
             'settings': {

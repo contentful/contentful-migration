@@ -1,3 +1,5 @@
+import { cloneDeep, find, filter, findIndex, pull, forEach } from 'lodash'
+
 import {
   APIContentType,
   Field,
@@ -9,8 +11,7 @@ import {
   APIEditorIntefaceEditor,
   APISidebarWidgetNamespace, APIControlWidgetNamespace
 } from '../interfaces/content-type'
-import { cloneDeep, find, filter, findIndex, pull, forEach } from 'lodash'
-import { SidebarWidgetNamespace } from '../action/sidebarwidget'
+import { SidebarWidgetNamespace, DEFAULT_SIDEBAR_LIST } from '../action/sidebarwidget'
 
 class Fields {
   private _fields: Field[]
@@ -179,12 +180,20 @@ class EditorInterfaces {
     }
   }
 
-  addSidebarWidget (widgetId: string,
-                    widgetNamespace: APISidebarWidgetNamespace,
-                    insertBeforeWidgetId: string,
-                    settings: APISidebarWidgetSettings,
-                    disabled: boolean) {
-    this._sidebar = Array.isArray(this._sidebar) ? this._sidebar : []
+  addSidebarWidget (
+    widgetId: string,
+    widgetNamespace: APISidebarWidgetNamespace,
+    settings: APISidebarWidgetSettings,
+    insertBeforeWidgetId: string,
+    disabled: boolean
+  ) {
+
+    this._sidebar = Array.isArray(this._sidebar) ? this._sidebar : [].concat(DEFAULT_SIDEBAR_LIST)
+    const isDuplicateWidget = this._sidebar.find(widget => widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace)
+
+    if (isDuplicateWidget) {
+      return
+    }
 
     const nextWidgetIndex = this._sidebar.map(w => w.widgetId).indexOf(insertBeforeWidgetId)
 
@@ -202,35 +211,33 @@ class EditorInterfaces {
     }
   }
 
-  updateSidebarWidget (widgetId: string,
-                       widgetNamespace: SidebarWidgetNamespace,
-                       settings?: APISidebarWidgetSettings,
-                       disabled?: boolean) {
+  updateSidebarWidget (
+    widgetId: string,
+    widgetNamespace: SidebarWidgetNamespace,
+    settings?: APISidebarWidgetSettings,
+    disabled?: boolean
+  ) {
 
-    if (!Array.isArray(this._sidebar)) {
+    this._sidebar = Array.isArray(this._sidebar) ? this._sidebar : [].concat(DEFAULT_SIDEBAR_LIST)
+    const existingWidget = this._sidebar.find(widget => widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace)
+
+    if (!existingWidget) {
       return
     }
 
-    const widget = this._sidebar.find(widget =>
-      widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace
-    )
-
-    if (!widget) {
-      return
-    }
-
-    widget.settings = settings ? settings : widget.settings
-    widget.disabled = typeof disabled === 'boolean' ? disabled : widget.disabled
+    existingWidget.settings = settings ? settings : existingWidget.settings
+    existingWidget.disabled = typeof disabled === 'boolean' ? disabled : existingWidget.disabled
   }
 
   removeSidebarWidget (widgetId: string, widgetNamespace: APISidebarWidgetNamespace) {
-    if (!Array.isArray(this._sidebar)) {
+    const currentSidebarWidgets = Array.isArray(this._sidebar) ? this._sidebar : [].concat(DEFAULT_SIDEBAR_LIST)
+    const widgetToDisable = currentSidebarWidgets.find(widget => widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace)
+
+    if (!widgetToDisable) {
       return
     }
 
-    this._sidebar = this._sidebar.filter(
-      widget => !(widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace)
-    )
+    this._sidebar = currentSidebarWidgets.filter(widget => widget.widgetId !== widgetId || widget.widgetNamespace !== widgetNamespace)
   }
 
   resetSidebarToDefault () {

@@ -34,7 +34,7 @@ interface APIEditorInterfaceSettings {
   [setting: string]: APIParameterValue
 }
 
-type APISidebarWidgetNamespace = 'builtin' | 'extension' | 'app'
+type APISidebarWidgetNamespace = 'sidebar-builtin' | 'extension' | 'app'
 type APIControlWidgetNamespace = 'builtin' | 'extension' | 'app'
 
 interface APIEditorInterfaceControl {
