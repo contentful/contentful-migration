@@ -203,6 +203,7 @@ describe('payload validation', function () {
           .name('Chapter')
           .type('RichText')
           .validations([
+            { enabledNodeTypes: ['table'] },
             { nodes: {
               'embedded-entry-block': [{ size: { max: 4 } }],
               'embedded-entry-inline': [{ size: { max: 4 } }],
