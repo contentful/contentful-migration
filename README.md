@@ -186,10 +186,9 @@ function migrationFunction (migration, context) {
 }
 
 const options = {
-  filePath: '', // this is required but won't be used if `migrationFunction` is supplied
+  migrationFunction,
   spaceId: '<space-id>',
-  accessToken: '<access-token>',
-  migrationFunction
+  accessToken: '<access-token>'
 }
 
 runMigration(options)
@@ -203,14 +202,14 @@ runMigration(options)
 
 | Name              | Default    | Type    | Description                                                 | Required |
 |-------------------|------------|---------|-------------------------------------------------------------|----------|
-| filePath          |            | string  | The path to the migration file                              | true     |
+| filePath          |            | string  | The path to the migration file                              | if `migrationFunction` is not supplied     |
+| migrationFunction |            | function| Specify the migration function directly. See the [expected signature](https://github.com/contentful/contentful-migration/blob/4b9dcae0e7616da9153d0fa481871978595049e7/index.d.ts#L506).               | if `filePath` is not supplied    |
 | spaceId           |            | string  | ID of the space to run the migration script on              | true     |
 | environmentId     | `'master'` | string  | ID of the environment within the space to run the           | false    |
 | accessToken       |            | string  | The access token to use                                     | true     |
 | yes               | false      | boolean | Skips any confirmation before applying the migration,script | false    |
 | requestBatchSize  | 100        | number  | Limit for every single request                              | false    |
 | headers           |            | object  | Additional headers to attach to the requests                | false    |
-| migrationFunction |            | function| Specify the migration function directly. See the [expected signature](https://github.com/contentful/contentful-migration/blob/4b9dcae0e7616da9153d0fa481871978595049e7/index.d.ts#L506). If provided, `filePath` is ignored.                | false    |
 
 ### Chaining vs Object notation
 
