@@ -68,7 +68,7 @@ const createRun = ({ shouldThrow }) => async function run (argv) {
   let migrationFunction
   const terminate = makeTerminatingFunction({ shouldThrow })
   try {
-    migrationFunction = require(argv.filePath)
+    migrationFunction = argv.migrationFunction || require(argv.filePath)
   } catch (e) {
     const message = chalk`{red.bold The ${argv.filePath} script could not be parsed, as it seems to contain syntax errors.}\n`
     console.error(message)
@@ -119,7 +119,7 @@ const createRun = ({ shouldThrow }) => async function run (argv) {
     terminate(new ManyError('Payload Validation Errors', parseResult.payloadValidationErrors))
   }
 
-  const migrationName = path.basename(argv.filePath, '.js')
+  const migrationName = migrationFunction ? migrationFunction.name : path.basename(argv.filePath, '.js')
   const errorsFile = path.join(
     process.cwd(),
     `errors-${migrationName}-${Date.now()}.log`

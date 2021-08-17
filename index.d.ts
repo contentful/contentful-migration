@@ -8,6 +8,7 @@ export interface RunMigrationConfig {
   proxy?: string
   rawProxy?: boolean
   yes?: boolean
+  migrationFunction?: MigrationFunction
 }
 
 export function runMigration (config: RunMigrationConfig): Promise<any>

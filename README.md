@@ -174,6 +174,29 @@ module.exports = function (migration, context) {
 };
 ```
 
+You can also pass the function directly. For example:
+
+```javascript
+const { runMigration } = require('contentful-migration')
+
+function migrationFunction (migration, context) {
+  const dog = migration.createContentType('dog');
+  const name = dog.createField('name');
+  name.type('Symbol').required(true);
+}
+
+const options = {
+  filePath: '', // this is required but won't be used if `migrationFunction` is supplied
+  spaceId: '<space-id>',
+  accessToken: '<access-token>',
+  migrationFunction
+}
+
+runMigration(options)
+        .then(() => console.log('Migration Done!'))
+        .catch((e) => console.error(e))
+```
+
 ## Documentation & References
 
 ### Configuration
@@ -187,6 +210,7 @@ module.exports = function (migration, context) {
 | yes               | false      | boolean | Skips any confirmation before applying the migration,script | false    |
 | requestBatchSize  | 100        | number  | Limit for every single request                              | false    |
 | headers           |            | object  | Additional headers to attach to the requests                | false    |
+| migrationFunction |            | function| Specify the migration function directly. See the [expected signature](https://github.com/contentful/contentful-migration/blob/4b9dcae0e7616da9153d0fa481871978595049e7/index.d.ts#L506). If provided, `filePath` is ignored.                | false    |
 
 ### Chaining vs Object notation
 
