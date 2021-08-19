@@ -174,13 +174,36 @@ module.exports = function (migration, context) {
 };
 ```
 
+You can also pass the function directly. For example:
+
+```javascript
+const { runMigration } = require('contentful-migration')
+
+function migrationFunction (migration, context) {
+  const dog = migration.createContentType('dog');
+  const name = dog.createField('name');
+  name.type('Symbol').required(true);
+}
+
+const options = {
+  migrationFunction,
+  spaceId: '<space-id>',
+  accessToken: '<access-token>'
+}
+
+runMigration(options)
+        .then(() => console.log('Migration Done!'))
+        .catch((e) => console.error(e))
+```
+
 ## Documentation & References
 
 ### Configuration
 
 | Name              | Default    | Type    | Description                                                 | Required |
 |-------------------|------------|---------|-------------------------------------------------------------|----------|
-| filePath          |            | string  | The path to the migration file                              | true     |
+| filePath          |            | string  | The path to the migration file                              | if `migrationFunction` is not supplied     |
+| migrationFunction |            | function| Specify the migration function directly. See the [expected signature](https://github.com/contentful/contentful-migration/blob/4b9dcae0e7616da9153d0fa481871978595049e7/index.d.ts#L506).               | if `filePath` is not supplied    |
 | spaceId           |            | string  | ID of the space to run the migration script on              | true     |
 | environmentId     | `'master'` | string  | ID of the environment within the space to run the           | false    |
 | accessToken       |            | string  | The access token to use                                     | true     |

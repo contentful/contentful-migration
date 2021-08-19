@@ -1,14 +1,13 @@
 import * as axios from 'axios'
 
-export interface RunMigrationConfig {
-  filePath: string
+export type RunMigrationConfig = {
   accessToken?: string
   spaceId?: string
   environmentId?: string
   proxy?: string
   rawProxy?: boolean
   yes?: boolean
-}
+} & ({ filePath: string } | { migrationFunction: MigrationFunction })
 
 export function runMigration (config: RunMigrationConfig): Promise<any>
 
