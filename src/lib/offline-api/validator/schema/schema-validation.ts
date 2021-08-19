@@ -177,12 +177,12 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
     const [index, ...fieldNames] = path
     const prop = fieldNames.join('.')
     const field = fields[index]
-    if (prop.startsWith('initialValue')) {
+    if (prop.startsWith('defaultValue')) {
 
       if (type === 'object.unknown') {
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.initialValue.INVALID_LOCALE(field.id, context.key)
+          message: errorMessages.field.defaultValue.INVALID_LOCALE(field.id, context.key)
         }
       }
 
@@ -191,24 +191,24 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
         if (field.type === 'Array') {
           return {
             type: 'InvalidPayload',
-            message: errorMessages.field.initialValue.UNSUPPORTED_ARRAY_ITEMS_TYPE(field.id, path[1], field.items.type)
+            message: errorMessages.field.defaultValue.UNSUPPORTED_ARRAY_ITEMS_TYPE(field.id, path[1], field.items.type)
           }
         }
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.initialValue.UNSUPPORTED_FIELD_TYPE(field.id, path[1], field.type)
+          message: errorMessages.field.defaultValue.UNSUPPORTED_FIELD_TYPE(field.id, path[1], field.type)
         }
       }
 
       if (field.type === 'Date') {
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.initialValue.DATE_TYPE_MISMATCH(field.id, kindOf(context.value), context.value, context.key, field.type)
+          message: errorMessages.field.defaultValue.DATE_TYPE_MISMATCH(field.id, kindOf(context.value), context.value, context.key, field.type)
         }
       }
       return {
         type: 'InvalidPayload',
-        message: errorMessages.field.initialValue.TYPE_MISMATCH(field.id, kindOf(context.value), context.key, field.type)
+        message: errorMessages.field.defaultValue.TYPE_MISMATCH(field.id, kindOf(context.value), context.key, field.type)
       }
     }
 

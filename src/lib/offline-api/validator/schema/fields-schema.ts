@@ -38,7 +38,7 @@ export function createFieldsSchema (locales: string[]) {
     localized: Joi.boolean(),
     required: Joi.boolean(),
     validations: Joi.array().unique().items(fieldValidations),
-    initialValue: Joi.object().strict().pattern(Joi.valid(...locales), Joi.when(
+    defaultValue: Joi.object().strict().pattern(Joi.valid(...locales), Joi.when(
       Joi.ref('...type'),
       {
         otherwise: Joi.forbidden(),
