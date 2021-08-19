@@ -121,7 +121,7 @@ const createRun = ({ shouldThrow }) => async function run (argv) {
     terminate(new ManyError('Payload Validation Errors', parseResult.payloadValidationErrors))
   }
 
-  const migrationName = migrationFunction ? migrationFunction.name : path.basename(argv.filePath, '.js')
+  const migrationName = argv.migrationFunction ? argv.migrationFunction.name : path.basename(argv.filePath, '.js')
   const errorsFile = path.join(
     process.cwd(),
     `errors-${migrationName}-${Date.now()}.log`
