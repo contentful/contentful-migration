@@ -84,7 +84,7 @@ describe('ComposedIntent', function () {
       const message: PlanMessage = intent.toPlanMessage()
 
       expect(message).to.eql({
-        heading: chalk`Create Tag {bold.yellow test}`,
+        heading: chalk`Create Tag {bold.yellow test} with visibility: "private"`,
         details: [
           chalk`{italic name}: "Test Tag"`
         ],

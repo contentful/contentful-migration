@@ -1,14 +1,16 @@
-import APITag from '../interfaces/api-tag'
+import APITag, { TagVisibility } from '../interfaces/api-tag'
 
 class Tag {
   private _id: string
   private _name: string
   private _version: number
+  private _visibility: TagVisibility
 
   constructor (tag: APITag) {
     this._id = tag.sys.id
     this._version = tag.sys.version
     this._name = tag.name
+    this._visibility = tag.sys.visibility || 'private'
   }
 
   get id () {
@@ -31,10 +33,19 @@ class Tag {
     this._name = name
   }
 
+  get visibility () {
+    return this._visibility || 'private'
+  }
+
+  set visibility (visibility: TagVisibility) {
+    this._visibility = visibility
+  }
+
   toApiTag (): APITag {
     const sys = {
       id: this.id,
-      version: this.version
+      version: this.version,
+      visibility: this.visibility
     }
     return {
       sys,
@@ -48,6 +59,6 @@ class Tag {
 }
 
 export {
-  Tag as default,
-  Tag
+    Tag as default,
+    Tag
 }

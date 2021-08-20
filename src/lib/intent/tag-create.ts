@@ -1,3 +1,4 @@
+import { TagVisibility } from '../interfaces/api-tag'
 import Intent from './base-intent'
 import { TagCreateAction } from '../action/tag-create'
 import chalk from 'chalk'
@@ -10,6 +11,10 @@ export default class TagCreateIntent extends Intent {
 
   getTagId (): string {
     return this.payload.tagId
+  }
+
+  getTagVisibility (): TagVisibility {
+    return this.payload.tagVisibility
   }
 
   isTagCreate (): boolean {
@@ -34,13 +39,13 @@ export default class TagCreateIntent extends Intent {
 
   toActions () {
     return [
-      new TagCreateAction(this.getTagId())
+      new TagCreateAction(this.getTagId(), this.getTagVisibility())
     ]
   }
 
   toPlanMessage (): PlanMessage {
     return {
-      heading: chalk`Create Tag {bold.yellow ${this.getTagId()}}`,
+      heading: chalk`Create Tag {bold.yellow ${this.getTagId()}} with visibility: "${this.getTagVisibility()}"`,
       details: [],
       sections: []
     }

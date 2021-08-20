@@ -402,11 +402,13 @@ For the complete version of this migration, please refer to [this example](./exa
 
 Creates a tag with provided `id` and returns a reference to the newly created tag.
 
-**`id : string`** – The ID of the tag.
+- **`id : string`** – The ID of the tag.
 
-**`opts : Object`** – Tag definition, with the following options:
+- **`opts : Object`** – Tag definition, with the following options:
 
-- **`name : string`** – Name of the tag.
+  - **`name : string`** – Name of the tag.
+
+- **`visibility : 'private' | 'public'`** Tag visibility - defaults to `private`.
 
 #### `editTag(id[, opts])`
 

@@ -1,6 +1,7 @@
 'use strict'
 
 import Bluebird from 'bluebird'
+import { TagVisibility } from '../interfaces/api-tag'
 import actionCreators from './action-creators'
 import getFirstExternalCaller from './first-external-caller'
 import Intent from '../intent'
@@ -364,11 +365,11 @@ export async function migration (migrationCreator: Function, makeRequest: Functi
       dispatch(actionCreators.contentType.transformEntriesToType(instanceId, stripped, callsite))
     },
 
-    createTag: function (id, init) {
+    createTag: function (id, init, visibility: TagVisibility = 'private') {
       const callsite = getFirstExternalCaller()
       const instanceId = instanceIdManager.getNew(id)
 
-      dispatch(actionCreators.tag.create(id, instanceId, callsite))
+      dispatch(actionCreators.tag.create(id, instanceId, callsite, visibility))
 
       return new Tag(id, instanceId, init, dispatch)
     },

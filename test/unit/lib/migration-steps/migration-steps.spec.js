@@ -165,7 +165,8 @@ describe('migration-steps', function () {
             'tagInstanceId': 'tag/newTag/0'
           },
           'payload': {
-            'tagId': 'newTag'
+            'tagId': 'newTag',
+            'tagVisibility': 'private'
           }
         },
         {

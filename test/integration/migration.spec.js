@@ -18,6 +18,7 @@ const changeEditorInterfaceWithExistingContentTypeAddingHelpText = require('../.
 const addSidebarWidgets = require('../../examples/24-add-sidebar-widgets-to-new-content-type');
 const addSidebarWidgetsToExisting = require('../../examples/27-add-sidebar-widgets-to-existing-content-type');
 const createTag = require('../../examples/28-create-tag');
+const createPublicTag = require('../../examples/32-create-public-tag');
 const modifyTag = require('../../examples/29-modify-tag');
 const deleteTag = require('../../examples/30-delete-tag');
 const setTagsForEntries = require('../../examples/31-set-tags-for-entries');
@@ -604,7 +605,7 @@ describe('the migration', function () {
     ]);
   }));
 
-  it('creates a tag', async function () {
+  it('creates a tag private tag by default', async function () {
     await migrator(createTag);
 
     const tag = await request({
@@ -613,6 +614,20 @@ describe('the migration', function () {
     });
     expect(tag.name).to.eql('marketing');
     expect(tag.sys.id).to.eql('sampletag');
+    expect(tag.sys.visibility).to.eql('private');
+  });
+
+  it('creates a public tag', async function () {
+    await migrator(createPublicTag);
+
+    const tag = await request({
+      method: 'GET',
+      url: '/tags/publicsampletag'
+    });
+
+    expect(tag.name).to.eql('public-marketing');
+    expect(tag.sys.id).to.eql('publicsampletag');
+    expect(tag.sys.visibility).to.eql('public');
   });
 
   it('modifies the name of an existing tag', async function () {
