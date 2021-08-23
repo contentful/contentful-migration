@@ -47,6 +47,9 @@ export interface IFieldOptions {
   omitted?: boolean
   /** Sets the field as deleted. Requires to have been omitted first. You may prefer using the deleteField method. */
   deleted?: boolean
+
+  /** Sets the default value for the field. */
+  defaultValue?: { [locale: string]: any }
 }
 
 export interface Field {
@@ -75,6 +78,8 @@ export interface Field {
   /** Sets the field as deleted. Requires to have been omitted first. You may prefer using the deleteField method. */
   deleted(deleted: boolean): Field
 
+  /** Sets the default value for the field. */
+  defaultValue(defaultValue: { [locale: string]: any }): Field
 }
 
 type LinkMimetype = 'attachment' | 'plaintext' | 'image' | 'audio' | 'video' | 'richtext' |

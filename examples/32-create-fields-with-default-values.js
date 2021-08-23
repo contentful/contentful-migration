@@ -1,20 +1,20 @@
-// Initial value example: create a new content with some initial values
+// Default value example: create a new content with some default values
 module.exports = function (migration) {
   const Event = migration.createContentType('event').name('Event');
   Event.createField('title')
     .name('Title')
     .localized(true)
     .type('Symbol')
-    .initialValue({
-      'en-US': 'Initial title',
-      'fr-FR': 'Titre initial'
+    .defaultValue({
+      'en-US': 'Default title',
+      'fr-FR': 'Titre par défaut'
     });
 
   Event.createField('advertised')
     .name('Advertised')
     .type('Boolean')
     .localized(false)
-    .initialValue({
+    .defaultValue({
       'en-US': true
     });
 
@@ -22,7 +22,7 @@ module.exports = function (migration) {
     .name('Start Date')
     .type('Date')
     .localized(false)
-    .initialValue({
+    .defaultValue({
       'en-US': '2021-06-15T13:46:06Z'
     });
 
@@ -33,7 +33,7 @@ module.exports = function (migration) {
       type: 'Symbol'
     })
     .localized(false)
-    .initialValue({
+    .defaultValue({
       'en-US': ['Culture', 'Local History']
     });
 };

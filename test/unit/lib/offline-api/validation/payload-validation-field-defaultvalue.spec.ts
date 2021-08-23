@@ -3,16 +3,16 @@
 import { expect } from 'chai'
 import validateBatches from './validate-batches'
 
-describe('payload validation (initial value)', function () {
+describe('payload validation (default value)', function () {
 
-  describe('when setting initial value for non existing locales', function () {
+  describe('when setting default value for non existing locales', function () {
     it('returns an error', async function () {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('lunch')
         lunch.createField('mainCourse')
           .name('mainCourse')
           .type('Symbol')
-          .initialValue({
+          .defaultValue({
             'en-US': 'A Symbol',
             'de-DE': 'A Symbol',
             'fr-FR': 'A Symbol'
@@ -23,24 +23,24 @@ describe('payload validation (initial value)', function () {
         [
           {
             type: 'InvalidPayload',
-            message: 'Cannot set initial value for locale "de-DE" on field "mainCourse". The locale does not exist.'
+            message: 'Cannot set default value for locale "de-DE" on field "mainCourse". The locale does not exist.'
           },
           {
             type: 'InvalidPayload',
-            message: 'Cannot set initial value for locale "fr-FR" on field "mainCourse". The locale does not exist.'
+            message: 'Cannot set default value for locale "fr-FR" on field "mainCourse". The locale does not exist.'
           }
         ]
       ])
     })
   })
-  describe('when initial value does not match the field type', function () {
+  describe('when default value does not match the field type', function () {
     it('returns an error for Symbol', async function () {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('lunch')
         lunch.createField('aSymbol')
           .name('aSymbol')
           .type('Symbol')
-          .initialValue({
+          .defaultValue({
             'en-US': 1234,
             'de-DE': false,
             'fr-FR': 'A string'
@@ -51,11 +51,11 @@ describe('payload validation (initial value)', function () {
         [
           {
             type: 'InvalidPayload',
-            message: 'Cannot set initial value of type "number" for locale "en-US" on field "aSymbol". The initial value must match the field type "Symbol".'
+            message: 'Cannot set default value of type "number" for locale "en-US" on field "aSymbol". The default value must match the field type "Symbol".'
           },
           {
             type: 'InvalidPayload',
-            message: 'Cannot set initial value of type "boolean" for locale "de-DE" on field "aSymbol". The initial value must match the field type "Symbol".'
+            message: 'Cannot set default value of type "boolean" for locale "de-DE" on field "aSymbol". The default value must match the field type "Symbol".'
           }
         ]
       ])
@@ -66,7 +66,7 @@ describe('payload validation (initial value)', function () {
         lunch.createField('aNumber')
           .name('aNumber')
           .type('Number')
-          .initialValue({
+          .defaultValue({
             'en-US': '1.234',
             'de-DE': 'A string',
             'fr-FR': 555
@@ -77,11 +77,11 @@ describe('payload validation (initial value)', function () {
         [
           {
             type: 'InvalidPayload',
-            message: 'Cannot set initial value of type "string" for locale "en-US" on field "aNumber". The initial value must match the field type "Number".'
+            message: 'Cannot set default value of type "string" for locale "en-US" on field "aNumber". The default value must match the field type "Number".'
           },
           {
             type: 'InvalidPayload',
-            message: 'Cannot set initial value of type "string" for locale "de-DE" on field "aNumber". The initial value must match the field type "Number".'
+            message: 'Cannot set default value of type "string" for locale "de-DE" on field "aNumber". The default value must match the field type "Number".'
           }
         ]
       ])
@@ -92,7 +92,7 @@ describe('payload validation (initial value)', function () {
         lunch.createField('anInteger')
           .name('anInteger')
           .type('Integer')
-          .initialValue({
+          .defaultValue({
             'en-US': 1.234,
             'de-DE': 'A string',
             'it-IT': '9999',
@@ -104,15 +104,15 @@ describe('payload validation (initial value)', function () {
         [
           {
             type: 'InvalidPayload',
-            message: 'Cannot set initial value of type "number" for locale "en-US" on field "anInteger". The initial value must match the field type "Integer".'
+            message: 'Cannot set default value of type "number" for locale "en-US" on field "anInteger". The default value must match the field type "Integer".'
           },
           {
             type: 'InvalidPayload',
-            message: 'Cannot set initial value of type "string" for locale "de-DE" on field "anInteger". The initial value must match the field type "Integer".'
+            message: 'Cannot set default value of type "string" for locale "de-DE" on field "anInteger". The default value must match the field type "Integer".'
           },
           {
             type: 'InvalidPayload',
-            message: 'Cannot set initial value of type "string" for locale "it-IT" on field "anInteger". The initial value must match the field type "Integer".'
+            message: 'Cannot set default value of type "string" for locale "it-IT" on field "anInteger". The default value must match the field type "Integer".'
           }
         ]
       ])
@@ -124,7 +124,7 @@ describe('payload validation (initial value)', function () {
         lunch.createField('aBool')
           .name('aBool')
           .type('Boolean')
-          .initialValue({
+          .defaultValue({
             'en-US': 1,
             'de-DE': 'A string',
             'it-IT': true,
@@ -136,11 +136,11 @@ describe('payload validation (initial value)', function () {
         [
           {
             type: 'InvalidPayload',
-            message: 'Cannot set initial value of type "number" for locale "en-US" on field "aBool". The initial value must match the field type "Boolean".'
+            message: 'Cannot set default value of type "number" for locale "en-US" on field "aBool". The default value must match the field type "Boolean".'
           },
           {
             type: 'InvalidPayload',
-            message: 'Cannot set initial value of type "string" for locale "de-DE" on field "aBool". The initial value must match the field type "Boolean".'
+            message: 'Cannot set default value of type "string" for locale "de-DE" on field "aBool". The default value must match the field type "Boolean".'
           }
         ]
       ])
@@ -152,7 +152,7 @@ describe('payload validation (initial value)', function () {
         lunch.createField('aText')
           .name('aText')
           .type('Text')
-          .initialValue({
+          .defaultValue({
             'en-US': 1234,
             'de-DE': false,
             'fr-FR': 'A string'
@@ -163,11 +163,11 @@ describe('payload validation (initial value)', function () {
         [
           {
             type: 'InvalidPayload',
-            message: 'Cannot set initial value of type "number" for locale "en-US" on field "aText". The initial value must match the field type "Text".'
+            message: 'Cannot set default value of type "number" for locale "en-US" on field "aText". The default value must match the field type "Text".'
           },
           {
             type: 'InvalidPayload',
-            message: 'Cannot set initial value of type "boolean" for locale "de-DE" on field "aText". The initial value must match the field type "Text".'
+            message: 'Cannot set default value of type "boolean" for locale "de-DE" on field "aText". The default value must match the field type "Text".'
           }
         ]
       ])
@@ -179,7 +179,7 @@ describe('payload validation (initial value)', function () {
         lunch.createField('aDate')
           .name('aDate')
           .type('Date')
-          .initialValue({
+          .defaultValue({
             'en-US': 'A string',
             'de-DE': false,
             'fr-FR': 1234,
@@ -192,11 +192,11 @@ describe('payload validation (initial value)', function () {
         [
           {
             type: 'InvalidPayload',
-            message: 'Cannot set initial value of type "string" to "A string" for locale "en-US" on field "aDate". The initial value must match the field type "Date" using a valid ISO date.'
+            message: 'Cannot set default value of type "string" to "A string" for locale "en-US" on field "aDate". The default value must match the field type "Date" using a valid ISO date.'
           },
           {
             type: 'InvalidPayload',
-            message: 'Cannot set initial value of type "boolean" to "false" for locale "de-DE" on field "aDate". The initial value must match the field type "Date" using a valid ISO date.'
+            message: 'Cannot set default value of type "boolean" to "false" for locale "de-DE" on field "aDate". The default value must match the field type "Date" using a valid ISO date.'
           }
         ]
       ])
@@ -212,7 +212,7 @@ describe('payload validation (initial value)', function () {
             type: 'Link',
             linkType: 'Entry'
           })
-          .initialValue({
+          .defaultValue({
             'en-US': [{}, {}]
           })
       }, [], [], [], ['en-US'])
@@ -221,20 +221,20 @@ describe('payload validation (initial value)', function () {
         [
           {
             type: 'InvalidPayload',
-            message: 'Cannot set "initialValue" in field "aNumberArray" because it is not supported by field type "Array" with items type "Link".'
+            message: 'Cannot set "defaultValue" in field "aNumberArray" because it is not supported by field type "Array" with items type "Link".'
           }
         ]
       ])
     })
 
-    describe('when setting initial value a field where is not supported', function () {
+    describe('when setting default value a field where is not supported', function () {
       it('returns an error', async function () {
         const errors = await validateBatches(function (migration) {
           const lunch = migration.createContentType('lunch').name('lunch')
           lunch.createField('mainCourse')
             .name('mainCourse')
             .type('RichText')
-            .initialValue({
+            .defaultValue({
               'en-US': 'A Text'
             })
         }, [], [], [], ['en-US'])
@@ -243,7 +243,7 @@ describe('payload validation (initial value)', function () {
           [
             {
               type: 'InvalidPayload',
-              message: 'Cannot set "initialValue" in field "mainCourse" because it is not supported by field type "RichText".'
+              message: 'Cannot set "defaultValue" in field "mainCourse" because it is not supported by field type "RichText".'
             }
           ]
         ])
@@ -251,43 +251,43 @@ describe('payload validation (initial value)', function () {
     })
   })
 
-  it('allows initial value to be set for supported field types', async function () {
+  it('allows default value to be set for supported field types', async function () {
     const errors = await validateBatches(function (migration) {
       const lunch = migration.createContentType('lunch').name('lunch')
       lunch.createField('aSymbol')
         .name('aSymbol')
         .type('Symbol')
-        .initialValue({
+        .defaultValue({
           'en-US': 'Valid symbol'
         })
       lunch.createField('aNumber')
         .name('aNumber')
         .type('Number')
-        .initialValue({
+        .defaultValue({
           'en-US': 1234.213
         })
       lunch.createField('aBoolean')
         .name('aBoolean')
         .type('Boolean')
-        .initialValue({
+        .defaultValue({
           'en-US': true
         })
       lunch.createField('anInteger')
         .name('anInteger')
         .type('Integer')
-        .initialValue({
+        .defaultValue({
           'en-US': -20
         })
       lunch.createField('aText')
         .name('aText')
         .type('Text')
-        .initialValue({
+        .defaultValue({
           'en-US': 'A valid Text'
         })
       lunch.createField('aDate')
         .name('aDate')
         .type('Date')
-        .initialValue({
+        .defaultValue({
           'en-US': '2013-05-02T13:00:00Z'
         })
       lunch.createField('anArray')
@@ -296,7 +296,7 @@ describe('payload validation (initial value)', function () {
         .items({
           type: 'Symbol'
         })
-        .initialValue({
+        .defaultValue({
           'en-US': ['a', 'b', 'c']
         })
     }, [], [], [], ['en-US'])
