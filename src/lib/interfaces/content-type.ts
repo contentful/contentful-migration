@@ -15,6 +15,7 @@ interface Field {
   required?: boolean
   validations?: any[]
   disabled?: boolean
+  defaultValue?: { [locale: string]: any }
 }
 
 interface APIContentType {
