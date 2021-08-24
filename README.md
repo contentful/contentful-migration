@@ -556,6 +556,15 @@ Creates a field with provided `id`.
 - **`omitted : boolean`** – Sets the field as omitted, hence not sent in response.
 - **`deleted : boolean`** – Sets the field as deleted. Requires to have been `omitted` first.
   _You may prefer using the `deleteField` method._
+- **`defaultValue : Object`**  – Sets the default value for the field.
+ Example:
+
+  ```javascript
+  defaultValue: {
+    "en-US": false,
+    "de-DE": true
+  }
+  ```
 
 #### `editField(id[, opts])` : [Field](#field)
 
