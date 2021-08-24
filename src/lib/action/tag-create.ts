@@ -1,12 +1,15 @@
+import { TagVisibility } from '../interfaces/api-tag'
 import { APIAction, EntityType } from './action'
 import OfflineAPI from '../offline-api/index'
 
 class TagCreateAction extends APIAction {
   private tagId: string
+  private tagVisibility: TagVisibility
 
-  constructor (tagId: string) {
+  constructor (tagId: string, tagVisibility: TagVisibility = 'private') {
     super()
     this.tagId = tagId
+    this.tagVisibility = tagVisibility
   }
 
   getEntityId (): string {
@@ -18,7 +21,7 @@ class TagCreateAction extends APIAction {
   }
 
   async applyTo (api: OfflineAPI) {
-    await api.createTag(this.tagId)
+    await api.createTag(this.tagId, this.tagVisibility)
   }
 }
 

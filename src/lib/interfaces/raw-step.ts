@@ -1,3 +1,4 @@
+import { TagVisibility } from './api-tag'
 import ContentTransform from './content-transform'
 import EntryDerive from './entry-derive'
 import EntrySetTags from './entry-set-tags'
@@ -44,6 +45,7 @@ interface RawStepPayload {
   entryEditor?: EntryEditorInfo
   entryEditors?: EntryEditor[]
   tagId?: string
+  tagVisibility?: TagVisibility
   entryTransformationForTags?: EntrySetTags
 }
 

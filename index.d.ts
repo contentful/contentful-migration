@@ -355,6 +355,7 @@ export interface IDeriveLinkedEntriesConfig {
   deriveEntryForLocale: (inputFields: ContentFields, locale: string) => { [field: string]: any }
 }
 
+type TagVisibility = 'private' | 'public'
 export interface ITag {
   id: string
   instanceId: string
@@ -457,8 +458,9 @@ export default interface Migration {
    *
    * @param id string – The ID of the tag.
    * @param init Object – Tag definition
+   * @param tagVisibility string - Whether the tag should be public or private
    */
-  createTag (id: string, init?: ITagOptions): ITag
+  createTag (id: string, init?: ITagOptions, tagVisibility?: TagVisibility): ITag
 
   /**
    * Edits an existing tag of provided id and returns a reference to the tag. Uses the same options as createTag.

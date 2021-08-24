@@ -1,4 +1,5 @@
 import * as Intents from '../intent/index'
+import { TagVisibility } from '../interfaces/api-tag'
 import ContentTransform from '../interfaces/content-transform'
 import EntryDerive from '../interfaces/entry-derive'
 import EntrySetTags from '../interfaces/entry-set-tags'
@@ -356,7 +357,7 @@ const actionCreators = {
     })
   },
   tag: {
-    create: (id, instanceId, callsite): Intents.TagCreate => {
+    create: (id, instanceId, callsite, visibility: TagVisibility = 'private'): Intents.TagCreate => {
       return new Intents.TagCreate({
         type: 'tag/create',
         meta: {
@@ -366,7 +367,7 @@ const actionCreators = {
             line: callsite.getLineNumber()
           }
         },
-        payload: { tagId: id }
+        payload: { tagId: id, tagVisibility: visibility }
       })
     },
     update: (id, instanceId, callsite, property, value): Intents.TagUpdate => {

@@ -14,7 +14,7 @@ import TypeChangeValidator from './validator/type-change'
 import TagsOnEntryValidator from './validator/tags-on-entry'
 import { Intent } from '../interfaces/intent'
 import APIEntry from '../interfaces/api-entry'
-import APITag from '../interfaces/api-tag'
+import APITag, { TagVisibility } from '../interfaces/api-tag'
 import Link from '../entities/link'
 
 interface RequestBatch {
@@ -544,13 +544,14 @@ class OfflineAPI {
     return this.requestBatches
   }
 
-  async createTag (id: string): Promise<Tag> {
+  async createTag (id: string, visibility: TagVisibility = 'private'): Promise<Tag> {
     this.assertRecording()
 
     const tagData: APITag = {
       sys: {
         id,
-        version: 0
+        version: 0,
+        visibility
       },
       name: undefined
     }

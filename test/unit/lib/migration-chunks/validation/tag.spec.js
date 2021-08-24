@@ -25,7 +25,8 @@ describe('tag plan validation', function () {
                 'tagInstanceId': 'tag/person/1'
               },
               'payload': {
-                'tagId': 'person'
+                'tagId': 'person',
+                'tagVisibility': 'private'
               }
             }
           }
@@ -106,7 +107,8 @@ describe('tag plan validation', function () {
                 'tagInstanceId': 'tag/person/1'
               },
               'payload': {
-                'tagId': 'person'
+                'tagId': 'person',
+                'tagVisibility': 'private'
               }
             }
           }
@@ -140,7 +142,8 @@ describe('tag plan validation', function () {
                 'tagInstanceId': 'tag/person/0'
               },
               'payload': {
-                'tagId': 'person'
+                'tagId': 'person',
+                'tagVisibility': 'private'
               }
             }
           }

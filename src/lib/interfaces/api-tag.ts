@@ -1,7 +1,10 @@
+export type TagVisibility = 'private' | 'public'
+
 export default interface APITag {
   sys: {
     id: string,
-    version: number
+    version: number,
+    visibility: TagVisibility
   }
   name: string
 }
