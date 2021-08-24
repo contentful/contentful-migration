@@ -398,7 +398,7 @@ migration.transformEntriesToType({
 
 For the complete version of this migration, please refer to [this example](./examples/22-transform-entries-to-type.js).
 
-#### `createTag(id[, opts])`
+#### `createTag(id[, opts, visibility])`
 
 Creates a tag with provided `id` and returns a reference to the newly created tag.
 

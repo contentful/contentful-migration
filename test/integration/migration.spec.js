@@ -605,7 +605,7 @@ describe('the migration', function () {
     ]);
   }));
 
-  it('creates a tag private tag by default', async function () {
+  it('creates a private tag by default', async function () {
     await migrator(createTag);
 
     const tag = await request({
