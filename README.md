@@ -541,7 +541,7 @@ Creates a field with provided `id`.
   ```
 
 - **`linkType : string`** _(required for type 'Link')_ – Type of the referenced entry.
-  Can take the same values as the ones listed for `type` above.
+  Can take the same values `Entry` or `Asset` .
 - **`required : boolean`** – Sets the field as required.
 - **`validations : Array`** – Validations for the field.
   Example:
