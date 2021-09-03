@@ -111,7 +111,7 @@ describe('Transform Entry to Type Action', function () {
     expect(updatedParent.fields['pet']['en-US'].sys.id).to.eql('bob')
   })
 
-  it('updates only default but no rich text field references to a transformed entry', async function () {
+  it('updates rich text field references to a transformed entry', async function () {
     const transformation: TransformEntryToType = {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
@@ -164,14 +164,6 @@ describe('Transform Entry to Type Action', function () {
                 ],
                 nodeType: 'document'
               }
-            },
-            pet: {
-              'en-US': {
-                sys: {
-                  type: 'Link',
-                  id: '246'
-                }
-              }
             }
           }
         })
@@ -187,9 +179,7 @@ describe('Transform Entry to Type Action', function () {
     expect(batches[0].requests.length).to.eq(2)
 
     const updatedParent = batches[0].requests[1].data as APIEntry
-    expect(updatedParent.fields['pet']['en-US'].sys.id).to.eql('bob')
-    // TODO This behavior should be changed to also update rtf references:
-    expect(updatedParent.fields['aRichTextField']['en-US'].content[0].data.target.sys.id).to.eql('246')
+    expect(updatedParent.fields['aRichTextField']['en-US'].content[0].data.target.sys.id).to.eql('bob')
   })
 
   it('removes source entry when configured', async function () {
