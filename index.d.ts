@@ -301,7 +301,7 @@ export interface ITransformEntriesToTypeConfig {
   shouldPublish?: boolean|"preserve",
   /** (optional) – Flag that specifies if linking entries should be updated with target entries (default false) */
   updateReferences?: boolean,
-  /** (optional) – Flag that specifies if source entries should be deleted (default false) */
+  /** (optional) – Flag that specifies if source entries should be deleted (default false). Note that this flag does not support Rich Text Fields references. */
   removeOldEntries?: boolean,
   /**
    * (required) – Transformation function to be applied.

@@ -364,7 +364,7 @@ For the given (source) content type, transforms all its entries according to the
 - **`from : array`** _(optional)_ – Array of the source field IDs, returns complete list of fields if not configured
 - **`identityKey: function (fields): string`** _(required)_ - Function to create a new entry ID for the target entry
 - **`shouldPublish : bool | 'preserve'`** _(optional)_ – Flag that specifies publishing of target entries, `preserve` will keep current states of the source entries (default `false`)
-- **`updateReferences : bool`** _(optional)_ – Flag that specifies if linking entries should be updated with target entries (default `false`)
+- **`updateReferences : bool`** _(optional)_ – Flag that specifies if linking entries should be updated with target entries (default `false`). Note that this flag does not support Rich Text Fields references.
 - **`removeOldEntries : bool`** _(optional)_ – Flag that specifies if source entries should be deleted (default `false`)
 - **`transformEntryForLocale : function (fields, locale): object`** _(required)_ – Transformation function to be applied.
     - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `fields == {myField: {'en-US': 'my field value'}}`)
