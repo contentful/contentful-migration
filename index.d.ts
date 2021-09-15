@@ -168,7 +168,7 @@ export interface ContentType {
   changeFieldId (oldId: string, newId: string): void
 
   /**
-   * 
+   *
    * @param widgetNamespace The namespace of the widget. Use 'builtin' for standard widgets,  'extension' for UI extensions or 'app' for installed apps.
    * @param widgetId The new widget ID for the field.
    * @param settings Widget settings
@@ -228,8 +228,8 @@ export interface ContentType {
    */
   addSidebarWidget (widgetNamespace: 'sidebar-builtin' | 'extension',
                     widgetId: string,
-                    settings: ISidebarWidgetSettings,
-                    insertBeforeWidgetId: string): void
+                    settings?: ISidebarWidgetSettings,
+                    insertBeforeWidgetId?: string | null): void
 
   /**
    * Updates the configuration of a widget in the sidebar of the content type.
