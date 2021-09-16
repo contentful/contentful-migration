@@ -646,6 +646,7 @@ Changes control interface of given field's ID.
 - `builtin` (Standard widget)
 - `app` (Custom App)
 - `extension` (Custom UI extension)
+- `app` (Custom app widget)
 
 **`widgetId : string`** – The new widget ID for the field. See the [editor interface documentation](https://www.contentful.com/developers/docs/concepts/editor-interfaces/) for a list of available widgets.
 
