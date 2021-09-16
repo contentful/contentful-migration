@@ -226,7 +226,7 @@ export interface ContentType {
    * @param settings Instance settings for the widget
    * @param insertBeforeWidgetId Insert widget above this widget in the sidebar. If null, the widget will be added to the end.
    */
-  addSidebarWidget (widgetNamespace: 'sidebar-builtin' | 'extension',
+  addSidebarWidget (widgetNamespace: 'sidebar-builtin' | 'extension' | 'app',
                     widgetId: string,
                     settings?: ISidebarWidgetSettings,
                     insertBeforeWidgetId?: string | null): void
@@ -238,7 +238,7 @@ export interface ContentType {
    * @param widgetId The ID of the widget to update.
    * @param settings Instance settings for the widget
    */
-  updateSidebarWidget (widgetNamespace: 'sidebar-builtin' | 'extension',
+  updateSidebarWidget (widgetNamespace: 'sidebar-builtin' | 'extension' | 'app',
                        widgetId: string,
                        settings: ISidebarWidgetSettings): void
 
@@ -248,7 +248,7 @@ export interface ContentType {
    * @param widgetNamespace The namespace of the widget. Use 'sidebar-builtin' for standard widgets or 'extension' for UI extensions.
    * @param widgetId The ID of the widget to remove.
    */
-  removeSidebarWidget (widgetNamespace: 'sidebar-builtin' | 'extension',
+  removeSidebarWidget (widgetNamespace: 'sidebar-builtin' | 'extension' | 'app',
                        widgetId: string): void
 
   /**
