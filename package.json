@@ -67,7 +67,7 @@
   },
   "devDependencies": {
     "@contentful/eslint-config-backend": "^7.0.0",
-    "@semantic-release/changelog": "^5.0.1",
+    "@semantic-release/changelog": "^6.0.0",
     "@types/bluebird": "^3.5.30",
     "@types/chai": "^4.2.11",
     "@types/chai-as-promised": "^7.1.2",
@@ -93,7 +93,7 @@
     "nock": "^13.0.0",
     "rewire": "^5.0.0",
     "rimraf": "^3.0.2",
-    "semantic-release": "^17.0.4",
+    "semantic-release": "^18.0.0",
     "sinon": "^10.0.0",
     "sinon-chai": "^3.5.0",
     "source-map-support": "^0.5.16",
