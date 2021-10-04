@@ -97,6 +97,8 @@ export interface IValidation {
   range?: { max?: number, min?: number},
   /** Takes a string that reflects a JS regex and flags, validates against a string. See JS reference for the parameters. */
   regexp?: { pattern: string, flags?: string },
+  /** Inverse of `regexp`: Takes a string that reflects a JS regex and flags, validates against a string and expects to not match. */
+  prohibitRegexp?: { pattern: string, flags?: string },
   /** Validates that there are no other entries that have the same field value at the time of publication. */
   unique?: true,
   /** Validates that a value falls within a certain range of dates. */
