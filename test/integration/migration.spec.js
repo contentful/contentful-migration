@@ -19,6 +19,7 @@ const addSidebarWidgets = require('../../examples/24-add-sidebar-widgets-to-new-
 const addSidebarWidgetsToExisting = require('../../examples/27-add-sidebar-widgets-to-existing-content-type');
 const createTag = require('../../examples/28-create-tag');
 const createPublicTag = require('../../examples/32-create-public-tag');
+const createWithDefaultValue = require('../../examples/33-create-fields-with-default-values');
 const modifyTag = require('../../examples/29-modify-tag');
 const deleteTag = require('../../examples/30-delete-tag');
 const setTagsForEntries = require('../../examples/31-set-tags-for-entries');
@@ -224,10 +225,10 @@ describe('the migration', function () {
         validations: [
           {
             assetImageDimensions:
-              {
-                width: { min: 1199, max: null },
-                height: { min: 1343 }
-              }
+            {
+              width: { min: 1199, max: null },
+              height: { min: 1343 }
+            }
           }
         ]
       }
@@ -756,7 +757,8 @@ describe('the migration', function () {
         from: ['title'],
         setTagsForEntry: () => {
           return [];
-        } });
+        }
+      });
     });
 
     const blogEntries = await request({
@@ -768,5 +770,27 @@ describe('the migration', function () {
     });
 
     expect(blogEntries.items[0].metadata.tags).to.eql([]);
+  });
+
+  it('creates with default value', async function () {
+    await migrator(createWithDefaultValue);
+    const contentType = await request({
+      method: 'GET',
+      url: '/content_types/event'
+    });
+
+    expect(contentType.name).to.eql('Event');
+    expect(contentType.fields.find(f => f.name === 'Advertised').defaultValue).to.eql({
+      'en-US': true
+    });
+
+    const refContentType = await request({
+      method: 'GET',
+      url: '/content_types/refWithDefault'
+    });
+
+    expect(refContentType.name).to.eql('RefWithDefault');
+    expect(refContentType.fields[0].type).to.eql('Link');
+    expect(refContentType.fields[0].validations).to.eql([{ linkContentType: ['event'] }]);
   });
 });
