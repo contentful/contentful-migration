@@ -6,8 +6,7 @@ module.exports = function (migration) {
     .localized(true)
     .type('Symbol')
     .defaultValue({
-      'en-US': 'Default title',
-      'fr-FR': 'Titre par défaut'
+      'en-US': 'Default title'
     });
 
   Event.createField('advertised')
@@ -36,4 +35,13 @@ module.exports = function (migration) {
     .defaultValue({
       'en-US': ['Culture', 'Local History']
     });
+
+  const RefWithDefault = migration.createContentType('refWithDefault').name('RefWithDefault');
+
+  RefWithDefault
+    .createField('ref')
+    .name('Ref')
+    .type('Link')
+    .linkType('Entry')
+    .validations([{ linkContentType: ['event'] }]);
 };
