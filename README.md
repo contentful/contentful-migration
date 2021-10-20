@@ -92,6 +92,7 @@
       - [`configureEntryEditor (widgetNamespace, widgetId[, settings])` : void](#configureentryeditor-widgetnamespace-widgetid-settings--void)
       - [`configureEntryEditors (EntryEditor[])` : void](#configureentryeditors-entryeditor--void)
       - [`resetEntryEditorToDefault ()` : void](#resetentryeditortodefault---void)
+    - [Editor Layout](#editor-layout)
     - [Field](#field)
   - [Validation errors](#validation-errors)
   - [Example migrations](#example-migrations)
@@ -734,9 +735,100 @@ Each `EntryEditor` has the following properties:
 
 Resets the entry editor of the content type to default.
 
+#### `createEditorLayout ()` : [EditorLayout](#editor-layout)
+
+Creates an empty editor layout for this content type.
+
+#### `editEditorLayout ()` : [EditorLayout](#editor-layout)
+
+Edits the editor layout for this content type.
+
+#### `deleteEditorLayout ()` : void
+
+Deletes the editor layout for this content type.
+
 ### Field
 
 The field object has the same methods as the properties listed in the [`ContentType.createField`](#createfieldid--string-opts--object--field) method.
+
+### Editor Layout
+
+#### `moveField(id)` : MovableEditorLayoutItem
+
+Moves the field with the provided `id`.
+
+`moveField(id)` returns a movable editor layout item type which must be called with a direction function:
+
+- **`.toTheTopOfGroup(groupId)`**
+- **`.toTheBottomOfGroup(groupId)`**
+- **`.beforeGroup(groupId)`**
+- **`.afterGroup(groupId)`**
+- **`.beforeField(fieldId)`**
+- **`.afterField(fieldId)`**
+
+Example:
+```javascript
+  // TODO
+```
+
+#### `createGroup(id[, opts])` : [EditorLayoutGroup](#editor-layout-group)
+
+Creates a tab with the provided `id`.
+
+**`id : string`** – The ID of the group.
+**`widgetNamespace : string`** – The widget namespace of the group.
+**`widgetId : string`** – The widget ID of the group.
+
+**`opts : Object`** – Group settings, with the following options:
+
+- **`name : string`** _(required)_ – Field set name.
+- **`settings : Object`** - TODO
+
+**`settings : Object`** – Group settings, with the following properties:
+
+- **`helpText : string`** – Help text for the tab. Displayed when editing.
+
+#### `deleteGroup(id)` : void
+
+Deletes the group with the provided `id` from the editor layout,
+moving its contents to the parent if the group to delete is a field set or to the default tab if it’s a tab.
+
+#### `changeGroupId(currentId, newId)`
+
+Changes the group’s ID.
+
+**`currentId : string`** – The current ID of the group.
+
+**`newId : string`** – The new ID for the group.
+
+#### `editGroup(id[, opts])` : [EditorLayoutGroup](#editor-layout-group)
+
+### Editor Layout Group
+
+#### `createGroup(id[, opts])` : [EditorLayoutGroup](#editor-layout-group)
+
+Creates a field set with the provided `id`. Returns the created
+
+**`id : string`** – The ID of the group.
+
+**`opts : Object`** – Group settings, with the following options:
+
+- **`name : string`** _(required)_ – Field set name.
+- **`settings : Object`** - Field set settings
+
+**`settings : Object`** – Field set settings, with the following properties:
+
+- **`helpText : string`** – Help text for the field set. Displayed when editing.
+- **`collapsible : boolean`** – Whether the field set can be collapsed when editing.
+- **`collapsedByDefault : string`** – Whether the field set is collapsed when opening the editor.
+
+#### `changeGroupControl(widgetNamespace, widgetId[, settings])` : void
+
+Sets the group control manually.
+
+**`widgedNamespace : string`** – The namespace for the group control. Currently allowed: `builtin`.
+**`widgetId : string`** - The widget ID for the group control. Allowed values: `fieldset`, `topLevelTab`.
+**`settings : string`** - Same as for `createGroup` listed above.
 
 ## Validation errors
 
