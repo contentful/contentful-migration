@@ -23,12 +23,13 @@ describe('contentful-client', function () {
   });
 
   it('can read the space', function () {
+    const spaceName = 'contentful-migration';
     const clientConfig = Object.assign({
       application: `contentful.migration-cli/0.0.0`
     }, getConfig());
     const client = createManagementClient(clientConfig);
     return client.space.get({ spaceId: SOURCE_TEST_SPACE }).then((space) => {
-      expect(space.name).to.eql('Migrations CLI Test');
+      expect(space.name).to.eql(spaceName);
     });
   });
 
