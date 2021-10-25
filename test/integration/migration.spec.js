@@ -37,7 +37,7 @@ after(recorder.after);
 
 const ENVIRONMENT_ID = 'env-integration';
 
-const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
+const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID;
 
 describe('the migration', function () {
   this.timeout(30000);

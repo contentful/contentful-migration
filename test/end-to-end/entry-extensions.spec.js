@@ -11,7 +11,7 @@ const {
 const uuid = require('uuid');
 const ENVIRONMENT_ID = uuid.v4();
 
-const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
+const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID;
 
 describe('apply entry extension migration examples', function () {
   this.timeout(30000);

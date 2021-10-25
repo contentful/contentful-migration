@@ -11,10 +11,10 @@ const { createManagementClient } = contentfulClient;
 // Ensure that when both tokens are defined, we first take the integration one
 // This is mostly useful for local testing where both may be defined
 delete process.env['CONTENTFUL_MANAGEMENT_ACCESS_TOKEN'];
-const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
+const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID;
 
 const fileConfig = {
-  cmaToken: process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN
+  cmaToken: process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN
 };
 
 describe('contentful-client', function () {

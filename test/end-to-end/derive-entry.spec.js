@@ -9,7 +9,7 @@ const { createDevEnvironment, deleteDevEnvironment, getEntries, makeRequest } = 
 const uuid = require('uuid');
 const ENVIRONMENT_ID = uuid.v4();
 
-const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
+const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID;
 
 describe('apply derive entry transformation', function () {
   this.timeout(30000);

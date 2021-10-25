@@ -2,7 +2,7 @@
 
 const nixt = require('nixt');
 
-const ACCESS_TOKEN = process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN;
+const ACCESS_TOKEN = process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN;
 process.env.TEST_ENVIRONMENT = 'end-to-end-tests';
 const cli = () => {
   return nixt()

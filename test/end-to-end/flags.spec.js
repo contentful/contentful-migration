@@ -5,7 +5,7 @@ const path = require('path');
 const assert = require('./assertions');
 const cli = require('./cli');
 
-const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
+const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID;
 
 describe('contentful-migration CLI flags', function () {
   it('"--help" outputs the help message', function (done) {

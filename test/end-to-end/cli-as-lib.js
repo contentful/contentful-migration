@@ -2,8 +2,8 @@
 
 const nixt = require('nixt');
 
-const SPACE_ID = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
-const ACCESS_TOKEN = process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN;
+const SPACE_ID = process.env.CONTENTFUL_SPACE_ID;
+const ACCESS_TOKEN = process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN;
 const cli = () => {
   return nixt()
     .env('CONTENTFUL_SPACE_ID', SPACE_ID)
