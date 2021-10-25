@@ -72,16 +72,16 @@ workflows:
   test-and-release:
     jobs:
       - check
-      - test:unit
-      - test:integration
-      - test:e2e
+      - test-unit
+      - test-integration
+      - test-e2e
       - release:
           context: dev-workflows-release
           requires:
             - check
-            - test:unit
-            - test:integration
-            - test:e2e
+            - test-unit
+            - test-integration
+            - test-e2e
           filters:
             branches:
               only:
