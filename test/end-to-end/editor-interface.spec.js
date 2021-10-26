@@ -11,7 +11,7 @@ const { createDevEnvironment, deleteDevEnvironment, getDevEditorInterface } = re
 const uuid = require('uuid');
 const ENVIRONMENT_ID = uuid.v4();
 
-const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
+const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID;
 
 describe('apply editor-interface migration examples', function () {
   this.timeout(30000);

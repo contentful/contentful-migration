@@ -11,10 +11,10 @@ const { createManagementClient } = contentfulClient;
 // Ensure that when both tokens are defined, we first take the integration one
 // This is mostly useful for local testing where both may be defined
 delete process.env['CONTENTFUL_MANAGEMENT_ACCESS_TOKEN'];
-const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
+const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID;
 
 const fileConfig = {
-  cmaToken: process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN
+  cmaToken: process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN
 };
 
 describe('contentful-client', function () {
@@ -23,12 +23,13 @@ describe('contentful-client', function () {
   });
 
   it('can read the space', function () {
+    const spaceName = 'contentful-migration';
     const clientConfig = Object.assign({
       application: `contentful.migration-cli/0.0.0`
     }, getConfig());
     const client = createManagementClient(clientConfig);
     return client.space.get({ spaceId: SOURCE_TEST_SPACE }).then((space) => {
-      expect(space.name).to.eql('Migrations CLI Test');
+      expect(space.name).to.eql(spaceName);
     });
   });
 

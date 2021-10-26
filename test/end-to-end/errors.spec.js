@@ -3,7 +3,7 @@
 const assert = require('./assertions');
 const cli = require('./cli');
 
-const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
+const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID;
 
 describe('04-steps-errors.js', function () {
   it('outputs the correct errors', function (done) {

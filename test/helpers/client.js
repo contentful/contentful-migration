@@ -6,7 +6,7 @@ const { createManagementClient } = require('../../built/bin/lib/contentful-clien
 const createMakeRequest = require('../../built/bin/cli').createMakeRequest;
 
 const config = {
-  accessToken: process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN,
+  accessToken: process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN,
   application: `contentful.migration-cli.e2e-test/${packageVersion}`
 };
 

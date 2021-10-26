@@ -4,7 +4,7 @@ import { expect } from 'chai'
 import { getConfig } from '../../../../src/bin/lib/config'
 
 const fileConfig = {
-  cmaToken: process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN
+  cmaToken: process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN
 }
 
 describe('Config', function () {
@@ -14,16 +14,16 @@ describe('Config', function () {
 
   it('reads the contentfulrc.json', async function () {
     const config = getConfig({})
-    expect(config.accessToken).to.eql(process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN)
+    expect(config.accessToken).to.eql(process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN)
   })
 
   it('prefers env config over contentfulrc.json', async function () {
-    const token = process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN
+    const token = process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN
 
     process.env.CONTENTFUL_MANAGEMENT_ACCESS_TOKEN = 'schnitzel'
     const config = getConfig({})
     expect(config.accessToken).to.eql('schnitzel')
-    process.env.CONTENTFUL_INTEGRATION_MANAGEMENT_TOKEN = token
+    process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN = token
   })
 
   it('prefers handed in config over env config', async function () {
