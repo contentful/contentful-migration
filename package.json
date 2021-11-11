@@ -66,7 +66,7 @@
     "yargs": "^15.3.1"
   },
   "devDependencies": {
-    "@contentful/eslint-config-backend": "^7.0.0",
+    "@contentful/eslint-config-backend": "^9.0.0",
     "@semantic-release/changelog": "^6.0.0",
     "@types/bluebird": "^3.5.30",
     "@types/chai": "^4.2.11",
