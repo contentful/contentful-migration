@@ -81,8 +81,8 @@ describe('apply content transformation', function () {
       },
       data: {
         fields: {
-          'author': { 'en-US': 'Jane Austen' },
-          'authorCity': { 'en-US': 'Steventon' }
+          author: { 'en-US': 'Jane Austen' },
+          authorCity: { 'en-US': 'Steventon' }
         },
         metadata: {
           tags: [

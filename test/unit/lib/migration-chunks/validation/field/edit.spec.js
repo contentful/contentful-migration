@@ -24,16 +24,16 @@ describe('field editing plan validation', function () {
           message: 'You cannot edit field "name" because it does not exist.',
           details: {
             step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/0'
+              type: 'field/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'props': {
-                  'name': 'foo'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name',
+                props: {
+                  name: 'foo'
                 }
               }
             }
@@ -44,16 +44,16 @@ describe('field editing plan validation', function () {
           message: 'You cannot edit field "name" because it does not exist.',
           details: {
             step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/0'
+              type: 'field/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'props': {
-                  'required': true
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name',
+                props: {
+                  required: true
                 }
               }
             }
@@ -85,16 +85,16 @@ describe('field editing plan validation', function () {
           message: 'You cannot edit field "name" because it has already been deleted.',
           details: {
             step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/0'
+              type: 'field/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'props': {
-                  'required': true
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name',
+                props: {
+                  required: true
                 }
               }
             }
@@ -119,16 +119,16 @@ describe('field editing plan validation', function () {
           message: 'You cannot edit field "name" on content type "person" because it does not exist.',
           details: {
             step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/0'
+              type: 'field/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'props': {
-                  'type': 'Symbol'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name',
+                props: {
+                  type: 'Symbol'
                 }
               }
             }
@@ -159,16 +159,16 @@ describe('field editing plan validation', function () {
           message: 'You are setting the property "required" on field "name" more than once. Please set it only once.',
           details: {
             step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/4'
+              type: 'field/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/4'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'props': {
-                  'required': true
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name',
+                props: {
+                  required: true
                 }
               }
             }
@@ -179,16 +179,16 @@ describe('field editing plan validation', function () {
           message: 'You are setting the property "type" on field "name" more than once. Please set it only once.',
           details: {
             step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/5'
+              type: 'field/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/5'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'props': {
-                  'type': 'Text'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name',
+                props: {
+                  type: 'Text'
                 }
               }
             }
@@ -199,16 +199,16 @@ describe('field editing plan validation', function () {
           message: 'You are setting the property "type" on field "name" more than once. Please set it only once.',
           details: {
             step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/6'
+              type: 'field/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/6'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'props': {
-                  'type': 'Number'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name',
+                props: {
+                  type: 'Number'
                 }
               }
             }

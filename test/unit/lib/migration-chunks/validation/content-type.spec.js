@@ -37,12 +37,12 @@ describe('content type plan validation', function () {
           message: 'Content type with id "person" cannot be created more than once.',
           details: {
             step: {
-              'type': 'contentType/create',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/1'
+              type: 'contentType/create',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/1'
               },
-              'payload': {
-                'contentTypeId': 'person'
+              payload: {
+                contentTypeId: 'person'
               }
             }
           }
@@ -52,12 +52,12 @@ describe('content type plan validation', function () {
           message: 'Content type with id "person" cannot be created more than once.',
           details: {
             step: {
-              'type': 'contentType/create',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/2'
+              type: 'contentType/create',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/2'
               },
-              'payload': {
-                'contentTypeId': 'person'
+              payload: {
+                contentTypeId: 'person'
               }
             }
           }
@@ -93,14 +93,14 @@ describe('content type plan validation', function () {
           message: 'You cannot set a property on content type "person" because it has not yet been created.',
           details: {
             step: {
-              'type': 'contentType/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0'
+              type: 'contentType/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'props': {
-                  'description': 'A content type for a person'
+              payload: {
+                contentTypeId: 'person',
+                props: {
+                  description: 'A content type for a person'
                 }
               }
             }
@@ -111,14 +111,14 @@ describe('content type plan validation', function () {
           message: 'You cannot set a property on content type "person" because it has not yet been created.',
           details: {
             step: {
-              'type': 'contentType/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0'
+              type: 'contentType/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'props': {
-                  'name': 'foo'
+              payload: {
+                contentTypeId: 'person',
+                props: {
+                  name: 'foo'
                 }
               }
             }
@@ -157,12 +157,12 @@ describe('content type plan validation', function () {
           message: 'Content type with id "person" already exists.',
           details: {
             step: {
-              'type': 'contentType/create',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/1'
+              type: 'contentType/create',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/1'
               },
-              'payload': {
-                'contentTypeId': 'person'
+              payload: {
+                contentTypeId: 'person'
               }
             }
           }
@@ -204,12 +204,12 @@ describe('content type plan validation', function () {
           message: 'Content type with id "person" already exists.',
           details: {
             step: {
-              'type': 'contentType/create',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0'
+              type: 'contentType/create',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0'
               },
-              'payload': {
-                'contentTypeId': 'person'
+              payload: {
+                contentTypeId: 'person'
               }
             }
           }
@@ -219,12 +219,12 @@ describe('content type plan validation', function () {
           message: 'Content type with id "person" already exists.',
           details: {
             step: {
-              'type': 'contentType/create',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/1'
+              type: 'contentType/create',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/1'
               },
-              'payload': {
-                'contentTypeId': 'person'
+              payload: {
+                contentTypeId: 'person'
               }
             }
           }
@@ -234,12 +234,12 @@ describe('content type plan validation', function () {
           message: 'Content type with id "person" already exists.',
           details: {
             step: {
-              'type': 'contentType/create',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/2'
+              type: 'contentType/create',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/2'
               },
-              'payload': {
-                'contentTypeId': 'person'
+              payload: {
+                contentTypeId: 'person'
               }
             }
           }
@@ -275,14 +275,14 @@ describe('content type plan validation', function () {
           message: 'You cannot set a property on content type "person" because it does not exist.',
           details: {
             step: {
-              'type': 'contentType/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0'
+              type: 'contentType/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'props': {
-                  'description': 'A content type for a person'
+              payload: {
+                contentTypeId: 'person',
+                props: {
+                  description: 'A content type for a person'
                 }
               }
             }
@@ -293,14 +293,14 @@ describe('content type plan validation', function () {
           message: 'You cannot set a property on content type "person" because it does not exist.',
           details: {
             step: {
-              'type': 'contentType/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0'
+              type: 'contentType/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'props': {
-                  'name': 'foo'
+              payload: {
+                contentTypeId: 'person',
+                props: {
+                  name: 'foo'
                 }
               }
             }
@@ -311,14 +311,14 @@ describe('content type plan validation', function () {
           message: 'You cannot set a property on content type "person" because it does not exist.',
           details: {
             step: {
-              'type': 'contentType/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/1'
+              type: 'contentType/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/1'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'props': {
-                  'name': 'the new name'
+              payload: {
+                contentTypeId: 'person',
+                props: {
+                  name: 'the new name'
                 }
               }
             }
@@ -343,14 +343,14 @@ describe('content type plan validation', function () {
           message: 'You are setting the property "name" on content type "person" more than once. Please set it only once.',
           details: {
             step: {
-              'type': 'contentType/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0'
+              type: 'contentType/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'props': {
-                  'name': 'Person McPersonface'
+              payload: {
+                contentTypeId: 'person',
+                props: {
+                  name: 'Person McPersonface'
                 }
               }
             }

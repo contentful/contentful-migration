@@ -26,14 +26,14 @@ describe('field creation plan validation', function () {
           message: 'Field with id "name" cannot be created more than once.',
           details: {
             step: {
-              'type': 'field/create',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/1'
+              type: 'field/create',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/1'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name'
               }
             }
           }
@@ -43,14 +43,14 @@ describe('field creation plan validation', function () {
           message: 'Field with id "name" cannot be created more than once.',
           details: {
             step: {
-              'type': 'field/create',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/2'
+              type: 'field/create',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/2'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name'
               }
             }
           }
@@ -60,16 +60,16 @@ describe('field creation plan validation', function () {
           message: 'You are setting the property "type" on field "name" more than once. Please set it only once.',
           details: {
             step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/1'
+              type: 'field/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/1'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'props': {
-                  'type': 'Decimal'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name',
+                props: {
+                  type: 'Decimal'
                 }
               }
             }
@@ -80,16 +80,16 @@ describe('field creation plan validation', function () {
           message: 'You are setting the property "type" on field "name" more than once. Please set it only once.',
           details: {
             step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/2'
+              type: 'field/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/2'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'props': {
-                  'type': 'Array'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name',
+                props: {
+                  type: 'Array'
                 }
               }
             }
@@ -122,14 +122,14 @@ describe('field creation plan validation', function () {
           message: 'Field with id "name" cannot be created more than once.',
           details: {
             step: {
-              'type': 'field/create',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/1'
+              type: 'field/create',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/1'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name'
               }
             }
           }
@@ -139,14 +139,14 @@ describe('field creation plan validation', function () {
           message: 'Field with id "name" cannot be created more than once.',
           details: {
             step: {
-              'type': 'field/create',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/2'
+              type: 'field/create',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/2'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name'
               }
             }
           }
@@ -156,16 +156,16 @@ describe('field creation plan validation', function () {
           message: 'You are setting the property "type" on field "name" more than once. Please set it only once.',
           details: {
             step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/1'
+              type: 'field/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/1'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'props': {
-                  'type': 'Decimal'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name',
+                props: {
+                  type: 'Decimal'
                 }
               }
             }
@@ -193,14 +193,14 @@ describe('field creation plan validation', function () {
           message: 'Field with id "name" cannot be created more than once.',
           details: {
             step: {
-              'type': 'field/create',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/0'
+              type: 'field/create',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name'
               }
             }
           }
@@ -223,14 +223,14 @@ describe('field creation plan validation', function () {
           message: 'You cannot create a field with id "name" on content type "person" because it does not exist.',
           details: {
             step: {
-              'type': 'field/create',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/0'
+              type: 'field/create',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name'
               }
             }
           }

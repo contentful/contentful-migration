@@ -24,17 +24,17 @@ describe('field movement plan validation', function () {
           message: 'You cannot move the field with id "name" because it does not exist.',
           details: {
             step: {
-              'type': 'field/move',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/0'
+              type: 'field/move',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'movement': {
-                  'direction': 'toTheTop',
-                  'pivot': undefined
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name',
+                movement: {
+                  direction: 'toTheTop',
+                  pivot: undefined
                 }
               }
             }
@@ -64,17 +64,17 @@ describe('field movement plan validation', function () {
           message: 'You cannot move the field with id "name" because it has already been deleted.',
           details: {
             step: {
-              'type': 'field/move',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/2'
+              type: 'field/move',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/2'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'movement': {
-                  'direction': 'toTheTop',
-                  'pivot': undefined
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name',
+                movement: {
+                  direction: 'toTheTop',
+                  pivot: undefined
                 }
               }
             }
@@ -108,17 +108,17 @@ describe('field movement plan validation', function () {
           message: 'You cannot move the field with id "fullName" more than once per migration.',
           details: {
             step: {
-              'type': 'field/move',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/fullName/2'
+              type: 'field/move',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/fullName/2'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'fullName',
-                'movement': {
-                  'direction': 'toTheTop',
-                  'pivot': undefined
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'fullName',
+                movement: {
+                  direction: 'toTheTop',
+                  pivot: undefined
                 }
               }
             }
@@ -163,17 +163,17 @@ describe('field movement plan validation', function () {
           message: 'You cannot move the field with id "fullName" more than once per migration.',
           details: {
             step: {
-              'type': 'field/move',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/fullName/2'
+              type: 'field/move',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/fullName/2'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'fullName',
-                'movement': {
-                  'direction': 'toTheBottom',
-                  'pivot': undefined
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'fullName',
+                movement: {
+                  direction: 'toTheBottom',
+                  pivot: undefined
                 }
               }
             }
@@ -198,17 +198,17 @@ describe('field movement plan validation', function () {
           message: 'You cannot move a field on content type "person" because it does not exist.',
           details: {
             step: {
-              'type': 'field/move',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/fullName/0'
+              type: 'field/move',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/fullName/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'fullName',
-                'movement': {
-                  'direction': 'toTheTop',
-                  'pivot': undefined
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'fullName',
+                movement: {
+                  direction: 'toTheTop',
+                  pivot: undefined
                 }
               }
             }
@@ -237,17 +237,17 @@ describe('field movement plan validation', function () {
           message: 'You cannot move a field after the field "i-do-not-exist" because it doesn\'t exist',
           details: {
             step: {
-              'type': 'field/move',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/fullName/1'
+              type: 'field/move',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/fullName/1'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'fullName',
-                'movement': {
-                  'direction': 'afterField',
-                  'pivot': 'i-do-not-exist'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'fullName',
+                movement: {
+                  direction: 'afterField',
+                  pivot: 'i-do-not-exist'
                 }
               }
             }
@@ -258,17 +258,17 @@ describe('field movement plan validation', function () {
           message: 'You cannot move a field before the field "i-do-not-exist" because it doesn\'t exist',
           details: {
             step: {
-              'type': 'field/move',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/age/1'
+              type: 'field/move',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/age/1'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'age',
-                'movement': {
-                  'direction': 'beforeField',
-                  'pivot': 'i-do-not-exist'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'age',
+                movement: {
+                  direction: 'beforeField',
+                  pivot: 'i-do-not-exist'
                 }
               }
             }
@@ -298,17 +298,17 @@ describe('field movement plan validation', function () {
           message: 'You cannot move a field before the field "fullName" because it has been already deleted',
           details: {
             step: {
-              'type': 'field/move',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/age/1'
+              type: 'field/move',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/age/1'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'age',
-                'movement': {
-                  'direction': 'beforeField',
-                  'pivot': 'fullName'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'age',
+                movement: {
+                  direction: 'beforeField',
+                  pivot: 'fullName'
                 }
               }
             }

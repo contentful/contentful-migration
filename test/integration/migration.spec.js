@@ -573,13 +573,13 @@ describe('the migration', function () {
     expect(editorInterfaces.sidebar).to.eql([
       ...DEFAULT_SIDEBAR_LIST,
       {
-        'disabled': false,
-        'settings': {
-          'tagField': 'tags',
-          'imageField': 'image'
+        disabled: false,
+        settings: {
+          tagField: 'tags',
+          imageField: 'image'
         },
-        'widgetId': 'imageTaggingExtensionId',
-        'widgetNamespace': 'extension'
+        widgetId: 'imageTaggingExtensionId',
+        widgetNamespace: 'extension'
       }
     ]);
   }));
@@ -595,13 +595,13 @@ describe('the migration', function () {
     expect(editorInterfaces.sidebar).to.eql([
       ...DEFAULT_SIDEBAR_LIST,
       {
-        'disabled': false,
-        'settings': {
-          'tagField': 'tags',
-          'imageField': 'image'
+        disabled: false,
+        settings: {
+          tagField: 'tags',
+          imageField: 'image'
         },
-        'widgetId': 'imageTaggingExtensionId',
-        'widgetNamespace': 'extension'
+        widgetId: 'imageTaggingExtensionId',
+        widgetNamespace: 'extension'
       }
     ]);
   }));

@@ -11,7 +11,7 @@ it('does not add metadata to default entry or pass it down to its clone', () => 
     fields: {
       name: {
         'en-US': 'bob',
-        'hawaii': 'haukea'
+        hawaii: 'haukea'
       }
     }
   }));

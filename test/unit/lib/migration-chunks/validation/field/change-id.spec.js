@@ -26,16 +26,16 @@ describe('chunks validation when changing field ids', () => {
         message: 'You cannot edit the field "title" because its ID was changed to "newTitle" earlier in the migration.',
         details: {
           step: {
-            'type': 'field/update',
-            'meta': {
-              'contentTypeInstanceId': 'contentType/book/0',
-              'fieldInstanceId': 'fields/title/1'
+            type: 'field/update',
+            meta: {
+              contentTypeInstanceId: 'contentType/book/0',
+              fieldInstanceId: 'fields/title/1'
             },
-            'payload': {
-              'contentTypeId': 'book',
-              'fieldId': 'title',
-              'props': {
-                'name': 'new Title'
+            payload: {
+              contentTypeId: 'book',
+              fieldId: 'title',
+              props: {
+                name: 'new Title'
               }
             }
           }
@@ -111,16 +111,16 @@ describe('chunks validation when changing field ids', () => {
         message: 'Cannot rename field "title" to "pages" because a field with this ID already exists on content type "book".',
         details: {
           step: {
-            'type': 'field/rename',
-            'meta': {
-              'contentTypeInstanceId': 'contentType/book/0',
-              'fieldInstanceId': 'fields/title/0'
+            type: 'field/rename',
+            meta: {
+              contentTypeInstanceId: 'contentType/book/0',
+              fieldInstanceId: 'fields/title/0'
             },
-            'payload': {
-              'contentTypeId': 'book',
-              'fieldId': 'title',
-              'props': {
-                'newId': 'pages'
+            payload: {
+              contentTypeId: 'book',
+              fieldId: 'title',
+              props: {
+                newId: 'pages'
               }
             }
           }
@@ -154,16 +154,16 @@ describe('chunks validation when changing field ids', () => {
         message: 'Cannot rename field "someThingElse" to "title" because a field with this ID already exists on content type "book".',
         details: {
           step: {
-            'type': 'field/rename',
-            'meta': {
-              'contentTypeInstanceId': 'contentType/book/0',
-              'fieldInstanceId': 'fields/someThingElse/0'
+            type: 'field/rename',
+            meta: {
+              contentTypeInstanceId: 'contentType/book/0',
+              fieldInstanceId: 'fields/someThingElse/0'
             },
-            'payload': {
-              'contentTypeId': 'book',
-              'fieldId': 'someThingElse',
-              'props': {
-                'newId': 'title'
+            payload: {
+              contentTypeId: 'book',
+              fieldId: 'someThingElse',
+              props: {
+                newId: 'title'
               }
             }
           }
@@ -191,16 +191,16 @@ describe('chunks validation when changing field ids', () => {
         message: 'The new ID for the field "title" contains the same value as the existing ID. The new ID must be different from the old.',
         details: {
           step: {
-            'type': 'field/rename',
-            'meta': {
-              'contentTypeInstanceId': 'contentType/book/0',
-              'fieldInstanceId': 'fields/title/0'
+            type: 'field/rename',
+            meta: {
+              contentTypeInstanceId: 'contentType/book/0',
+              fieldInstanceId: 'fields/title/0'
             },
-            'payload': {
-              'contentTypeId': 'book',
-              'fieldId': 'title',
-              'props': {
-                'newId': 'title'
+            payload: {
+              contentTypeId: 'book',
+              fieldId: 'title',
+              props: {
+                newId: 'title'
               }
             }
           }
@@ -229,16 +229,16 @@ describe('chunks validation when changing field ids', () => {
         message: 'The ID of "primarySchool" was already changed in this migration. You cannot change the ID of a field more than once.',
         details: {
           step: {
-            'type': 'field/rename',
-            'meta': {
-              'contentTypeInstanceId': 'contentType/student/0',
-              'fieldInstanceId': 'fields/primarySchool/0'
+            type: 'field/rename',
+            meta: {
+              contentTypeInstanceId: 'contentType/student/0',
+              fieldInstanceId: 'fields/primarySchool/0'
             },
-            'payload': {
-              'contentTypeId': 'student',
-              'fieldId': 'primarySchool',
-              'props': {
-                'newId': 'preSchool'
+            payload: {
+              contentTypeId: 'student',
+              fieldId: 'primarySchool',
+              props: {
+                newId: 'preSchool'
               }
             }
           }
@@ -266,16 +266,16 @@ describe('chunks validation when changing field ids', () => {
         message: 'You cannot edit field "primarySchool" because it does not exist.',
         details: {
           step: {
-            'type': 'field/rename',
-            'meta': {
-              'contentTypeInstanceId': 'contentType/student/0',
-              'fieldInstanceId': 'fields/primarySchool/0'
+            type: 'field/rename',
+            meta: {
+              contentTypeInstanceId: 'contentType/student/0',
+              fieldInstanceId: 'fields/primarySchool/0'
             },
-            'payload': {
-              'contentTypeId': 'student',
-              'fieldId': 'primarySchool',
-              'props': {
-                'newId': 'preSchool'
+            payload: {
+              contentTypeId: 'student',
+              fieldId: 'primarySchool',
+              props: {
+                newId: 'preSchool'
               }
             }
           }
