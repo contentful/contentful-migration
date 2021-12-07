@@ -75,7 +75,7 @@
     "@types/joi": "^17.2.3",
     "@types/lodash": "^4.14.149",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^14.0.1",
+    "@types/node": "^16.11.12",
     "@types/sinon-chai": "^3.2.4",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
@@ -103,7 +103,7 @@
     "tslint": "^6.1.1",
     "tslint-config-standard": "^9.0.0",
     "typescript": "^3.8.3",
-    "uuid": "^8.0.0",
+    "uuid": "^8.3.2",
     "zlib": "^1.0.5"
   },
   "bin": {
