@@ -37,14 +37,14 @@ describe('migration-steps validation', function () {
           message: '"invalidProp" is not a valid property name for a content type.',
           details: {
             step: {
-              'type': 'contentType/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0'
+              type: 'contentType/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'props': {
-                  'invalidProp': 'Totally invalid'
+              payload: {
+                contentTypeId: 'person',
+                props: {
+                  invalidProp: 'Totally invalid'
                 }
               }
             }
@@ -55,14 +55,14 @@ describe('migration-steps validation', function () {
           message: '"somethingElse" is not a valid property name for a content type.',
           details: {
             step: {
-              'type': 'contentType/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0'
+              type: 'contentType/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'props': {
-                  'somethingElse': 'Also invalid'
+              payload: {
+                contentTypeId: 'person',
+                props: {
+                  somethingElse: 'Also invalid'
                 }
               }
             }
@@ -73,16 +73,16 @@ describe('migration-steps validation', function () {
           message: '"anotherInvalidProp" is not a valid property name for a field.',
           details: {
             step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/fullName/0'
+              type: 'field/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/fullName/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'fullName',
-                'props': {
-                  'anotherInvalidProp': 'Symbol'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'fullName',
+                props: {
+                  anotherInvalidProp: 'Symbol'
                 }
               }
             }
@@ -93,16 +93,16 @@ describe('migration-steps validation', function () {
           message: '"bla" is not a valid property name for a field.',
           details: {
             step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/fullName/0'
+              type: 'field/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/fullName/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'fullName',
-                'props': {
-                  'bla': 'a person'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'fullName',
+                props: {
+                  bla: 'a person'
                 }
               }
             }
@@ -126,14 +126,14 @@ describe('migration-steps validation', function () {
           message: '"invalidProp" is not a valid property name for a tag.',
           details: {
             step: {
-              'type': 'tag/update',
-              'meta': {
-                'tagInstanceId': 'tag/marketing/0'
+              type: 'tag/update',
+              meta: {
+                tagInstanceId: 'tag/marketing/0'
               },
-              'payload': {
-                'tagId': 'marketing',
-                'props': {
-                  'invalidProp': 'Totally invalid'
+              payload: {
+                tagId: 'marketing',
+                props: {
+                  invalidProp: 'Totally invalid'
                 }
               }
             }
@@ -144,14 +144,14 @@ describe('migration-steps validation', function () {
           message: '"somethingElse" is not a valid property name for a tag.',
           details: {
             step: {
-              'type': 'tag/update',
-              'meta': {
-                'tagInstanceId': 'tag/marketing/0'
+              type: 'tag/update',
+              meta: {
+                tagInstanceId: 'tag/marketing/0'
               },
-              'payload': {
-                'tagId': 'marketing',
-                'props': {
-                  'somethingElse': 'Also invalid'
+              payload: {
+                tagId: 'marketing',
+                props: {
+                  somethingElse: 'Also invalid'
                 }
               }
             }
@@ -190,14 +190,14 @@ describe('migration-steps validation', function () {
           message: '"array" is not a valid type for the content type property "description". Expected "string".',
           details: {
             step: {
-              'type': 'contentType/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0'
+              type: 'contentType/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'props': {
-                  'description': ['Array']
+              payload: {
+                contentTypeId: 'person',
+                props: {
+                  description: ['Array']
                 }
               }
             }
@@ -208,14 +208,14 @@ describe('migration-steps validation', function () {
           message: '"number" is not a valid type for the content type property "displayField". Expected "string".',
           details: {
             step: {
-              'type': 'contentType/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0'
+              type: 'contentType/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'props': {
-                  'displayField': 1234
+              payload: {
+                contentTypeId: 'person',
+                props: {
+                  displayField: 1234
                 }
               }
             }
@@ -226,16 +226,16 @@ describe('migration-steps validation', function () {
           message: '"string" is not a valid type for the field property "validations". Expected "array".',
           details: {
             step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/fullName/0'
+              type: 'field/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/fullName/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'fullName',
-                'props': {
-                  'validations': 'Symbol'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'fullName',
+                props: {
+                  validations: 'Symbol'
                 }
               }
             }
@@ -246,16 +246,16 @@ describe('migration-steps validation', function () {
           message: '"number" is not a valid type for the field property "omitted". Expected "boolean".',
           details: {
             step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/fullName/0'
+              type: 'field/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/fullName/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'fullName',
-                'props': {
-                  'omitted': 1
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'fullName',
+                props: {
+                  omitted: 1
                 }
               }
             }
@@ -266,16 +266,16 @@ describe('migration-steps validation', function () {
           message: '"function" is not a valid type for the field property "localized". Expected "boolean".',
           details: {
             step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/fullName/0'
+              type: 'field/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/fullName/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'fullName',
-                'props': {
-                  'localized': invalidFunction
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'fullName',
+                props: {
+                  localized: invalidFunction
                 }
               }
             }
@@ -286,16 +286,16 @@ describe('migration-steps validation', function () {
           message: '"undefined" is not a valid type for the field property "required". Expected "boolean".',
           details: {
             step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/fullName/0'
+              type: 'field/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/fullName/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'fullName',
-                'props': {
-                  'required': undefined
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'fullName',
+                props: {
+                  required: undefined
                 }
               }
             }
@@ -306,16 +306,16 @@ describe('migration-steps validation', function () {
           message: '"null" is not a valid type for the field property "deleted". Expected "boolean".',
           details: {
             step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/fullName/0'
+              type: 'field/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/fullName/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'fullName',
-                'props': {
-                  'deleted': null
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'fullName',
+                props: {
+                  deleted: null
                 }
               }
             }
@@ -345,14 +345,14 @@ describe('migration-steps validation', function () {
           message: '"nmae" is not a valid property name for a content type. Did you mean "name"?',
           details: {
             step: {
-              'type': 'contentType/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0'
+              type: 'contentType/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'props': {
-                  'nmae': 'Totally invalid'
+              payload: {
+                contentTypeId: 'person',
+                props: {
+                  nmae: 'Totally invalid'
                 }
               }
             }
@@ -363,16 +363,16 @@ describe('migration-steps validation', function () {
           message: '"lodalised" is not a valid property name for a field. Did you mean "localized"?',
           details: {
             step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/fullName/0'
+              type: 'field/update',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/fullName/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'fullName',
-                'props': {
-                  'lodalised': true
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'fullName',
+                props: {
+                  lodalised: true
                 }
               }
             }

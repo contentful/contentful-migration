@@ -30,14 +30,14 @@ describe('field deletion plan validation', function () {
           message: 'Field with id "name" cannot be created more than once.',
           details: {
             step: {
-              'type': 'field/create',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/3'
+              type: 'field/create',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/3'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name'
               }
             }
           }
@@ -82,14 +82,14 @@ describe('field deletion plan validation', function () {
           message: 'Field with id "name" cannot be deleted because it does not exist.',
           details: {
             step: {
-              'type': 'field/delete',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/0'
+              type: 'field/delete',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name'
               }
             }
           }
@@ -124,14 +124,14 @@ describe('field deletion plan validation', function () {
           message: 'Field with id "name" cannot be deleted because it has already been deleted.',
           details: {
             step: {
-              'type': 'field/delete',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/2'
+              type: 'field/delete',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/2'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name'
               }
             }
           }
@@ -173,14 +173,14 @@ describe('field deletion plan validation', function () {
           message: 'You cannot delete the field with id "name" on content type "person" because the content type does not exist.',
           details: {
             step: {
-              'type': 'field/delete',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/0'
+              type: 'field/delete',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name'
               }
             }
           }

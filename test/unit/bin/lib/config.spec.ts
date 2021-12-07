@@ -1,3 +1,4 @@
+/* eslint-disable semi */
 import { writeFileSync } from 'fs'
 import { resolve } from 'path'
 import { expect } from 'chai'
@@ -42,13 +43,21 @@ describe('Config', function () {
     expect(config.requestBatchSize).to.eql(99)
   })
 
+  it('always exposes a standard header', function () {
+    const config = getConfig({})
+    expect(config.headers).to.have.property('CF-Sequence')
+  })
+
   it('exposes headers from argv', function () {
     const config = getConfig({ headers: { test: true } })
-    expect(config.headers).to.eql({ test: true })
+    expect(config.headers).to.have.property('test', true)
+    expect(config.headers).to.have.property('CF-Sequence')
   })
 
   it('parses argv.header if provided', function () {
     const config = getConfig({ header: ['Accept   : application/json ', ' X-Header: 1'] })
-    expect(config.headers).to.eql({ Accept: 'application/json', 'X-Header': '1' })
+    expect(config.headers).to.have.property('Accept', 'application/json')
+    expect(config.headers).to.have.property('X-Header', '1')
+    expect(config.headers).to.have.property('CF-Sequence')
   })
 })

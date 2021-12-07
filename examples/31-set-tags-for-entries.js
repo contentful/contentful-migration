@@ -5,5 +5,6 @@ module.exports = function (migration) {
     setTagsForEntry: (fields, entryTags, apiTags) => {
       const newTag = apiTags.find(tag => tag.sys.id === 'new');
       return [...entryTags, newTag];
-    } });
+    }
+  });
 };

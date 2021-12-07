@@ -37,147 +37,147 @@ describe('migration-steps', function () {
 
       expect(stripCallsites(plan)).to.eql([
         {
-          'type': 'contentType/create',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0'
+          type: 'contentType/create',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0'
           },
-          'payload': {
-            'contentTypeId': 'person'
+          payload: {
+            contentTypeId: 'person'
           }
         },
         {
-          'type': 'contentType/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0'
+          type: 'contentType/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'props': {
-              'description': 'A content type for a person'
+          payload: {
+            contentTypeId: 'person',
+            props: {
+              description: 'A content type for a person'
             }
           }
         },
         {
-          'type': 'field/create',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0',
-            'fieldInstanceId': 'fields/fullName/0'
+          type: 'field/create',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0',
+            fieldInstanceId: 'fields/fullName/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'fieldId': 'fullName'
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'fullName'
           }
         },
         {
-          'type': 'field/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0',
-            'fieldInstanceId': 'fields/fullName/0'
+          type: 'field/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0',
+            fieldInstanceId: 'fields/fullName/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'fieldId': 'fullName',
-            'props': {
-              'name': 'Full Name'
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'fullName',
+            props: {
+              name: 'Full Name'
             }
           }
         },
         {
-          'type': 'field/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0',
-            'fieldInstanceId': 'fields/fullName/0'
+          type: 'field/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0',
+            fieldInstanceId: 'fields/fullName/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'fieldId': 'fullName',
-            'props': {
-              'type': 'Symbol'
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'fullName',
+            props: {
+              type: 'Symbol'
             }
           }
         },
         {
-          'type': 'contentType/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0'
+          type: 'contentType/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'props': {
-              'name': 'a person'
+          payload: {
+            contentTypeId: 'person',
+            props: {
+              name: 'a person'
             }
           }
         },
         {
-          'type': 'contentType/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/address/0'
+          type: 'contentType/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/address/0'
           },
-          'payload': {
-            'contentTypeId': 'address',
-            'props': {
-              'name': 'the new name'
+          payload: {
+            contentTypeId: 'address',
+            props: {
+              name: 'the new name'
             }
           }
         },
         {
-          'type': 'field/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/address/0',
-            'fieldInstanceId': 'fields/houseNumber/0'
+          type: 'field/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/address/0',
+            fieldInstanceId: 'fields/houseNumber/0'
           },
-          'payload': {
-            'contentTypeId': 'address',
-            'fieldId': 'houseNumber',
-            'props': {
-              'omitted': true
+          payload: {
+            contentTypeId: 'address',
+            fieldId: 'houseNumber',
+            props: {
+              omitted: true
             }
           }
         },
         {
-          'type': 'field/create',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/address/0',
-            'fieldInstanceId': 'fields/houseExtension/0'
+          type: 'field/create',
+          meta: {
+            contentTypeInstanceId: 'contentType/address/0',
+            fieldInstanceId: 'fields/houseExtension/0'
           },
-          'payload': {
-            'contentTypeId': 'address',
-            'fieldId': 'houseExtension'
+          payload: {
+            contentTypeId: 'address',
+            fieldId: 'houseExtension'
           }
         },
         {
-          'type': 'field/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/address/0',
-            'fieldInstanceId': 'fields/houseExtension/0'
+          type: 'field/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/address/0',
+            fieldInstanceId: 'fields/houseExtension/0'
           },
-          'payload': {
-            'contentTypeId': 'address',
-            'fieldId': 'houseExtension',
-            'props': {
-              'type': 'Symbol'
+          payload: {
+            contentTypeId: 'address',
+            fieldId: 'houseExtension',
+            props: {
+              type: 'Symbol'
             }
           }
         },
         {
-          'type': 'tag/create',
-          'meta': {
-            'tagInstanceId': 'tag/newTag/0'
+          type: 'tag/create',
+          meta: {
+            tagInstanceId: 'tag/newTag/0'
           },
-          'payload': {
-            'tagId': 'newTag',
-            'tagVisibility': 'private'
+          payload: {
+            tagId: 'newTag',
+            tagVisibility: 'private'
           }
         },
         {
-          'type': 'tag/update',
-          'meta': {
-            'tagInstanceId': 'tag/newTag/0'
+          type: 'tag/update',
+          meta: {
+            tagInstanceId: 'tag/newTag/0'
           },
-          'payload': {
-            'tagId': 'newTag',
-            'props': {
-              'name': 'my new tag'
+          payload: {
+            tagId: 'newTag',
+            props: {
+              name: 'my new tag'
             }
           }
         }
@@ -202,74 +202,74 @@ describe('migration-steps', function () {
 
       expect(stripCallsites(plan)).to.eql([
         {
-          'type': 'contentType/create',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0'
+          type: 'contentType/create',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0'
           },
-          'payload': {
-            'contentTypeId': 'person'
+          payload: {
+            contentTypeId: 'person'
           }
         },
         {
-          'type': 'contentType/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0'
+          type: 'contentType/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'props': {
-              'foo': 'This is an invalid prop'
+          payload: {
+            contentTypeId: 'person',
+            props: {
+              foo: 'This is an invalid prop'
             }
           }
         },
         {
-          'type': 'field/create',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0',
-            'fieldInstanceId': 'fields/fullName/0'
+          type: 'field/create',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0',
+            fieldInstanceId: 'fields/fullName/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'fieldId': 'fullName'
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'fullName'
           }
         },
         {
-          'type': 'field/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0',
-            'fieldInstanceId': 'fields/fullName/0'
+          type: 'field/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0',
+            fieldInstanceId: 'fields/fullName/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'fieldId': 'fullName',
-            'props': {
-              'bar': 'Full Name'
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'fullName',
+            props: {
+              bar: 'Full Name'
             }
           }
         },
         {
-          'type': 'field/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0',
-            'fieldInstanceId': 'fields/fullName/0'
+          type: 'field/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0',
+            fieldInstanceId: 'fields/fullName/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'fieldId': 'fullName',
-            'props': {
-              'type': 'Symbol'
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'fullName',
+            props: {
+              type: 'Symbol'
             }
           }
         },
         {
-          'type': 'contentType/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0'
+          type: 'contentType/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'props': {
-              'fussel': 'a person'
+          payload: {
+            contentTypeId: 'person',
+            props: {
+              fussel: 'a person'
             }
           }
         }
@@ -301,113 +301,113 @@ describe('migration-steps', function () {
 
       expect(stripCallsites(plan)).to.eql([
         {
-          'type': 'contentType/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0'
+          type: 'contentType/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'props': {
-              'description': 'A content type for a person'
+          payload: {
+            contentTypeId: 'person',
+            props: {
+              description: 'A content type for a person'
             }
           }
         },
         {
-          'type': 'contentType/create',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/1'
+          type: 'contentType/create',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/1'
           },
-          'payload': {
-            'contentTypeId': 'person'
+          payload: {
+            contentTypeId: 'person'
           }
         },
         {
-          'type': 'contentType/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/1'
+          type: 'contentType/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/1'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'props': {
-              'description': 'A content type for a person'
+          payload: {
+            contentTypeId: 'person',
+            props: {
+              description: 'A content type for a person'
             }
           }
         },
         {
-          'type': 'field/create',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/1',
-            'fieldInstanceId': 'fields/fullName/0'
+          type: 'field/create',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/1',
+            fieldInstanceId: 'fields/fullName/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'fieldId': 'fullName'
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'fullName'
           }
         },
         {
-          'type': 'field/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/1',
-            'fieldInstanceId': 'fields/fullName/0'
+          type: 'field/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/1',
+            fieldInstanceId: 'fields/fullName/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'fieldId': 'fullName',
-            'props': {
-              'name': 'Full Name'
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'fullName',
+            props: {
+              name: 'Full Name'
             }
           }
         },
         {
-          'type': 'field/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/1',
-            'fieldInstanceId': 'fields/fullName/0'
+          type: 'field/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/1',
+            fieldInstanceId: 'fields/fullName/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'fieldId': 'fullName',
-            'props': {
-              'type': 'Symbol'
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'fullName',
+            props: {
+              type: 'Symbol'
             }
           }
         },
         {
-          'type': 'field/create',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0',
-            'fieldInstanceId': 'fields/fullName/0'
+          type: 'field/create',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0',
+            fieldInstanceId: 'fields/fullName/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'fieldId': 'fullName'
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'fullName'
           }
         },
         {
-          'type': 'field/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0',
-            'fieldInstanceId': 'fields/fullName/0'
+          type: 'field/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0',
+            fieldInstanceId: 'fields/fullName/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'fieldId': 'fullName',
-            'props': {
-              'name': 'Full Name'
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'fullName',
+            props: {
+              name: 'Full Name'
             }
           }
         },
         {
-          'type': 'field/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0',
-            'fieldInstanceId': 'fields/fullName/0'
+          type: 'field/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0',
+            fieldInstanceId: 'fields/fullName/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'fieldId': 'fullName',
-            'props': {
-              'type': 'Symbol'
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'fullName',
+            props: {
+              type: 'Symbol'
             }
           }
         }
@@ -423,12 +423,12 @@ describe('migration-steps', function () {
 
       expect(stripCallsites(plan)).to.eql([
         {
-          'type': 'contentType/delete',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/recipe/0'
+          type: 'contentType/delete',
+          meta: {
+            contentTypeInstanceId: 'contentType/recipe/0'
           },
-          'payload': {
-            'contentTypeId': 'recipe'
+          payload: {
+            contentTypeId: 'recipe'
           }
         }
       ]);
@@ -450,74 +450,74 @@ describe('migration-steps', function () {
 
       expect(stripCallsites(plan)).to.eql([
         {
-          'type': 'contentType/create',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0'
+          type: 'contentType/create',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0'
           },
-          'payload': {
-            'contentTypeId': 'person'
+          payload: {
+            contentTypeId: 'person'
           }
         },
         {
-          'type': 'contentType/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0'
+          type: 'contentType/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'props': {
-              'description': 'A content type for a person'
+          payload: {
+            contentTypeId: 'person',
+            props: {
+              description: 'A content type for a person'
             }
           }
         },
         {
-          'type': 'contentType/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0'
+          type: 'contentType/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'props': {
-              'displayField': 'favorite'
+          payload: {
+            contentTypeId: 'person',
+            props: {
+              displayField: 'favorite'
             }
           }
         },
         {
-          'type': 'field/create',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0',
-            'fieldInstanceId': 'fields/favorite/0'
+          type: 'field/create',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0',
+            fieldInstanceId: 'fields/favorite/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'fieldId': 'favorite'
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'favorite'
           }
         },
         {
-          'type': 'field/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0',
-            'fieldInstanceId': 'fields/favorite/0'
+          type: 'field/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0',
+            fieldInstanceId: 'fields/favorite/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'fieldId': 'favorite',
-            'props': {
-              'name': 'favorite color'
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'favorite',
+            props: {
+              name: 'favorite color'
             }
           }
         },
         {
-          'type': 'field/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0',
-            'fieldInstanceId': 'fields/favorite/0'
+          type: 'field/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0',
+            fieldInstanceId: 'fields/favorite/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'fieldId': 'favorite',
-            'props': {
-              'type': 'Symbol'
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'favorite',
+            props: {
+              type: 'Symbol'
             }
           }
         }
@@ -538,74 +538,74 @@ describe('migration-steps', function () {
 
       expect(stripCallsites(plan)).to.eql([
         {
-          'type': 'contentType/create',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0'
+          type: 'contentType/create',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0'
           },
-          'payload': {
-            'contentTypeId': 'person'
+          payload: {
+            contentTypeId: 'person'
           }
         },
         {
-          'type': 'contentType/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0'
+          type: 'contentType/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'props': {
-              'description': 'A content type for a person'
+          payload: {
+            contentTypeId: 'person',
+            props: {
+              description: 'A content type for a person'
             }
           }
         },
         {
-          'type': 'field/create',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0',
-            'fieldInstanceId': 'fields/favorite/0'
+          type: 'field/create',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0',
+            fieldInstanceId: 'fields/favorite/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'fieldId': 'favorite'
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'favorite'
           }
         },
         {
-          'type': 'field/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0',
-            'fieldInstanceId': 'fields/favorite/0'
+          type: 'field/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0',
+            fieldInstanceId: 'fields/favorite/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'fieldId': 'favorite',
-            'props': {
-              'name': 'favorite color'
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'favorite',
+            props: {
+              name: 'favorite color'
             }
           }
         },
         {
-          'type': 'field/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0',
-            'fieldInstanceId': 'fields/favorite/0'
+          type: 'field/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0',
+            fieldInstanceId: 'fields/favorite/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'fieldId': 'favorite',
-            'props': {
-              'type': 'Symbol'
+          payload: {
+            contentTypeId: 'person',
+            fieldId: 'favorite',
+            props: {
+              type: 'Symbol'
             }
           }
         },
         {
-          'type': 'contentType/update',
-          'meta': {
-            'contentTypeInstanceId': 'contentType/person/0'
+          type: 'contentType/update',
+          meta: {
+            contentTypeInstanceId: 'contentType/person/0'
           },
-          'payload': {
-            'contentTypeId': 'person',
-            'props': {
-              'displayField': 'favorite'
+          payload: {
+            contentTypeId: 'person',
+            props: {
+              displayField: 'favorite'
             }
           }
         }

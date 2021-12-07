@@ -52,9 +52,9 @@ describe('apply derive entry transformation', function () {
       },
       data: {
         fields: {
-          'name': { 'en-US': 'Moses' },
-          'breed': { 'en-US': 'Poodle' },
-          'owner': { 'en-US': 'Contentful Office' }
+          name: { 'en-US': 'Moses' },
+          breed: { 'en-US': 'Poodle' },
+          owner: { 'en-US': 'Contentful Office' }
         }
       }
     });
@@ -66,9 +66,9 @@ describe('apply derive entry transformation', function () {
       },
       data: {
         fields: {
-          'name': { 'en-US': 'Luna' },
-          'breed': { 'en-US': 'Something' },
-          'owner': { 'en-US': 'Contentful Office' }
+          name: { 'en-US': 'Luna' },
+          breed: { 'en-US': 'Something' },
+          owner: { 'en-US': 'Contentful Office' }
         }
       }
     });
@@ -109,14 +109,14 @@ describe('apply derive entry transformation', function () {
             fields: {
               name: { 'en-US': 'Moses' },
               breed: { 'en-US': 'Poodle' },
-              owner: { 'en-US': { 'sys': { 'id': 'contentful-office', 'linkType': 'Entry', 'type': 'Link' } } }
+              owner: { 'en-US': { sys: { id: 'contentful-office', linkType: 'Entry', type: 'Link' } } }
             }
           },
           {
             fields: {
               name: { 'en-US': 'Luna' },
               breed: { 'en-US': 'Something' },
-              owner: { 'en-US': { 'sys': { 'id': 'contentful-office', 'linkType': 'Entry', 'type': 'Link' } } }
+              owner: { 'en-US': { sys: { id: 'contentful-office', linkType: 'Entry', type: 'Link' } } }
             }
           }
         ], sortFn);
