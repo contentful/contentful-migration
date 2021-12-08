@@ -13,6 +13,7 @@ interface Intent {
 
   requiresAllEntries (): boolean
   requiresAllTags (): boolean
+  requiresContentType (): boolean
 
   shouldSave (): boolean
   shouldPublish (): boolean

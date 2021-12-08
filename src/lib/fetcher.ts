@@ -48,11 +48,12 @@ export default class Fetcher implements APIFetcher {
   }
 
   async getContentTypesInChunks (intentList: IntentList): Promise<APIContentType[]> {
-    // Excluding editor interface intents here since, API-wise, editor interfaces don't require
+    // Excluding editor interface intents here since most editor interface intents don't require
     // to know the full details about the associated content type.
-    // Also excluding tags here as they are independent of cts.
+    // Editor interface intents that require the content type can implement IntentInterface.requiresContentType.
+    // Also excluding tags here as they are independent of content types.
     const ids: string[] = _.uniq(intentList.getIntents()
-      .filter((intent) => (!intent.isEditorInterfaceIntent() && !intent.isTagIntent()))
+      .filter((intent) => (!intent.isEditorInterfaceIntent() || intent.requiresContentType()) && !intent.isTagIntent())
       .reduce((ids, intent) => {
         const intentIds = intent.getRelatedContentTypeIds()
         return ids.concat(intentIds)

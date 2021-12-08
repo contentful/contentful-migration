@@ -1,4 +1,4 @@
-import { cloneDeep, find, filter, findIndex, pull, forEach } from 'lodash'
+import { cloneDeep, find, filter, findIndex, pull, forEach, pick } from 'lodash'
 
 import {
   APIContentType,
@@ -6,12 +6,17 @@ import {
   APISidebarWidgetSettings,
   APIEditorInterfaceControl,
   APIEditorInterfaces,
+  APIEditorInterfaceGroupControl,
   APIEditorInterfaceSettings,
   APIEditorInterfaceSidebar,
   APIEditorIntefaceEditor,
-  APISidebarWidgetNamespace, APIControlWidgetNamespace
+  APIEditorInterfaceEditorLayout,
+  APISidebarWidgetNamespace,
+  APIControlWidgetNamespace,
+  APIEditorLayoutFieldGroupItem
 } from '../interfaces/content-type'
 import { SidebarWidgetNamespace, DEFAULT_SIDEBAR_LIST } from '../action/sidebarwidget'
+import { findFieldGroup, isFieldGroupItem } from '../utils/editor-layout'
 
 class Fields {
   private _fields: Field[]
@@ -96,6 +101,8 @@ class EditorInterfaces {
   private _sidebar?: APIEditorInterfaceSidebar[]
   private _editor?: APIEditorIntefaceEditor
   private _editors?: APIEditorIntefaceEditor[]
+  private _editorLayout?: APIEditorInterfaceEditorLayout
+  private _groupControls?: APIEditorInterfaceGroupControl[]
 
   constructor (apiEditorInterfaces: APIEditorInterfaces) {
     this._version = apiEditorInterfaces.sys.version
@@ -103,6 +110,8 @@ class EditorInterfaces {
     this._sidebar = apiEditorInterfaces.sidebar || undefined
     this._editor = apiEditorInterfaces.editor || undefined
     this._editors = apiEditorInterfaces.editors || undefined
+    this._editorLayout = apiEditorInterfaces.editorLayout || undefined
+    this._groupControls = apiEditorInterfaces.groupControls || undefined
   }
 
   get version () {
@@ -127,6 +136,14 @@ class EditorInterfaces {
 
   getControls () {
     return this._controls
+  }
+
+  getEditorLayout () {
+    return this._editorLayout
+  }
+
+  getGroupControls () {
+    return this._groupControls
   }
 
   reset (fieldId: string) {
@@ -257,6 +274,78 @@ class EditorInterfaces {
     this._editors = editors
   }
 
+  createEditorLayout (fields: Field[]) {
+    // A newly created editor layout doesn’t have the correct shape. This is corrected when adding the first group.
+    this._editorLayout = fields.map(field => ({ fieldId: field.id })) as unknown as APIEditorInterfaceEditorLayout
+  }
+
+  createEditorLayoutFieldGroup (fieldGroupId: string, parentFieldGroupId?: string) {
+    if (parentFieldGroupId) {
+      // create field set
+      const parent = findFieldGroup(this._editorLayout, parentFieldGroupId)
+      parent.item.items.push({
+        groupId: fieldGroupId,
+        items: []
+      })
+    } else {
+      // create tab
+      const hasFieldGroup = this._editorLayout.some(item => isFieldGroupItem(item))
+      if (hasFieldGroup) {
+        this._editorLayout.push({
+          groupId: fieldGroupId,
+          items: []
+        })
+      } else {
+        this._editorLayout = [{
+          groupId: fieldGroupId,
+          items: [...this._editorLayout]
+        }]
+      }
+    }
+  }
+
+  // @ts-ignore
+  deleteEditorLayoutFieldGroup (fieldGroupId: string) {
+    // TODO: delete field group
+  }
+
+  updateEditorLayoutFieldGroup (fieldGroupId: string, props: Partial<APIEditorLayoutFieldGroupItem>) {
+    const fieldGroup = findFieldGroup(this._editorLayout, fieldGroupId)
+
+    Object.assign(fieldGroup.item, pick(props, ['name']))
+
+  }
+
+  createGroupControls () {
+    this._groupControls = []
+  }
+
+  createTabGroupControl (fieldGroupId: string) {
+    this._groupControls.push({
+      groupId: fieldGroupId,
+      widgetId: 'topLevelTab',
+      widgetNamespace: 'builtin'
+    })
+  }
+
+  updateGroupControl (fieldGroupId: string, groupControl: Omit<APIEditorInterfaceGroupControl, 'groupId'>) {
+    const existingGroupControl = this._groupControls.find(control => control.groupId === fieldGroupId)
+    if (existingGroupControl) {
+      existingGroupControl.widgetId = groupControl.widgetId
+      existingGroupControl.widgetNamespace = groupControl.widgetNamespace
+      if (groupControl.settings !== undefined) {
+        existingGroupControl.settings = groupControl.settings
+      }
+    } else {
+      this._groupControls.push({
+        groupId: fieldGroupId,
+        widgetId: groupControl.widgetId,
+        widgetNamespace: groupControl.widgetNamespace,
+        settings: (groupControl.settings ?? {})
+      })
+    }
+  }
+
   toAPI (): object {
     let controls: APIEditorInterfaceControl[] = []
     forEach(this._controls, (c) => {
@@ -272,7 +361,9 @@ class EditorInterfaces {
       controls: APIEditorInterfaceControl[],
       sidebar?: APIEditorInterfaceSidebar[],
       editor?: APIEditorIntefaceEditor,
-      editors?: APIEditorIntefaceEditor[]
+      editors?: APIEditorIntefaceEditor[],
+      editorLayout?: APIEditorInterfaceEditorLayout,
+      groupControls?: APIEditorInterfaceGroupControl[]
     } = {
       controls
     }
@@ -286,6 +377,14 @@ class EditorInterfaces {
       result.editors = this._editors
     } else if (this._editor) {
       result.editor = this._editor
+    }
+
+    if (this._editorLayout) {
+      result.editorLayout = this._editorLayout
+    }
+
+    if (this._groupControls) {
+      result.groupControls = this._groupControls
     }
 
     return result

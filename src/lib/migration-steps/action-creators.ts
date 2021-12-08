@@ -190,6 +190,19 @@ const actionCreators = {
         entryEditors: editors
       }
     }),
+    createEditorLayout: (id, instanceId, callsite): Intents.EditorLayoutCreate => new Intents.EditorLayoutCreate({
+      type: 'contentType/createEditorLayout',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id
+      }
+    }),
     addSidebarWidget: (id, instanceId, callsite, widgetId, widgetNamespace, insertBeforeWidgetId, settings = {}): Intents.SidebarWidgetAdd => new Intents.SidebarWidgetAdd({
       type: 'contentType/addSidebarWidget',
       meta: {
@@ -269,6 +282,69 @@ const actionCreators = {
       payload: {
         entryTransformationForTags,
         contentTypeId: id
+      }
+    })
+  },
+  editorLayout: {
+    changeFieldGroupControl: (contentTypeId, contentTypeInstanceId, fieldGroupId, callsite, groupControl): Intents.EditorLayoutChangeFieldGroupControl => new Intents.EditorLayoutChangeFieldGroupControl({
+      type: 'contentType/updateGroupControl',
+      meta: {
+        contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId,
+        fieldGroupId,
+        groupControl
+      }
+    }),
+    createFieldGroup: (id, instanceId, callsite, fieldGroupId, parentId = undefined): Intents.EditorLayoutCreateFieldGroup => new Intents.EditorLayoutCreateFieldGroup({
+      type: 'contentType/createEditorLayoutFieldGroup',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id,
+        fieldGroupId,
+        parentFieldGroupId: parentId
+      }
+    }),
+    deleteEditorLayoutFieldGroup: (id, instanceId, callsite, fieldGroupId): Intents.EditorLayoutDeleteFieldGroup => new Intents.EditorLayoutDeleteFieldGroup({
+      type: 'contentType/deleteEditorLayoutFieldGroup',
+      meta: {
+        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId: id,
+        fieldGroupId
+      }
+    }),
+    updateFieldGroup: (contentTypeId, contentTypeInstanceId, fieldGroupId, callsite, property, value): Intents.EditorLayoutUpdateFieldGroup => new Intents.EditorLayoutUpdateFieldGroup({
+      type: 'contentType/updateEditorLayoutFieldGroup',
+      meta: {
+        contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId,
+        fieldGroupId,
+        fieldGroupProps: {
+          [property]: value
+        }
       }
     })
   },

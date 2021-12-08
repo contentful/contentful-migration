@@ -45,6 +45,13 @@ interface APIEditorInterfaceControl {
   settings?: APIEditorInterfaceSettings
 }
 
+interface APIEditorInterfaceGroupControl {
+  groupId: string
+  widgetId?: string,
+  widgetNamespace?: string,
+  settings?: APIEditorInterfaceSettings
+}
+
 interface APISidebarWidgetSettings {
   [key: string]: APIParameterValue
 }
@@ -62,6 +69,20 @@ interface APIEditorIntefaceEditor {
   settings?: { [key: string]: APIParameterValue }
 }
 
+interface APIEditorLayoutFieldGroupItem {
+  groupId: string
+  name?: string
+  items: APIEditorLayoutItem[]
+}
+
+interface APIEditorLayoutFieldItem {
+  fieldId: string
+}
+
+type APIEditorLayoutItem = APIEditorLayoutFieldItem | APIEditorLayoutFieldGroupItem
+
+type APIEditorInterfaceEditorLayout = APIEditorLayoutFieldGroupItem[]
+
 interface APIEditorInterfaces {
   sys: {
     version: number
@@ -70,6 +91,8 @@ interface APIEditorInterfaces {
   sidebar?: APIEditorInterfaceSidebar[],
   editor?: APIEditorIntefaceEditor
   editors?: APIEditorIntefaceEditor[]
+  editorLayout?: APIEditorInterfaceEditorLayout
+  groupControls?: APIEditorInterfaceGroupControl[]
 }
 
 export {
@@ -78,9 +101,12 @@ export {
   Field,
   APIEditorInterfaces,
   APIEditorInterfaceControl,
+  APIEditorInterfaceGroupControl,
   APIEditorInterfaceSettings,
   APIEditorInterfaceSidebar,
   APIEditorIntefaceEditor,
+  APIEditorInterfaceEditorLayout,
+  APIEditorLayoutFieldGroupItem,
   APISidebarWidgetSettings,
   APIControlWidgetNamespace,
   APISidebarWidgetNamespace

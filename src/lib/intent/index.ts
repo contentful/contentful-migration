@@ -20,6 +20,11 @@ import SidebarResetToDefaultIntent from './sidebar-reset-to-default'
 import EntryEditorResetToDefaultIntent from './entryeditor-reset-to-default'
 import EntryEditorConfigureIntent from './entryeditor-configure'
 import EntryEditorsConfigureIntent from './entryeditors-configure'
+import EditorLayoutCreateIntent from './editor-layout/editor-layout-create'
+import EditorLayoutCreateFieldGroupIntent from './editor-layout/editor-layout-create-field-group'
+import EditorLayoutDeleteFieldGroupIntent from './editor-layout/editor-layout-delete-field-group'
+import EditorLayoutUpdateFieldGroupIntent from './editor-layout/editor-layout-update-field-group'
+import EditorLayoutChangeFieldGroupControlIntent from './editor-layout/editor-layout-change-field-group-control'
 import TagCreateIntent from './tag-create'
 import TagUpdateIntent from './tag-update'
 import TagDeleteIntent from './tag-delete'
@@ -49,6 +54,11 @@ export {
   EntryEditorResetToDefaultIntent as EntryEditorResetToDefault,
   EntryEditorConfigureIntent as EntryEditorConfigure,
   EntryEditorsConfigureIntent as EntryEditorsConfigure,
+  EditorLayoutCreateIntent as EditorLayoutCreate,
+  EditorLayoutCreateFieldGroupIntent as EditorLayoutCreateFieldGroup,
+  EditorLayoutDeleteFieldGroupIntent as EditorLayoutDeleteFieldGroup,
+  EditorLayoutUpdateFieldGroupIntent as EditorLayoutUpdateFieldGroup,
+  EditorLayoutChangeFieldGroupControlIntent as EditorLayoutChangeFieldGroupControl,
   TagCreateIntent as TagCreate,
   TagUpdateIntent as TagUpdate,
   TagDeleteIntent as TagDelete,

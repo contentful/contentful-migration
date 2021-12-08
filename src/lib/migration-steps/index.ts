@@ -13,6 +13,7 @@ import EntrySetTags from '../interfaces/entry-set-tags'
 import TransformEntryToType from '../interfaces/entry-transform-to-type'
 import { ClientConfig } from '../../bin/lib/config'
 import { deprecatedMethod } from '../utils/deprecated'
+import { APIEditorInterfaceSettings } from '../interfaces/content-type'
 
 const createInstanceIdManager = () => {
   const instanceCounts = {}
@@ -46,6 +47,92 @@ class Field extends DispatchProxy {
     // Initialize from second argument
     Object.keys(props).forEach((propertyName) => {
       this[propertyName](props[propertyName])
+    })
+  }
+}
+
+class EditorLayout extends DispatchProxy {
+  private contentTypeId: string
+  private instanceId: string
+  public dispatch? (step: Intent): void
+
+  constructor (contentTypeId, instanceId, dispatch) {
+    // pass noop function because editor layout doesn’t have properties
+    // tslint:disable-next-line:no-empty
+    super({ dispatchUpdate: () => {} })
+
+    this.contentTypeId = contentTypeId
+    this.instanceId = instanceId
+    this.dispatch = dispatch
+  }
+
+  createFieldGroup (fieldGroupId, init) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.editorLayout.createFieldGroup(this.contentTypeId, this.instanceId, callsite, fieldGroupId))
+
+    return this.editFieldGroup(fieldGroupId, init)
+  }
+
+  editFieldGroup (fieldGroupId, init) {
+    const updateFieldGroup = actionCreators.editorLayout.updateFieldGroup.bind(null, this.contentTypeId, this.instanceId, fieldGroupId)
+    return new EditorLayoutFieldGroup(this.contentTypeId, this.instanceId, fieldGroupId, this.dispatch, init, {
+      dispatchUpdate: (callsite, property, value) => {
+        return this.dispatch(updateFieldGroup(callsite, property, value))
+      }
+    })
+  }
+
+  deleteFieldGroup (fieldGroupId) {
+    const callsite = getFirstExternalCaller()
+
+    this.dispatch(actionCreators.editorLayout.deleteEditorLayoutFieldGroup(this.contentTypeId, this.instanceId, callsite, fieldGroupId))
+  }
+
+  changeFieldGroupControl (fieldGroupId: string, widgetNamespace: string, widgetId: string, settings?: APIEditorInterfaceSettings) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.editorLayout.changeFieldGroupControl(
+      this.contentTypeId,
+      this.instanceId,
+      fieldGroupId,
+      callsite,
+      {
+        widgetId,
+        widgetNamespace,
+        settings
+      }
+    ))
+  }
+}
+
+class EditorLayoutFieldGroup extends DispatchProxy {
+  private contentTypeId: string
+  private instanceId: string
+  private fieldGroupId: string
+  public dispatch? (step: Intent): void
+
+  constructor (contentTypeId, instanceId, fieldGroupId, dispatch, props = {}, { dispatchUpdate }) {
+    super({ dispatchUpdate })
+
+    this.contentTypeId = contentTypeId
+    this.instanceId = instanceId
+    this.fieldGroupId = fieldGroupId
+    this.dispatch = dispatch
+
+    // Initialize from third argument
+    Object.keys(props).forEach((propertyName) => {
+      this[propertyName](props[propertyName])
+    })
+  }
+
+  createFieldGroup (fieldGroupId, init) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.editorLayout.createFieldGroup(this.contentTypeId, this.instanceId, callsite, fieldGroupId, this.fieldGroupId))
+
+    const updateFieldGroup = actionCreators.editorLayout.updateFieldGroup.bind(null, this.contentTypeId, this.instanceId, fieldGroupId)
+    return new EditorLayoutFieldGroup(this.contentTypeId, this.instanceId, fieldGroupId, this.dispatch, init, {
+      dispatchUpdate: (callsite, property, value) => {
+        return this.dispatch(updateFieldGroup(callsite, property, value))
+      }
     })
   }
 }
@@ -283,6 +370,17 @@ class ContentType extends DispatchProxy {
       callsite
     ))
     return this
+  }
+
+  createEditorLayout () {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.contentType.createEditorLayout(this.id, this.instanceId, callsite))
+
+    return this.editEditorLayout()
+  }
+
+  editEditorLayout () {
+    return new EditorLayout(this.id, this.instanceId, this.dispatch)
   }
 }
 

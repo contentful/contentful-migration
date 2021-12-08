@@ -117,6 +117,10 @@ export default class ComposedIntent implements Intent {
     return this.intents.some(intent => intent.requiresAllTags())
   }
 
+  requiresContentType () {
+    return false
+  }
+
   groupsWith (): boolean {
     return false
   }
