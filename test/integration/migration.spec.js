@@ -20,6 +20,7 @@ const addSidebarWidgetsToExisting = require('../../examples/27-add-sidebar-widge
 const createTag = require('../../examples/28-create-tag');
 const createPublicTag = require('../../examples/32-create-public-tag');
 const createWithDefaultValue = require('../../examples/33-create-fields-with-default-values');
+const createWithLinkToNonExistingContentType = require('../../examples/34-create-with-link-to-non-existing-content-type.js');
 const modifyTag = require('../../examples/29-modify-tag');
 const deleteTag = require('../../examples/30-delete-tag');
 const setTagsForEntries = require('../../examples/31-set-tags-for-entries');
@@ -792,5 +793,16 @@ describe('the migration', function () {
     expect(refContentType.name).to.eql('RefWithDefault');
     expect(refContentType.fields[0].type).to.eql('Link');
     expect(refContentType.fields[0].validations).to.eql([{ linkContentType: ['event'] }]);
+  });
+
+  it('creates content type with link to non-existing content type', async function () {
+    // FIXME This is not desired behavior, as ideally we would only
+    // allow migrations which link to existing content types.
+    await migrator(createWithLinkToNonExistingContentType);
+    const contentType = await request({
+      method: 'GET',
+      url: '/content_types/contentTypeWithLink'
+    });
+    expect(contentType.fields[0].id).to.eql('linkToNonExistingContentType');
   });
 });
