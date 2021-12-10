@@ -1,12 +1,12 @@
 // TODO: rename file before merging to master
 
 module.exports = function (migration) {
-  const ComposePage = migration.createContentType('page').name('Compose page');
-  ComposePage.createField('name').name('Internal name').type('Symbol');
-  ComposePage.createField('title').name('Page title').type('Symbol');
+  const Page = migration.createContentType('page').name('Page');
+  Page.createField('name').name('Internal name').type('Symbol');
+  Page.createField('title').name('Page title').type('Symbol');
 
   // an editor layout can be created empty but not saved without adding at least one tab
-  const editorLayout = ComposePage.createEditorLayout();
+  const editorLayout = Page.createEditorLayout();
 
   editorLayout
     .createFieldGroup('content', {
