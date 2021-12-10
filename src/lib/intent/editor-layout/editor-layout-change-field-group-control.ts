@@ -5,11 +5,6 @@ import { SaveEditorInterfaceAction } from '../../action/editorinterface-save'
 import { entries } from 'lodash'
 import { EditorLayoutChangeFieldGroupControlAction } from '../../action/editor-layout/editor-layout-change-field-group-control'
 
-export interface EditorLayoutFieldGroup {
-  groupId: string
-  name?: string
-}
-
 export default class EditorLayoutChangeFieldGroupControlIntent extends Intent {
   isEditorInterfaceIntent () {
     return true

@@ -3,12 +3,7 @@ import { PlanMessage } from '../../interfaces/plan-message'
 import chalk from 'chalk'
 import { EditorLayoutCreateFieldGroupAction } from '../../action/editor-layout/editor-layout-create-field-group'
 
-export interface EditorLayoutFieldGroup {
-  groupId: string
-  name?: string
-}
-
-export default class EditorLayoutFieldGroupCreateIntent extends Intent {
+export default class EditorLayoutCreateFieldGroupIntent extends Intent {
   isEditorInterfaceIntent () {
     return true
   }
