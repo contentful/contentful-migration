@@ -309,7 +309,7 @@ class EditorInterfaces {
     // TODO: delete field group
   }
 
-  updateEditorLayoutFieldGroup (fieldGroupId: string, props: Partial<APIEditorLayoutFieldGroupItem>) {
+  updateEditorLayoutFieldGroup (fieldGroupId: string, props: Pick<APIEditorLayoutFieldGroupItem, 'name'>) {
     const fieldGroup = findFieldGroup(this._editorLayout, fieldGroupId)
 
     Object.assign(fieldGroup.item, pick(props, ['name']))

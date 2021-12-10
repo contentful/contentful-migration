@@ -5,9 +5,9 @@ import { APIEditorLayoutFieldGroupItem } from '../../interfaces/content-type'
 class EditorLayoutUpdateFieldGroupAction extends EntityAction {
   private readonly contentTypeId: string
   private readonly fieldGroupId: string
-  protected props: Partial<APIEditorLayoutFieldGroupItem>
+  protected props: Pick<APIEditorLayoutFieldGroupItem, 'name'>
 
-  constructor (contentTypeId: string, fieldGroupId: string, props: Partial<APIEditorLayoutFieldGroupItem>) {
+  constructor (contentTypeId: string, fieldGroupId: string, props: Pick<APIEditorLayoutFieldGroupItem, 'name'>) {
     super()
     this.contentTypeId = contentTypeId
     this.fieldGroupId = fieldGroupId
