@@ -118,7 +118,7 @@ class EditorLayoutFieldGroup extends DispatchProxy {
     this.fieldGroupId = fieldGroupId
     this.dispatch = dispatch
 
-    // Initialize from third argument
+    // Initialize properties by delegating to dispatchUpdate
     Object.keys(props).forEach((propertyName) => {
       this[propertyName](props[propertyName])
     })
