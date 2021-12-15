@@ -92,8 +92,12 @@
       - [`configureEntryEditor (widgetNamespace, widgetId[, settings])` : void](#configureentryeditor-widgetnamespace-widgetid-settings--void)
       - [`configureEntryEditors (EntryEditor[])` : void](#configureentryeditors-entryeditor--void)
       - [`resetEntryEditorToDefault ()` : void](#resetentryeditortodefault---void)
-    - [Editor Layout](#editor-layout)
+      - [`createEditorLayout ()` : EditorLayout](#createeditorlayout---editorlayouteditor-layout)
+      - [`editEditorLayout ()` : EditorLayout](#editeditorlayout---editorlayouteditor-layout)
+      - [`deleteEditorLayout ()` : void](#deleteeditorlayout---void)
     - [Field](#field)
+    - [Editor Layout](#editor-layout)
+    - [Editor Layout Field Group](#editor-layout-field-group)
   - [Validation errors](#validation-errors)
   - [Example migrations](#example-migrations)
   - [Writing Migrations in Typescript](#writing-migrations-in-typescript)
@@ -759,19 +763,14 @@ Moves the field with the provided `id`.
 
 `moveField(id)` returns a movable editor layout item type which must be called with a direction function:
 
-- **`.toTheTopOfGroup(groupId)`**
-- **`.toTheBottomOfGroup(groupId)`**
-- **`.beforeGroup(groupId)`**
-- **`.afterGroup(groupId)`**
+- **`.toTheTopOfFieldGroup(groupId)`**
+- **`.toTheBottomOfFieldGroup(groupId)`**
+- **`.beforeFieldGroup(groupId)`**
+- **`.afterFieldGroup(groupId)`**
 - **`.beforeField(fieldId)`**
 - **`.afterField(fieldId)`**
 
-Example:
-```javascript
-  // TODO
-```
-
-#### `createGroup(id[, opts])` : [EditorLayoutGroup](#editor-layout-group)
+#### `createFieldGroup(id[, opts])` : [EditorLayoutFieldGroup](#editor-layout-field-group)
 
 Creates a tab with the provided `id`.
 
@@ -782,18 +781,17 @@ Creates a tab with the provided `id`.
 **`opts : Object`** – Group settings, with the following options:
 
 - **`name : string`** _(required)_ – Field set name.
-- **`settings : Object`** - TODO
 
 **`settings : Object`** – Group settings, with the following properties:
 
 - **`helpText : string`** – Help text for the tab. Displayed when editing.
 
-#### `deleteGroup(id)` : void
+#### `deleteFieldGroup (id)` : void
 
 Deletes the group with the provided `id` from the editor layout,
 moving its contents to the parent if the group to delete is a field set or to the default tab if it’s a tab.
 
-#### `changeGroupId(currentId, newId)`
+#### `changeFieldGroupId (currentId, newId)`
 
 Changes the group’s ID.
 
@@ -801,11 +799,11 @@ Changes the group’s ID.
 
 **`newId : string`** – The new ID for the group.
 
-#### `editGroup(id[, opts])` : [EditorLayoutGroup](#editor-layout-group)
+#### `editFieldGroup (id[, opts])` : [EditorLayoutFieldGroup](#editor-layout-field-group)
 
-### Editor Layout Group
+### Editor Layout Field Group
 
-#### `createGroup(id[, opts])` : [EditorLayoutGroup](#editor-layout-group)
+#### `createFieldGroup (id[, opts])` : [EditorLayoutFieldGroup](#editor-layout-field-group)
 
 Creates a field set with the provided `id`. Returns the created
 
@@ -814,21 +812,18 @@ Creates a field set with the provided `id`. Returns the created
 **`opts : Object`** – Group settings, with the following options:
 
 - **`name : string`** _(required)_ – Field set name.
-- **`settings : Object`** - Field set settings
 
+#### `changeFieldGroupControl (id, widgetNamespace, widgetId[, settings])` : void
+
+Sets the group control for a field group.
+
+**`widgetNamespace : string`** – The namespace for the group control. Currently allowed: `builtin`.
+**`widgetId : string`** - The widget ID for the group control. Allowed values: `fieldset`, `topLevelTab`.
 **`settings : Object`** – Field set settings, with the following properties:
 
 - **`helpText : string`** – Help text for the field set. Displayed when editing.
 - **`collapsible : boolean`** – Whether the field set can be collapsed when editing.
 - **`collapsedByDefault : string`** – Whether the field set is collapsed when opening the editor.
-
-#### `changeGroupControl(widgetNamespace, widgetId[, settings])` : void
-
-Sets the group control manually.
-
-**`widgedNamespace : string`** – The namespace for the group control. Currently allowed: `builtin`.
-**`widgetId : string`** - The widget ID for the group control. Allowed values: `fieldset`, `topLevelTab`.
-**`settings : string`** - Same as for `createGroup` listed above.
 
 ## Validation errors
 

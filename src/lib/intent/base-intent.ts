@@ -38,6 +38,10 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
+  requiresContentType () {
+    return false
+  }
+
   isContentTypeUpdate () {
     return false
   }
@@ -95,6 +99,10 @@ export default abstract class Intent implements IntentInterface {
   }
 
   isEditorInterfaceIntent () {
+    return false
+  }
+
+  isEditorLayoutUpdate () {
     return false
   }
 

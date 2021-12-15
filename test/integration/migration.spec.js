@@ -24,6 +24,7 @@ const createWithLinkToNonExistingContentType = require('../../examples/34-create
 const modifyTag = require('../../examples/29-modify-tag');
 const deleteTag = require('../../examples/30-delete-tag');
 const setTagsForEntries = require('../../examples/31-set-tags-for-entries');
+const createEditorLayout = require('../../examples/xx-create-editor-layout');
 
 const { createMigrationParser } = require('../../built/lib/migration-parser');
 const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget');
@@ -804,5 +805,52 @@ describe('the migration', function () {
       url: '/content_types/contentTypeWithLink'
     });
     expect(contentType.fields[0].id).to.eql('linkToNonExistingContentType');
+  });
+
+  it('creates an editor layout', async function () {
+    await migrator(createEditorLayout);
+
+    const editorInterfaces = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    });
+
+    expect(editorInterfaces?.editorLayout).to.eql([
+      {
+        groupId: 'content',
+        name: 'Content',
+        items: [{ fieldId: 'name' }, { fieldId: 'title' }]
+      },
+      {
+        groupId: 'settings',
+        name: 'Settings',
+        items: [{ groupId: 'seo', name: 'SEO', items: [] }]
+      }
+    ]);
+
+    expect(editorInterfaces?.groupControls).to.eql([
+      {
+        groupId: 'content',
+        widgetId: 'topLevelTab',
+        widgetNamespace: 'builtin',
+        settings: {
+          helpText: 'Main content'
+        }
+      },
+      {
+        groupId: 'settings',
+        widgetId: 'topLevelTab',
+        widgetNamespace: 'builtin'
+      },
+      {
+        groupId: 'seo',
+        widgetId: 'fieldset',
+        widgetNamespace: 'builtin',
+        settings: {
+          helpText: 'Search related fields',
+          collapsedByDefault: false
+        }
+      }
+    ]);
   });
 });
