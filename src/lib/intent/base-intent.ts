@@ -30,6 +30,10 @@ export default abstract class Intent implements IntentInterface {
     return this.payload.fieldId
   }
 
+  getFieldGroupId () {
+    return this.payload.fieldGroupId
+  }
+
   requiresAllEntries () {
     return false
   }
@@ -103,6 +107,14 @@ export default abstract class Intent implements IntentInterface {
   }
 
   isEditorLayoutUpdate () {
+    return false
+  }
+
+  isFieldGroupCreate () {
+    return false
+  }
+
+  isFieldGroupDelete () {
     return false
   }
 

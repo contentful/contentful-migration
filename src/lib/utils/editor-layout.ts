@@ -36,7 +36,29 @@ export const findFieldGroup = (editorLayout: FieldGroupItem[], groupId: string) 
   }
 }
 
-export function find<ItemType = EditorLayoutItem> (
+export const collectFieldGroupIds = (editorLayout: FieldGroupItem[]) => {
+  const fieldGroupIds: string[] = []
+
+  visitEditorLayout(editorLayout, (item) => {
+    if (isFieldGroupItem(item)) {
+      fieldGroupIds.push(item.groupId)
+    }
+  });
+
+  return fieldGroupIds
+}
+
+function visitEditorLayout (editorLayout: EditorLayoutItem[], cb: (item: EditorLayoutItem) => void) {
+  for (const currentItem of editorLayout) {
+    cb(currentItem)
+
+    if (isFieldGroupItem(currentItem)) {
+      visitEditorLayout(currentItem.items, cb)
+    }
+  }
+}
+
+function find<ItemType = EditorLayoutItem> (
   editorLayout: FieldGroupItem[],
   predicate: (item: EditorLayoutItem) => boolean
 ): { item: ItemType; path: Path } | undefined {

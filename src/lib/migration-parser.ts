@@ -96,7 +96,7 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
       throw new errors.EditorInterfacesFetchingError()
     }
 
-    const existingEditorInterfaces: Map<String, EditorInterfaces> = new Map()
+    const existingEditorInterfaces: Map<string, EditorInterfaces> = new Map()
     for (const [contentTypeId, apiEi] of apiEditorInterfaces) {
       const editorInterfaces = new EditorInterfaces(apiEi)
       existingEditorInterfaces.set(contentTypeId, editorInterfaces)
@@ -136,7 +136,7 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
       return new Tag(apiTag)
     })
 
-    const payloadValidationErrors = validateChunks(intentList, ctsWithEntryInfo, tags)
+    const payloadValidationErrors = validateChunks(intentList, ctsWithEntryInfo, existingEditorInterfaces, tags)
 
     if (payloadValidationErrors.length) {
       parseResult.payloadValidationErrors = payloadValidationErrors

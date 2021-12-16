@@ -11,6 +11,9 @@ export default class EditorLayoutDeleteFieldGroupIntent extends Intent {
   isEditorLayoutUpdate () {
     return true
   }
+  isFieldGroupDelete () {
+    return true
+  }
   isGroupable () {
     return true
   }

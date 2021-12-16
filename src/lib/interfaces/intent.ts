@@ -8,6 +8,7 @@ interface Intent {
   getContentTypeId (): string
   getRelatedContentTypeIds (): string[]
   getFieldId (): string
+  getFieldGroupId (): string
   getRawType (): string
   getTagId (): string
 
@@ -40,6 +41,8 @@ interface Intent {
   isTagUpdate (): boolean
   isTagDelete (): boolean
   isEntrySetTags (): boolean
+  isFieldGroupCreate (): boolean
+  isFieldGroupDelete (): boolean
 
   isComposedIntent (): boolean
 

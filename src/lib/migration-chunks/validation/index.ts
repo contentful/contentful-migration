@@ -2,13 +2,19 @@ import IntentList from '../../intent-list'
 import contentTypeValidations from './content-type'
 import tagValidations from './tag'
 import fieldValidations from './field'
+import editorLayoutValidations from './editor-layout'
 import checkForDuplicatePropsErrors from './duplicate-props'
-import { ContentType } from '../../entities/content-type'
+import { ContentType, EditorInterfaces } from '../../entities/content-type'
 import { Tag } from '../../entities/tag'
 import { Intent } from '../../interfaces/intent'
 import ValidationError, { InvalidActionError } from '../../interfaces/errors'
 
-function validateIntents (intentList: IntentList, contentTypes: ContentType[], tags: Tag[]): ValidationError[] | InvalidActionError[] {
+function validateIntents (
+  intentList: IntentList,
+  contentTypes: ContentType[],
+  editorInterfaces: Map<string, EditorInterfaces>,
+  tags: Tag[]
+): ValidationError[] | InvalidActionError[] {
   const intents: Intent[] = intentList.getIntents()
   const ctErrors = contentTypeValidations(intents, contentTypes)
   if (ctErrors.length > 0) {
@@ -25,6 +31,11 @@ function validateIntents (intentList: IntentList, contentTypes: ContentType[], t
 
   if (fieldErrors.length > 0) {
     return fieldErrors
+  }
+
+  let editorLayoutErrors = editorLayoutValidations(intents, editorInterfaces)
+  if (editorLayoutErrors.length > 0) {
+    return editorLayoutErrors
   }
 
   const tagErrors = tagValidations(intents, tags)
