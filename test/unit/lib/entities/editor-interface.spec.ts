@@ -271,6 +271,112 @@ describe('EditorInterfaces', () => {
     })
   })
 
+  describe('createEditorLayoutFieldGroup', () => {
+    it('has no effect if field group is not present', () => {
+      const editorInterface = makeEditorInterface({
+        editorLayout: [{
+          groupId: 'tab',
+          items: [{ fieldId: 'a' }, { fieldId: 'b' }]
+        }]
+      })
+
+      editorInterface.deleteEditorLayoutFieldGroup('tab2')
+
+      expect(editorInterface.getEditorLayout()).to.eql([{
+        groupId: 'tab',
+        items: [{ fieldId: 'a' }, { fieldId: 'b' }]
+      }])
+    })
+
+    it('deletes tab', () => {
+      const editorInterface = makeEditorInterface({
+        editorLayout: [
+          {
+            groupId: 'tab',
+            items: [{ fieldId: 'a' }, { fieldId: 'b' }]
+          },
+          { groupId: 'tab2', items: [] }
+        ]
+      })
+
+      editorInterface.deleteEditorLayoutFieldGroup('tab2')
+
+      expect(editorInterface.getEditorLayout()).to.eql([{
+        groupId: 'tab',
+        items: [{ fieldId: 'a' }, { fieldId: 'b' }]
+      }])
+    })
+
+    it('appends contents of deleted tab to first tab', () => {
+      const editorInterface = makeEditorInterface({
+        editorLayout: [
+          { groupId: 'tab', items: [{ fieldId: 'a' }] },
+          {
+            groupId: 'tab2',
+            items: [{ fieldId: 'b' }, { groupId: 'fieldSet', items: [] }]
+          }
+        ]
+      })
+
+      editorInterface.deleteEditorLayoutFieldGroup('tab2')
+
+      expect(editorInterface.getEditorLayout()).to.eql([{
+        groupId: 'tab',
+        items: [{ fieldId: 'a' }, { fieldId: 'b' }, { groupId: 'fieldSet', items: [] }]
+      }])
+    })
+
+    it('deletes field set', () => {
+      const editorInterface = makeEditorInterface({
+        editorLayout: [
+          { groupId: 'tab', items: [] },
+          {
+            groupId: 'tab2',
+            items: [
+              { fieldId: 'a' },
+              { groupId: 'fieldSet', items: [] },
+              { fieldId: 'b' }
+            ]
+          }
+        ]
+      })
+
+      editorInterface.deleteEditorLayoutFieldGroup('fieldSet')
+
+      expect(editorInterface.getEditorLayout()).to.eql([
+        { groupId: 'tab', items: [] },
+        {
+          groupId: 'tab2',
+          items: [ { fieldId: 'a' }, { fieldId: 'b' } ]
+        }
+      ])
+    })
+
+    it('replaces deleted field set with its contents', () => {
+      const editorInterface = makeEditorInterface({
+        editorLayout: [
+          {
+            groupId: 'tab',
+            items: [
+              { fieldId: 'a' },
+              { groupId: 'fieldSet', items: [{ fieldId: 'b' }, { fieldId: 'c' }] },
+              { fieldId: 'd' }
+            ]
+          }
+        ]
+      })
+
+      editorInterface.deleteEditorLayoutFieldGroup('fieldSet')
+
+      expect(editorInterface.getEditorLayout()).to.eql([
+        {
+          groupId: 'tab',
+          items: [ { fieldId: 'a' }, { fieldId: 'b' }, { fieldId: 'c' }, { fieldId: 'd' } ]
+        }
+      ])
+    })
+  })
+
   describe('updateGroupControl', () => {
     it('creates group control if none existed', () => {
       const editorInterface = makeEditorInterface({

@@ -1,4 +1,4 @@
-import { cloneDeep, find, filter, findIndex, pull, forEach, pick } from 'lodash'
+import { cloneDeep, find, filter, findIndex, pull, forEach, pick, update } from 'lodash'
 
 import {
   APIContentType,
@@ -304,9 +304,27 @@ class EditorInterfaces {
     }
   }
 
-  // @ts-ignore
   deleteEditorLayoutFieldGroup (fieldGroupId: string) {
-    // TODO: delete field group
+    const fieldGroup = findFieldGroup(this._editorLayout, fieldGroupId)
+    if (!fieldGroup) {
+      return
+    }
+
+    const parentPath = fieldGroup.path.slice(0, -1)
+    const groupIndex = fieldGroup.path[fieldGroup.path.length - 1] as number
+
+    if (parentPath.length === 0) {
+      this._editorLayout = this._editorLayout.filter(item => item.groupId !== fieldGroupId)
+      this._editorLayout[0].items = [...this._editorLayout[0].items, ...fieldGroup.item.items]
+
+      return
+    }
+
+    update(this._editorLayout, parentPath, (prev) => {
+      const group = prev[groupIndex]
+
+      return [...prev.slice(0, groupIndex), ...group.items, ...prev.slice(groupIndex + 1)]
+    })
   }
 
   updateEditorLayoutFieldGroup (fieldGroupId: string, props: Pick<APIEditorLayoutFieldGroupItem, 'name'>) {
