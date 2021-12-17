@@ -30,7 +30,7 @@ const validateChunks = async function (migration, testCts: any[], testTags: any[
     return new Tag(tag)
   })
 
-  let errors = validate(list, existingCts, existingTags)
+  let errors = validate(list, existingCts, new Map(), existingTags)
   const stripped = stripCallsites(errors)
   return stripped
 }
