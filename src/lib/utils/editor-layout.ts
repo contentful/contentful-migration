@@ -43,7 +43,7 @@ export const collectFieldGroupIds = (editorLayout: FieldGroupItem[]) => {
     if (isFieldGroupItem(item)) {
       fieldGroupIds.push(item.groupId)
     }
-  });
+  })
 
   return fieldGroupIds
 }
