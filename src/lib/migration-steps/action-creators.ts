@@ -346,6 +346,23 @@ const actionCreators = {
           [property]: value
         }
       }
+    }),
+
+    moveField:  (contentTypeId, contentTypeInstanceId, fieldId, fieldGroupId, movement, callsite): Intents.EditorLayoutMoveField => new Intents.EditorLayoutMoveField({
+      type: 'contentType/moveFieldInEditorLayout',
+      meta: {
+        contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId,
+        fieldId,
+        fieldGroupId,
+        movement
+      }
     })
   },
   field: {

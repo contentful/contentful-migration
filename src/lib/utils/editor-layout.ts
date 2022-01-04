@@ -48,6 +48,18 @@ export const collectFieldGroupIds = (editorLayout: FieldGroupItem[]) => {
   return fieldGroupIds
 }
 
+export const collectFieldIds = (editorLayout: FieldGroupItem[]) => {
+  const fieldIds: string[] = []
+
+  visitEditorLayout(editorLayout, (item) => {
+    if (isFieldItem(item)) {
+      fieldIds.push(item.fieldId)
+    }
+  })
+
+  return fieldIds
+}
+
 function visitEditorLayout (editorLayout: EditorLayoutItem[], cb: (item: EditorLayoutItem) => void) {
   for (const currentItem of editorLayout) {
     cb(currentItem)
@@ -58,7 +70,7 @@ function visitEditorLayout (editorLayout: EditorLayoutItem[], cb: (item: EditorL
   }
 }
 
-function find<ItemType = EditorLayoutItem> (
+export function find<ItemType = EditorLayoutItem> (
   editorLayout: FieldGroupItem[],
   predicate: (item: EditorLayoutItem) => boolean
 ): { item: ItemType; path: Path } | undefined {

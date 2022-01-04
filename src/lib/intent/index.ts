@@ -25,6 +25,7 @@ import EditorLayoutCreateFieldGroupIntent from './editor-layout/editor-layout-cr
 import EditorLayoutDeleteFieldGroupIntent from './editor-layout/editor-layout-delete-field-group'
 import EditorLayoutUpdateFieldGroupIntent from './editor-layout/editor-layout-update-field-group'
 import EditorLayoutChangeFieldGroupControlIntent from './editor-layout/editor-layout-change-field-group-control'
+import EditorLayoutMoveFieldIntent from './editor-layout/editor-layout-move-field'
 import TagCreateIntent from './tag-create'
 import TagUpdateIntent from './tag-update'
 import TagDeleteIntent from './tag-delete'
@@ -62,5 +63,6 @@ export {
   TagCreateIntent as TagCreate,
   TagUpdateIntent as TagUpdate,
   TagDeleteIntent as TagDelete,
-  EntrySetTagsIntent as EntrySetTags
+  EntrySetTagsIntent as EntrySetTags,
+  EditorLayoutMoveFieldIntent as EditorLayoutMoveField
 }

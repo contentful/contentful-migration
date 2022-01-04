@@ -2,18 +2,11 @@ import errors from './errors'
 import ValidationError from '../../interfaces/errors'
 import { Intent } from '../../interfaces/intent'
 import { ContentType } from '../../entities/content-type'
+import { invalidActionError } from './index'
 
 const fieldErrors = errors.field
 const deriveErrors = errors.entry.derivation
 const transformErrors = errors.entry.transformation
-
-const invalidActionError = (message, intent) => {
-  return {
-    type: 'InvalidAction',
-    message: message,
-    details: { intent }
-  }
-}
 
 const RELATIVE_MOVEMENTS = ['afterField', 'beforeField']
 

@@ -9,12 +9,21 @@ import { Tag } from '../../entities/tag'
 import { Intent } from '../../interfaces/intent'
 import ValidationError, { InvalidActionError } from '../../interfaces/errors'
 
+export const invalidActionError = (message, intent) => {
+  return {
+    type: 'InvalidAction',
+    message: message,
+    details: { intent }
+  }
+}
+
 function validateIntents (
   intentList: IntentList,
   contentTypes: ContentType[],
   editorInterfaces: Map<string, EditorInterfaces>,
   tags: Tag[]
 ): ValidationError[] | InvalidActionError[] {
+
   const intents: Intent[] = intentList.getIntents()
   const ctErrors = contentTypeValidations(intents, contentTypes)
   if (ctErrors.length > 0) {
