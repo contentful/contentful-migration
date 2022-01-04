@@ -2,34 +2,27 @@ import errors from './errors'
 import ValidationError from '../../interfaces/errors'
 import { Intent } from '../../interfaces/intent'
 import { ContentType } from '../../entities/content-type'
+import { invalidActionError } from './index';
 
 const fieldErrors = errors.field
 const deriveErrors = errors.entry.derivation
 const transformErrors = errors.entry.transformation
 
-const invalidActionError = (message, intent) => {
-  return {
-    type: 'InvalidAction',
-    message: message,
-    details: { intent }
-  }
-}
-
 const RELATIVE_MOVEMENTS = ['afterField', 'beforeField']
 
-function fieldExists (validationContext, fieldId) {
+function fieldExists(validationContext, fieldId) {
   return validationContext.fieldSet.has(fieldId)
 }
 
-function fieldHasBeenRemoved (validationContext, fieldId) {
+function fieldHasBeenRemoved(validationContext, fieldId) {
   return validationContext.fieldRemovals.has(fieldId)
 }
 
-function fieldHasBeenMoved (validationContext, movementKey) {
+function fieldHasBeenMoved(validationContext, movementKey) {
   return validationContext.fieldMovements.has(movementKey)
 }
 
-function idHasBeenChangedBefore (validationContext, oldId) {
+function idHasBeenChangedBefore(validationContext, oldId) {
   return Array.from(validationContext.fieldIdChanges.values()).includes(oldId)
 }
 
@@ -213,7 +206,7 @@ const checks = {
     if (nonExistingFields.length > 0) {
       errors.push(wrapError(transformErrors.NON_EXISTING_FIELDS(intent.getContentTypeId(), nonExistingFields), intent))
     }
-  }
+  },
 }
 
 export default function (intents: Intent[], contentTypes: ContentType[] = []): ValidationError[] {

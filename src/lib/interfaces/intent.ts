@@ -34,6 +34,7 @@ interface Intent {
   isGroupable (): boolean
   isEditorInterfaceIntent (): boolean
   isEditorInterfaceUpdate (): boolean
+  isEditorLayoutUpdate(): boolean
   isSidebarUpdate (): boolean
   isTagIntent (): boolean
   isTagCreate (): boolean

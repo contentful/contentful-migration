@@ -82,6 +82,25 @@ class EditorLayout extends DispatchProxy {
     })
   }
 
+  moveField (fieldId, fieldGroupId) {
+    const movement = new Movement({
+      dispatchUpdate: (callsite, property, value) => {
+        const action = actionCreators.editorLayout.moveField(
+          this.contentTypeId,
+          this.instanceId,
+          fieldId,
+          fieldGroupId,
+          { direction: property, pivot: value },
+          callsite
+        )
+
+        this.dispatch(action)
+      }
+    })
+
+    return movement
+  }
+
   deleteFieldGroup (fieldGroupId) {
     const callsite = getFirstExternalCaller()
 
