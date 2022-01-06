@@ -48,18 +48,6 @@ export const collectFieldGroupIds = (editorLayout: FieldGroupItem[]) => {
   return fieldGroupIds
 }
 
-export const collectFieldIds = (editorLayout: FieldGroupItem[]) => {
-  const fieldIds: string[] = []
-
-  visitEditorLayout(editorLayout, (item) => {
-    if (isFieldItem(item)) {
-      fieldIds.push(item.fieldId)
-    }
-  })
-
-  return fieldIds
-}
-
 function visitEditorLayout (editorLayout: EditorLayoutItem[], cb: (item: EditorLayoutItem) => void) {
   for (const currentItem of editorLayout) {
     cb(currentItem)

@@ -1,5 +1,5 @@
 interface ErrorGroup {
-  [identifier: string]: (id, ...args: any[]) => string
+  [identifier: string]: (id?, ...args: any[]) => string
 }
 
 interface ErrorCreators {
@@ -161,6 +161,26 @@ const errorCreators: ErrorCreators = {
       },
       FIELD_GROUP_ALREADY_EXISTS: (id, ctId) => {
         return `Field group with id "${id}" for content type "${ctId}" already exists.`
+      }
+    },
+    moveField: {
+      MISSING_FIELD_ID: () => {
+        return 'Missing field id'
+      },
+      FIELD_DOES_NOT_EXIST: (fieldId) => {
+        return `Field "${fieldId}" does not exist`
+      },
+      INVALID_DIRECTION: (fieldId, direction) => {
+        return `Field "${fieldId}" cannot be moved: invalid direction "${direction}"`
+      },
+      MISSING_PIVOT: (fieldId, pivotType) => {
+        return `Field "${fieldId}" cannot be moved: missing ${pivotType} pivot`
+      },
+      SELF_PIVOT: (fieldId) => {
+        return `Field "${fieldId}" cannot be moved using itself as pivot`
+      },
+      INVALID_PIVOT: (fieldId, reason) => {
+        return `Field "${fieldId}" cannot be moved: ${reason}`
       }
     },
     deleteFieldGroup: {

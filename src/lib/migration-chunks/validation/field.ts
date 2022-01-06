@@ -2,7 +2,7 @@ import errors from './errors'
 import ValidationError from '../../interfaces/errors'
 import { Intent } from '../../interfaces/intent'
 import { ContentType } from '../../entities/content-type'
-import { invalidActionError } from './index'
+import { FieldsContext, invalidActionError } from './index'
 
 const fieldErrors = errors.field
 const deriveErrors = errors.entry.derivation
@@ -209,7 +209,9 @@ const checks = {
   }
 }
 
-export default function (intents: Intent[], contentTypes: ContentType[] = []): ValidationError[] {
+export default function (intents: Intent[], contentTypes: ContentType[] = []): {
+  errors: ValidationError[], fieldsContext: FieldsContext
+} {
   const errors = []
   const contentTypeFields: { [key: string]: Set<string> } = contentTypes.reduce((acc, curr) => {
     const fieldIds = curr.fields.map((f) => f.id)
@@ -286,5 +288,12 @@ export default function (intents: Intent[], contentTypes: ContentType[] = []): V
     changedFieldIds[contentTypeId] = fieldIdChanges
   }
 
-  return errors
+  return {
+    errors, fieldsContext: {
+      contentTypeFields,
+      recentlyRemoved,
+      recentlyMoved,
+      changedFieldIds
+    }
+  }
 }
