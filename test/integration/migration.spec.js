@@ -25,6 +25,8 @@ const modifyTag = require('../../examples/29-modify-tag');
 const deleteTag = require('../../examples/30-delete-tag');
 const setTagsForEntries = require('../../examples/31-set-tags-for-entries');
 const createEditorLayout = require('../../examples/xx-create-editor-layout');
+const deleteEditorLayoutFieldSet = require('../../examples/xx-delete-editor-layout-field-set');
+const deleteEditorLayoutTab = require('../../examples/xx-delete-editor-layout-tab');
 
 const { createMigrationParser } = require('../../built/lib/migration-parser');
 const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget');
@@ -825,6 +827,11 @@ describe('the migration', function () {
         groupId: 'settings',
         name: 'Settings',
         items: [{ groupId: 'seo', name: 'SEO', items: [] }]
+      },
+      {
+        groupId: 'metadata',
+        name: 'Metadata',
+        items: []
       }
     ]);
 
@@ -850,6 +857,55 @@ describe('the migration', function () {
           helpText: 'Search related fields',
           collapsedByDefault: false
         }
+      },
+      {
+        groupId: 'metadata',
+        widgetId: 'topLevelTab',
+        widgetNamespace: 'builtin'
+      }
+    ]);
+  });
+
+  it('deletes an editor layout tab', async function () {
+    await migrator(deleteEditorLayoutTab);
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    });
+
+    expect(editorInterface.editorLayout).to.eql([
+      {
+        groupId: 'content',
+        name: 'Content',
+        items: [{ fieldId: 'name' }, { fieldId: 'title' }, { groupId: 'seo', name: 'SEO', items: [] }]
+      },
+      {
+        groupId: 'metadata',
+        name: 'Metadata',
+        items: []
+      }
+    ]);
+  });
+
+  it('deletes an editor layout field set', async function () {
+    await migrator(deleteEditorLayoutFieldSet);
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    });
+
+    expect(editorInterface.editorLayout).to.eql([
+      {
+        groupId: 'content',
+        name: 'Content',
+        items: [{ fieldId: 'name' }, { fieldId: 'title' }]
+      },
+      {
+        groupId: 'metadata',
+        name: 'Metadata',
+        items: []
       }
     ]);
   });

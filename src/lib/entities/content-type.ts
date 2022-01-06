@@ -364,6 +364,10 @@ class EditorInterfaces {
     }
   }
 
+  deleteGroupControl (fieldGroupId: string) {
+    this._groupControls = this._groupControls.filter(control => control.groupId !== fieldGroupId)
+  }
+
   toAPI (): object {
     let controls: APIEditorInterfaceControl[] = []
     forEach(this._controls, (c) => {

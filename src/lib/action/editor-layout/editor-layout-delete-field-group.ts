@@ -35,6 +35,7 @@ class EditorLayoutDeleteFieldGroupAction extends EntityAction {
 
   async applyTo (editorInterfaces: EditorInterfaces) {
     await editorInterfaces.deleteEditorLayoutFieldGroup(this.fieldGroupId)
+    await editorInterfaces.deleteGroupControl(this.fieldGroupId)
   }
 }
 
