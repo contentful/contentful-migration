@@ -13,7 +13,7 @@ interface ValidationContext {
 }
 
 interface EditorLayoutValidation {
-  validate (intent: Intent, context: ValidationContext): string | string[]
+  validate (intent: Intent, context: ValidationContext): string | string[] | undefined
 }
 
 class DuplicateCreate implements EditorLayoutValidation {
@@ -109,7 +109,7 @@ export default function (intents: Intent[], editorInterfaces: Map<string, Editor
   })
   const toBeCreated = intents.filter((intent) => intent.isFieldGroupCreate()).map(getScopedFieldGroupId)
 
-  let context = {
+  let context: ValidationContext = {
     remoteFieldGroups: new Set(remote), // all currently (in the current iteration step) existing field groups
     createdFieldGroups: new Set<string>(), // all by now (in previous iteration steps) created field groups
     deletedFieldGroups: new Set<string>(), // all by now (in previous iteration steps) deleted field groups
