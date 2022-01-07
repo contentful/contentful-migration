@@ -1,12 +1,12 @@
 // TODO: rename file before merging to master
 
 module.exports = function (migration) {
-  const Page = migration.createContentType('page').name('Page');
-  Page.createField('name').name('Internal name').type('Symbol');
-  Page.createField('title').name('Page title').type('Symbol');
+  const page = migration.createContentType('page').name('Page');
+  page.createField('name').name('Internal name').type('Symbol');
+  page.createField('title').name('Page title').type('Symbol');
 
   // an editor layout can be created empty but not saved without adding at least one tab
-  const editorLayout = Page.createEditorLayout();
+  const editorLayout = page.createEditorLayout();
 
   editorLayout
     .createFieldGroup('content', {
