@@ -1,4 +1,5 @@
 'use strict';
+import validateBatches from '../../offline-api/validation/validate-batches';
 
 const { expect } = require('chai');
 
@@ -177,6 +178,38 @@ describe('editor layout plan validation', function () {
               }
             }
           }
+        }
+      ]);
+    });
+  });
+  describe.only('when saving an editor layout with more than 2 levels of nesting', function () {
+    it('returns an error', async function () {
+      const contentTypes = [{
+        sys: { id: 'page' }
+      }];
+
+      const errors = await validateBatches(function (migration) {
+        const Page = migration.editContentType('page');
+        // Page.createField('name').name('Internal name').type('Symbol');
+        // Page.createField('title').name('Page title').type('Symbol');
+        const editorLayout = Page.createEditorLayout();
+
+        editorLayout
+          .createFieldGroup('settings', {
+            name: 'Settings'
+          });
+
+        editorLayout.editFieldGroup('settings')
+          .createFieldGroup('seo')
+          .name('SEO');
+
+        editorLayout.editFieldGroup('seo')
+          .createFieldGroup('keywords')
+          .name('Keywords');
+      }, contentTypes);
+
+      expect(errors).to.eql([
+        {
         }
       ]);
     });
