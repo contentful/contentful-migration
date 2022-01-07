@@ -172,7 +172,7 @@ export default function (intents: Intent[], editorInterfaces: Map<string, Editor
   const toBeCreated = intents.filter((intent) => intent.isFieldGroupCreate()).map(getScopedFieldGroupId)
 
   let context: ValidationContext = {
-    fields: fieldsContext, // all currently existing fields (in editor layout)
+    fields: fieldsContext, // all currently existing fields as collected by field validation
     remoteFieldGroups: new Set(remoteFieldGroups), // all currently (in the current iteration step) existing field groups
     createdFieldGroups: new Set<string>(), // all by now (in previous iteration steps) created field groups
     deletedFieldGroups: new Set<string>(), // all by now (in previous iteration steps) deleted field groups

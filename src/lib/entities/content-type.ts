@@ -385,10 +385,12 @@ class EditorInterfaces {
         return false
       }))
     ) as { item: FieldGroupItem | undefined }
-    // TODO: can the editorlayout not contain an existing field here?
+
     // remove field item from original group
     if (sourceGroupItem) {
       pull(sourceGroupItem.items, fieldItem)
+    } else {
+      fieldItem = { fieldId }
     }
 
     // here it's assumed the field is moved within its group. If not the case, later below destination is updated
@@ -406,13 +408,11 @@ class EditorInterfaces {
     let pivotIndex: number
     if (direction === 'toTheTopOfFieldGroup') {
       if (pivot) {
-        // TODO: what if group not found??
         destinationGroupItem = findGroupItem(pivot)
       }
       pivotIndex = 0
     } else if (direction === 'toTheBottomOfFieldGroup') {
       if (pivot) {
-        // TODO: what if group not found??
         destinationGroupItem = findGroupItem(pivot)
       }
       pivotIndex = destinationGroupItem.items.length
@@ -452,7 +452,6 @@ class EditorInterfaces {
         }))
       ) as { item: FieldGroupItem | undefined }
 
-      // TODO: what if group not found?? (pivot might also be in top tab, so without a parent and leading to an invalid movement anyway)
       destinationGroupItem = pivotParent
     }
     destinationGroupItem.items.splice(pivotIndex, 0, fieldItem)
