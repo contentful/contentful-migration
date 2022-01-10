@@ -9,6 +9,9 @@ interface ErrorCreators {
   contentType: {
     [groupIdentifier: string]: ErrorGroup
   }
+  editorLayout: {
+    [groupIdentifier: string]: ErrorGroup
+  }
   entry: {
     [groupIdentifier: string]: ErrorGroup
   }
@@ -150,6 +153,24 @@ const errorCreators: ErrorCreators = {
       }
     }
 
+  },
+  editorLayout: {
+    createFieldGroup: {
+      FIELD_GROUP_ALREADY_CREATED: (id, ctId) => {
+        return `Field group with id "${id}" for content type "${ctId}" cannot be created more than once.`
+      },
+      FIELD_GROUP_ALREADY_EXISTS: (id, ctId) => {
+        return `Field group with id "${id}" for content type "${ctId}" already exists.`
+      }
+    },
+    deleteFieldGroup: {
+      FIELD_GROUP_DOES_NOT_EXIST: (id, ctId) => {
+        return `You cannot delete a field group with id "${id}" on content type "${ctId}" because it does not exist.`
+      },
+      FIELD_GROUP_ALREADY_DELETED: (id, ctId) => {
+        return `Field group with id "${id}" on content type "${ctId}" cannot be deleted more than once.`
+      }
+    }
   },
   entry: {
     transformation: {
