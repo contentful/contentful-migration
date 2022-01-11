@@ -78,53 +78,59 @@ class NonExistingDeletes implements EditorLayoutValidation {
 }
 
 class InvalidFieldMove implements EditorLayoutValidation {
-  validate (intent: Intent, context: ValidationContext): string | string[] {
+  validate (intent: Intent, { fields, remoteFieldGroups, createdFieldGroups, deletedFieldGroups}: ValidationContext): string | string[] {
     if (intent.getRawType() !== 'contentType/moveFieldInEditorLayout') {
       return
     }
 
     const moveIntent = (intent as EditorLayoutMoveFieldIntent)
-    if (!moveIntent.getFieldId()) {
-      return editorLayoutErrors.moveField.MISSING_FIELD_ID()
+    const { moveField: moveFieldError } = editorLayoutErrors
+
+    const fieldId = moveIntent.getFieldId()
+    const direction = moveIntent.getDirection()
+    const contentTypeId = moveIntent.getDirection()
+    if (!fieldId) {
+      return moveFieldError.MISSING_FIELD_ID()
     }
 
-    const fieldExists = context.fields.contentTypeFields[moveIntent.getContentTypeId()].has(moveIntent.getFieldId()) &&
-      !context.fields.recentlyRemoved[moveIntent.getContentTypeId()].has(moveIntent.getFieldId())
+    const fieldExists = fields.contentTypeFields[contentTypeId].has(fieldId) &&
+      !fields.recentlyRemoved[contentTypeId].has(fieldId)
 
     if (!fieldExists) {
-      return editorLayoutErrors.moveField.FIELD_DOES_NOT_EXIST(moveIntent.getFieldId())
+      return moveFieldError.FIELD_DOES_NOT_EXIST(fieldId)
     }
 
-    if (!VALID_MOVEMENT_DIRECTIONS.includes(moveIntent.getDirection())) {
-      return editorLayoutErrors.moveField.INVALID_DIRECTION(moveIntent.getFieldId(), moveIntent.getDirection())
+    if (!VALID_MOVEMENT_DIRECTIONS.includes(direction)) {
+      return moveFieldError.INVALID_DIRECTION(fieldId, direction)
     }
 
-    const pivotType = RELATIVE_MOVEMENTS_FIELD_PIVOT.includes(moveIntent.getDirection()) ? 'field' : 'field group'
+    const pivotType = RELATIVE_MOVEMENTS_FIELD_PIVOT.includes(direction) ? 'field' : 'field group'
 
-    if (RELATIVE_MOVEMENTS.includes(moveIntent.getDirection()) && !moveIntent.getPivotId()) {
-      return editorLayoutErrors.moveField.MISSING_PIVOT(moveIntent.getFieldId(), pivotType)
+    const pivotId = moveIntent.getPivotId()
+    if (RELATIVE_MOVEMENTS.includes(direction) && !pivotId) {
+      return moveFieldError.MISSING_PIVOT(fieldId, pivotType)
     }
 
-    if (pivotType === 'field' && moveIntent.getFieldId() === moveIntent.getPivotId()) {
-      return editorLayoutErrors.moveField.SELF_PIVOT(moveIntent.getFieldId())
+    if (pivotType === 'field' && fieldId === pivotId) {
+      return moveFieldError.SELF_PIVOT(fieldId)
     }
 
-    if (moveIntent.getPivotId()) {
+    if (pivotId) {
 
-      const scopedPivotId = `${moveIntent.getContentTypeId()}.${moveIntent.getPivotId()}`
-      const groupWithPivotIdExists = (context.remoteFieldGroups.has(scopedPivotId) || context.createdFieldGroups.has(scopedPivotId))
-        && !context.deletedFieldGroups.has(scopedPivotId)
-      const fieldWithPivotIdExists = context.fields.contentTypeFields[moveIntent.getContentTypeId()].has(moveIntent.getPivotId()) &&
-        !context.fields.recentlyRemoved[moveIntent.getContentTypeId()].has(moveIntent.getPivotId())
+      const scopedPivotId = `${contentTypeId}.${pivotId}`
+      const groupWithPivotIdExists = (remoteFieldGroups.has(scopedPivotId) || createdFieldGroups.has(scopedPivotId))
+        && !deletedFieldGroups.has(scopedPivotId)
+      const fieldWithPivotIdExists = fields.contentTypeFields[contentTypeId].has(pivotId) &&
+        !fields.recentlyRemoved[contentTypeId].has(pivotId)
 
       const pivotExists = pivotType === 'field group' && groupWithPivotIdExists ||
         pivotType === 'field' && fieldWithPivotIdExists
 
       if (!pivotExists) {
-        const explanation = ABSOLUTE_MOVEMENTS.includes(moveIntent.getDirection()) ?
-          `destination group "${moveIntent.getPivotId()}" does not exist` :
-          `pivot ${pivotType} "${moveIntent.getPivotId()}" does not exist`
-        return editorLayoutErrors.moveField.INVALID_PIVOT(moveIntent.getFieldId(), explanation)
+        const explanation = ABSOLUTE_MOVEMENTS.includes(direction) ?
+          `destination group "${pivotId}" does not exist` :
+          `pivot ${pivotType} "${pivotId}" does not exist`
+        return moveFieldError.INVALID_PIVOT(fieldId, explanation)
       }
     }
   }
