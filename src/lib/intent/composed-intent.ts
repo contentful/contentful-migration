@@ -47,6 +47,9 @@ export default class ComposedIntent implements Intent {
   isEditorInterfaceUpdate (): boolean {
     return false
   }
+  isEditorLayoutUpdate (): boolean {
+    return false
+  }
   isContentTypeUpdate (): boolean {
     return false
   }

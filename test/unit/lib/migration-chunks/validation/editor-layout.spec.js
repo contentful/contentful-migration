@@ -181,4 +181,305 @@ describe('editor layout plan validation', function () {
       ]);
     });
   });
+  describe('field movement', () => {
+    let testCts, testEis;
+    beforeEach(() => {
+      testCts = [{
+        sys: { id: 'page' },
+        fields: [{
+          id: 'foo',
+          name: 'Foo',
+          type: 'Symbol'
+        },
+        {
+          id: 'bar',
+          name: 'Bar',
+          type: 'Symbol'
+        },
+        {
+          id: 'baz',
+          name: 'Baz',
+          type: 'Symbol'
+        }]
+      }];
+
+      testEis = {
+        page: {
+          sys: {
+            version: 1
+          },
+          editorLayout: [
+            {
+              groupId: 'content',
+              name: 'Content',
+              items: [{ fieldId: 'foo' }]
+            },
+            {
+              groupId: 'settings',
+              name: 'Settings',
+              items: [{
+                groupId: 'seo',
+                name: 'Seo',
+                items: [{ fieldId: 'bar' }, { fieldId: 'baz' }]
+              }]
+            }
+          ]
+        }
+      };
+    });
+
+    describe('when field does not exist', () => {
+      it('returns an error', async () => {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout
+            .moveField('not_existing').toTheTopOfFieldGroup();
+        }, testCts, [], testEis);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field "not_existing" does not exist',
+            details: {
+              step: {
+                type: 'contentType/moveFieldInEditorLayout',
+                meta: { contentTypeInstanceId: 'contentType/page/0' },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldId: 'not_existing',
+                  fieldGroupId: undefined,
+                  movement: { direction: 'toTheTopOfFieldGroup', pivot: undefined }
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+    describe('when direction is invalid', () => {
+      it('returns an error', async () => {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout
+            .moveField('foo').toTheCloud();
+        }, testCts, [], testEis);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field "foo" cannot be moved: invalid direction "toTheCloud"',
+            details: {
+              step: {
+                type: 'contentType/moveFieldInEditorLayout',
+                meta: { contentTypeInstanceId: 'contentType/page/0' },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldId: 'foo',
+                  fieldGroupId: undefined,
+                  movement: { direction: 'toTheCloud', pivot: undefined }
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+    describe('when moved field and pivot field are the same', () => {
+      it('returns an error', async () => {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout
+            .moveField('foo').afterField('foo');
+        }, testCts, [], testEis);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field "foo" cannot be moved using itself as pivot',
+            details: {
+              step: {
+                type: 'contentType/moveFieldInEditorLayout',
+                meta: { contentTypeInstanceId: 'contentType/page/0' },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldId: 'foo',
+                  fieldGroupId: undefined,
+                  movement: { direction: 'afterField', pivot: 'foo' }
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+    describe('when pivot field does not exist', () => {
+      it('returns an error', async () => {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout
+            .moveField('foo').afterField('not_existing');
+        }, testCts, [], testEis);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field "foo" cannot be moved: pivot field "not_existing" does not exist',
+            details: {
+              step: {
+                type: 'contentType/moveFieldInEditorLayout',
+                meta: { contentTypeInstanceId: 'contentType/page/0' },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldId: 'foo',
+                  fieldGroupId: undefined,
+                  movement: { direction: 'afterField', pivot: 'not_existing' }
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+    describe('when pivot field is not provided', () => {
+      it('returns an error', async () => {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout
+            .moveField('foo').afterField();
+        }, testCts, [], testEis);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field "foo" cannot be moved: missing field pivot',
+            details: {
+              step: {
+                type: 'contentType/moveFieldInEditorLayout',
+                meta: { contentTypeInstanceId: 'contentType/page/0' },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldId: 'foo',
+                  fieldGroupId: undefined,
+                  movement: { direction: 'afterField', pivot: undefined }
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+    describe('when pivot field group is not provided', () => {
+      it('returns an error', async () => {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout
+            .moveField('foo').afterFieldGroup();
+        }, testCts, [], testEis);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field "foo" cannot be moved: missing field group pivot',
+            details: {
+              step: {
+                type: 'contentType/moveFieldInEditorLayout',
+                meta: { contentTypeInstanceId: 'contentType/page/0' },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldId: 'foo',
+                  fieldGroupId: undefined,
+                  movement: { direction: 'afterFieldGroup', pivot: undefined }
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+    describe('when pivot field group does not exist', () => {
+      it('returns an error', async () => {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout
+            .moveField('foo').afterFieldGroup('not_existing_group');
+        }, testCts, [], testEis);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field "foo" cannot be moved: pivot field group "not_existing_group" does not exist',
+            details: {
+              step: {
+                type: 'contentType/moveFieldInEditorLayout',
+                meta: { contentTypeInstanceId: 'contentType/page/0' },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldId: 'foo',
+                  fieldGroupId: undefined,
+                  movement: { direction: 'afterFieldGroup', pivot: 'not_existing_group' }
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+    describe('when destination field group does not exist', () => {
+      it('returns an error', async () => {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout
+            .moveField('foo').toTheTopOfFieldGroup('not_existing_group');
+        }, testCts, [], testEis);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field "foo" cannot be moved: destination group "not_existing_group" does not exist',
+            details: {
+              step: {
+                type: 'contentType/moveFieldInEditorLayout',
+                meta: { contentTypeInstanceId: 'contentType/page/0' },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldId: 'foo',
+                  fieldGroupId: undefined,
+                  movement: { direction: 'toTheTopOfFieldGroup', pivot: 'not_existing_group' }
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+    describe('when destination field group is not provided', () => {
+      it('succeeds', async () => {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout
+            .moveField('foo').toTheTopOfFieldGroup();
+        }, testCts, [], testEis);
+
+        expect(errors).to.eql([]);
+      });
+    });
+  });
 });

@@ -58,7 +58,7 @@ function visitEditorLayout (editorLayout: EditorLayoutItem[], cb: (item: EditorL
   }
 }
 
-function find<ItemType = EditorLayoutItem> (
+export function find<ItemType = EditorLayoutItem> (
   editorLayout: FieldGroupItem[],
   predicate: (item: EditorLayoutItem) => boolean
 ): { item: ItemType; path: Path } | undefined {

@@ -67,7 +67,7 @@
         - [`deriveLinkedEntries(config)` Example](#derivelinkedentriesconfig-example)
       - [`transformEntriesToType(config)`](#transformentriestotypeconfig)
         - [`transformEntriesToType` Example](#transformentriestotype-example)
-      - [`createTag(id[, opts])`](#createtagid-opts)
+      - [`createTag(id[, opts, visibility])`](#createtagid-opts-visibility)
       - [`editTag(id[, opts])`](#edittagid-opts)
       - [`deleteTag(id)`](#deletetagid)
       - [`setTagsForEntries(config)`](#settagsforentriesconfig)
@@ -92,16 +92,24 @@
       - [`configureEntryEditor (widgetNamespace, widgetId[, settings])` : void](#configureentryeditor-widgetnamespace-widgetid-settings--void)
       - [`configureEntryEditors (EntryEditor[])` : void](#configureentryeditors-entryeditor--void)
       - [`resetEntryEditorToDefault ()` : void](#resetentryeditortodefault---void)
-      - [`createEditorLayout ()` : EditorLayout](#createeditorlayout---editorlayouteditor-layout)
-      - [`editEditorLayout ()` : EditorLayout](#editeditorlayout---editorlayouteditor-layout)
+      - [`createEditorLayout ()` : EditorLayout](#createeditorlayout---editorlayout)
+      - [`editEditorLayout ()` : EditorLayout](#editeditorlayout---editorlayout)
       - [`deleteEditorLayout ()` : void](#deleteeditorlayout---void)
     - [Field](#field)
     - [Editor Layout](#editor-layout)
+      - [`moveField(id)` : MovableEditorLayoutItem](#movefieldid--movableeditorlayoutitem)
+      - [`createFieldGroup(id[, opts])` : EditorLayoutFieldGroup](#createfieldgroupid-opts--editorlayoutfieldgroup)
+      - [`deleteFieldGroup (id)` : void](#deletefieldgroup-id--void)
+      - [`changeFieldGroupId (currentId, newId)`](#changefieldgroupid-currentid-newid)
+      - [`editFieldGroup (id[, opts])` : EditorLayoutFieldGroup](#editfieldgroup-id-opts--editorlayoutfieldgroup)
     - [Editor Layout Field Group](#editor-layout-field-group)
+      - [`createFieldGroup (id[, opts])` : EditorLayoutFieldGroup](#createfieldgroup-id-opts--editorlayoutfieldgroup)
+      - [`changeFieldGroupControl (id, widgetNamespace, widgetId[, settings])` : void](#changefieldgroupcontrol-id-widgetnamespace-widgetid-settings--void)
   - [Validation errors](#validation-errors)
   - [Example migrations](#example-migrations)
   - [Writing Migrations in Typescript](#writing-migrations-in-typescript)
   - [Troubleshooting](#troubleshooting)
+  - [Updating Integration tests fixtures](#updating-integration-tests-fixtures)
   - [Reach out to us](#reach-out-to-us)
     - [You have questions about how to use this library?](#you-have-questions-about-how-to-use-this-library)
     - [You found a bug or want to propose a feature?](#you-found-a-bug-or-want-to-propose-a-feature)
@@ -251,7 +259,7 @@ Creates a content type with provided `id` and returns a reference to the newly c
 
 **`opts : Object`** – Content type definition, with the following options:
 
-- **`name : string`** – Name of the content type.
+- **`name : string`** – Name of the content type.
 - **`description : string`** – Description of the content type.
 - **`displayField : string`** – ID of the field to use as the display field for the content type. This is referred to as the "Entry title" in the web application.
 
@@ -411,7 +419,7 @@ Creates a tag with provided `id` and returns a reference to the newly created ta
 
 - **`opts : Object`** – Tag definition, with the following options:
 
-  - **`name : string`** – Name of the tag.
+  - **`name : string`** – Name of the tag.
 
 - **`visibility : 'private' | 'public'`** Tag visibility - defaults to `private`.
 
@@ -515,7 +523,7 @@ For a comprehensive guide to content modelling, please refer to [this guide](htt
 
 Creates a field with provided `id`.
 
-**`id : string`** – The ID of the field.
+**`id : string`** – The ID of the field.
 
 **`opts : Object`** – Field definition, with the following options:
 
@@ -764,7 +772,9 @@ Moves the field with the provided `id`.
 `moveField(id)` returns a movable editor layout item type which must be called with a direction function:
 
 - **`.toTheTopOfFieldGroup(groupId)`**
+  -   - if no `groupId` is provided, the field will be moved within its group
 - **`.toTheBottomOfFieldGroup(groupId)`**
+  -   - if no `groupId` is provided, the field will be moved within its group
 - **`.beforeFieldGroup(groupId)`**
 - **`.afterFieldGroup(groupId)`**
 - **`.beforeField(fieldId)`**

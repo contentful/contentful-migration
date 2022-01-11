@@ -16,7 +16,10 @@ import {
   APIEditorLayoutFieldGroupItem
 } from '../interfaces/content-type'
 import { SidebarWidgetNamespace, DEFAULT_SIDEBAR_LIST } from '../action/sidebarwidget'
-import { findFieldGroup, isFieldGroupItem } from '../utils/editor-layout'
+import { findFieldGroup, isFieldGroupItem, find as findEditorLayoutItem, isFieldItem, FieldGroupItem, FieldItem } from '../utils/editor-layout'
+import { EditorLayoutItem } from 'contentful-management/dist/typings/export-types'
+
+export type EditorLayoutFieldMovementDirection = 'afterField' | 'beforeField' | 'afterFieldGroup' | 'beforeFieldGroup' | 'toTheTopOfFieldGroup' | 'toTheBottomOfFieldGroup'
 
 class Fields {
   private _fields: Field[]
@@ -368,6 +371,94 @@ class EditorInterfaces {
     this._groupControls = this._groupControls.filter(control => control.groupId !== fieldGroupId)
   }
 
+  moveFieldInEditorLayout (
+    fieldId: string,
+    direction: EditorLayoutFieldMovementDirection,
+    pivot?: string) {
+
+    // find the field and its parent (sourceGroup) within editorLayout
+    let fieldItem: FieldItem
+    const { item: sourceGroupItem } = findEditorLayoutItem(this._editorLayout, (item) =>
+      isFieldGroupItem(item) && Boolean(item.items.find((item) => {
+        if (isTargetFieldItem(item, fieldId)) {
+          fieldItem = item
+          return true
+        }
+        return false
+      }))
+    ) as { item: FieldGroupItem | undefined }
+
+    // remove field item from original group
+    if (sourceGroupItem) {
+      pull(sourceGroupItem.items, fieldItem)
+    } else {
+      fieldItem = { fieldId }
+    }
+
+    // here it's assumed the field is moved within its group. If not the case, later below destination is updated
+    let destinationGroupItem: FieldGroupItem = sourceGroupItem
+
+    const findGroupItem = (groupId) => {
+      const { item } = findEditorLayoutItem(
+        this._editorLayout,
+        (item) => isTargetGroupItem(item, groupId)
+      ) as { item: FieldGroupItem | undefined }
+
+      return item
+    }
+
+    let pivotIndex: number
+    if (direction === 'toTheTopOfFieldGroup') {
+      if (pivot) {
+        destinationGroupItem = findGroupItem(pivot)
+      }
+      pivotIndex = 0
+    } else if (direction === 'toTheBottomOfFieldGroup') {
+      if (pivot) {
+        destinationGroupItem = findGroupItem(pivot)
+      }
+      pivotIndex = destinationGroupItem.items.length
+    } else {
+      const movementConfigMap: Record<string, {
+        isTargetPivot: (EditorLayoutItem) => boolean,
+        pivotIndexOffset: number
+      }> = {
+        afterField: {
+          isTargetPivot: (item) => isTargetFieldItem(item, pivot),
+          pivotIndexOffset: 1
+        },
+        beforeField: {
+          isTargetPivot: (item) => isTargetFieldItem(item, pivot),
+          pivotIndexOffset: 0
+        },
+        afterFieldGroup: {
+          isTargetPivot: (item) => isTargetGroupItem(item, pivot),
+          pivotIndexOffset: 1
+        },
+        beforeFieldGroup: {
+          isTargetPivot: (item) => isTargetGroupItem(item, pivot),
+          pivotIndexOffset: 0
+        }
+      }
+      const movementConfig = movementConfigMap[direction]
+
+      // find the parent group of target pivot
+      const { item: pivotParent } = findEditorLayoutItem(this._editorLayout, (item) =>
+        isFieldGroupItem(item)
+        && Boolean(item.items.find((childItem, childItemIndex) => {
+          if (movementConfig.isTargetPivot(childItem)) {
+            pivotIndex = childItemIndex + movementConfig.pivotIndexOffset
+            return true
+          }
+          return false
+        }))
+      ) as { item: FieldGroupItem | undefined }
+
+      destinationGroupItem = pivotParent
+    }
+    destinationGroupItem.items.splice(pivotIndex, 0, fieldItem)
+  }
+
   toAPI (): object {
     let controls: APIEditorInterfaceControl[] = []
     forEach(this._controls, (c) => {
@@ -492,6 +583,9 @@ class ContentType {
     return new ContentType(this.toAPI())
   }
 }
+
+const isTargetFieldItem = (item, fieldId): item is FieldItem => isFieldItem(item) && item.fieldId === fieldId
+const isTargetGroupItem = (item, groupId): item is FieldGroupItem => isFieldGroupItem(item) && item.groupId === groupId
 
 export {
   ContentType as default,

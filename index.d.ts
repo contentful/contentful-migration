@@ -9,13 +9,22 @@ export type RunMigrationConfig = {
   yes?: boolean
 } & ({ filePath: string } | { migrationFunction: MigrationFunction })
 
-export function runMigration (config: RunMigrationConfig): Promise<any>
+export function runMigration(config: RunMigrationConfig): Promise<any>
 
 export interface Movement {
   toTheTop(): void
   toTheBottom(): void
   beforeField(field: string): void
   afterField(field: string): void
+}
+
+export interface EditorLayoutMovement {
+  toTheTopOfFieldGroup(groupId?: string): void
+  toTheBottomOfFieldGroup(groupId?: string): void
+  beforeField(field: string): void
+  afterField(field: string): void
+  beforeFieldGroup(groupId?: string): void
+  afterFieldGroup(groupId?: string): void
 }
 
 type FieldType = 'Symbol' | 'Text' | 'Integer' | 'Number' | 'Date' | 'Boolean' | 'Object' | 'Location' | 'RichText' | 'Array' | 'Link'
@@ -94,7 +103,7 @@ export interface IValidation {
   /** Takes min and/or max parameters and validates the size of the array (number of objects in it). */
   size?: { max?: number, min?: number },
   /** Takes min and/or max parameters and validates the range of a value. */
-  range?: { max?: number, min?: number},
+  range?: { max?: number, min?: number },
   /** Takes a string that reflects a JS regex and flags, validates against a string. See JS reference for the parameters. */
   regexp?: { pattern: string, flags?: string },
   /** Validates that there are no other entries that have the same field value at the time of publication. */
@@ -142,6 +151,11 @@ export interface ISidebarWidgetSettings {
   [setting: string]: WidgetSettingsValue
 }
 
+export interface IFieldGroupWidgetSettings {
+  /** Instance settings for the field group widget as key-value pairs. */
+  [setting: string]: WidgetSettingsValue
+}
+
 export interface ContentType {
   id: string
   instanceId: string
@@ -154,18 +168,18 @@ export interface ContentType {
   displayField(displayField: string): ContentType
 
   /** Creates a field with provided id. */
-  createField (id: string, init?: IFieldOptions): Field
+  createField(id: string, init?: IFieldOptions): Field
 
   /** Edits the field of provided id. */
-  editField (id: string, init?: IFieldOptions): Field
+  editField(id: string, init?: IFieldOptions): Field
 
-  moveField (id: string): Movement
+  moveField(id: string): Movement
 
   /** Shorthand method to omit a field, publish its content type, and then delete the field. This implies that associated content for the field will be lost. */
-  deleteField (id: string): void
+  deleteField(id: string): void
 
   /** Changes the field's ID. */
-  changeFieldId (oldId: string, newId: string): void
+  changeFieldId(oldId: string, newId: string): void
 
   /**
    *
@@ -183,26 +197,26 @@ export interface ContentType {
    * @param widgetId The new widget ID for the field.
    * @param settings Widget settings
    */
-  changeFieldControl (fieldId: string, widgetNamespace: 'builtin' | 'extension' | 'app', widgetId: string, settings?: IEditorInterfaceOptions): void
+  changeFieldControl(fieldId: string, widgetNamespace: 'builtin' | 'extension' | 'app', widgetId: string, settings?: IEditorInterfaceOptions): void
 
   /**
    * @deprecated
    * Use change field control instead
    */
-  changeEditorInterface (fieldId: string, widgetId: string, settings?: IEditorInterfaceOptions, widgetNamespace?: 'builtin' | 'extension'): void
+  changeEditorInterface(fieldId: string, widgetId: string, settings?: IEditorInterfaceOptions, widgetNamespace?: 'builtin' | 'extension'): void
 
   /**
    * Resets the field control of given field's ID.
    *
    * @param fieldId The ID of the field.
    */
-  resetFieldControl (fieldId: string): void
+  resetFieldControl(fieldId: string): void
 
   /**
    * @deprecated
    * Use resetFieldControl instead
    */
-  resetEditorInterface (fieldId: string): void
+  resetEditorInterface(fieldId: string): void
 
   /**
    * copies the control settings from a field to another field in the same content type.
@@ -210,13 +224,13 @@ export interface ContentType {
    * @param sourceFieldId The ID of the field to copy the control setting from.
    * @param destinationFieldId The ID of the field to apply the copied control setting to.
    */
-  copyFieldControl (sourceFieldId: string, destinationFieldId: string): void
+  copyFieldControl(sourceFieldId: string, destinationFieldId: string): void
 
   /**
    * @deprecated
    * Use copyFieldControl instead
    */
-  copyEditorInterface (sourceFieldId: string, destinationFieldId: string): void
+  copyEditorInterface(sourceFieldId: string, destinationFieldId: string): void
 
   /**
    * Adds a builtin or custom widget to the sidebar of the content type.
@@ -226,10 +240,10 @@ export interface ContentType {
    * @param settings Instance settings for the widget
    * @param insertBeforeWidgetId Insert widget above this widget in the sidebar. If null, the widget will be added to the end.
    */
-  addSidebarWidget (widgetNamespace: 'sidebar-builtin' | 'extension' | 'app',
-                    widgetId: string,
-                    settings?: ISidebarWidgetSettings,
-                    insertBeforeWidgetId?: string | null): void
+  addSidebarWidget(widgetNamespace: 'sidebar-builtin' | 'extension' | 'app',
+    widgetId: string,
+    settings?: ISidebarWidgetSettings,
+    insertBeforeWidgetId?: string | null): void
 
   /**
    * Updates the configuration of a widget in the sidebar of the content type.
@@ -238,9 +252,9 @@ export interface ContentType {
    * @param widgetId The ID of the widget to update.
    * @param settings Instance settings for the widget
    */
-  updateSidebarWidget (widgetNamespace: 'sidebar-builtin' | 'extension' | 'app',
-                       widgetId: string,
-                       settings: ISidebarWidgetSettings): void
+  updateSidebarWidget(widgetNamespace: 'sidebar-builtin' | 'extension' | 'app',
+    widgetId: string,
+    settings: ISidebarWidgetSettings): void
 
   /**
    * Removes a widget from the sidebar of the content type.
@@ -248,13 +262,70 @@ export interface ContentType {
    * @param widgetNamespace The namespace of the widget. Use 'sidebar-builtin' for standard widgets or 'extension' for UI extensions.
    * @param widgetId The ID of the widget to remove.
    */
-  removeSidebarWidget (widgetNamespace: 'sidebar-builtin' | 'extension' | 'app',
-                       widgetId: string): void
+  removeSidebarWidget(widgetNamespace: 'sidebar-builtin' | 'extension' | 'app',
+    widgetId: string): void
 
   /**
    * Resets the sidebar of the content type to default
    */
-  resetSidebarToDefault (): void
+  resetSidebarToDefault(): void
+
+  /**
+   * Generates the default editor layout in the editor interface related to this content type.
+   */
+  createEditorLayout(): EditorLayout
+
+  /**
+   * Returns the editor layout related to this content type.
+   */
+  editEditorLayout(): EditorLayout
+}
+
+export interface InitFieldGroupOptions {
+  name: string
+}
+
+export type FieldGroupUpdateFunction = (groupId: string, init?: InitFieldGroupOptions) => FieldGroup
+export interface FieldGroup {
+  name: (name: string) => FieldGroup,
+  /** 
+   * Creates a field group nested to this one
+   */
+  createFieldGroup: FieldGroupUpdateFunction
+}
+
+export interface FieldGroupControl {
+  widgetNamespace: 'builtin',
+  widgetId: 'fieldset' | 'topLevelTab',
+  settings?: IFieldGroupWidgetSettings
+}
+
+export interface EditorLayout {
+  /** 
+   * Creates a field group at the top level of editor layout
+   * A group control is automatically generated
+   */
+  createFieldGroup: FieldGroupUpdateFunction,
+  /** 
+   * Edits a field group
+   */
+  editFieldGroup: FieldGroupUpdateFunction,
+  /** 
+   * Changes the identifier of a field group
+   */
+  changeFieldGroupId: (currentId: string, newId: string) => void,
+  /**
+   * Removes a field group from the editor layout
+   */
+  deleteFieldGroup: (groupId: string) => void
+  /**
+   * Allows movements of a field in the editor layout
+   */
+  moveField: (fieldId: string) => EditorLayoutMovement
+  /** 
+   * Edits the field group control of a field group
+   */
+  changeFieldGroupControl: (groupId: string, widgetNameSpace: 'builtin', widgetId: 'fieldset' | 'topLevelTab', settings?: IFieldGroupWidgetSettings) => void,
 }
 
 export interface IContentTypeOptions {
@@ -285,7 +356,7 @@ export interface ITransformEntriesConfig {
   */
   transformEntryForLocale: (fromFields: ContentFields, currentLocale: string) => any,
   /** (optional) – If true, the transformed entries will be published. If false, they will remain in draft state. When the value is set to "preserve" items will be published only if the original entry was published as well (default true) */
-  shouldPublish?: boolean|"preserve"
+  shouldPublish?: boolean | "preserve"
 }
 
 export interface ITransformEntriesToTypeConfig {
@@ -298,7 +369,7 @@ export interface ITransformEntriesToTypeConfig {
   /** (required) - Function to create a new entry ID for the target entry */
   identityKey: (fromFields: ContentFields) => string,
   /** (optional) – Flag that specifies publishing of target entries, preserve will keep current states of the source entries (default false) */
-  shouldPublish?: boolean|"preserve",
+  shouldPublish?: boolean | "preserve",
   /** (optional) – Flag that specifies if linking entries should be updated with target entries (default false) */
   updateReferences?: boolean,
   /** (optional) – Flag that specifies if source entries should be deleted (default false). Note that this flag does not support Rich Text Fields references. */
@@ -419,38 +490,38 @@ export default interface Migration {
    * @param id string – The ID of the content type.
    * @param init Object – Content type definition
    */
-  createContentType (id: string, init?: IContentTypeOptions): ContentType
+  createContentType(id: string, init?: IContentTypeOptions): ContentType
 
   /**
    * Edits an existing content type of provided id and returns a reference to the content type. Uses the same options as createContentType.
    * @param id string – The ID of the content type.
    * @param changes Object – Content type definition
    */
-  editContentType (id: string, changes?: IContentTypeOptions): ContentType
+  editContentType(id: string, changes?: IContentTypeOptions): ContentType
 
   /**
    * Deletes the content type with the provided id and returns undefined. Note that the content type must not have any entries.
    * @param id string – The ID of the content type.
    */
-  deleteContentType (id: string): void
+  deleteContentType(id: string): void
 
   /**
    * For the given content type, transforms all its entries according to the user-provided transformEntryForLocale function. For each entry, the CLI will call this function once per locale in the space, passing in the from fields and the locale as arguments. The transform function is expected to return an object with the desired target fields. If it returns undefined, this entry locale will be left untouched.
    * @param transformation
    */
-  transformEntries (transformation: ITransformEntriesConfig): void
+  transformEntries(transformation: ITransformEntriesConfig): void
 
   /**
    * For the given content type, transforms all its entries according to the user-provided transformEntryForLocale function into a new content type. For each entry, the CLI will call this function once per locale in the space, passing in the from fields and the locale as arguments. The transform function is expected to return an object with the desired target fields. If it returns undefined, this entry locale will be left untouched
    * @param transformation
    */
-  transformEntriesToType (transformation: ITransformEntriesToTypeConfig): void
+  transformEntriesToType(transformation: ITransformEntriesToTypeConfig): void
 
   /**
    * For each entry of the given content type (source entry), derives a new entry and sets up a reference to it on the source entry. The content of the new entry is generated by the user-provided deriveEntryForLocale function. For each source entry, this function will be called as many times as there are locales in the space. Each time, it will be called with the from fields and one of the locales as arguments. The derive function is expected to return an object with the desired target fields. If it returns undefined, the new entry will have no values for the current locale.
    * @param transformation
    */
-  deriveLinkedEntries (transformation: IDeriveLinkedEntriesConfig): void
+  deriveLinkedEntries(transformation: IDeriveLinkedEntriesConfig): void
 
   /**
    * Creates a tag with provided id and returns a reference to the newly created tag.
@@ -465,26 +536,26 @@ export default interface Migration {
    * @param init Object – Tag definition
    * @param tagVisibility string - Whether the tag should be public or private
    */
-  createTag (id: string, init?: ITagOptions, tagVisibility?: TagVisibility): ITag
+  createTag(id: string, init?: ITagOptions, tagVisibility?: TagVisibility): ITag
 
   /**
    * Edits an existing tag of provided id and returns a reference to the tag. Uses the same options as createTag.
    * @param id string – The ID of the tag.
    * @param changes Object – Tag definition
    */
-  editTag (id: string, changes?: ITagOptions): ITag
+  editTag(id: string, changes?: ITagOptions): ITag
 
   /**
    * Deletes the tag with the provided id and returns undefined.
    * @param id string – The ID of the tag.
    */
-  deleteTag (id: string): void
+  deleteTag(id: string): void
 
   /**
    * For the given content type, transforms all its entries according to the user-provided transformEntryForLocale function. For each entry, the CLI will call this function once per locale in the space, passing in the from fields and the locale as arguments. The transform function is expected to return an object with the desired target fields. If it returns undefined, this entry locale will be left untouched.
    * @param transformation
    */
-  setTagsForEntries (transformation: ISetTagsForEntriesConfig): void
+  setTagsForEntries(transformation: ISetTagsForEntriesConfig): void
 
 }
 

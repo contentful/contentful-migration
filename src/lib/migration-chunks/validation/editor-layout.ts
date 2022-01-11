@@ -3,9 +3,17 @@ import { EditorInterfaces } from '../../entities/content-type'
 import { InvalidActionError } from '../../interfaces/errors'
 import errors from './errors'
 import { collectFieldGroupIds } from '../../utils/editor-layout'
+import EditorLayoutMoveFieldIntent from '../../intent/editor-layout/editor-layout-move-field'
+import { FieldsContext } from './index'
 const editorLayoutErrors = errors.editorLayout
 
+const RELATIVE_MOVEMENTS = ['beforeField', 'afterField', 'beforeFieldGroup', 'afterFieldGroup']
+const RELATIVE_MOVEMENTS_FIELD_PIVOT = ['beforeField', 'afterField']
+const ABSOLUTE_MOVEMENTS = ['toTheTopOfFieldGroup', 'toTheBottomOfFieldGroup']
+const VALID_MOVEMENT_DIRECTIONS = [...RELATIVE_MOVEMENTS, ...ABSOLUTE_MOVEMENTS]
+
 interface ValidationContext {
+  fields: FieldsContext,
   remoteFieldGroups: Set<string>
   createdFieldGroups: Set<string>
   deletedFieldGroups: Set<string>
@@ -69,6 +77,65 @@ class NonExistingDeletes implements EditorLayoutValidation {
   }
 }
 
+class InvalidFieldMove implements EditorLayoutValidation {
+  validate (intent: Intent, { fields, remoteFieldGroups, createdFieldGroups, deletedFieldGroups }: ValidationContext): string | string[] {
+    if (intent.getRawType() !== 'contentType/moveFieldInEditorLayout') {
+      return
+    }
+
+    const moveIntent = (intent as EditorLayoutMoveFieldIntent)
+    const { moveField: moveFieldError } = editorLayoutErrors
+
+    const fieldId = moveIntent.getFieldId()
+    const direction = moveIntent.getDirection()
+    const contentTypeId = moveIntent.getContentTypeId()
+    if (!fieldId) {
+      return moveFieldError.MISSING_FIELD_ID()
+    }
+
+    const fieldExists = fields.contentTypeFields[contentTypeId]?.has(fieldId) &&
+      !fields.recentlyRemoved[contentTypeId]?.has(fieldId)
+
+    if (!fieldExists) {
+      return moveFieldError.FIELD_DOES_NOT_EXIST(fieldId)
+    }
+
+    if (!VALID_MOVEMENT_DIRECTIONS.includes(direction)) {
+      return moveFieldError.INVALID_DIRECTION(fieldId, direction)
+    }
+
+    const pivotType = RELATIVE_MOVEMENTS_FIELD_PIVOT.includes(direction) ? 'field' : 'field group'
+
+    const pivotId = moveIntent.getPivotId()
+    if (RELATIVE_MOVEMENTS.includes(direction) && !pivotId) {
+      return moveFieldError.MISSING_PIVOT(fieldId, pivotType)
+    }
+
+    if (pivotType === 'field' && fieldId === pivotId) {
+      return moveFieldError.SELF_PIVOT(fieldId)
+    }
+
+    if (pivotId) {
+
+      const scopedPivotId = `${contentTypeId}.${pivotId}`
+      const groupWithPivotIdExists = (remoteFieldGroups.has(scopedPivotId) || createdFieldGroups.has(scopedPivotId))
+        && !deletedFieldGroups.has(scopedPivotId)
+      const fieldWithPivotIdExists = fields.contentTypeFields[contentTypeId].has(pivotId) &&
+        !fields.recentlyRemoved[contentTypeId].has(pivotId)
+
+      const pivotExists = pivotType === 'field group' && groupWithPivotIdExists ||
+        pivotType === 'field' && fieldWithPivotIdExists
+
+      if (!pivotExists) {
+        const explanation = ABSOLUTE_MOVEMENTS.includes(direction) ?
+          `destination group "${pivotId}" does not exist` :
+          `pivot ${pivotType} "${pivotId}" does not exist`
+        return moveFieldError.INVALID_PIVOT(fieldId, explanation)
+      }
+    }
+  }
+}
+
 class DuplicateDeletes implements EditorLayoutValidation {
   validate (intent: Intent, context: ValidationContext) {
     if (!intent.isFieldGroupDelete()) {
@@ -92,25 +159,27 @@ const checks: EditorLayoutValidation[] = [
   new DuplicateCreate(),
   new AlreadyExistingCreates(),
   new NonExistingDeletes(),
-  new DuplicateDeletes()
+  new DuplicateDeletes(),
+  new InvalidFieldMove()
 ]
 
 function getScopedFieldGroupId (intent: Intent) {
   return `${intent.getContentTypeId()}.${intent.getFieldGroupId()}`
 }
 
-export default function (intents: Intent[], editorInterfaces: Map<string, EditorInterfaces>): InvalidActionError[] {
-  let remote = []
+export default function (intents: Intent[], editorInterfaces: Map<string, EditorInterfaces>, fieldsContext: FieldsContext): InvalidActionError[] {
+  let remoteFieldGroups = []
   editorInterfaces.forEach((editorInterfaces, ctId) => {
     const editorLayout = editorInterfaces.getEditorLayout()
     if (editorLayout) {
-      remote = remote.concat(collectFieldGroupIds(editorLayout).map(id => `${ctId}.${id}`))
+      remoteFieldGroups = remoteFieldGroups.concat(collectFieldGroupIds(editorLayout).map(id => `${ctId}.${id}`))
     }
   })
   const toBeCreated = intents.filter((intent) => intent.isFieldGroupCreate()).map(getScopedFieldGroupId)
 
   let context: ValidationContext = {
-    remoteFieldGroups: new Set(remote), // all currently (in the current iteration step) existing field groups
+    fields: fieldsContext, // all currently existing fields as collected by field validation
+    remoteFieldGroups: new Set(remoteFieldGroups), // all currently (in the current iteration step) existing field groups
     createdFieldGroups: new Set<string>(), // all by now (in previous iteration steps) created field groups
     deletedFieldGroups: new Set<string>(), // all by now (in previous iteration steps) deleted field groups
     toBeCreatedFieldGroups: new Set(toBeCreated) // all future (in remaining iteration steps) created field groups
