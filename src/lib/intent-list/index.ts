@@ -9,6 +9,7 @@ import { ContentTypePublishAction } from '../action/content-type-publish'
 import { TagSaveAction } from '../action/tag-save'
 
 import ValidationError from '../interfaces/errors'
+import { SaveEditorInterfaceAction } from '../action/editorinterface-save'
 
 class IntentList {
   private intents: IntentInterface[]
@@ -134,6 +135,8 @@ class IntentList {
         let save: any
         if (intent.isTagIntent()) {
           save = new TagSaveAction(intent.getTagId())
+        } else if (intent.isEditorInterfaceIntent()) {
+          save = new SaveEditorInterfaceAction(intent.getContentTypeId())
         } else {
           save = new ContentTypeSaveAction(intent.getContentTypeId())
         }

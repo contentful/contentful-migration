@@ -4,11 +4,12 @@ import { reach } from 'hoek'
 import kindOf from 'kind-of'
 import errorMessages from '../errors'
 import { PayloadValidationError } from '../../../interfaces/errors'
-import { ContentType } from '../../../entities/content-type'
+import { ContentType, EditorInterfaces } from '../../../entities/content-type'
 import { Tag } from '../../../entities/tag'
 import { contentTypeSchema, MAX_FIELDS } from './content-type-schema'
 import { tagSchema } from './tag-schema'
 import { createFieldsSchema } from './fields-schema'
+import { createEditorLayoutSchema } from './editor-layout-schema'
 
 interface SimplifiedValidationError {
   message: string
@@ -50,6 +51,27 @@ const validateContentType = function (contentType: ContentType): PayloadValidati
       return {
         type: 'InvalidPayload',
         message: errorMessages.contentType.TOO_MANY_FIELDS(contentTypeId, MAX_FIELDS)
+      }
+    }
+  })
+}
+
+const validateEditorInterface = function (editorInterface: EditorInterfaces): PayloadValidationError[] {
+  const validateResult = createEditorLayoutSchema().validate(editorInterface.getEditorLayout(), {
+    abortEarly: false
+  })
+
+  const { error } = validateResult
+
+  if (!error) {
+    return []
+  }
+
+  return error.details.map((err): PayloadValidationError => {
+    if (err.type === 'alternatives.match') {
+      return {
+        type: 'InvalidPayload',
+        message: errorMessages.editorLayout.FIELD_GROUP_LEVEL_TOO_DEEP()
       }
     }
   })
@@ -309,6 +331,7 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
 
 export {
   validateContentType,
+  validateEditorInterface,
   validateFields,
   validateTag
 }

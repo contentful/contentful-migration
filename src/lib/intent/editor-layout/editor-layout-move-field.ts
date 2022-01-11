@@ -2,7 +2,6 @@ import Intent from '../base-intent'
 import { PlanMessage } from '../../interfaces/plan-message'
 import chalk from 'chalk'
 import { EditorLayoutMoveFieldGroupAction } from '../../action/editor-layout/editor-layout-move-field'
-import { SaveEditorInterfaceAction } from '../../action/editorinterface-save'
 import { EditorLayoutFieldMovementDirection } from '../../entities/content-type'
 
 export default class EditorLayoutMoveFieldIntent extends Intent {
@@ -24,7 +23,7 @@ export default class EditorLayoutMoveFieldIntent extends Intent {
     return false
   }
   shouldSave (): boolean {
-    return false
+    return true
   }
   shouldPublish (): boolean {
     return false
@@ -45,8 +44,7 @@ export default class EditorLayoutMoveFieldIntent extends Intent {
         this.payload.fieldId,
         this.getDirection(),
         this.getPivotId()
-      ),
-      new SaveEditorInterfaceAction(this.payload.contentTypeId)
+      )
     ]
   }
 

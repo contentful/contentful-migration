@@ -182,17 +182,31 @@ describe('editor layout plan validation', function () {
       ]);
     });
   });
-  describe.only('when saving an editor layout with more than 2 levels of nesting', function () {
+  describe('when saving an editor layout with more than 2 levels deep', function () {
     it('returns an error', async function () {
       const contentTypes = [{
-        sys: { id: 'page' }
+        sys: { id: 'page' },
+        name: 'Page',
+        fields: [{ id: 'title', name: 'Page title', type: 'Symbol' }]
       }];
 
+      const editorInterfaces = {
+        page: {
+          sys: {
+            version: 1
+          },
+          editorLayout: [
+            {
+              groupId: 'content',
+              name: 'Content',
+              items: [{ fieldId: 'title' }]
+            }
+          ]
+        }
+      };
       const errors = await validateBatches(function (migration) {
-        const Page = migration.editContentType('page');
-        // Page.createField('name').name('Internal name').type('Symbol');
-        // Page.createField('title').name('Page title').type('Symbol');
-        const editorLayout = Page.createEditorLayout();
+        const page = migration.editContentType('page');
+        const editorLayout = page.editEditorLayout();
 
         editorLayout
           .createFieldGroup('settings', {
@@ -206,12 +220,12 @@ describe('editor layout plan validation', function () {
         editorLayout.editFieldGroup('seo')
           .createFieldGroup('keywords')
           .name('Keywords');
-      }, contentTypes);
+      }, contentTypes, [], [], [], editorInterfaces);
 
-      expect(errors).to.eql([
-        {
-        }
-      ]);
+      expect(errors).to.eql([[{
+        type: 'InvalidPayload',
+        message: 'You cannot create a field group deeper that 2 levels'
+      }]]);
     });
   });
   describe('field movement', () => {

@@ -84,6 +84,11 @@ const errors = {
       }
     }
   },
+  editorLayout: {
+    FIELD_GROUP_LEVEL_TOO_DEEP: () => {
+      return 'You cannot create a field group deeper that 2 levels'
+    }
+  },
   entry: {
     REQUIRED_PROPERTY: (path) => {
       return `The property "${path}" is required on an entry.`
