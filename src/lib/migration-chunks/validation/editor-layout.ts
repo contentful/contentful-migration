@@ -78,7 +78,7 @@ class NonExistingDeletes implements EditorLayoutValidation {
 }
 
 class InvalidFieldMove implements EditorLayoutValidation {
-  validate (intent: Intent, { fields, remoteFieldGroups, createdFieldGroups, deletedFieldGroups}: ValidationContext): string | string[] {
+  validate (intent: Intent, { fields, remoteFieldGroups, createdFieldGroups, deletedFieldGroups }: ValidationContext): string | string[] {
     if (intent.getRawType() !== 'contentType/moveFieldInEditorLayout') {
       return
     }
@@ -88,13 +88,13 @@ class InvalidFieldMove implements EditorLayoutValidation {
 
     const fieldId = moveIntent.getFieldId()
     const direction = moveIntent.getDirection()
-    const contentTypeId = moveIntent.getDirection()
+    const contentTypeId = moveIntent.getContentTypeId()
     if (!fieldId) {
       return moveFieldError.MISSING_FIELD_ID()
     }
 
-    const fieldExists = fields.contentTypeFields[contentTypeId].has(fieldId) &&
-      !fields.recentlyRemoved[contentTypeId].has(fieldId)
+    const fieldExists = fields.contentTypeFields[contentTypeId]?.has(fieldId) &&
+      !fields.recentlyRemoved[contentTypeId]?.has(fieldId)
 
     if (!fieldExists) {
       return moveFieldError.FIELD_DOES_NOT_EXIST(fieldId)

@@ -1,13 +1,13 @@
-import { EditorInterfaces } from '../../entities/content-type'
+import { EditorInterfaces, EditorLayoutFieldMovementDirection } from '../../entities/content-type'
 import { EntityAction, EntityType } from '../action'
 
 class EditorLayoutMoveFieldGroupAction extends EntityAction {
   private readonly contentTypeId: string
   private readonly fieldId: string
-  private readonly direction: string
+  private readonly direction: EditorLayoutFieldMovementDirection
   private readonly pivot: string
 
-  constructor (contentTypeId: string, fieldId: string, direction: string, pivot?: string) {
+  constructor (contentTypeId: string, fieldId: string, direction: EditorLayoutFieldMovementDirection, pivot?: string) {
     super()
     this.contentTypeId = contentTypeId
     this.fieldId = fieldId,

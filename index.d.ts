@@ -287,7 +287,7 @@ export interface InitFieldGroupOptions {
 
 export type FieldGroupUpdateFunction = (groupId: string, init?: InitFieldGroupOptions) => FieldGroup
 export interface FieldGroup {
-  name: (string) => FieldGroup,
+  name: (name: string) => FieldGroup,
   /** 
    * Creates a field group nested to this one
    */
@@ -296,7 +296,7 @@ export interface FieldGroup {
 
 export interface FieldGroupControl {
   widgetNamespace: 'builtin',
-  widgetId: 'fieldSet' | 'topLevelTab',
+  widgetId: 'fieldset' | 'topLevelTab',
   settings?: IFieldGroupWidgetSettings
 }
 
@@ -325,7 +325,7 @@ export interface EditorLayout {
   /** 
    * Edits the field group control of a field group
    */
-  changeFieldGroupControl: (groupId: string, widgetNameSpace: 'builtin', widgetId: 'fieldSet' | 'topLevelTab', settings?: IFieldGroupWidgetSettings) => void,
+  changeFieldGroupControl: (groupId: string, widgetNameSpace: 'builtin', widgetId: 'fieldset' | 'topLevelTab', settings?: IFieldGroupWidgetSettings) => void,
 }
 
 export interface IContentTypeOptions {

@@ -1011,7 +1011,7 @@ describe('the migration', function () {
           { fieldId: 'fieldB' },
           {
             name: 'Field Set',
-            items: [{ fieldId: 'fieldA' }, { fieldId: 'fieldC' }],
+            items: [{ fieldId: 'fieldA' }, { fieldId: 'fieldC' }, { fieldId: 'fieldE' }],
             groupId: 'fieldset'
           }
         ],

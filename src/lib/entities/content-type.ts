@@ -19,6 +19,8 @@ import { SidebarWidgetNamespace, DEFAULT_SIDEBAR_LIST } from '../action/sidebarw
 import { findFieldGroup, isFieldGroupItem, find as findEditorLayoutItem, isFieldItem, FieldGroupItem, FieldItem } from '../utils/editor-layout'
 import { EditorLayoutItem } from 'contentful-management/dist/typings/export-types'
 
+export type EditorLayoutFieldMovementDirection = 'afterField' | 'beforeField' | 'afterFieldGroup' | 'beforeFieldGroup' | 'toTheTopOfFieldGroup' | 'toTheBottomOfFieldGroup'
+
 class Fields {
   private _fields: Field[]
 
@@ -371,7 +373,7 @@ class EditorInterfaces {
 
   moveFieldInEditorLayout (
     fieldId: string,
-    direction: string,
+    direction: EditorLayoutFieldMovementDirection,
     pivot?: string) {
 
     // find the field and its parent (sourceGroup) within editorLayout

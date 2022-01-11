@@ -3,6 +3,7 @@ import { PlanMessage } from '../../interfaces/plan-message'
 import chalk from 'chalk'
 import { EditorLayoutMoveFieldGroupAction } from '../../action/editor-layout/editor-layout-move-field'
 import { SaveEditorInterfaceAction } from '../../action/editorinterface-save'
+import { EditorLayoutFieldMovementDirection } from '../../entities/content-type'
 
 export default class EditorLayoutMoveFieldIntent extends Intent {
   isEditorInterfaceIntent () {
@@ -34,7 +35,7 @@ export default class EditorLayoutMoveFieldIntent extends Intent {
   }
 
   getDirection () {
-    return this.payload.movement.direction
+    return this.payload.movement.direction as EditorLayoutFieldMovementDirection
   }
 
   toActions () {
