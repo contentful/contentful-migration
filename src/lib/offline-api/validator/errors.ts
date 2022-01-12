@@ -84,6 +84,11 @@ const errors = {
       }
     }
   },
+  editorLayout: {
+    FIELD_GROUP_LEVEL_TOO_DEEP: () => {
+      return 'Editor layout cannot have more than 2 levels of depth'
+    }
+  },
   entry: {
     REQUIRED_PROPERTY: (path) => {
       return `The property "${path}" is required on an entry.`

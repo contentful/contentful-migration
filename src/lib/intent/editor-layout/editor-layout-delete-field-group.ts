@@ -2,7 +2,6 @@ import Intent from '../base-intent'
 import { PlanMessage } from '../../interfaces/plan-message'
 import chalk from 'chalk'
 import { EditorLayoutDeleteFieldGroupAction } from '../../action/editor-layout/editor-layout-delete-field-group'
-import { SaveEditorInterfaceAction } from '../../action/editorinterface-save'
 
 export default class EditorLayoutDeleteFieldGroupIntent extends Intent {
   isEditorInterfaceIntent () {
@@ -26,7 +25,7 @@ export default class EditorLayoutDeleteFieldGroupIntent extends Intent {
     return false
   }
   shouldSave (): boolean {
-    return false
+    return true
   }
   shouldPublish (): boolean {
     return false
@@ -36,8 +35,7 @@ export default class EditorLayoutDeleteFieldGroupIntent extends Intent {
       new EditorLayoutDeleteFieldGroupAction(
         this.payload.contentTypeId,
         this.payload.fieldGroupId
-      ),
-      new SaveEditorInterfaceAction(this.payload.contentTypeId)
+      )
     ]
   }
   toPlanMessage (): PlanMessage {

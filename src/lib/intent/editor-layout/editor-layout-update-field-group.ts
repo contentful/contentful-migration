@@ -1,7 +1,6 @@
 import Intent from '../base-intent'
 import { PlanMessage } from '../../interfaces/plan-message'
 import chalk from 'chalk'
-import { SaveEditorInterfaceAction } from '../../action/editorinterface-save'
 import { EditorLayoutUpdateFieldGroupAction } from '../../action/editor-layout/editor-layout-update-field-group'
 import { entries } from 'lodash'
 
@@ -24,7 +23,7 @@ export default class EditorLayoutUpdateFieldGroupIntent extends Intent {
     return false
   }
   shouldSave (): boolean {
-    return false
+    return true
   }
   shouldPublish (): boolean {
     return false
@@ -35,8 +34,7 @@ export default class EditorLayoutUpdateFieldGroupIntent extends Intent {
         this.payload.contentTypeId,
         this.payload.fieldGroupId,
         this.payload.fieldGroupProps
-      ),
-      new SaveEditorInterfaceAction(this.payload.contentTypeId)
+      )
     ]
   }
   toPlanMessage (): PlanMessage {

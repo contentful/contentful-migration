@@ -97,7 +97,7 @@ export default class ComposedIntent implements Intent {
   }
 
   isEditorInterfaceIntent (): boolean {
-    return false
+    return this.intents.some(intent => intent.isEditorInterfaceIntent())
   }
 
   isSidebarUpdate (): boolean {

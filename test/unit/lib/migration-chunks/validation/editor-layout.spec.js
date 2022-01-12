@@ -1,4 +1,5 @@
 'use strict';
+import validateBatches from '../../offline-api/validation/validate-batches';
 
 const { expect } = require('chai');
 
@@ -179,6 +180,52 @@ describe('editor layout plan validation', function () {
           }
         }
       ]);
+    });
+  });
+  describe('when saving an editor layout with more than 2 levels deep', function () {
+    it('returns an error', async function () {
+      const contentTypes = [{
+        sys: { id: 'page' },
+        name: 'Page',
+        fields: [{ id: 'title', name: 'Page title', type: 'Symbol' }]
+      }];
+
+      const editorInterfaces = {
+        page: {
+          sys: {
+            version: 1
+          },
+          editorLayout: [
+            {
+              groupId: 'content',
+              name: 'Content',
+              items: [{ fieldId: 'title' }]
+            }
+          ]
+        }
+      };
+      const errors = await validateBatches(function (migration) {
+        const page = migration.editContentType('page');
+        const editorLayout = page.editEditorLayout();
+
+        editorLayout
+          .createFieldGroup('settings', {
+            name: 'Settings'
+          });
+
+        editorLayout.editFieldGroup('settings')
+          .createFieldGroup('seo')
+          .name('SEO');
+
+        editorLayout.editFieldGroup('seo')
+          .createFieldGroup('keywords')
+          .name('Keywords');
+      }, contentTypes, [], [], [], editorInterfaces);
+
+      expect(errors).to.eql([[{
+        type: 'InvalidPayload',
+        message: 'Editor layout cannot have more than 2 levels of depth'
+      }]]);
     });
   });
   describe('field movement', () => {

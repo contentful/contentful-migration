@@ -458,3 +458,22 @@ migration.deleteContentType('reader');
 author.editField('fullName')
   .name('Name')
 ```
+
+## editorLayout.FIELD_GROUP_LEVEL_TOO_DEEP
+When trying to create a field group more than 2 levels deep 
+
+**Example:**
+```javascript
+editorLayout
+  .createFieldGroup('settings', {
+    name: 'Settings'
+  });
+
+editorLayout.editFieldGroup('settings')
+  .createFieldGroup('seo')
+  .name('SEO');
+
+editorLayout.editFieldGroup('seo')
+  .createFieldGroup('keywords')
+  .name('Keywords');
+```
