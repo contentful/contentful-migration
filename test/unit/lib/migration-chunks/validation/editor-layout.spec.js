@@ -224,7 +224,7 @@ describe('editor layout plan validation', function () {
 
       expect(errors).to.eql([[{
         type: 'InvalidPayload',
-        message: 'You cannot create a field group deeper that 2 levels'
+        message: 'Editor layout cannot have more than 2 levels of depth'
       }]]);
     });
   });

@@ -86,7 +86,7 @@ const errors = {
   },
   editorLayout: {
     FIELD_GROUP_LEVEL_TOO_DEEP: () => {
-      return 'You cannot create a field group deeper that 2 levels'
+      return 'Editor layout cannot have more than 2 levels of depth'
     }
   },
   entry: {
