@@ -31,6 +31,8 @@ const setTagsForEntries = require('../../examples/31-set-tags-for-entries');
 const createEditorLayout = require('../../examples/xx-create-editor-layout');
 const moveFieldInEditorLayout = require('../../examples/xx-move-field-in-editor-layout');
 const deleteEditorLayoutFieldSet = require('../../examples/xx-delete-editor-layout-field-set');
+const changeFieldGroupId = require('../../examples/xx-change-field-group-id-editor-layout');
+const deleteEditorLayout = require('../../examples/xx-delete-editor-layout');
 const deleteEditorLayoutTab = require('../../examples/xx-delete-editor-layout-tab');
 
 const { createMigrationParser } = require('../../built/lib/migration-parser');
@@ -991,7 +993,41 @@ describe('the migration', function () {
     ]);
   });
 
-  it('move fields in editor layout', async function () {
+  it('changes field group id', async function () {
+    await migrator(changeFieldGroupId);
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    });
+
+    expect(editorInterface.editorLayout).to.eql([
+      {
+        groupId: 'content',
+        name: 'Content',
+        items: [{ fieldId: 'name' }, { fieldId: 'title' }]
+      },
+      {
+        groupId: 'info',
+        name: 'Metadata',
+        items: []
+      }
+    ]);
+  });
+
+  it('deletes editor layout and group controls', async function () {
+    await migrator(deleteEditorLayout);
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    });
+
+    expect(editorInterface.editorLayout).to.be.undefined();
+    expect(editorInterface.groupControls).to.be.undefined();
+  });
+
+  it('moves fields in editor layout', async function () {
     await migrator(moveFieldInEditorLayout);
 
     const editorInterface = await request({

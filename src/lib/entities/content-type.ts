@@ -282,6 +282,11 @@ class EditorInterfaces {
     this._editorLayout = fields.map(field => ({ fieldId: field.id })) as unknown as APIEditorInterfaceEditorLayout
   }
 
+  deleteEditorLayout () {
+    delete this._groupControls
+    delete this._editorLayout
+  }
+
   createEditorLayoutFieldGroup (fieldGroupId: string, parentFieldGroupId?: string) {
     if (parentFieldGroupId) {
       // create field set
@@ -330,11 +335,23 @@ class EditorInterfaces {
     })
   }
 
+  changeFieldGroupId (fieldGroupId: string, newFieldGroupId: string) {
+    const fieldGroup = findFieldGroup(this._editorLayout, fieldGroupId)
+
+    if(fieldGroup?.item){
+      fieldGroup.item.groupId = newFieldGroupId
+    }
+
+    const existingGroupControl = this._groupControls.find(control => control.groupId === fieldGroupId)
+    if (existingGroupControl) {
+      existingGroupControl.groupId = newFieldGroupId
+    }
+  }
+
   updateEditorLayoutFieldGroup (fieldGroupId: string, props: Pick<APIEditorLayoutFieldGroupItem, 'name'>) {
     const fieldGroup = findFieldGroup(this._editorLayout, fieldGroupId)
 
     Object.assign(fieldGroup.item, pick(props, ['name']))
-
   }
 
   createGroupControls () {

@@ -190,6 +190,23 @@ const errorCreators: ErrorCreators = {
       FIELD_GROUP_ALREADY_DELETED: (id, ctId) => {
         return `Field group with id "${id}" on content type "${ctId}" cannot be deleted more than once.`
       }
+    },
+    changeFieldGroupId: {
+      FIELD_GROUP_DOES_NOT_EXIST: (id, ctId) => {
+        return `Field group "${id}" does not exist on content type "${ctId}"`
+      },
+      FIELD_GROUP_CONFLICT: (id, ctId) => {
+        return `Field group "${id}" already exists on content type "${ctId}"`
+      },
+      SELF_FIELD_GROUP: (id) => {
+        return `New field group id "${id}" is the same as original`
+      },
+      MISSING_FIELD_GROUP_ID: () => {
+        return 'Field group id to change not specified'
+      },
+      MISSING_NEW_FIELD_GROUP: (id) => {
+        return `New id for field group "${id}" not specified`
+      }
     }
   },
   entry: {
