@@ -430,6 +430,65 @@ describe('editor layout plan validation', function () {
     });
   });
 
+  describe('when saving an editor layout with more than 5 tabs', function () {
+    it('returns an error', async function () {
+      const contentTypes = [{
+        sys: { id: 'page' },
+        name: 'Page',
+        fields: [{ id: 'title', name: 'Page title', type: 'Symbol' }]
+      }];
+
+      const editorInterfaces = {
+        page: {
+          sys: {
+            version: 1
+          },
+          editorLayout: [
+            {
+              groupId: 'content',
+              name: 'Content',
+              items: [{ fieldId: 'title' }]
+            },
+            {
+              groupId: 'content2',
+              name: 'Content',
+              items: []
+            },
+            {
+              groupId: 'content3',
+              name: 'Content',
+              items: []
+            },
+            {
+              groupId: 'content4',
+              name: 'Content',
+              items: []
+            },
+            {
+              groupId: 'content5',
+              name: 'Content',
+              items: []
+            }
+          ]
+        }
+      };
+
+      const errors = await validateBatches(function (migration) {
+        const page = migration.editContentType('page');
+        const editorLayout = page.editEditorLayout();
+
+        editorLayout.createFieldGroup('content6', {
+          name: 'Content6'
+        });
+      }, contentTypes, [], [], [], editorInterfaces);
+
+      expect(errors).to.eql([[{
+        type: 'InvalidPayload',
+        message: 'Editor layout cannot have more than 5 tabs'
+      }]]);
+    });
+  });
+
   describe('field movement', () => {
     let testCts, testEis;
     beforeEach(() => {

@@ -15,7 +15,7 @@ export function createEditorLayoutSchema () {
     name: Joi.string().required(),
     groupId: Joi.string().required(),
     items: Joi.array().items(Joi.alternatives().try(fieldSet, field))
-  }))
+  })).max(5)
 
   return editorLayoutSchema
 }

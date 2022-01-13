@@ -87,7 +87,10 @@ const errors = {
   editorLayout: {
     FIELD_GROUP_LEVEL_TOO_DEEP: () => {
       return 'Editor layout cannot have more than 2 levels of depth'
-    }
+    },
+    TOO_MANY_TABS: () => {
+      return 'Editor layout cannot have more than 5 tabs'
+    },
   },
   entry: {
     REQUIRED_PROPERTY: (path) => {

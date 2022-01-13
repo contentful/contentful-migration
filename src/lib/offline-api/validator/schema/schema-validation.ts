@@ -68,6 +68,12 @@ const validateEditorInterface = function (editorInterface: EditorInterfaces): Pa
   }
 
   return error.details.map((err): PayloadValidationError => {
+    if (err.type === 'array.max' && err.path.length === 0) {
+      return {
+        type: 'InvalidPayload',
+        message: errorMessages.editorLayout.TOO_MANY_TABS()
+      }
+    }
     if (err.type === 'alternatives.match') {
       return {
         type: 'InvalidPayload',

@@ -460,12 +460,11 @@ author.editField('fullName')
 ```
 
 ## editorLayout.FIELD_GROUP_LEVEL_TOO_DEEP
-When trying to create a field group more than 2 levels deep 
+When saving an editor layout with more than 2 levels deep
 
 **Example:**
 ```javascript
-editorLayout
-  .createFieldGroup('settings', {
+editorLayout.createFieldGroup('settings', {
     name: 'Settings'
   });
 
@@ -476,4 +475,35 @@ editorLayout.editFieldGroup('settings')
 editorLayout.editFieldGroup('seo')
   .createFieldGroup('keywords')
   .name('Keywords');
+```
+
+## editorLayout.TOO_MANY_TABS
+When saving an editor layout with more than 5 tabs
+
+**Example:**
+```javascript
+editorLayout.createFieldGroup('content', {
+    name: 'Content'
+  });
+
+editorLayout.createFieldGroup('references', {
+  name: 'References'
+});
+
+editorLayout.createFieldGroup('settings', {
+  name: 'Settings'
+});
+
+editorLayout.createFieldGroup('seo', {
+  name: 'SEO'
+});
+
+editorLayout.createFieldGroup('keywords', {
+  name: 'Keywords'
+});
+
+editorLayout.createFieldGroup('extras', {
+  name: 'Extras'
+});
+
 ```
