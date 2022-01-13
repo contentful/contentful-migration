@@ -30,8 +30,8 @@ import TagCreateIntent from './tag-create'
 import TagUpdateIntent from './tag-update'
 import TagDeleteIntent from './tag-delete'
 import EntrySetTagsIntent from './entry-set-tags'
-import EditorLayoutChangeFieldGroupIdIntent from './editor-layout/editor-layout-change-field-group-id';
-import EditorLayoutDeleteIntent from './editor-layout/editor-layout-delete';
+import EditorLayoutChangeFieldGroupIdIntent from './editor-layout/editor-layout-change-field-group-id'
+import EditorLayoutDeleteIntent from './editor-layout/editor-layout-delete'
 
 export {
   Intent as default,
@@ -68,5 +68,5 @@ export {
   EntrySetTagsIntent as EntrySetTags,
   EditorLayoutMoveFieldIntent as EditorLayoutMoveField,
   EditorLayoutChangeFieldGroupIdIntent as EditorLayoutChangeFieldGroupId,
-  EditorLayoutDeleteIntent as EditorLayoutDelete,
+  EditorLayoutDeleteIntent as EditorLayoutDelete
 }

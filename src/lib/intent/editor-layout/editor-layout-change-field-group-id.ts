@@ -4,36 +4,36 @@ import chalk from 'chalk'
 import { EditorLayoutChangeFieldGroupIdAction } from '../../action/editor-layout/editor-layout-update-field-group'
 
 export default class EditorLayoutChangeFieldGroupIdIntent extends Intent {
-  isEditorInterfaceIntent() {
+  isEditorInterfaceIntent () {
     return true
   }
-  isEditorLayoutUpdate() {
+  isEditorLayoutUpdate () {
     return true
   }
-  isGroupable() {
+  isGroupable () {
     return true
   }
-  groupsWith(other: Intent): boolean {
+  groupsWith (other: Intent): boolean {
     return other.isGroupable()
       && other.isEditorLayoutUpdate()
       && this.isSameContentType(other)
   }
-  endsGroup(): boolean {
+  endsGroup (): boolean {
     return false
   }
-  shouldSave(): boolean {
+  shouldSave (): boolean {
     return true
   }
-  shouldPublish(): boolean {
+  shouldPublish (): boolean {
     return false
   }
-  getFieldGroupId(): string {
+  getFieldGroupId (): string {
     return this.payload.fieldGroupId
   }
-  getNewFieldGroupId(): string {
+  getNewFieldGroupId (): string {
     return this.payload.props?.newFieldGroupId
   }
-  toActions() {
+  toActions () {
     return [
       new EditorLayoutChangeFieldGroupIdAction(
         this.payload.contentTypeId,
@@ -42,12 +42,12 @@ export default class EditorLayoutChangeFieldGroupIdIntent extends Intent {
       )
     ]
   }
-  toPlanMessage(): PlanMessage {
+  toPlanMessage (): PlanMessage {
     return {
       heading: chalk`Update editor layout for content type {bold.yellow ${this.getContentTypeId()}}`,
       sections: [{
         heading: chalk`Change field group id from {yellow ${this.payload.fieldGroupId}} to {yellow ${this.payload.props.newFieldGroupId}}`,
-        details: [],
+        details: []
       }],
       details: []
     }

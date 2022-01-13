@@ -213,7 +213,7 @@ const actionCreators = {
         }
       },
       payload: {
-        contentTypeId,
+        contentTypeId
       }
     }),
     addSidebarWidget: (id, instanceId, callsite, widgetId, widgetNamespace, insertBeforeWidgetId, settings = {}): Intents.SidebarWidgetAdd => new Intents.SidebarWidgetAdd({
@@ -392,7 +392,7 @@ const actionCreators = {
         fieldGroupId,
         movement
       }
-    }),
+    })
   },
   field: {
     create: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite): Intents.FieldCreate => new Intents.FieldCreate({

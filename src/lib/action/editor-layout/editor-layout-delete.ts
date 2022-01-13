@@ -1,7 +1,6 @@
 import { EditorInterfaces } from '../../entities/content-type'
 import { EntityAction, EntityType } from '../action'
 
-
 class EditorLayoutDeleteAction extends EntityAction {
   private readonly contentTypeId: string
 

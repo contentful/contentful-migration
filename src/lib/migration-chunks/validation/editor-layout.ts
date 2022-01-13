@@ -156,7 +156,6 @@ class DuplicateDeletes implements EditorLayoutValidation {
   }
 }
 
-
 class InvalidFielGroupIdChange implements EditorLayoutValidation {
   validate (intent: Intent, { remoteFieldGroups, createdFieldGroups }: ValidationContext): string | string[] {
     if (intent.getRawType() !== 'contentType/changeEditorLayoutFieldGroupId') {
@@ -169,17 +168,17 @@ class InvalidFielGroupIdChange implements EditorLayoutValidation {
     const fieldGroupId = changeIntent.getFieldGroupId()
     const newFieldGroupId = changeIntent.getNewFieldGroupId()
 
-    if(!fieldGroupId){
+    if (!fieldGroupId) {
       return changeErrors.MISSING_FIELD_GROUP_ID()
     }
-    if(!newFieldGroupId){
+    if (!newFieldGroupId) {
       return changeErrors.MISSING_NEW_FIELD_GROUP(fieldGroupId)
     }
     const scopedFieldGroupId = getScopedFieldGroupId(changeIntent)
     if (!remoteFieldGroups.has(scopedFieldGroupId) && !createdFieldGroups.has(scopedFieldGroupId)) {
       return changeErrors.FIELD_GROUP_DOES_NOT_EXIST(fieldGroupId, contentTypeId)
     }
-    if(fieldGroupId === newFieldGroupId){
+    if (fieldGroupId === newFieldGroupId) {
       return changeErrors.SELF_FIELD_GROUP(fieldGroupId)
     }
     const scopedNewFieldGroupId = generateScopedId(contentTypeId, newFieldGroupId)
@@ -195,7 +194,7 @@ const checks: EditorLayoutValidation[] = [
   new NonExistingDeletes(),
   new DuplicateDeletes(),
   new InvalidFieldMove(),
-  new InvalidFielGroupIdChange(),
+  new InvalidFielGroupIdChange()
 ]
 
 function getScopedFieldGroupId (intent: Intent) {

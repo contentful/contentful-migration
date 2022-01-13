@@ -338,7 +338,7 @@ class EditorInterfaces {
   changeFieldGroupId (fieldGroupId: string, newFieldGroupId: string) {
     const fieldGroup = findFieldGroup(this._editorLayout, fieldGroupId)
 
-    if(fieldGroup?.item){
+    if (fieldGroup?.item) {
       fieldGroup.item.groupId = newFieldGroupId
     }
 
