@@ -5,6 +5,7 @@ import errors from './errors'
 import { collectFieldGroupIds } from '../../utils/editor-layout'
 import EditorLayoutMoveFieldIntent from '../../intent/editor-layout/editor-layout-move-field'
 import { FieldsContext } from './index'
+import { EditorLayoutChangeFieldGroupId } from '../../intent'
 const editorLayoutErrors = errors.editorLayout
 
 const RELATIVE_MOVEMENTS = ['beforeField', 'afterField', 'beforeFieldGroup', 'afterFieldGroup']
@@ -155,16 +156,58 @@ class DuplicateDeletes implements EditorLayoutValidation {
   }
 }
 
+
+class InvalidFielGroupIdChange implements EditorLayoutValidation {
+  validate (intent: Intent, { remoteFieldGroups, createdFieldGroups }: ValidationContext): string | string[] {
+    if (intent.getRawType() !== 'contentType/changeEditorLayoutFieldGroupId') {
+      return
+    }
+
+    console.dir({
+      createdFieldGroups,
+      remoteFieldGroups
+    })
+    const changeErrors = editorLayoutErrors.changeFieldGroupId
+    const changeIntent = intent as EditorLayoutChangeFieldGroupId
+    const contentTypeId = changeIntent.getContentTypeId()
+    const fieldGroupId = changeIntent.getFieldGroupId()
+    const newFieldGroupId = changeIntent.getNewFieldGroupId()
+
+    if(!fieldGroupId){
+      return changeErrors.MISSING_FIELD_GROUP_ID()
+    }
+    if(!newFieldGroupId){
+      return changeErrors.MISSING_NEW_FIELD_GROUP(fieldGroupId)
+    }
+    const scopedFieldGroupId = getScopedFieldGroupId(changeIntent)
+    if (!remoteFieldGroups.has(scopedFieldGroupId) && !createdFieldGroups.has(scopedFieldGroupId)) {
+      return changeErrors.FIELD_GROUP_DOES_NOT_EXIST(fieldGroupId, contentTypeId)
+    }
+    if(fieldGroupId === newFieldGroupId){
+      return changeErrors.SELF_FIELD_GROUP(fieldGroupId)
+    }
+    const scopedNewFieldGroupId = generateScopedId(contentTypeId, newFieldGroupId)
+    if (remoteFieldGroups.has(scopedNewFieldGroupId) || createdFieldGroups.has(scopedNewFieldGroupId)) {
+      return changeErrors.FIELD_GROUP_CONFLICT(newFieldGroupId, contentTypeId)
+    }
+  }
+}
+
 const checks: EditorLayoutValidation[] = [
   new DuplicateCreate(),
   new AlreadyExistingCreates(),
   new NonExistingDeletes(),
   new DuplicateDeletes(),
-  new InvalidFieldMove()
+  new InvalidFieldMove(),
+  new InvalidFielGroupIdChange(),
 ]
 
 function getScopedFieldGroupId (intent: Intent) {
-  return `${intent.getContentTypeId()}.${intent.getFieldGroupId()}`
+  return generateScopedId(intent.getContentTypeId(), intent.getFieldGroupId())
+}
+
+function generateScopedId (ctId: string, id: string) {
+  return `${ctId}.${id}`
 }
 
 export default function (intents: Intent[], editorInterfaces: Map<string, EditorInterfaces>, fieldsContext: FieldsContext): InvalidActionError[] {

@@ -73,6 +73,11 @@ class EditorLayout extends DispatchProxy {
     return this.editFieldGroup(fieldGroupId, init)
   }
 
+  changeFieldGroupId (fieldGroupId: string, newFieldGroupId: string) {
+    const callsite = getFirstExternalCaller()
+    return this.dispatch(actionCreators.editorLayout.changeFieldGroupId(this.contentTypeId, this.instanceId, fieldGroupId, newFieldGroupId, callsite))
+  }
+
   editFieldGroup (fieldGroupId, init) {
     const updateFieldGroup = actionCreators.editorLayout.updateFieldGroup.bind(null, this.contentTypeId, this.instanceId, fieldGroupId)
     return new EditorLayoutFieldGroup(this.contentTypeId, this.instanceId, fieldGroupId, this.dispatch, init, {
@@ -103,7 +108,6 @@ class EditorLayout extends DispatchProxy {
 
   deleteFieldGroup (fieldGroupId) {
     const callsite = getFirstExternalCaller()
-
     this.dispatch(actionCreators.editorLayout.deleteEditorLayoutFieldGroup(this.contentTypeId, this.instanceId, callsite, fieldGroupId))
   }
 
@@ -400,6 +404,11 @@ class ContentType extends DispatchProxy {
 
   editEditorLayout () {
     return new EditorLayout(this.id, this.instanceId, this.dispatch)
+  }
+
+  deleteEditorLayout () {
+    const callsite = getFirstExternalCaller()
+    return this.dispatch(actionCreators.contentType.deleteEditorLayout(this.id, this.instanceId, callsite))
   }
 }
 

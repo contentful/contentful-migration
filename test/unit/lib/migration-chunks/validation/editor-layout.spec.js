@@ -228,6 +228,208 @@ describe('editor layout plan validation', function () {
       }]]);
     });
   });
+
+  describe.only('change field group id', () => {
+    let testCts, testEis;
+    beforeEach(() => {
+      testCts = [{
+        sys: { id: 'page' },
+        fields: [{
+          id: 'foo',
+          name: 'Foo',
+          type: 'Symbol'
+        },
+        {
+          id: 'bar',
+          name: 'Bar',
+          type: 'Symbol'
+        },
+        {
+          id: 'baz',
+          name: 'Baz',
+          type: 'Symbol'
+        }]
+      }];
+
+      testEis = {
+        page: {
+          sys: {
+            version: 1
+          },
+          editorLayout: [
+            {
+              groupId: 'content',
+              name: 'Content',
+              items: [{ fieldId: 'foo' }]
+            },
+            {
+              groupId: 'settings',
+              name: 'Settings',
+              items: [{
+                groupId: 'seo',
+                name: 'Seo',
+                items: [{ fieldId: 'bar' }, { fieldId: 'baz' }]
+              }]
+            }
+          ]
+        }
+      };
+    });
+
+    describe('when group id is not defined', () => {
+      it('returns an error', async () => {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout.changeFieldGroupId();
+        }, testCts, [], testEis);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field group id to change not specified',
+            details: {
+              step: {
+                type: 'contentType/changeEditorLayoutFieldGroupId',
+                meta: { contentTypeInstanceId: 'contentType/page/0' },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldGroupId: undefined,
+                  props: { newFieldGroupId: undefined }
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+
+    describe('when new group id is not defined', () => {
+      it('returns an error', async () => {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout.changeFieldGroupId('content');
+        }, testCts, [], testEis);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'New id for field group "content" not specified',
+            details: {
+              step: {
+                type: 'contentType/changeEditorLayoutFieldGroupId',
+                meta: { contentTypeInstanceId: 'contentType/page/0' },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldGroupId: 'content',
+                  props: { newFieldGroupId: undefined }
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+
+    describe('when group id does not exist', () => {
+      it('returns an error', async () => {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout.changeFieldGroupId('not_existing');
+        }, testCts, [], testEis);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'New id for field group "not_existing" not specified',
+            details: {
+              step: {
+                type: 'contentType/changeEditorLayoutFieldGroupId',
+                meta: { contentTypeInstanceId: 'contentType/page/0' },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldGroupId: 'not_existing',
+                  props: { newFieldGroupId: undefined }
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+    describe('when new group already exists', () => {
+      it('returns an error', async () => {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout.changeFieldGroupId('content', 'seo');
+        }, testCts, [], testEis);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field group "seo" already exists on content type "page"',
+            details: {
+              step: {
+                type: 'contentType/changeEditorLayoutFieldGroupId',
+                meta: { contentTypeInstanceId: 'contentType/page/0' },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldGroupId: 'content',
+                  props: { newFieldGroupId: 'seo' }
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+    describe('when renaming to the same group id', () => {
+      it('returns an error', async () => {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout.changeFieldGroupId('content', 'content');
+        }, testCts, [], testEis);
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'New field group id "content" is the same as original',
+            details: {
+              step: {
+                type: 'contentType/changeEditorLayoutFieldGroupId',
+                meta: { contentTypeInstanceId: 'contentType/page/0' },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldGroupId: 'content',
+                  props: { newFieldGroupId: 'content' }
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+    describe('when renaming is valid', () => {
+      it('succeeds', async () => {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout.changeFieldGroupId('content', 'main');
+        }, testCts, [], testEis);
+        expect(errors).to.eql([]);
+      });
+    });
+  });
+
   describe('field movement', () => {
     let testCts, testEis;
     beforeEach(() => {

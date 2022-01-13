@@ -27,4 +27,29 @@ class EditorLayoutUpdateFieldGroupAction extends EntityAction {
   }
 }
 
-export { EditorLayoutUpdateFieldGroupAction }
+class EditorLayoutChangeFieldGroupIdAction extends EntityAction {
+  private readonly contentTypeId: string
+  private readonly fieldGroupId: string
+  private readonly newFieldGroupId: string
+
+  constructor (contentTypeId: string, fieldGroupId: string, newFieldGroupId: string) {
+    super()
+    this.contentTypeId = contentTypeId
+    this.fieldGroupId = fieldGroupId
+    this.newFieldGroupId = newFieldGroupId
+  }
+
+  getEntityType (): EntityType {
+    return EntityType.EditorInterface
+  }
+
+  getEntityId (): string {
+    return this.contentTypeId
+  }
+
+  async applyTo (editorInterfaces: EditorInterfaces) {
+    await editorInterfaces.changeFieldGroupId(this.fieldGroupId, this.newFieldGroupId)
+  }
+}
+
+export { EditorLayoutUpdateFieldGroupAction, EditorLayoutChangeFieldGroupIdAction }
