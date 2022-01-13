@@ -85,12 +85,18 @@ const errors = {
     }
   },
   editorLayout: {
-    FIELD_GROUP_LEVEL_TOO_DEEP: () => {
-      return 'Editor layout cannot have more than 2 levels of depth'
-    },
     TOO_MANY_TABS: () => {
       return 'Editor layout cannot have more than 5 tabs'
     },
+    TAB_CONTROL_INVALID: (groupId) => {
+      return `Editor layout tab "${groupId}" requires a "topLevelTab" widget group control`
+    },
+    FIELD_SET_CONTROL_INVALID: (groupId) => {
+      return `Editor layout field set "${groupId}" cannot have a "topLevelTab" widget group control`
+    },
+    FIELD_GROUP_LEVEL_TOO_DEEP: () => {
+      return 'Editor layout cannot have more than 2 levels of depth'
+    }
   },
   entry: {
     REQUIRED_PROPERTY: (path) => {

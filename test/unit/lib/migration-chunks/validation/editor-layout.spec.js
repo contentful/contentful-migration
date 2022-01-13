@@ -201,6 +201,13 @@ describe('editor layout plan validation', function () {
               name: 'Content',
               items: [{ fieldId: 'title' }]
             }
+          ],
+          groupControls: [
+            {
+              groupId: 'content',
+              widgetNamespace: 'builtin',
+              widgetId: 'topLevelTab'
+            }
           ]
         }
       };
@@ -469,6 +476,33 @@ describe('editor layout plan validation', function () {
               name: 'Content',
               items: []
             }
+          ],
+          groupControls: [
+            {
+              groupId: 'content',
+              widgetNamespace: 'builtin',
+              widgetId: 'topLevelTab'
+            },
+            {
+              groupId: 'content2',
+              widgetNamespace: 'builtin',
+              widgetId: 'topLevelTab'
+            },
+            {
+              groupId: 'content3',
+              widgetNamespace: 'builtin',
+              widgetId: 'topLevelTab'
+            },
+            {
+              groupId: 'content4',
+              widgetNamespace: 'builtin',
+              widgetId: 'topLevelTab'
+            },
+            {
+              groupId: 'content5',
+              widgetNamespace: 'builtin',
+              widgetId: 'topLevelTab'
+            }
           ]
         }
       };
@@ -485,6 +519,105 @@ describe('editor layout plan validation', function () {
       expect(errors).to.eql([[{
         type: 'InvalidPayload',
         message: 'Editor layout cannot have more than 5 tabs'
+      }]]);
+    });
+  });
+
+  describe('when saving an editor layout with a tab that has fieldset control', function () {
+    it('returns an error', async function () {
+      const contentTypes = [{
+        sys: { id: 'page' },
+        name: 'Page',
+        fields: [{ id: 'title', name: 'Page title', type: 'Symbol' }]
+      }];
+
+      const editorInterfaces = {
+        page: {
+          sys: {
+            version: 1
+          },
+          editorLayout: [
+            {
+              groupId: 'content',
+              name: 'Content',
+              items: [{ fieldId: 'title' }]
+            },
+            {
+              groupId: 'settings',
+              name: 'Settings',
+              items: []
+            }
+          ],
+          groupControls: [
+            {
+              groupId: 'content',
+              widgetNamespace: 'builtin',
+              widgetId: 'topLevelTab'
+            },
+            {
+              groupId: 'settings',
+              widgetNamespace: 'builtin',
+              widgetId: 'topLevelTab'
+            }
+          ]
+        }
+      };
+
+      const errors = await validateBatches(function (migration) {
+        const page = migration.editContentType('page');
+        const editorLayout = page.editEditorLayout();
+        editorLayout.changeFieldGroupControl('settings', 'builtin', 'fieldset');
+      }, contentTypes, [], [], [], editorInterfaces);
+
+      expect(errors).to.eql([[{
+        type: 'InvalidPayload',
+        message: 'Editor layout tab "settings" requires a "topLevelTab" widget group control'
+      }]]);
+    });
+  });
+  describe('when saving an editor layout with a field set that has tab control', function () {
+    it('returns an error', async function () {
+      const contentTypes = [{
+        sys: { id: 'page' },
+        name: 'Page',
+        fields: [{ id: 'title', name: 'Page title', type: 'Symbol' }]
+      }];
+
+      const editorInterfaces = {
+        page: {
+          sys: {
+            version: 1
+          },
+          editorLayout: [
+            {
+              groupId: 'content',
+              name: 'Content',
+              items: [{ fieldId: 'title' }, {
+                groupId: 'details',
+                name: 'Details',
+                items: []
+              }]
+            }
+          ],
+          groupControls: [
+            {
+              groupId: 'content',
+              widgetNamespace: 'builtin',
+              widgetId: 'topLevelTab'
+            }
+          ]
+        }
+      };
+
+      const errors = await validateBatches(function (migration) {
+        const page = migration.editContentType('page');
+        const editorLayout = page.editEditorLayout();
+        editorLayout.changeFieldGroupControl('details', 'builtin', 'topLevelTab');
+      }, contentTypes, [], [], [], editorInterfaces);
+
+      expect(errors).to.eql([[{
+        type: 'InvalidPayload',
+        message: 'Editor layout field set "details" cannot have a "topLevelTab" widget group control'
       }]]);
     });
   });

@@ -459,32 +459,14 @@ author.editField('fullName')
   .name('Name')
 ```
 
-## editorLayout.FIELD_GROUP_LEVEL_TOO_DEEP
-When saving an editor layout with more than 2 levels deep
-
-**Example:**
-```javascript
-editorLayout.createFieldGroup('settings', {
-    name: 'Settings'
-  });
-
-editorLayout.editFieldGroup('settings')
-  .createFieldGroup('seo')
-  .name('SEO');
-
-editorLayout.editFieldGroup('seo')
-  .createFieldGroup('keywords')
-  .name('Keywords');
-```
-
 ## editorLayout.TOO_MANY_TABS
 When saving an editor layout with more than 5 tabs
 
 **Example:**
 ```javascript
 editorLayout.createFieldGroup('content', {
-    name: 'Content'
-  });
+  name: 'Content'
+});
 
 editorLayout.createFieldGroup('references', {
   name: 'References'
@@ -506,4 +488,51 @@ editorLayout.createFieldGroup('extras', {
   name: 'Extras'
 });
 
+```
+
+## editorLayout.TAB_CONTROL_INVALID
+When saving an editor layout with a tab that has `fieldset` control
+
+**Example:**
+```javascript
+editorLayout.createFieldGroup('settings', {
+  name: 'Settings'
+});
+
+editorLayout.changeFieldGroupControl('settings', 'builtin', 'fieldset');
+```
+
+## editorLayout.FIELDSET_CONTROL_INVALID
+When saving an editor layout with a field set that has `topLevelTab` control
+
+**Example:**
+```javascript
+editorLayout.createFieldGroup('settings', {
+  name: 'Settings'
+});
+
+editorLayout.editFieldGroup('settings')
+  .createFieldGroup('seo')
+  .name('SEO');
+
+editorLayout.changeFieldGroupControl('seo', 'builtin', 'topLevelTab');
+
+```
+
+## editorLayout.FIELD_GROUP_LEVEL_TOO_DEEP
+When saving an editor layout with more than 2 levels deep
+
+**Example:**
+```javascript
+editorLayout.createFieldGroup('settings', {
+  name: 'Settings'
+});
+
+editorLayout.editFieldGroup('settings')
+  .createFieldGroup('seo')
+  .name('SEO');
+
+editorLayout.editFieldGroup('seo')
+  .createFieldGroup('keywords')
+  .name('Keywords');
 ```
