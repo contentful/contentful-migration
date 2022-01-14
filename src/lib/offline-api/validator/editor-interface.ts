@@ -6,13 +6,12 @@ import {
 } from '../../interfaces/errors'
 import { validateEditorInterface } from './schema/schema-validation'
 
-interface EditorInterfacePayloadValidator {
+export interface EditorInterfacePayloadValidator {
   hooks: ApiHook[]
   validate (editorInterface: EditorInterfaces): (InvalidActionError | PayloadValidationError)[]
 }
 
-export class EditorInterfaceSchemaValidator
-  implements EditorInterfacePayloadValidator {
+export class EditorInterfaceSchemaValidator implements EditorInterfacePayloadValidator {
   public hooks = [ApiHook.SaveEditorInterface]
 
   public validate (editorInterface: EditorInterfaces): PayloadValidationError[] {

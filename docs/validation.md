@@ -536,3 +536,29 @@ editorLayout.editFieldGroup('seo')
   .createFieldGroup('keywords')
   .name('Keywords');
 ```
+
+## editorLayout.TOO_FEW_FIELD_GROUPS
+When saving an editor layout with less than 2 field groups.
+
+**Example:**
+```javascript
+editorLayout.createFieldGroup('content', {
+  name: 'Content'
+});
+```
+
+## editorLayout.TOO_MANY_FIELD_SETS
+When saving an editor layout with more than 15 field sets.
+
+**Example:**
+```javascript
+editorLayout.createFieldGroup('content', {
+  name: 'Content'
+});
+
+for (let i = 0; i <= 15; i++) {
+  editorLayout.editFieldGroup('content')
+    .createFieldGroup('dummy-' + i)
+    .name('Dummy group ' + i)
+}
+```

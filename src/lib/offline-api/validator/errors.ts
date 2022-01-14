@@ -96,7 +96,13 @@ const errors = {
     },
     FIELD_GROUP_LEVEL_TOO_DEEP: () => {
       return 'Editor layout cannot have more than 2 levels of depth'
-    }
+    },
+    TOO_FEW_FIELD_GROUPS: () => {
+      return 'Editor layout cannot have less than 2 groups'
+    },
+    TOO_MANY_FIELD_SETS: () => {
+      return 'Editor layout cannot have more than 15 field sets'
+    },
   },
   entry: {
     REQUIRED_PROPERTY: (path) => {

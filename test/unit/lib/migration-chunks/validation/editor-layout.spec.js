@@ -445,6 +445,21 @@ describe('editor layout plan validation', function () {
         fields: [{ id: 'title', name: 'Page title', type: 'Symbol' }]
       }];
 
+      const tabs = [];
+      const tabsControls = [];
+      for (let i = 0; i < 4; i++) {
+        tabs.push({
+          groupId: `content${i}`,
+          name: `Content${i}`,
+          items: [{ fieldId: 'title' }]
+        });
+        tabsControls.push({
+          groupId: `content${i}`,
+          widgetNamespace: 'builtin',
+          widgetId: 'topLevelTab'
+        });
+      }
+
       const editorInterfaces = {
         page: {
           sys: {
@@ -456,26 +471,7 @@ describe('editor layout plan validation', function () {
               name: 'Content',
               items: [{ fieldId: 'title' }]
             },
-            {
-              groupId: 'content2',
-              name: 'Content',
-              items: []
-            },
-            {
-              groupId: 'content3',
-              name: 'Content',
-              items: []
-            },
-            {
-              groupId: 'content4',
-              name: 'Content',
-              items: []
-            },
-            {
-              groupId: 'content5',
-              name: 'Content',
-              items: []
-            }
+            ...tabs
           ],
           groupControls: [
             {
@@ -483,26 +479,7 @@ describe('editor layout plan validation', function () {
               widgetNamespace: 'builtin',
               widgetId: 'topLevelTab'
             },
-            {
-              groupId: 'content2',
-              widgetNamespace: 'builtin',
-              widgetId: 'topLevelTab'
-            },
-            {
-              groupId: 'content3',
-              widgetNamespace: 'builtin',
-              widgetId: 'topLevelTab'
-            },
-            {
-              groupId: 'content4',
-              widgetNamespace: 'builtin',
-              widgetId: 'topLevelTab'
-            },
-            {
-              groupId: 'content5',
-              widgetNamespace: 'builtin',
-              widgetId: 'topLevelTab'
-            }
+            ...tabsControls
           ]
         }
       };
@@ -511,8 +488,8 @@ describe('editor layout plan validation', function () {
         const page = migration.editContentType('page');
         const editorLayout = page.editEditorLayout();
 
-        editorLayout.createFieldGroup('content6', {
-          name: 'Content6'
+        editorLayout.createFieldGroup('content5', {
+          name: 'Content5'
         });
       }, contentTypes, [], [], [], editorInterfaces);
 
@@ -618,6 +595,106 @@ describe('editor layout plan validation', function () {
       expect(errors).to.eql([[{
         type: 'InvalidPayload',
         message: 'Editor layout field set "details" cannot have a "topLevelTab" widget group control'
+      }]]);
+    });
+  });
+
+  describe('when saving an editor layout with less than 2 groups', function () {
+    it('returns an error', async function () {
+      const contentTypes = [{
+        sys: { id: 'page' },
+        name: 'Page',
+        fields: [{ id: 'title', name: 'Page title', type: 'Symbol' }]
+      }];
+
+      const editorInterfaces = {
+        page: {
+          sys: {
+            version: 1
+          },
+          editorLayout: [
+            {
+              groupId: 'content',
+              name: 'Content',
+              items: [{ fieldId: 'title' }, {
+                groupId: 'details',
+                name: 'Details',
+                items: []
+              }]
+            }
+          ],
+          groupControls: [
+            {
+              groupId: 'content',
+              widgetNamespace: 'builtin',
+              widgetId: 'topLevelTab'
+            }
+          ]
+        }
+      };
+
+      const errors = await validateBatches(function (migration) {
+        const page = migration.editContentType('page');
+        const editorLayout = page.editEditorLayout();
+        editorLayout.deleteFieldGroup('details');
+      }, contentTypes, [], [], [], editorInterfaces);
+
+      expect(errors).to.eql([[{
+        type: 'InvalidPayload',
+        message: 'Editor layout cannot have less than 2 groups'
+      }]]);
+    });
+  });
+  describe('when saving an editor layout with more than 15 field sets', function () {
+    it('returns an error', async function () {
+      const contentTypes = [{
+        sys: { id: 'page' },
+        name: 'Page',
+        fields: [{ id: 'title', name: 'Page title', type: 'Symbol' }]
+      }];
+
+      const fieldSets = [];
+      for (let i = 0; i <= 15; i++) {
+        fieldSets.push({
+          groupId: `fieldSet${i}`,
+          name: `Field set ${i}`,
+          items: []
+        });
+      }
+
+      const editorInterfaces = {
+        page: {
+          sys: {
+            version: 1
+          },
+          editorLayout: [
+            {
+              groupId: 'content',
+              name: 'Content',
+              items: [{ fieldId: 'title' }, ...fieldSets]
+            }
+          ],
+          groupControls: [
+            {
+              groupId: 'content',
+              widgetNamespace: 'builtin',
+              widgetId: 'topLevelTab'
+            }
+          ]
+        }
+      };
+
+      const errors = await validateBatches(function (migration) {
+        const page = migration.editContentType('page');
+        const editorLayout = page.editEditorLayout();
+        editorLayout.createFieldGroup('details', {
+          name: 'Details'
+        });
+      }, contentTypes, [], [], [], editorInterfaces);
+
+      expect(errors).to.eql([[{
+        type: 'InvalidPayload',
+        message: 'Editor layout cannot have more than 15 field sets'
       }]]);
     });
   });
