@@ -785,16 +785,10 @@ Moves the field with the provided `id`.
 Creates a tab with the provided `id`.
 
 **`id : string`** – The ID of the group.
-**`widgetNamespace : string`** – The widget namespace of the group.
-**`widgetId : string`** – The widget ID of the group.
 
 **`opts : Object`** – Group settings, with the following options:
 
-- **`name : string`** _(required)_ – Field set name.
-
-**`settings : Object`** – Group settings, with the following properties:
-
-- **`helpText : string`** – Help text for the tab. Displayed when editing.
+- **`name : string`** _(required)_ – Group name.
 
 #### `deleteFieldGroup (id)` : void
 
@@ -815,13 +809,13 @@ Changes the group’s ID.
 
 #### `createFieldGroup (id[, opts])` : [EditorLayoutFieldGroup](#editor-layout-field-group)
 
-Creates a field set with the provided `id`. Returns the created
+Creates a field set with the provided `id`.
 
 **`id : string`** – The ID of the group.
 
 **`opts : Object`** – Group settings, with the following options:
 
-- **`name : string`** _(required)_ – Field set name.
+- **`name : string`** _(required)_ – Group name.
 
 #### `changeFieldGroupControl (id, widgetNamespace, widgetId[, settings])` : void
 
