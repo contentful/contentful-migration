@@ -47,6 +47,7 @@ interface RawStepPayload {
   entryEditor?: EntryEditorInfo
   entryEditors?: EntryEditor[]
   fieldGroupId?: string
+  newFieldGroupId?: string
   parentFieldGroupId?: string
   fieldGroupProps?: Omit<APIEditorLayoutFieldGroupItem, 'groupId' | 'items'>
   groupControl?: Omit<APIEditorInterfaceGroupControl, 'groupId'>

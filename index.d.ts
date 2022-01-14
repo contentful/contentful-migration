@@ -279,6 +279,11 @@ export interface ContentType {
    * Returns the editor layout related to this content type.
    */
   editEditorLayout(): EditorLayout
+
+  /**
+   * Removes editor layout and group controls from the editor interface of this content type.
+   */
+   deleteEditorLayout(): void
 }
 
 export interface InitFieldGroupOptions {

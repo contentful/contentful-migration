@@ -203,6 +203,19 @@ const actionCreators = {
         contentTypeId: id
       }
     }),
+    deleteEditorLayout: (contentTypeId: string, contentTypeInstanceId: string, callsite): Intents.EditorLayoutDelete => new Intents.EditorLayoutDelete({
+      type: 'contentType/deleteEditorLayout',
+      meta: {
+        contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId
+      }
+    }),
     addSidebarWidget: (id, instanceId, callsite, widgetId, widgetNamespace, insertBeforeWidgetId, settings = {}): Intents.SidebarWidgetAdd => new Intents.SidebarWidgetAdd({
       type: 'contentType/addSidebarWidget',
       meta: {
@@ -330,6 +343,21 @@ const actionCreators = {
         fieldGroupId
       }
     }),
+    changeFieldGroupId: (contentTypeId: string, contentTypeInstanceId: string, fieldGroupId: string, newFieldGroupId: string, callsite): Intents.EditorLayoutChangeFieldGroupId => new Intents.EditorLayoutChangeFieldGroupId({
+      type: 'contentType/changeEditorLayoutFieldGroupId',
+      meta: {
+        contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId,
+        fieldGroupId,
+        newFieldGroupId
+      }
+    }),
     updateFieldGroup: (contentTypeId, contentTypeInstanceId, fieldGroupId, callsite, property, value): Intents.EditorLayoutUpdateFieldGroup => new Intents.EditorLayoutUpdateFieldGroup({
       type: 'contentType/updateEditorLayoutFieldGroup',
       meta: {
@@ -347,7 +375,6 @@ const actionCreators = {
         }
       }
     }),
-
     moveField:  (contentTypeId, contentTypeInstanceId, fieldId, fieldGroupId, movement, callsite): Intents.EditorLayoutMoveField => new Intents.EditorLayoutMoveField({
       type: 'contentType/moveFieldInEditorLayout',
       meta: {
