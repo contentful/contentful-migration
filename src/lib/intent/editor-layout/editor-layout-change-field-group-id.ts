@@ -31,7 +31,7 @@ export default class EditorLayoutChangeFieldGroupIdIntent extends Intent {
     return this.payload.fieldGroupId
   }
   getNewFieldGroupId (): string {
-    return this.payload.props?.newFieldGroupId
+    return this.payload.newFieldGroupId
   }
   toActions () {
     return [
@@ -46,7 +46,7 @@ export default class EditorLayoutChangeFieldGroupIdIntent extends Intent {
     return {
       heading: chalk`Update editor layout for content type {bold.yellow ${this.getContentTypeId()}}`,
       sections: [{
-        heading: chalk`Change field group id from {yellow ${this.payload.fieldGroupId}} to {yellow ${this.payload.props.newFieldGroupId}}`,
+        heading: chalk`Change field group id from {yellow ${this.payload.fieldGroupId}} to {yellow ${this.payload.newFieldGroupId}}`,
         details: []
       }],
       details: []

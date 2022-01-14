@@ -296,7 +296,7 @@ describe('editor layout plan validation', function () {
                 payload: {
                   contentTypeId: 'page',
                   fieldGroupId: undefined,
-                  props: { newFieldGroupId: undefined }
+                  newFieldGroupId: undefined
                 }
               }
             }
@@ -325,7 +325,7 @@ describe('editor layout plan validation', function () {
                 payload: {
                   contentTypeId: 'page',
                   fieldGroupId: 'content',
-                  props: { newFieldGroupId: undefined }
+                  newFieldGroupId: undefined
                 }
               }
             }
@@ -354,7 +354,7 @@ describe('editor layout plan validation', function () {
                 payload: {
                   contentTypeId: 'page',
                   fieldGroupId: 'not_existing',
-                  props: { newFieldGroupId: undefined }
+                  newFieldGroupId: undefined
                 }
               }
             }
@@ -382,7 +382,7 @@ describe('editor layout plan validation', function () {
                 payload: {
                   contentTypeId: 'page',
                   fieldGroupId: 'content',
-                  props: { newFieldGroupId: 'seo' }
+                  newFieldGroupId: 'seo'
                 }
               }
             }
@@ -409,7 +409,7 @@ describe('editor layout plan validation', function () {
                 payload: {
                   contentTypeId: 'page',
                   fieldGroupId: 'content',
-                  props: { newFieldGroupId: 'content' }
+                  newFieldGroupId: 'content'
                 }
               }
             }

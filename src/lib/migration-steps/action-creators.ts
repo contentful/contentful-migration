@@ -355,9 +355,7 @@ const actionCreators = {
       payload: {
         contentTypeId,
         fieldGroupId,
-        props: {
-          newFieldGroupId
-        }
+        newFieldGroupId
       }
     }),
     updateFieldGroup: (contentTypeId, contentTypeInstanceId, fieldGroupId, callsite, property, value): Intents.EditorLayoutUpdateFieldGroup => new Intents.EditorLayoutUpdateFieldGroup({
