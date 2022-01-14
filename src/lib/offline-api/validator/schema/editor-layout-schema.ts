@@ -1,4 +1,5 @@
 import * as Joi from 'joi'
+import { MAX_TABS } from '../../../utils/editor-layout'
 
 const fieldSchema = Joi.object().keys({
   fieldId: Joi.string().required()
@@ -19,7 +20,7 @@ export function createEditorLayoutSchema (tabsIds: string[]) {
         then: fieldSetSchema,
         otherwise: fieldSchema
       }))
-  })).max(5)
+  })).max(MAX_TABS)
 
   return editorLayoutSchema
 }

@@ -1,3 +1,7 @@
+export const MIN_GROUPS = 2
+export const MAX_TABS = 5
+export const MAX_FIELD_SETS = 15
+
 export interface FieldGroupItem {
   groupId: string
   name?: string
