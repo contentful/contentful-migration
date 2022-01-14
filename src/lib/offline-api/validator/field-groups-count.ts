@@ -1,12 +1,12 @@
 import { ApiHook } from '..'
 import errorMessages from './errors'
-import { EditorInterfacePayloadValidator } from './editor-interface';
-import { EditorInterfaces } from '../../entities/content-type';
-import { collectFieldGroupIds } from '../../utils/editor-layout';
-import { PayloadValidationError } from '../../interfaces/errors';
+import { EditorInterfacePayloadValidator } from './editor-interface'
+import { EditorInterfaces } from '../../entities/content-type'
+import { collectFieldGroupIds } from '../../utils/editor-layout'
+import { PayloadValidationError } from '../../interfaces/errors'
 
 export default class FieldGroupsCountValidator implements EditorInterfacePayloadValidator {
-   public hooks = [ApiHook.SaveEditorInterface]
+  public hooks = [ApiHook.SaveEditorInterface]
 
   public validate (editorInterface: EditorInterfaces): PayloadValidationError[] {
     const errors: PayloadValidationError[] = []

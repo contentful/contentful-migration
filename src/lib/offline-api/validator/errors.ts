@@ -102,7 +102,7 @@ const errors = {
     },
     TOO_MANY_FIELD_SETS: () => {
       return 'Editor layout cannot have more than 15 field sets'
-    },
+    }
   },
   entry: {
     REQUIRED_PROPERTY: (path) => {

@@ -7,9 +7,6 @@ export default class EditorLayoutDeleteFieldGroupIntent extends Intent {
   isEditorInterfaceIntent () {
     return true
   }
-  isEditorLayoutUpdate () {
-    return true
-  }
   isFieldGroupDelete () {
     return true
   }
@@ -18,7 +15,7 @@ export default class EditorLayoutDeleteFieldGroupIntent extends Intent {
   }
   groupsWith (other: Intent): boolean {
     return other.isGroupable()
-      && other.isEditorLayoutUpdate()
+      && other.isEditorInterfaceIntent()
       && this.isSameContentType(other)
   }
   endsGroup (): boolean {

@@ -9,10 +9,12 @@ export default class EditorLayoutChangeFieldGroupControlIntent extends Intent {
     return true
   }
   isGroupable () {
-    return false
+    return true
   }
-  groupsWith (): boolean {
-    return false
+  groupsWith (other): boolean {
+    return other.isGroupable()
+      && other.isEditorInterfaceIntent()
+      && this.isSameContentType(other)
   }
   endsGroup (): boolean {
     return false
