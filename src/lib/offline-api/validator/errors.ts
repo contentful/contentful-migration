@@ -1,3 +1,5 @@
+import { MAX_FIELD_SETS, MAX_TABS, MIN_GROUPS } from '../../utils/editor-layout'
+
 const errors = {
   contentType: {
     REQUIRED_PROPERTY: (path) => {
@@ -85,8 +87,23 @@ const errors = {
     }
   },
   editorLayout: {
+    TOO_MANY_TABS: () => {
+      return `Editor layout cannot have more than ${MAX_TABS} tabs`
+    },
+    TAB_CONTROL_INVALID: (groupId) => {
+      return `Editor layout tab "${groupId}" requires a "topLevelTab" widget group control`
+    },
+    FIELD_SET_CONTROL_INVALID: (groupId) => {
+      return `Editor layout field set "${groupId}" cannot have a "topLevelTab" widget group control`
+    },
     FIELD_GROUP_LEVEL_TOO_DEEP: () => {
       return 'Editor layout cannot have more than 2 levels of depth'
+    },
+    TOO_FEW_FIELD_GROUPS: () => {
+      return `Editor layout cannot have less than ${MIN_GROUPS} groups`
+    },
+    TOO_MANY_FIELD_SETS: () => {
+      return `Editor layout cannot have more than ${MAX_FIELD_SETS} field sets`
     }
   },
   entry: {

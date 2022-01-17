@@ -459,15 +459,74 @@ author.editField('fullName')
   .name('Name')
 ```
 
-## editorLayout.FIELD_GROUP_LEVEL_TOO_DEEP
-When trying to create a field group more than 2 levels deep 
+## editorLayout.TOO_MANY_TABS
+When saving an editor layout with more than 5 tabs
 
 **Example:**
 ```javascript
-editorLayout
-  .createFieldGroup('settings', {
-    name: 'Settings'
-  });
+editorLayout.createFieldGroup('content', {
+  name: 'Content'
+});
+
+editorLayout.createFieldGroup('references', {
+  name: 'References'
+});
+
+editorLayout.createFieldGroup('settings', {
+  name: 'Settings'
+});
+
+editorLayout.createFieldGroup('seo', {
+  name: 'SEO'
+});
+
+editorLayout.createFieldGroup('keywords', {
+  name: 'Keywords'
+});
+
+editorLayout.createFieldGroup('extras', {
+  name: 'Extras'
+});
+
+```
+
+## editorLayout.TAB_CONTROL_INVALID
+When saving an editor layout with a tab that has `fieldset` control
+
+**Example:**
+```javascript
+editorLayout.createFieldGroup('settings', {
+  name: 'Settings'
+});
+
+editorLayout.changeFieldGroupControl('settings', 'builtin', 'fieldset');
+```
+
+## editorLayout.FIELDSET_CONTROL_INVALID
+When saving an editor layout with a field set that has `topLevelTab` control
+
+**Example:**
+```javascript
+editorLayout.createFieldGroup('settings', {
+  name: 'Settings'
+});
+
+editorLayout.editFieldGroup('settings')
+  .createFieldGroup('seo')
+  .name('SEO');
+
+editorLayout.changeFieldGroupControl('seo', 'builtin', 'topLevelTab');
+
+```
+
+## editorLayout.FIELD_GROUP_LEVEL_TOO_DEEP
+When saving an editor layout with more than 2 levels deep
+
+**Example:**
+```javascript
+editorLayout.createFieldGroup('settings', {
+  name: 'Settings'
+});
 
 editorLayout.editFieldGroup('settings')
   .createFieldGroup('seo')
@@ -476,4 +535,30 @@ editorLayout.editFieldGroup('settings')
 editorLayout.editFieldGroup('seo')
   .createFieldGroup('keywords')
   .name('Keywords');
+```
+
+## editorLayout.TOO_FEW_FIELD_GROUPS
+When saving an editor layout with less than 2 field groups.
+
+**Example:**
+```javascript
+editorLayout.createFieldGroup('content', {
+  name: 'Content'
+});
+```
+
+## editorLayout.TOO_MANY_FIELD_SETS
+When saving an editor layout with more than 15 field sets.
+
+**Example:**
+```javascript
+editorLayout.createFieldGroup('content', {
+  name: 'Content'
+});
+
+for (let i = 0; i <= 15; i++) {
+  editorLayout.editFieldGroup('content')
+    .createFieldGroup('dummy-' + i)
+    .name('Dummy group ' + i)
+}
 ```

@@ -299,12 +299,6 @@ export interface FieldGroup {
   createFieldGroup: FieldGroupUpdateFunction
 }
 
-export interface FieldGroupControl {
-  widgetNamespace: 'builtin',
-  widgetId: 'fieldset' | 'topLevelTab',
-  settings?: IFieldGroupWidgetSettings
-}
-
 export interface EditorLayout {
   /** 
    * Creates a field group at the top level of editor layout

@@ -57,7 +57,11 @@ const validateContentType = function (contentType: ContentType): PayloadValidati
 }
 
 const validateEditorInterface = function (editorInterface: EditorInterfaces): PayloadValidationError[] {
-  const validateResult = createEditorLayoutSchema().validate(editorInterface.getEditorLayout(), {
+  const groupControls = editorInterface.getGroupControls() || []
+  const tabsIds = groupControls
+    .filter(control => control.widgetNamespace === 'builtin' && control.widgetId === 'topLevelTab')
+    .map(control => control.groupId)
+  const validateResult = createEditorLayoutSchema(tabsIds).validate(editorInterface.getEditorLayout(), {
     abortEarly: false
   })
 
@@ -68,7 +72,25 @@ const validateEditorInterface = function (editorInterface: EditorInterfaces): Pa
   }
 
   return error.details.map((err): PayloadValidationError => {
-    if (err.type === 'alternatives.match') {
+    if (err.type === 'array.max' && err.path.length === 0) {
+      return {
+        type: 'InvalidPayload',
+        message: errorMessages.editorLayout.TOO_MANY_TABS()
+      }
+    }
+    if (err.type === 'any.only') {
+      return {
+        type: 'InvalidPayload',
+        message: errorMessages.editorLayout.TAB_CONTROL_INVALID(err.context.value)
+      }
+    }
+    if (err.type === 'any.invalid') {
+      return {
+        type: 'InvalidPayload',
+        message: errorMessages.editorLayout.FIELD_SET_CONTROL_INVALID(err.context.value)
+      }
+    }
+    if (err.type === 'any.required') {
       return {
         type: 'InvalidPayload',
         message: errorMessages.editorLayout.FIELD_GROUP_LEVEL_TOO_DEEP()
