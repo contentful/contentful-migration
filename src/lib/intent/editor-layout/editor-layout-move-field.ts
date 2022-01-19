@@ -8,6 +8,10 @@ export default class EditorLayoutMoveFieldIntent extends Intent {
   isEditorInterfaceIntent () {
     return true
   }
+  requiresContentType () {
+    // We need the fields to validate field IDs
+    return true
+  }
   isGroupable () {
     return true
   }

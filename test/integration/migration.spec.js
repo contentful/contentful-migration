@@ -29,7 +29,8 @@ const modifyTag = require('../../examples/29-modify-tag');
 const deleteTag = require('../../examples/30-delete-tag');
 const setTagsForEntries = require('../../examples/31-set-tags-for-entries');
 const createEditorLayout = require('../../examples/xx-create-editor-layout');
-const moveFieldInEditorLayout = require('../../examples/xx-move-field-in-editor-layout');
+const moveFieldInExistingEditorLayout = require('../../examples/xx-move-field-in-existing-editor-layout');
+const moveFieldInNewEditorLayout = require('../../examples/xx-move-field-in-editor-layout');
 const deleteEditorLayoutFieldSet = require('../../examples/xx-delete-editor-layout-field-set');
 const changeFieldGroupId = require('../../examples/xx-change-field-group-id-editor-layout');
 const deleteEditorLayout = require('../../examples/xx-delete-editor-layout');
@@ -1027,8 +1028,8 @@ describe('the migration', function () {
     expect(editorInterface.groupControls).to.be.undefined();
   });
 
-  it('moves fields in editor layout', async function () {
-    await migrator(moveFieldInEditorLayout);
+  it('moves fields in newly created editor layout', async function () {
+    await migrator(moveFieldInNewEditorLayout);
 
     const editorInterface = await request({
       method: 'GET',
@@ -1050,6 +1051,37 @@ describe('the migration', function () {
             items: [{ fieldId: 'fieldA' }, { fieldId: 'fieldC' }, { fieldId: 'fieldE' }],
             groupId: 'fieldset'
           }
+        ],
+        groupId: 'secondtab'
+      }
+    ]);
+  });
+
+  it('moves fields in existing editor layout', async function () {
+    await migrator(moveFieldInExistingEditorLayout);
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/mytype/editor_interface'
+    });
+
+    expect(editorInterface.editorLayout).to.eql([
+      {
+        name: 'First Tab',
+        items: [{ fieldId: 'fieldA' }, { fieldId: 'fieldD' }],
+        groupId: 'firsttab'
+      },
+      {
+        name: 'Second Tab',
+        items: [
+          {
+            name: 'Field Set',
+            items: [],
+            groupId: 'fieldset'
+          },
+          { fieldId: 'fieldB' },
+          { fieldId: 'fieldC' },
+          { fieldId: 'fieldE' }
         ],
         groupId: 'secondtab'
       }
