@@ -66,8 +66,12 @@ class NonExistingDeletes implements EditorLayoutValidation {
     }
 
     const fieldGroupId = getScopedFieldGroupId(intent)
+    const fieldGroupExists =
+      context.remoteFieldGroups.has(fieldGroupId) ||
+      context.createdFieldGroups.has(fieldGroupId) ||
+      context.deletedFieldGroups.has(fieldGroupId)
 
-    if (context.remoteFieldGroups.has(fieldGroupId) || context.deletedFieldGroups.has(fieldGroupId)) {
+    if (fieldGroupExists) {
       return
     }
 
