@@ -41,6 +41,8 @@ interface Intent {
   isTagUpdate (): boolean
   isTagDelete (): boolean
   isEntrySetTags (): boolean
+  isEditorLayoutCreate (): boolean
+  isEditorLayoutDelete (): boolean
   isFieldGroupCreate (): boolean
   isFieldGroupDelete (): boolean
 

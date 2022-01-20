@@ -11,6 +11,9 @@ export default class EditorLayoutCreateIntent extends Intent {
     // We need the fields to build the initial editor layout
     return true
   }
+  isEditorLayoutCreate () {
+    return true
+  }
   isGroupable () {
     return false
   }

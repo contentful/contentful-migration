@@ -178,6 +178,14 @@ export default class ComposedIntent implements Intent {
     return null
   }
 
+  isEditorLayoutCreate (): boolean {
+    return false
+  }
+
+  isEditorLayoutDelete (): boolean {
+    return false
+  }
+
   isFieldGroupCreate (): boolean {
     return false
   }
