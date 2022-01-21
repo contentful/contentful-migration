@@ -126,6 +126,40 @@ module.exports = {
         };
       }
     },
+    editorLayout: {
+      create: function (ctId, params) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Create editor layout for content type ${ctId}`);
+        };
+      },
+      delete: function (ctId) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Delete editor layout for content type ${ctId}`);
+        };
+      },
+      deleteFieldGroup: function (ctId, fieldGroupId) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Delete field group ${fieldGroupId} in editor layout for content type ${ctId}`);
+        };
+      },
+      update: function (ctId) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Update editor layout for content type ${ctId}`);
+        };
+      }
+    },
     field: {
       create: function (id, params) {
         return result => {
