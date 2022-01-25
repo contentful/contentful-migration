@@ -2,6 +2,7 @@
 
 const stripAnsi = require('strip-ansi');
 const { expect } = require('chai');
+const chalk = require('chalk');
 
 module.exports = {
   errors: {
@@ -127,12 +128,36 @@ module.exports = {
       }
     },
     editorLayout: {
-      create: function (ctId, params) {
+      create: function (ctId) {
         return result => {
           expect(result.stdout).not.to.be.empty();
 
           const withoutAnsiCodes = stripAnsi(result.stdout);
           expect(withoutAnsiCodes).to.include(`Create editor layout for content type ${ctId}`);
+        };
+      },
+      changeFieldGroupId: function (oldFieldGroupId, newFieldGroupId) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Change field group id from ${oldFieldGroupId} to ${newFieldGroupId}`);
+        };
+      },
+      createFieldGroup: function (fieldGroupId) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Create field group ${fieldGroupId}`);
+        };
+      },
+      createFieldGroupInParent: function (fieldGroupId, parentFieldGroupId) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Create field group ${fieldGroupId} in field group ${parentFieldGroupId}`);
         };
       },
       delete: function (ctId) {
@@ -143,12 +168,60 @@ module.exports = {
           expect(withoutAnsiCodes).to.include(`Delete editor layout for content type ${ctId}`);
         };
       },
-      deleteFieldGroup: function (ctId, fieldGroupId) {
+      deleteFieldGroup: function (fieldGroupId) {
         return result => {
           expect(result.stdout).not.to.be.empty();
 
           const withoutAnsiCodes = stripAnsi(result.stdout);
-          expect(withoutAnsiCodes).to.include(`Delete field group ${fieldGroupId} in editor layout for content type ${ctId}`);
+          expect(withoutAnsiCodes).to.include(`Delete field group ${fieldGroupId}`);
+        };
+      },
+      moveFieldToTheFirstPositionInFieldGroup: function (fieldId, pivot) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Move field ${fieldId} to the first position ${pivot ? `of group ${pivot}` : 'of its group'}`);
+        };
+      },
+      moveFieldToTheLastPositionInFieldGroup: function (fieldId, pivot) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Move field ${fieldId} to the last position ${pivot ? `of group ${pivot}` : 'of its group'}`);
+        };
+      },
+      moveFieldAfterField: function (fieldId, pivot) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Move field ${fieldId} after field ${pivot}`);
+        };
+      },
+      moveFieldBeforeField: function (fieldId, pivot) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Move field ${fieldId} before field ${pivot}`);
+        };
+      },
+      moveFieldAfterFieldGroup: function (fieldId, pivot) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Move field ${fieldId} after field group ${pivot}`);
+        };
+      },
+      moveFieldBeforeFieldGroup: function (fieldId, pivot) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Move field ${fieldId} before field group ${pivot}`);
         };
       },
       update: function (ctId) {
@@ -157,6 +230,32 @@ module.exports = {
 
           const withoutAnsiCodes = stripAnsi(result.stdout);
           expect(withoutAnsiCodes).to.include(`Update editor layout for content type ${ctId}`);
+        };
+      },
+      updateFieldGroup: function (fieldGroupId, params) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Update field group ${fieldGroupId}`);
+          if (params != null) {
+            return Object.keys(params).forEach((param) => {
+              expect(withoutAnsiCodes).to.include(`- ${param}: ${JSON.stringify(params[param])}`);
+            });
+          }
+        };
+      },
+      updateGroupControls: function (fieldGroupId, widgetNamespace, widgetId, settings) {
+        return result => {
+          expect(result.stdout).not.to.be.empty();
+
+          const withoutAnsiCodes = stripAnsi(result.stdout);
+          expect(withoutAnsiCodes).to.include(`Update group controls for field group ${fieldGroupId}`);
+          expect(withoutAnsiCodes).to.include(`- widgetId: ${JSON.stringify(widgetId)}`);
+          expect(withoutAnsiCodes).to.include(`- widgetNamespace: ${JSON.stringify(widgetNamespace)}`);
+          if (settings) {
+            expect(withoutAnsiCodes).to.include(`- settings: ${JSON.stringify(settings)}`);
+          }
         };
       }
     },

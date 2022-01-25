@@ -35,6 +35,21 @@ describe('apply editor layout migration examples', function () {
       .expect(assert.plans.field.create('title', { type: 'Symbol', name: 'Page title' }))
       .expect(assert.plans.editorLayout.create('page'))
       .expect(assert.plans.editorLayout.update('page'))
+      .expect(assert.plans.editorLayout.createFieldGroup('content'))
+      .expect(assert.plans.editorLayout.updateFieldGroup('content', { name: 'Content' }))
+      .expect(assert.plans.editorLayout.updateGroupControls('content', 'builtin', 'topLevelTab', {
+        helpText: 'Main content'
+      }))
+      .expect(assert.plans.editorLayout.createFieldGroup('settings'))
+      .expect(assert.plans.editorLayout.updateFieldGroup('settings', { name: 'Settings' }))
+      .expect(assert.plans.editorLayout.createFieldGroupInParent('seo', 'settings'))
+      .expect(assert.plans.editorLayout.updateFieldGroup('seo', { name: 'SEO' }))
+      .expect(assert.plans.editorLayout.updateGroupControls('seo', 'builtin', 'fieldset', {
+        helpText: 'Search related fields',
+        collapsedByDefault: false
+      }))
+      .expect(assert.plans.editorLayout.createFieldGroup('metadata'))
+      .expect(assert.plans.editorLayout.updateFieldGroup('metadata', { name: 'Metadata' }))
       .expect(assert.plans.actions.abort())
       .end(done);
   });
@@ -47,6 +62,21 @@ describe('apply editor layout migration examples', function () {
       .expect(assert.plans.field.create('title', { type: 'Symbol', name: 'Page title' }))
       .expect(assert.plans.editorLayout.create('page'))
       .expect(assert.plans.editorLayout.update('page'))
+      .expect(assert.plans.editorLayout.createFieldGroup('content'))
+      .expect(assert.plans.editorLayout.updateFieldGroup('content', { name: 'Content' }))
+      .expect(assert.plans.editorLayout.updateGroupControls('content', 'builtin', 'topLevelTab', {
+        helpText: 'Main content'
+      }))
+      .expect(assert.plans.editorLayout.createFieldGroup('settings'))
+      .expect(assert.plans.editorLayout.updateFieldGroup('settings', { name: 'Settings' }))
+      .expect(assert.plans.editorLayout.createFieldGroupInParent('seo', 'settings'))
+      .expect(assert.plans.editorLayout.updateFieldGroup('seo', { name: 'SEO' }))
+      .expect(assert.plans.editorLayout.updateGroupControls('seo', 'builtin', 'fieldset', {
+        helpText: 'Search related fields',
+        collapsedByDefault: false
+      }))
+      .expect(assert.plans.editorLayout.createFieldGroup('metadata'))
+      .expect(assert.plans.editorLayout.updateFieldGroup('metadata', { name: 'Metadata' }))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
         const editorInterfaces = yield getDevEditorInterface(SOURCE_TEST_SPACE, environmentId, 'page');
@@ -104,7 +134,11 @@ describe('apply editor layout migration examples', function () {
     cli()
       .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/xx-delete-editor-layout-tab.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('n\n')
-      .expect(assert.plans.editorLayout.deleteFieldGroup('page', 'settings'))
+      .expect(assert.plans.editorLayout.update('page'))
+      .expect(assert.plans.editorLayout.deleteFieldGroup('settings'))
+      .expect(assert.plans.editorLayout.createFieldGroup('toBeDeleted'))
+      .expect(assert.plans.editorLayout.updateFieldGroup('toBeDeleted', { name: 'To be deleted' }))
+      .expect(assert.plans.editorLayout.deleteFieldGroup('toBeDeleted'))
       .expect(assert.plans.actions.abort())
       .end(done);
   });
@@ -112,7 +146,11 @@ describe('apply editor layout migration examples', function () {
     cli()
       .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/xx-delete-editor-layout-tab.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
-      .expect(assert.plans.editorLayout.deleteFieldGroup('page', 'settings'))
+      .expect(assert.plans.editorLayout.update('page'))
+      .expect(assert.plans.editorLayout.deleteFieldGroup('settings'))
+      .expect(assert.plans.editorLayout.createFieldGroup('toBeDeleted'))
+      .expect(assert.plans.editorLayout.updateFieldGroup('toBeDeleted', { name: 'To be deleted' }))
+      .expect(assert.plans.editorLayout.deleteFieldGroup('toBeDeleted'))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
         const editorInterfaces = yield getDevEditorInterface(SOURCE_TEST_SPACE, environmentId, 'page');
@@ -141,6 +179,10 @@ describe('apply editor layout migration examples', function () {
       .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/xx-delete-editor-layout-field-set.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('n\n')
       .expect(assert.plans.editorLayout.update('page'))
+      .expect(assert.plans.editorLayout.createFieldGroup('toBeDeleted'))
+      .expect(assert.plans.editorLayout.updateFieldGroup('toBeDeleted', { name: 'To be deleted' }))
+      .expect(assert.plans.editorLayout.deleteFieldGroup('toBeDeleted'))
+      .expect(assert.plans.editorLayout.deleteFieldGroup('seo'))
       .expect(assert.plans.actions.abort())
       .end(done);
   });
@@ -149,6 +191,10 @@ describe('apply editor layout migration examples', function () {
       .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/xx-delete-editor-layout-field-set.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
       .expect(assert.plans.editorLayout.update('page'))
+      .expect(assert.plans.editorLayout.createFieldGroup('toBeDeleted'))
+      .expect(assert.plans.editorLayout.updateFieldGroup('toBeDeleted', { name: 'To be deleted' }))
+      .expect(assert.plans.editorLayout.deleteFieldGroup('toBeDeleted'))
+      .expect(assert.plans.editorLayout.deleteFieldGroup('seo'))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
         const editorInterfaces = yield getDevEditorInterface(SOURCE_TEST_SPACE, environmentId, 'page');
@@ -173,6 +219,7 @@ describe('apply editor layout migration examples', function () {
       .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/xx-change-field-group-id-editor-layout.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('n\n')
       .expect(assert.plans.editorLayout.update('page'))
+      .expect(assert.plans.editorLayout.changeFieldGroupId('metadata', 'info'))
       .expect(assert.plans.actions.abort())
       .end(done);
   });
@@ -181,6 +228,7 @@ describe('apply editor layout migration examples', function () {
       .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/xx-change-field-group-id-editor-layout.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
       .expect(assert.plans.editorLayout.update('page'))
+      .expect(assert.plans.editorLayout.changeFieldGroupId('metadata', 'info'))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
         const editorInterfaces = yield getDevEditorInterface(SOURCE_TEST_SPACE, environmentId, 'page');
@@ -234,6 +282,17 @@ describe('apply editor layout migration examples', function () {
       .expect(assert.plans.field.create('fieldE', { type: 'Symbol', name: 'Field D' }))
       .expect(assert.plans.editorLayout.create('mytype'))
       .expect(assert.plans.editorLayout.update('mytype'))
+      .expect(assert.plans.editorLayout.createFieldGroup('firsttab'))
+      .expect(assert.plans.editorLayout.updateFieldGroup('firsttab', { name: 'First Tab' }))
+      .expect(assert.plans.editorLayout.createFieldGroup('secondtab'))
+      .expect(assert.plans.editorLayout.updateFieldGroup('secondtab', { name: 'Second Tab' }))
+      .expect(assert.plans.editorLayout.createFieldGroupInParent('fieldset', 'secondtab'))
+      .expect(assert.plans.editorLayout.updateFieldGroup('fieldset', { name: 'Field Set' }))
+      .expect(assert.plans.editorLayout.moveFieldToTheFirstPositionInFieldGroup('fieldA', 'fieldset'))
+      .expect(assert.plans.editorLayout.moveFieldBeforeFieldGroup('fieldB', 'fieldset'))
+      .expect(assert.plans.editorLayout.moveFieldAfterField('fieldC', 'fieldA'))
+      .expect(assert.plans.editorLayout.moveFieldBeforeField('fieldE', 'fieldC'))
+      .expect(assert.plans.editorLayout.moveFieldToTheLastPositionInFieldGroup('fieldE'))
       .expect(assert.plans.actions.abort())
       .end(done);
   });
@@ -249,6 +308,17 @@ describe('apply editor layout migration examples', function () {
       .expect(assert.plans.field.create('fieldE', { type: 'Symbol', name: 'Field D' }))
       .expect(assert.plans.editorLayout.create('mytype'))
       .expect(assert.plans.editorLayout.update('mytype'))
+      .expect(assert.plans.editorLayout.createFieldGroup('firsttab'))
+      .expect(assert.plans.editorLayout.updateFieldGroup('firsttab', { name: 'First Tab' }))
+      .expect(assert.plans.editorLayout.createFieldGroup('secondtab'))
+      .expect(assert.plans.editorLayout.updateFieldGroup('secondtab', { name: 'Second Tab' }))
+      .expect(assert.plans.editorLayout.createFieldGroupInParent('fieldset', 'secondtab'))
+      .expect(assert.plans.editorLayout.updateFieldGroup('fieldset', { name: 'Field Set' }))
+      .expect(assert.plans.editorLayout.moveFieldToTheFirstPositionInFieldGroup('fieldA', 'fieldset'))
+      .expect(assert.plans.editorLayout.moveFieldBeforeFieldGroup('fieldB', 'fieldset'))
+      .expect(assert.plans.editorLayout.moveFieldAfterField('fieldC', 'fieldA'))
+      .expect(assert.plans.editorLayout.moveFieldBeforeField('fieldE', 'fieldC'))
+      .expect(assert.plans.editorLayout.moveFieldToTheLastPositionInFieldGroup('fieldE'))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
         const editorInterfaces = yield getDevEditorInterface(SOURCE_TEST_SPACE, environmentId, 'mytype');
@@ -280,6 +350,11 @@ describe('apply editor layout migration examples', function () {
       .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/xx-move-field-in-existing-editor-layout.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('n\n')
       .expect(assert.plans.editorLayout.update('mytype'))
+      .expect(assert.plans.editorLayout.moveFieldToTheFirstPositionInFieldGroup('fieldA', 'firsttab'))
+      .expect(assert.plans.editorLayout.moveFieldAfterFieldGroup('fieldB', 'fieldset'))
+      .expect(assert.plans.editorLayout.moveFieldAfterField('fieldC', 'fieldB'))
+      .expect(assert.plans.editorLayout.moveFieldBeforeField('fieldE', 'fieldC'))
+      .expect(assert.plans.editorLayout.moveFieldToTheLastPositionInFieldGroup('fieldE'))
       .expect(assert.plans.actions.abort())
       .end(done);
   });
@@ -288,6 +363,11 @@ describe('apply editor layout migration examples', function () {
       .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/xx-move-field-in-existing-editor-layout.js`)
       .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
       .expect(assert.plans.editorLayout.update('mytype'))
+      .expect(assert.plans.editorLayout.moveFieldToTheFirstPositionInFieldGroup('fieldA', 'firsttab'))
+      .expect(assert.plans.editorLayout.moveFieldAfterFieldGroup('fieldB', 'fieldset'))
+      .expect(assert.plans.editorLayout.moveFieldAfterField('fieldC', 'fieldB'))
+      .expect(assert.plans.editorLayout.moveFieldBeforeField('fieldE', 'fieldC'))
+      .expect(assert.plans.editorLayout.moveFieldToTheLastPositionInFieldGroup('fieldE'))
       .expect(assert.plans.actions.apply())
       .end(co(function * () {
         const editorInterfaces = yield getDevEditorInterface(SOURCE_TEST_SPACE, environmentId, 'mytype');

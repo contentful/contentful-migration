@@ -7,12 +7,15 @@ export default class EditorLayoutChangeFieldGroupIdIntent extends Intent {
   isEditorInterfaceIntent () {
     return true
   }
+  isEditorLayoutUpdate () {
+    return true
+  }
   isGroupable () {
     return true
   }
   groupsWith (other: Intent): boolean {
     return other.isGroupable()
-      && other.isEditorInterfaceIntent()
+      && other.isEditorLayoutUpdate()
       && this.isSameContentType(other)
   }
   endsGroup (): boolean {

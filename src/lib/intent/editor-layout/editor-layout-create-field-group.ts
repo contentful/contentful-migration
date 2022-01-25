@@ -7,6 +7,9 @@ export default class EditorLayoutCreateFieldGroupIntent extends Intent {
   isEditorInterfaceIntent () {
     return true
   }
+  isEditorLayoutUpdate () {
+    return true
+  }
   isFieldGroupCreate () {
     return true
   }
@@ -15,7 +18,7 @@ export default class EditorLayoutCreateFieldGroupIntent extends Intent {
   }
   groupsWith (other: Intent): boolean {
     return other.isGroupable()
-      && other.isEditorInterfaceIntent()
+      && other.isEditorLayoutUpdate()
       && this.isSameContentType(other)
   }
   endsGroup (): boolean {
@@ -37,10 +40,11 @@ export default class EditorLayoutCreateFieldGroupIntent extends Intent {
     ]
   }
   toPlanMessage (): PlanMessage {
+    const parentInfo = this.payload.parentFieldGroupId ? chalk` in field group {yellow ${this.payload.parentFieldGroupId}}` : ''
     return {
       heading: chalk`Update editor layout for content type {bold.yellow ${this.getContentTypeId()}}`,
       sections: [{
-        heading: chalk`Create field group {yellow ${this.payload.fieldGroupId}}`,
+        heading: chalk`Create field group {yellow ${this.getFieldGroupId()}}${parentInfo}`,
         details: []
       }],
       details: []

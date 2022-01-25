@@ -114,6 +114,10 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
+  isEditorLayoutUpdate () {
+    return false
+  }
+
   isFieldGroupCreate () {
     return false
   }
