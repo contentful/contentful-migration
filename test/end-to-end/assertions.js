@@ -2,7 +2,6 @@
 
 const stripAnsi = require('strip-ansi');
 const { expect } = require('chai');
-const chalk = require('chalk');
 
 module.exports = {
   errors: {
