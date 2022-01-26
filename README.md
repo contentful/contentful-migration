@@ -572,7 +572,7 @@ Creates a field with provided `id`.
 
 Edits the field of provided `id`.
 
-**`id : string`** – The ID of the field to delete.
+**`id : string`** – The ID of the field to edit.
 
 **`opts : Object`** – Same as [`createField`](#createfieldid--string-opts--object--field) listed above.
 
