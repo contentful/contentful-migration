@@ -106,6 +106,18 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
+  isEditorLayoutCreate () {
+    return false
+  }
+
+  isEditorLayoutDelete () {
+    return false
+  }
+
+  isEditorLayoutUpdate () {
+    return false
+  }
+
   isFieldGroupCreate () {
     return false
   }

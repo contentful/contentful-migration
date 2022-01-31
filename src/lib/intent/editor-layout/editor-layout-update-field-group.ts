@@ -8,12 +8,15 @@ export default class EditorLayoutUpdateFieldGroupIntent extends Intent {
   isEditorInterfaceIntent () {
     return true
   }
+  isEditorLayoutUpdate () {
+    return true
+  }
   isGroupable () {
     return true
   }
   groupsWith (other: Intent): boolean {
     return other.isGroupable()
-      && other.isEditorInterfaceIntent()
+      && other.isEditorLayoutUpdate()
       && this.isSameContentType(other)
   }
   endsGroup (): boolean {
@@ -35,7 +38,7 @@ export default class EditorLayoutUpdateFieldGroupIntent extends Intent {
     ]
   }
   toPlanMessage (): PlanMessage {
-    const details = entries(this.payload.props).map(([key, value]) => {
+    const details = entries(this.payload.fieldGroupProps).map(([key, value]) => {
       return chalk`{italic ${key}}: ${JSON.stringify(value)}`
     })
 

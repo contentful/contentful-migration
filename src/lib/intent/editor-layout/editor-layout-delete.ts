@@ -7,6 +7,9 @@ export default class EditorLayoutDeleteIntent extends Intent {
   isEditorInterfaceIntent () {
     return true
   }
+  isEditorLayoutDelete () {
+    return true
+  }
   isGroupable () {
     return false
   }

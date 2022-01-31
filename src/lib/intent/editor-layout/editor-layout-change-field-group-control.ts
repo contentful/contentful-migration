@@ -8,12 +8,15 @@ export default class EditorLayoutChangeFieldGroupControlIntent extends Intent {
   isEditorInterfaceIntent () {
     return true
   }
+  isEditorLayoutUpdate () {
+    return true
+  }
   isGroupable () {
     return true
   }
   groupsWith (other): boolean {
     return other.isGroupable()
-      && other.isEditorInterfaceIntent()
+      && other.isEditorLayoutUpdate()
       && this.isSameContentType(other)
   }
   endsGroup (): boolean {
@@ -35,14 +38,17 @@ export default class EditorLayoutChangeFieldGroupControlIntent extends Intent {
     ]
   }
   toPlanMessage (): PlanMessage {
-    const details = entries(this.payload.props).map(([key, value]) => {
+    const details = entries(this.payload.groupControl).map(([key, value]) => {
       return chalk`{italic ${key}}: ${JSON.stringify(value)}`
     })
 
     return {
-      heading: chalk`Update group control for field group {yellow ${this.payload.fieldGroupId}} for content type {bold.yellow ${this.getContentTypeId()}}`,
-      sections: [],
-      details
+      heading: chalk`Update editor layout for content type {bold.yellow ${this.getContentTypeId()}}`,
+      sections: [{
+        heading: chalk`Update group controls for field group {yellow ${this.getFieldGroupId()}}`,
+        details
+      }],
+      details: []
     }
   }
 }

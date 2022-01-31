@@ -15,6 +15,8 @@ const VALID_MOVEMENT_DIRECTIONS = [...RELATIVE_MOVEMENTS, ...ABSOLUTE_MOVEMENTS]
 
 interface ValidationContext {
   fields: FieldsContext,
+  remoteEditorLayouts: Set<string>
+  createdEditorLayouts: Set<string>
   remoteFieldGroups: Set<string>
   createdFieldGroups: Set<string>
   deletedFieldGroups: Set<string>
@@ -26,6 +28,34 @@ interface EditorLayoutValidation {
 }
 
 class DuplicateCreate implements EditorLayoutValidation {
+  validate (intent: Intent, context: ValidationContext) {
+    if (!intent.isEditorLayoutCreate()) {
+      return
+    }
+
+    if (!context.createdEditorLayouts.has(intent.getContentTypeId())) {
+      return
+    }
+
+    return editorLayoutErrors.createEditorLayout.EDITOR_LAYOUT_ALREADY_CREATED(intent.getContentTypeId())
+  }
+}
+
+class AlreadyExistingCreates implements EditorLayoutValidation {
+  validate (intent: Intent, context: ValidationContext) {
+    if (!intent.isEditorLayoutCreate()) {
+      return
+    }
+
+    if (!context.remoteEditorLayouts.has(intent.getContentTypeId())) {
+      return
+    }
+
+    return editorLayoutErrors.createEditorLayout.EDITOR_LAYOUT_ALREADY_EXISTS(intent.getContentTypeId())
+  }
+}
+
+class DuplicateFieldGroupCreate implements EditorLayoutValidation {
   validate (intent: Intent, context: ValidationContext) {
     if (!intent.isFieldGroupCreate()) {
       return
@@ -42,7 +72,7 @@ class DuplicateCreate implements EditorLayoutValidation {
   }
 }
 
-class AlreadyExistingCreates implements EditorLayoutValidation {
+class AlreadyExistingFieldGroupCreates implements EditorLayoutValidation {
   validate (intent: Intent, context: ValidationContext) {
     if (!intent.isFieldGroupCreate()) {
       return
@@ -66,8 +96,12 @@ class NonExistingDeletes implements EditorLayoutValidation {
     }
 
     const fieldGroupId = getScopedFieldGroupId(intent)
+    const fieldGroupExists =
+      context.remoteFieldGroups.has(fieldGroupId) ||
+      context.createdFieldGroups.has(fieldGroupId) ||
+      context.deletedFieldGroups.has(fieldGroupId)
 
-    if (context.remoteFieldGroups.has(fieldGroupId) || context.deletedFieldGroups.has(fieldGroupId)) {
+    if (fieldGroupExists) {
       return
     }
 
@@ -191,6 +225,8 @@ class InvalidFielGroupIdChange implements EditorLayoutValidation {
 const checks: EditorLayoutValidation[] = [
   new DuplicateCreate(),
   new AlreadyExistingCreates(),
+  new DuplicateFieldGroupCreate(),
+  new AlreadyExistingFieldGroupCreates(),
   new NonExistingDeletes(),
   new DuplicateDeletes(),
   new InvalidFieldMove(),
@@ -207,9 +243,11 @@ function generateScopedId (ctId: string, id: string) {
 
 export default function (intents: Intent[], editorInterfaces: Map<string, EditorInterfaces>, fieldsContext: FieldsContext): InvalidActionError[] {
   let remoteFieldGroups = []
+  const remoteEditorLayouts = new Set<string>()
   editorInterfaces.forEach((editorInterfaces, ctId) => {
     const editorLayout = editorInterfaces.getEditorLayout()
     if (editorLayout) {
+      remoteEditorLayouts.add(ctId)
       remoteFieldGroups = remoteFieldGroups.concat(collectFieldGroupIds(editorLayout).map(id => `${ctId}.${id}`))
     }
   })
@@ -217,6 +255,8 @@ export default function (intents: Intent[], editorInterfaces: Map<string, Editor
 
   let context: ValidationContext = {
     fields: fieldsContext, // all currently existing fields as collected by field validation
+    remoteEditorLayouts, // all currently (in the current iteration step) existing editor layouts
+    createdEditorLayouts: new Set<string>(), // all by now (in previous iteration steps) created editor layouts
     remoteFieldGroups: new Set(remoteFieldGroups), // all currently (in the current iteration step) existing field groups
     createdFieldGroups: new Set<string>(), // all by now (in previous iteration steps) created field groups
     deletedFieldGroups: new Set<string>(), // all by now (in previous iteration steps) deleted field groups
@@ -249,6 +289,15 @@ export default function (intents: Intent[], editorInterfaces: Map<string, Editor
 
       // do not update context
       continue
+    }
+
+    if (intent.isEditorLayoutCreate()) {
+      context.createdEditorLayouts.add(intent.getContentTypeId())
+    }
+
+    if (intent.isEditorLayoutDelete()) {
+      context.remoteEditorLayouts.delete(intent.getContentTypeId())
+      context.createdEditorLayouts.delete(intent.getContentTypeId())
     }
 
     const fieldGroupId = getScopedFieldGroupId(intent)

@@ -47,9 +47,6 @@ export default class ComposedIntent implements Intent {
   isEditorInterfaceUpdate (): boolean {
     return false
   }
-  isEditorLayoutUpdate (): boolean {
-    return false
-  }
   isContentTypeUpdate (): boolean {
     return false
   }
@@ -178,6 +175,18 @@ export default class ComposedIntent implements Intent {
     return null
   }
 
+  isEditorLayoutCreate (): boolean {
+    return false
+  }
+
+  isEditorLayoutDelete (): boolean {
+    return false
+  }
+
+  isEditorLayoutUpdate (): boolean {
+    return false
+  }
+
   isFieldGroupCreate (): boolean {
     return false
   }
@@ -224,6 +233,8 @@ export default class ComposedIntent implements Intent {
     const onlyFieldUpdatesByField = groupBy(onlyFieldUpdates, (intent) => intent.getFieldId())
     const createdFieldUpdatesByField = groupBy(createdFieldUpdates, (intent) => intent.getFieldId())
 
+    const editorLayoutUpdates = this.intents.filter((intent) => intent.isEditorLayoutUpdate())
+
     const topLevelDetails = flatten(contentTypeOrTagUpdates.map((updateIntent) => updateIntent.toPlanMessage().details))
 
     const sidebarUpdates = flatten(this.intents
@@ -243,6 +254,7 @@ export default class ComposedIntent implements Intent {
       }
       createSections.push(nextUpdateSection)
     }
+
     for (const createIntent of fieldCreates) {
       const fieldId = createIntent.getFieldId()
       const [createSection] = createIntent.toPlanMessage().sections
@@ -267,6 +279,11 @@ export default class ComposedIntent implements Intent {
 
     for (const moveIntent of fieldMoves) {
       const planMessage = moveIntent.toPlanMessage()
+      createSections = createSections.concat(planMessage.sections)
+    }
+
+    for (const updateIntent of editorLayoutUpdates) {
+      const planMessage = updateIntent.toPlanMessage()
       createSections = createSections.concat(planMessage.sections)
     }
 

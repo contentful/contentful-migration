@@ -7,6 +7,9 @@ export default class EditorLayoutDeleteFieldGroupIntent extends Intent {
   isEditorInterfaceIntent () {
     return true
   }
+  isEditorLayoutUpdate () {
+    return true
+  }
   isFieldGroupDelete () {
     return true
   }
@@ -15,7 +18,7 @@ export default class EditorLayoutDeleteFieldGroupIntent extends Intent {
   }
   groupsWith (other: Intent): boolean {
     return other.isGroupable()
-      && other.isEditorInterfaceIntent()
+      && other.isEditorLayoutUpdate()
       && this.isSameContentType(other)
   }
   endsGroup (): boolean {
@@ -37,9 +40,12 @@ export default class EditorLayoutDeleteFieldGroupIntent extends Intent {
   }
   toPlanMessage (): PlanMessage {
     return {
-      heading: chalk`Delete field group {yellow ${this.payload.fieldGroupId}} in editor layout for content type {bold.yellow ${this.getContentTypeId()}}`,
-      details: [],
-      sections: []
+      heading: chalk`Update editor layout for content type {bold.yellow ${this.getContentTypeId()}}`,
+      sections: [{
+        heading: chalk`Delete field group {yellow ${this.getFieldGroupId()}}`,
+        details: []
+      }],
+      details: []
     }
   }
 }

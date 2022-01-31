@@ -8,12 +8,19 @@ export default class EditorLayoutMoveFieldIntent extends Intent {
   isEditorInterfaceIntent () {
     return true
   }
+  isEditorLayoutUpdate () {
+    return true
+  }
+  requiresContentType () {
+    // We need the fields to validate field IDs
+    return true
+  }
   isGroupable () {
     return true
   }
   groupsWith (other: Intent): boolean {
     return other.isGroupable()
-      && other.isEditorInterfaceIntent()
+      && other.isEditorLayoutUpdate()
       && this.isSameContentType(other)
   }
   endsGroup (): boolean {

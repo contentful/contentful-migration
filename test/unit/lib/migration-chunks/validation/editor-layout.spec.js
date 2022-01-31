@@ -156,7 +156,7 @@ describe('editor layout plan validation', function () {
 
       const errors = await validateChunks(function (migration) {
         const Page = migration.editContentType('page');
-        const editorLayout = Page.createEditorLayout();
+        const editorLayout = Page.editEditorLayout();
 
         editorLayout.deleteFieldGroup('content');
         editorLayout.deleteFieldGroup('content');

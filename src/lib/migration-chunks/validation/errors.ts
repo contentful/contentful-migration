@@ -155,6 +155,14 @@ const errorCreators: ErrorCreators = {
 
   },
   editorLayout: {
+    createEditorLayout: {
+      EDITOR_LAYOUT_ALREADY_CREATED: (ctId) => {
+        return `Editor layout for content type "${ctId}" cannot be created more than once.`
+      },
+      EDITOR_LAYOUT_ALREADY_EXISTS: (ctId) => {
+        return `Editor layout for content type "${ctId}" already exists.`
+      }
+    },
     createFieldGroup: {
       FIELD_GROUP_ALREADY_CREATED: (id, ctId) => {
         return `Field group with id "${id}" for content type "${ctId}" cannot be created more than once.`
