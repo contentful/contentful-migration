@@ -5,7 +5,6 @@ import errors from './errors'
 import { collectFieldGroupIds } from '../../utils/editor-layout'
 import EditorLayoutMoveFieldIntent from '../../intent/editor-layout/editor-layout-move-field'
 import { FieldsContext } from './index'
-import { EditorLayoutChangeFieldGroupId } from '../../intent'
 const editorLayoutErrors = errors.editorLayout
 
 const RELATIVE_MOVEMENTS = ['beforeField', 'afterField', 'beforeFieldGroup', 'afterFieldGroup']
@@ -86,6 +85,53 @@ class AlreadyExistingFieldGroupCreates implements EditorLayoutValidation {
       intent.getFieldGroupId(),
       intent.getContentTypeId()
     )
+  }
+}
+
+class InvalidFieldGroupId implements EditorLayoutValidation {
+  validate (intent: Intent) {
+    if (!intent.isFieldGroupCreate() && !intent.isFieldGroupIdChange()) {
+      return
+    }
+
+    const fieldGroupId = intent.isFieldGroupIdChange() ? intent.getNewFieldGroupId() : intent.getFieldGroupId()
+
+    if (!fieldGroupId.match(/^[a-zA-Z0-9_]+$/) || fieldGroupId.length === 0) {
+      return editorLayoutErrors.createFieldGroup.INVALID_CHARACTER_IN_ID(
+        fieldGroupId,
+        intent.getContentTypeId()
+      )
+    }
+
+    if (fieldGroupId.match(/^\d/)) {
+      return editorLayoutErrors.createFieldGroup.INVALID_FIRST_CHARACTER_IN_ID(
+        fieldGroupId,
+        intent.getContentTypeId()
+      )
+    }
+
+    if (fieldGroupId.length > 50) {
+      return editorLayoutErrors.createFieldGroup.ID_TOO_LONG(
+        fieldGroupId,
+        intent.getContentTypeId()
+      )
+    }
+  }
+}
+
+class InvalidFieldGroupName implements EditorLayoutValidation {
+  validate (intent: Intent) {
+    if (!intent.isFieldGroupUpdate()) {
+      return
+    }
+
+    const name = intent.getFieldGroupProps().name
+    if (name && name.length > 50) {
+      return editorLayoutErrors.createFieldGroup.NAME_TOO_LONG(
+        intent.getFieldGroupId(),
+        intent.getContentTypeId()
+      )
+    }
   }
 }
 
@@ -192,23 +238,23 @@ class DuplicateDeletes implements EditorLayoutValidation {
 
 class InvalidFielGroupIdChange implements EditorLayoutValidation {
   validate (intent: Intent, { remoteFieldGroups, createdFieldGroups }: ValidationContext): string | string[] {
-    if (intent.getRawType() !== 'contentType/changeEditorLayoutFieldGroupId') {
+    if (!intent.isFieldGroupIdChange()) {
       return
     }
 
     const changeErrors = editorLayoutErrors.changeFieldGroupId
-    const changeIntent = intent as EditorLayoutChangeFieldGroupId
-    const contentTypeId = changeIntent.getContentTypeId()
-    const fieldGroupId = changeIntent.getFieldGroupId()
-    const newFieldGroupId = changeIntent.getNewFieldGroupId()
+
+    const contentTypeId = intent.getContentTypeId()
+    const fieldGroupId = intent.getFieldGroupId()
+    const newFieldGroupId = intent.getNewFieldGroupId()
 
     if (!fieldGroupId) {
       return changeErrors.MISSING_FIELD_GROUP_ID()
     }
-    if (!newFieldGroupId) {
+    if (newFieldGroupId === undefined) {
       return changeErrors.MISSING_NEW_FIELD_GROUP(fieldGroupId)
     }
-    const scopedFieldGroupId = getScopedFieldGroupId(changeIntent)
+    const scopedFieldGroupId = getScopedFieldGroupId(intent)
     if (!remoteFieldGroups.has(scopedFieldGroupId) && !createdFieldGroups.has(scopedFieldGroupId)) {
       return changeErrors.FIELD_GROUP_DOES_NOT_EXIST(fieldGroupId, contentTypeId)
     }
@@ -222,6 +268,19 @@ class InvalidFielGroupIdChange implements EditorLayoutValidation {
   }
 }
 
+class InvalidFieldGroupControlChange implements EditorLayoutValidation {
+  validate (intent: Intent, { remoteFieldGroups, createdFieldGroups }: ValidationContext): string | string[] {
+    if (!intent.isFieldGroupControlChange()) {
+      return
+    }
+
+    const scopedFieldGroupId = getScopedFieldGroupId(intent)
+    if (!remoteFieldGroups.has(scopedFieldGroupId) && !createdFieldGroups.has(scopedFieldGroupId)) {
+      return editorLayoutErrors.changeFieldGroupControl.FIELD_GROUP_DOES_NOT_EXIST(intent.getFieldGroupId())
+    }
+  }
+}
+
 const checks: EditorLayoutValidation[] = [
   new DuplicateCreate(),
   new AlreadyExistingCreates(),
@@ -230,7 +289,10 @@ const checks: EditorLayoutValidation[] = [
   new NonExistingDeletes(),
   new DuplicateDeletes(),
   new InvalidFieldMove(),
-  new InvalidFielGroupIdChange()
+  new InvalidFielGroupIdChange(),
+  new InvalidFieldGroupId(),
+  new InvalidFieldGroupName(),
+  new InvalidFieldGroupControlChange()
 ]
 
 function getScopedFieldGroupId (intent: Intent) {
@@ -312,6 +374,16 @@ export default function (intents: Intent[], editorInterfaces: Map<string, Editor
       context.deletedFieldGroups.add(fieldGroupId)
       context.remoteFieldGroups.delete(fieldGroupId)
       context.createdFieldGroups.delete(fieldGroupId)
+    }
+
+    if (intent.isFieldGroupIdChange()) {
+      const newFieldGroupId = generateScopedId(
+        intent.getContentTypeId(),
+        intent.getNewFieldGroupId()
+      )
+      context.remoteFieldGroups.delete(fieldGroupId)
+      context.createdFieldGroups.delete(fieldGroupId)
+      context.createdFieldGroups.add(newFieldGroupId)
     }
   }
 

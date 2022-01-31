@@ -10,6 +10,9 @@ export default class EditorLayoutChangeFieldGroupIdIntent extends Intent {
   isEditorLayoutUpdate () {
     return true
   }
+  isFieldGroupIdChange () {
+    return true
+  }
   isGroupable () {
     return true
   }

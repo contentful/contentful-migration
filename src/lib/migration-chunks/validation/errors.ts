@@ -169,6 +169,21 @@ const errorCreators: ErrorCreators = {
       },
       FIELD_GROUP_ALREADY_EXISTS: (id, ctId) => {
         return `Field group with id "${id}" for content type "${ctId}" already exists.`
+      },
+      FIELD_GROUP_DOES_NOT_EXIST: (fieldGroupId) => {
+        return `Field group "${fieldGroupId}" does not exist`
+      },
+      INVALID_CHARACTER_IN_ID: (id, ctId) => {
+        return `Field group id "${id}" for content type "${ctId}" must consist of only letters and numbers.`
+      },
+      INVALID_FIRST_CHARACTER_IN_ID: (id, ctId) => {
+        return `Field group id "${id}" for content type "${ctId}" must start with a letter.`
+      },
+      ID_TOO_LONG: (id, ctId) => {
+        return `Field group id "${id}" for content type "${ctId}" must not exceed 50 characters.`
+      },
+      NAME_TOO_LONG: (id, ctId) => {
+        return `Name for field group with id "${id}" for content type "${ctId}" must not exceed 50 characters.`
       }
     },
     moveField: {
@@ -214,6 +229,11 @@ const errorCreators: ErrorCreators = {
       },
       MISSING_NEW_FIELD_GROUP: (id) => {
         return `New id for field group "${id}" not specified`
+      }
+    },
+    changeFieldGroupControl: {
+      FIELD_GROUP_DOES_NOT_EXIST: (fieldGroupId) => {
+        return `Field group "${fieldGroupId}" does not exist.`
       }
     }
   },

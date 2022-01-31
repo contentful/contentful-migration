@@ -6,98 +6,383 @@ const { expect } = require('chai');
 const validateChunks = require('./validate-chunks').default;
 
 describe('editor layout plan validation', function () {
-  describe('when creating a field group with the same id twice', function () {
-    it('returns an error', async function () {
-      const contentTypes = [{
-        sys: { id: 'page' }
-      }];
+  describe('create field group', function () {
+    describe('when creating a field group with the same id twice', function () {
+      it('returns an error', async function () {
+        const contentTypes = [{
+          sys: { id: 'page' }
+        }];
 
-      const errors = await validateChunks(function (migration) {
-        const Page = migration.editContentType('page');
-        const editorLayout = Page.createEditorLayout();
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.createEditorLayout();
 
-        editorLayout
-          .createFieldGroup('content', {
-            name: 'Content'
-          });
+          editorLayout
+            .createFieldGroup('content', {
+              name: 'Content'
+            });
 
-        editorLayout
-          .createFieldGroup('content', {
-            name: 'Content'
-          });
-      }, contentTypes);
+          editorLayout
+            .createFieldGroup('content', {
+              name: 'Content'
+            });
+        }, contentTypes);
 
-      expect(errors).to.eql([
-        {
-          type: 'InvalidAction',
-          message: 'Field group with id "content" for content type "page" cannot be created more than once.',
-          details: {
-            step: {
-              type: 'contentType/createEditorLayoutFieldGroup',
-              meta: {
-                contentTypeInstanceId: 'contentType/page/0'
-              },
-              payload: {
-                contentTypeId: 'page',
-                fieldGroupId: 'content',
-                parentFieldGroupId: undefined
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field group with id "content" for content type "page" cannot be created more than once.',
+            details: {
+              step: {
+                type: 'contentType/createEditorLayoutFieldGroup',
+                meta: {
+                  contentTypeInstanceId: 'contentType/page/0'
+                },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldGroupId: 'content',
+                  parentFieldGroupId: undefined
+                }
               }
             }
           }
-        }
-      ]);
+        ]);
+      });
+    });
+    describe('when creating a field group that already exists', function () {
+      it('returns an error', async function () {
+        const contentTypes = [{
+          sys: { id: 'page' }
+        }];
+
+        const editorInterfaces = {
+          page: {
+            sys: {
+              version: 1
+            },
+            editorLayout: [
+              {
+                groupId: 'content',
+                name: 'Content',
+                items: []
+              }
+            ]
+          }
+        };
+
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout
+            .createFieldGroup('content', {
+              name: 'Content'
+            });
+        }, contentTypes, [], editorInterfaces);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field group with id "content" for content type "page" already exists.',
+            details: {
+              step: {
+                type: 'contentType/createEditorLayoutFieldGroup',
+                meta: {
+                  contentTypeInstanceId: 'contentType/page/0'
+                },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldGroupId: 'content',
+                  parentFieldGroupId: undefined
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+    describe('when field group ID contains invalid character', function () {
+      it('returns an error', async function () {
+        const contentTypes = [{
+          sys: { id: 'page' }
+        }];
+
+        const editorInterfaces = {
+          page: {
+            sys: {
+              version: 1
+            },
+            editorLayout: []
+          }
+        };
+
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout
+            .createFieldGroup('group with wrong character', {
+              name: 'Content'
+            });
+        }, contentTypes, [], editorInterfaces);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field group id "group with wrong character" for content type "page" must consist of only letters and numbers.',
+            details: {
+              step: {
+                type: 'contentType/createEditorLayoutFieldGroup',
+                meta: {
+                  contentTypeInstanceId: 'contentType/page/0'
+                },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldGroupId: 'group with wrong character',
+                  parentFieldGroupId: undefined
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+    describe('when field group ID is empty', function () {
+      it('returns an error', async function () {
+        const contentTypes = [{
+          sys: { id: 'page' }
+        }];
+
+        const editorInterfaces = {
+          page: {
+            sys: {
+              version: 1
+            },
+            editorLayout: []
+          }
+        };
+
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout
+            .createFieldGroup('', {
+              name: 'Content'
+            });
+        }, contentTypes, [], editorInterfaces);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field group id "" for content type "page" must consist of only letters and numbers.',
+            details: {
+              step: {
+                type: 'contentType/createEditorLayoutFieldGroup',
+                meta: {
+                  contentTypeInstanceId: 'contentType/page/0'
+                },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldGroupId: '',
+                  parentFieldGroupId: undefined
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+    describe('when field group ID starts with number', function () {
+      it('returns an error', async function () {
+        const contentTypes = [{
+          sys: { id: 'page' }
+        }];
+
+        const editorInterfaces = {
+          page: {
+            sys: {
+              version: 1
+            },
+            editorLayout: []
+          }
+        };
+
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout
+            .createFieldGroup('1group', {
+              name: 'Content'
+            });
+        }, contentTypes, [], editorInterfaces);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field group id "1group" for content type "page" must start with a letter.',
+            details: {
+              step: {
+                type: 'contentType/createEditorLayoutFieldGroup',
+                meta: {
+                  contentTypeInstanceId: 'contentType/page/0'
+                },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldGroupId: '1group',
+                  parentFieldGroupId: undefined
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+    describe('when field group ID is too long', function () {
+      it('returns an error', async function () {
+        const contentTypes = [{
+          sys: { id: 'page' }
+        }];
+
+        const editorInterfaces = {
+          page: {
+            sys: {
+              version: 1
+            },
+            editorLayout: []
+          }
+        };
+
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout
+            .createFieldGroup('fieldGroupWithIdThatContainsTheRightCharactersButIsTooLong', {
+              name: 'Content'
+            });
+        }, contentTypes, [], editorInterfaces);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field group id "fieldGroupWithIdThatContainsTheRightCharactersButIsTooLong" for content type "page" must not exceed 50 characters.',
+            details: {
+              step: {
+                type: 'contentType/createEditorLayoutFieldGroup',
+                meta: {
+                  contentTypeInstanceId: 'contentType/page/0'
+                },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldGroupId: 'fieldGroupWithIdThatContainsTheRightCharactersButIsTooLong',
+                  parentFieldGroupId: undefined
+                }
+              }
+            }
+          }
+        ]);
+      });
     });
   });
-  describe('when creating a field group that already exists', function () {
-    it('returns an error', async function () {
-      const contentTypes = [{
-        sys: { id: 'page' }
-      }];
+  describe('update field group', function () {
+    describe('when field group name is too long', function () {
+      it('returns an error', async function () {
+        const contentTypes = [{
+          sys: { id: 'page' }
+        }];
 
-      const editorInterfaces = {
-        page: {
-          sys: {
-            version: 1
-          },
-          editorLayout: [
-            {
-              groupId: 'content',
-              name: 'Content',
-              items: []
-            }
-          ]
-        }
-      };
+        const editorInterfaces = {
+          page: {
+            sys: {
+              version: 1
+            },
+            editorLayout: []
+          }
+        };
 
-      const errors = await validateChunks(function (migration) {
-        const Page = migration.editContentType('page');
-        const editorLayout = Page.editEditorLayout();
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
 
-        editorLayout
-          .createFieldGroup('content', {
-            name: 'Content'
-          });
-      }, contentTypes, [], editorInterfaces);
+          editorLayout
+            .createFieldGroup('content', {
+              name: 'Field group name that is indeed quite a bit too long'
+            });
+        }, contentTypes, [], editorInterfaces);
 
-      expect(errors).to.eql([
-        {
-          type: 'InvalidAction',
-          message: 'Field group with id "content" for content type "page" already exists.',
-          details: {
-            step: {
-              type: 'contentType/createEditorLayoutFieldGroup',
-              meta: {
-                contentTypeInstanceId: 'contentType/page/0'
-              },
-              payload: {
-                contentTypeId: 'page',
-                fieldGroupId: 'content',
-                parentFieldGroupId: undefined
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Name for field group with id "content" for content type "page" must not exceed 50 characters.',
+            details: {
+              step: {
+                type: 'contentType/updateEditorLayoutFieldGroup',
+                meta: {
+                  contentTypeInstanceId: 'contentType/page/0'
+                },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldGroupId: 'content',
+                  fieldGroupProps: {
+                    name: 'Field group name that is indeed quite a bit too long'
+                  }
+                }
               }
             }
           }
-        }
-      ]);
+        ]);
+      });
+    });
+  });
+  describe('change field group control', function () {
+    describe('when field group ID does not exist', function () {
+      it('returns an error', async function () {
+        const contentTypes = [{
+          sys: { id: 'page' }
+        }];
+
+        const editorInterfaces = {
+          page: {
+            sys: {
+              version: 1
+            },
+            editorLayout: []
+          }
+        };
+
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout.changeFieldGroupControl('content', 'builtin', 'topLevelTab');
+        }, contentTypes, [], editorInterfaces);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field group "content" does not exist.',
+            details: {
+              step: {
+                type: 'contentType/updateGroupControl',
+                meta: {
+                  contentTypeInstanceId: 'contentType/page/0'
+                },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldGroupId: 'content',
+                  groupControl: {
+                    settings: undefined,
+                    widgetId: 'topLevelTab',
+                    widgetNamespace: 'builtin'
+                  }
+                }
+              }
+            }
+          }
+        ]);
+      });
     });
   });
   describe('when deleting a field group that doesn\'t exist', function () {
@@ -424,6 +709,126 @@ describe('editor layout plan validation', function () {
         ]);
       });
     });
+    describe('when field group ID contains invalid character', function () {
+      it('returns an error', async function () {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout.changeFieldGroupId('content', 'group with wrong character');
+        }, testCts, [], testEis);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field group id "group with wrong character" for content type "page" must consist of only letters and numbers.',
+            details: {
+              step: {
+                type: 'contentType/changeEditorLayoutFieldGroupId',
+                meta: {
+                  contentTypeInstanceId: 'contentType/page/0'
+                },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldGroupId: 'content',
+                  newFieldGroupId: 'group with wrong character'
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+    describe('when field group ID is empty', function () {
+      it('returns an error', async function () {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout.changeFieldGroupId('content', '');
+        }, testCts, [], testEis);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field group id "" for content type "page" must consist of only letters and numbers.',
+            details: {
+              step: {
+                type: 'contentType/changeEditorLayoutFieldGroupId',
+                meta: {
+                  contentTypeInstanceId: 'contentType/page/0'
+                },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldGroupId: 'content',
+                  newFieldGroupId: ''
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+    describe('when field group ID starts with number', function () {
+      it('returns an error', async function () {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout.changeFieldGroupId('content', '1group');
+        }, testCts, [], testEis);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field group id "1group" for content type "page" must start with a letter.',
+            details: {
+              step: {
+                type: 'contentType/changeEditorLayoutFieldGroupId',
+                meta: {
+                  contentTypeInstanceId: 'contentType/page/0'
+                },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldGroupId: 'content',
+                  newFieldGroupId: '1group'
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
+    describe('when field group ID is too long', function () {
+      it('returns an error', async function () {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout.changeFieldGroupId('content', 'fieldGroupWithIdThatContainsTheRightCharactersButIsTooLong');
+        }, testCts, [], testEis);
+
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'Field group id "fieldGroupWithIdThatContainsTheRightCharactersButIsTooLong" for content type "page" must not exceed 50 characters.',
+            details: {
+              step: {
+                type: 'contentType/changeEditorLayoutFieldGroupId',
+                meta: {
+                  contentTypeInstanceId: 'contentType/page/0'
+                },
+                payload: {
+                  contentTypeId: 'page',
+                  fieldGroupId: 'content',
+                  newFieldGroupId: 'fieldGroupWithIdThatContainsTheRightCharactersButIsTooLong'
+                }
+              }
+            }
+          }
+        ]);
+      });
+    });
     describe('when renaming is valid', () => {
       it('succeeds', async () => {
         const errors = await validateChunks(function (migration) {
@@ -431,6 +836,46 @@ describe('editor layout plan validation', function () {
           const editorLayout = Page.editEditorLayout();
 
           editorLayout.changeFieldGroupId('content', 'main');
+        }, testCts, [], testEis);
+        expect(errors).to.eql([]);
+      });
+      it('registers new ID for validation', async () => {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout.changeFieldGroupId('content', 'main');
+          editorLayout.changeFieldGroupId('main', 'main');
+        }, testCts, [], testEis);
+        expect(errors).to.eql(
+          [
+            {
+              message: 'New field group id "main" is the same as original',
+              type: 'InvalidAction',
+              details: {
+                step: {
+                  meta: {
+                    contentTypeInstanceId: 'contentType/page/0'
+                  },
+                  payload: {
+                    contentTypeId: 'page',
+                    fieldGroupId: 'main',
+                    newFieldGroupId: 'main'
+                  },
+                  type: 'contentType/changeEditorLayoutFieldGroupId'
+                }
+              }
+            }
+          ]
+        );
+      });
+      it('deregisters old ID for validation', async () => {
+        const errors = await validateChunks(function (migration) {
+          const Page = migration.editContentType('page');
+          const editorLayout = Page.editEditorLayout();
+
+          editorLayout.changeFieldGroupId('content', 'main');
+          editorLayout.createFieldGroup('content', { name: 'Content' });
         }, testCts, [], testEis);
         expect(errors).to.eql([]);
       });

@@ -175,6 +175,14 @@ export default class ComposedIntent implements Intent {
     return null
   }
 
+  getNewFieldGroupId (): string {
+    return null
+  }
+
+  getFieldGroupProps () {
+    return null
+  }
+
   isEditorLayoutCreate (): boolean {
     return false
   }
@@ -192,6 +200,18 @@ export default class ComposedIntent implements Intent {
   }
 
   isFieldGroupDelete (): boolean {
+    return false
+  }
+
+  isFieldGroupUpdate (): boolean {
+    return false
+  }
+
+  isFieldGroupIdChange (): boolean {
+    return false
+  }
+
+  isFieldGroupControlChange (): boolean {
     return false
   }
 

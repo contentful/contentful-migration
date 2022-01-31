@@ -9,6 +9,8 @@ interface Intent {
   getRelatedContentTypeIds (): string[]
   getFieldId (): string
   getFieldGroupId (): string
+  getNewFieldGroupId (): string
+  getFieldGroupProps (): { [prop: string]: string }
   getRawType (): string
   getTagId (): string
 
@@ -46,6 +48,9 @@ interface Intent {
   isEditorLayoutUpdate (): boolean
   isFieldGroupCreate (): boolean
   isFieldGroupDelete (): boolean
+  isFieldGroupUpdate (): boolean
+  isFieldGroupIdChange (): boolean
+  isFieldGroupControlChange (): boolean
 
   isComposedIntent (): boolean
 

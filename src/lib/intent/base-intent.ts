@@ -34,6 +34,14 @@ export default abstract class Intent implements IntentInterface {
     return this.payload.fieldGroupId
   }
 
+  getNewFieldGroupId () {
+    return this.payload.newFieldGroupId
+  }
+
+  getFieldGroupProps () {
+    return this.payload.fieldGroupProps
+  }
+
   requiresAllEntries () {
     return false
   }
@@ -123,6 +131,18 @@ export default abstract class Intent implements IntentInterface {
   }
 
   isFieldGroupDelete () {
+    return false
+  }
+
+  isFieldGroupUpdate () {
+    return false
+  }
+
+  isFieldGroupIdChange () {
+    return false
+  }
+
+  isFieldGroupControlChange () {
     return false
   }
 
