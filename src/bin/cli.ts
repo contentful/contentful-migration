@@ -3,7 +3,7 @@ import type { AxiosRequestConfig } from 'axios'
 
 import chalk from 'chalk'
 import * as inquirer from 'inquirer'
-import Listr from 'listr'
+import { Listr } from 'listr2'
 import { createManagementClient } from './lib/contentful-client'
 const { version } = require('../../package.json')
 const {
