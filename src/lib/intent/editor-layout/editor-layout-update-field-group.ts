@@ -11,6 +11,9 @@ export default class EditorLayoutUpdateFieldGroupIntent extends Intent {
   isEditorLayoutUpdate () {
     return true
   }
+  isFieldGroupUpdate () {
+    return true
+  }
   isGroupable () {
     return true
   }
