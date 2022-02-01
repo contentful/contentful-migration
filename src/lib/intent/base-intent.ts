@@ -164,6 +164,14 @@ export default abstract class Intent implements IntentInterface {
     )
   }
 
+  isAboutEditorLayout () {
+    return (
+      this.isEditorLayoutCreate() ||
+      this.isEditorLayoutDelete() ||
+      this.isEditorLayoutUpdate()
+    )
+  }
+
   isComposedIntent () {
     return false
   }

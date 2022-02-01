@@ -31,6 +31,7 @@ interface Intent {
   isFieldMove (): boolean
   isAboutContentType (): boolean
   isAboutField (): boolean
+  isAboutEditorLayout (): boolean
   isContentTransform (): boolean
   isEntryDerive (): boolean
   isEntryTransformToType (): boolean

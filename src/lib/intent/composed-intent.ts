@@ -77,6 +77,9 @@ export default class ComposedIntent implements Intent {
   isAboutField (): boolean {
     return false
   }
+  isAboutEditorLayout (): boolean {
+    return false
+  }
   isContentTransform (): boolean {
     return false
   }

@@ -49,7 +49,7 @@ function validateIntents (
     return fieldErrors
   }
 
-  let editorLayoutErrors = editorLayoutValidations(intents, editorInterfaces, fieldsContext)
+  let editorLayoutErrors = editorLayoutValidations(intents, editorInterfaces, fieldsContext, allCTs)
   if (editorLayoutErrors.length > 0) {
     return editorLayoutErrors
   }
