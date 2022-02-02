@@ -346,10 +346,12 @@ export default function (
       continue
     }
 
-    const contentTypeId = intent.getContentTypeId()
-    const contentTypeExists = Boolean(contentTypes.find((ct) => ct.id === contentTypeId))
-    if (!contentTypeExists) {
-      errors.push(invalidActionError(editorLayoutErrors.updateEditorLayout.CONTENT_TYPE_DOES_NOT_EXIST(contentTypeId), intent))
+    if (intent.isEditorLayoutCreate()) {
+      const contentTypeId = intent.getContentTypeId()
+      const contentTypeExists = Boolean(contentTypes.find((ct) => ct.id === contentTypeId))
+      if (!contentTypeExists) {
+        errors.push(invalidActionError(editorLayoutErrors.updateEditorLayout.CONTENT_TYPE_DOES_NOT_EXIST(contentTypeId), intent))
+      }
     }
 
     let error
