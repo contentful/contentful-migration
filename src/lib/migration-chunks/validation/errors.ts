@@ -166,6 +166,9 @@ const errorCreators: ErrorCreators = {
     updateEditorLayout: {
       CONTENT_TYPE_DOES_NOT_EXIST: (ctId) => {
         return `You cannot update the editor layout for content type "${ctId}" because it does not exist.`
+      },
+      INVALID_METHOD: (method) => {
+        return `"${method}" is not a valid method for editor layout.`
       }
     },
     createFieldGroup: {

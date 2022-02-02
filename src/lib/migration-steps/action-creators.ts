@@ -358,6 +358,20 @@ const actionCreators = {
         newFieldGroupId
       }
     }),
+    callInvalidEditorLayoutMethod: (contentTypeId, contentTypeInstanceId, callsite, invalidMethod): Intents.EditorLayoutInvalidMethod => new Intents.EditorLayoutInvalidMethod({
+      type: 'contentType/callInvalidEditorLayoutMethod',
+      meta: {
+        contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+        callsite: {
+          file: callsite.getFileName(),
+          line: callsite.getLineNumber()
+        }
+      },
+      payload: {
+        contentTypeId,
+        invalidMethod
+      }
+    }),
     updateFieldGroup: (contentTypeId, contentTypeInstanceId, fieldGroupId, callsite, property, value): Intents.EditorLayoutUpdateFieldGroup => new Intents.EditorLayoutUpdateFieldGroup({
       type: 'contentType/updateEditorLayoutFieldGroup',
       meta: {

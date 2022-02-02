@@ -21,6 +21,7 @@ import EntryEditorResetToDefaultIntent from './entryeditor-reset-to-default'
 import EntryEditorConfigureIntent from './entryeditor-configure'
 import EntryEditorsConfigureIntent from './entryeditors-configure'
 import EditorLayoutCreateIntent from './editor-layout/editor-layout-create'
+import EditorLayoutInvalidMethodIntent from './editor-layout/editor-layout-invalid-method'
 import EditorLayoutCreateFieldGroupIntent from './editor-layout/editor-layout-create-field-group'
 import EditorLayoutDeleteFieldGroupIntent from './editor-layout/editor-layout-delete-field-group'
 import EditorLayoutUpdateFieldGroupIntent from './editor-layout/editor-layout-update-field-group'
@@ -60,6 +61,7 @@ export {
   EditorLayoutCreateIntent as EditorLayoutCreate,
   EditorLayoutCreateFieldGroupIntent as EditorLayoutCreateFieldGroup,
   EditorLayoutDeleteFieldGroupIntent as EditorLayoutDeleteFieldGroup,
+  EditorLayoutInvalidMethodIntent as EditorLayoutInvalidMethod,
   EditorLayoutUpdateFieldGroupIntent as EditorLayoutUpdateFieldGroup,
   EditorLayoutChangeFieldGroupControlIntent as EditorLayoutChangeFieldGroupControl,
   TagCreateIntent as TagCreate,

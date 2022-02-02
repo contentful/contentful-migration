@@ -6,6 +6,38 @@ const { expect } = require('chai');
 const validateChunks = require('./validate-chunks').default;
 
 describe('editor layout plan validation', function () {
+  describe('when calling editor layout method which doesn’t exist', function () {
+    it('returns an error', async function () {
+      const contentTypes = [{
+        sys: { id: 'page' }
+      }];
+
+      const errors = await validateChunks(function (migration) {
+        const Page = migration.editContentType('page');
+        const editorLayout = Page.createEditorLayout();
+        editorLayout.invalidMethod();
+      }, contentTypes);
+
+      expect(errors).to.eql([
+        {
+          type: 'InvalidAction',
+          message: '"invalidMethod" is not a valid method for editor layout.',
+          details: {
+            step: {
+              type: 'contentType/callInvalidEditorLayoutMethod',
+              meta: {
+                contentTypeInstanceId: 'contentType/page/0'
+              },
+              payload: {
+                contentTypeId: 'page',
+                invalidMethod: 'invalidMethod'
+              }
+            }
+          }
+        }
+      ]);
+    });
+  });
   describe('create editor layout', function () {
     describe('when creating an editor layout for a content type that doesn’t exist', function () {
       it('returns an error', async function () {

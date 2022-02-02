@@ -57,9 +57,9 @@ class EditorLayout extends DispatchProxy {
   public dispatch? (step: Intent): void
 
   constructor (contentTypeId, instanceId, dispatch) {
-    // pass noop function because editor layout doesn’t have properties
-    // tslint:disable-next-line:no-empty
-    super({ dispatchUpdate: () => {} })
+    super({ dispatchUpdate: (callsite, propertyName) => {
+      this.dispatch(actionCreators.editorLayout.callInvalidEditorLayoutMethod(this.contentTypeId, this.instanceId, callsite, propertyName))
+    }})
 
     this.contentTypeId = contentTypeId
     this.instanceId = instanceId

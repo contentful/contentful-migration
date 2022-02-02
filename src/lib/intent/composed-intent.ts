@@ -174,6 +174,10 @@ export default class ComposedIntent implements Intent {
     return false
   }
 
+  getInvalidMethod (): string {
+    return null
+  }
+
   getFieldGroupId (): string {
     return null
   }
@@ -195,6 +199,10 @@ export default class ComposedIntent implements Intent {
   }
 
   isEditorLayoutUpdate (): boolean {
+    return false
+  }
+
+  isEditorLayoutInvalidMethod (): boolean {
     return false
   }
 

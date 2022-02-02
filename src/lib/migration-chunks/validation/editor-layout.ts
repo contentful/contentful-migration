@@ -54,6 +54,14 @@ class AlreadyExistingCreates implements EditorLayoutValidation {
   }
 }
 
+class InvalidEditorLayoutMethod implements EditorLayoutValidation {
+  validate (intent: Intent): string | string[] {
+    if (intent.isEditorLayoutInvalidMethod()) {
+      return editorLayoutErrors.updateEditorLayout.INVALID_METHOD(intent.getInvalidMethod())
+    }
+  }
+}
+
 class DuplicateFieldGroupCreate implements EditorLayoutValidation {
   validate (intent: Intent, context: ValidationContext) {
     if (!intent.isFieldGroupCreate()) {
@@ -292,7 +300,8 @@ const checks: EditorLayoutValidation[] = [
   new InvalidFielGroupIdChange(),
   new InvalidFieldGroupId(),
   new InvalidFieldGroupName(),
-  new InvalidFieldGroupControlChange()
+  new InvalidFieldGroupControlChange(),
+  new InvalidEditorLayoutMethod()
 ]
 
 function getScopedFieldGroupId (intent: Intent) {

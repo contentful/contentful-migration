@@ -46,6 +46,7 @@ interface RawStepPayload {
   sidebarWidget?: SidebarWidgetInfo
   entryEditor?: EntryEditorInfo
   entryEditors?: EntryEditor[]
+  invalidMethod?: string
   fieldGroupId?: string
   newFieldGroupId?: string
   parentFieldGroupId?: string

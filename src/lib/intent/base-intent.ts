@@ -30,6 +30,10 @@ export default abstract class Intent implements IntentInterface {
     return this.payload.fieldId
   }
 
+  getInvalidMethod () {
+    return this.payload.invalidMethod
+  }
+
   getFieldGroupId () {
     return this.payload.fieldGroupId
   }
@@ -123,6 +127,9 @@ export default abstract class Intent implements IntentInterface {
   }
 
   isEditorLayoutUpdate () {
+    return false
+  }
+  isEditorLayoutInvalidMethod () {
     return false
   }
 
