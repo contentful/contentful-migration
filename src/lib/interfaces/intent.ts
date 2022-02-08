@@ -8,6 +8,7 @@ interface Intent {
   getContentTypeId (): string
   getRelatedContentTypeIds (): string[]
   getFieldId (): string
+  getInvalidMethod (): string
   getFieldGroupId (): string
   getNewFieldGroupId (): string
   getFieldGroupProps (): { [prop: string]: string }
@@ -31,6 +32,7 @@ interface Intent {
   isFieldMove (): boolean
   isAboutContentType (): boolean
   isAboutField (): boolean
+  isAboutEditorLayout (): boolean
   isContentTransform (): boolean
   isEntryDerive (): boolean
   isEntryTransformToType (): boolean
@@ -46,6 +48,7 @@ interface Intent {
   isEditorLayoutCreate (): boolean
   isEditorLayoutDelete (): boolean
   isEditorLayoutUpdate (): boolean
+  isEditorLayoutInvalidMethod (): boolean
   isFieldGroupCreate (): boolean
   isFieldGroupDelete (): boolean
   isFieldGroupUpdate (): boolean

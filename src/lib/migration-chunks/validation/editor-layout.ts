@@ -1,10 +1,10 @@
 import Intent from '../../interfaces/intent'
-import { EditorInterfaces } from '../../entities/content-type'
+import { ContentType, EditorInterfaces } from '../../entities/content-type'
 import { InvalidActionError } from '../../interfaces/errors'
 import errors from './errors'
 import { collectFieldGroupIds } from '../../utils/editor-layout'
 import EditorLayoutMoveFieldIntent from '../../intent/editor-layout/editor-layout-move-field'
-import { FieldsContext } from './index'
+import { FieldsContext, invalidActionError } from './index'
 const editorLayoutErrors = errors.editorLayout
 
 const RELATIVE_MOVEMENTS = ['beforeField', 'afterField', 'beforeFieldGroup', 'afterFieldGroup']
@@ -51,6 +51,14 @@ class AlreadyExistingCreates implements EditorLayoutValidation {
     }
 
     return editorLayoutErrors.createEditorLayout.EDITOR_LAYOUT_ALREADY_EXISTS(intent.getContentTypeId())
+  }
+}
+
+class InvalidEditorLayoutMethod implements EditorLayoutValidation {
+  validate (intent: Intent): string | string[] {
+    if (intent.isEditorLayoutInvalidMethod()) {
+      return editorLayoutErrors.updateEditorLayout.INVALID_METHOD(intent.getInvalidMethod())
+    }
   }
 }
 
@@ -292,7 +300,8 @@ const checks: EditorLayoutValidation[] = [
   new InvalidFielGroupIdChange(),
   new InvalidFieldGroupId(),
   new InvalidFieldGroupName(),
-  new InvalidFieldGroupControlChange()
+  new InvalidFieldGroupControlChange(),
+  new InvalidEditorLayoutMethod()
 ]
 
 function getScopedFieldGroupId (intent: Intent) {
@@ -303,7 +312,12 @@ function generateScopedId (ctId: string, id: string) {
   return `${ctId}.${id}`
 }
 
-export default function (intents: Intent[], editorInterfaces: Map<string, EditorInterfaces>, fieldsContext: FieldsContext): InvalidActionError[] {
+export default function (
+  intents: Intent[],
+  editorInterfaces: Map<string, EditorInterfaces>,
+  fieldsContext: FieldsContext,
+  contentTypes: ContentType[]
+): InvalidActionError[] {
   let remoteFieldGroups = []
   const remoteEditorLayouts = new Set<string>()
   editorInterfaces.forEach((editorInterfaces, ctId) => {
@@ -328,6 +342,18 @@ export default function (intents: Intent[], editorInterfaces: Map<string, Editor
   let errors = []
 
   for (const intent of intents) {
+    if (!intent.isAboutEditorLayout()) {
+      continue
+    }
+
+    if (intent.isEditorLayoutCreate()) {
+      const contentTypeId = intent.getContentTypeId()
+      const contentTypeExists = Boolean(contentTypes.find((ct) => ct.id === contentTypeId))
+      if (!contentTypeExists) {
+        errors.push(invalidActionError(editorLayoutErrors.updateEditorLayout.CONTENT_TYPE_DOES_NOT_EXIST(contentTypeId), intent))
+      }
+    }
+
     let error
 
     for (const check of checks) {

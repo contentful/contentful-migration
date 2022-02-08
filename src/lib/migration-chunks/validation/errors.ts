@@ -163,6 +163,14 @@ const errorCreators: ErrorCreators = {
         return `Editor layout for content type "${ctId}" already exists.`
       }
     },
+    updateEditorLayout: {
+      CONTENT_TYPE_DOES_NOT_EXIST: (ctId) => {
+        return `You cannot update the editor layout for content type "${ctId}" because it does not exist.`
+      },
+      INVALID_METHOD: (method) => {
+        return `"${method}" is not a valid method for editor layout.`
+      }
+    },
     createFieldGroup: {
       FIELD_GROUP_ALREADY_CREATED: (id, ctId) => {
         return `Field group with id "${id}" for content type "${ctId}" cannot be created more than once.`
