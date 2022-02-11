@@ -225,6 +225,7 @@ const createRun = ({ shouldThrow }) => async function run (argv) {
     }
   } else {
     console.warn(chalk`⚠️  {bold.yellow Migration aborted}`)
+    terminate(new Error('Migration aborted'))
   }
 }
 
