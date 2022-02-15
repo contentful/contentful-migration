@@ -208,6 +208,7 @@ runMigration(options)
 | environmentId     | `'master'` | string  | ID of the environment within the space to run the           | false    |
 | accessToken       |            | string  | The access token to use                                     | true     |
 | yes               | false      | boolean | Skips any confirmation before applying the migration,script | false    |
+| retryLimit        | 5          | number  | Number of retries before failure (every subsequent retry will increase the timeout to the previous retry by about 1.5 seconds)                            | false    |
 | requestBatchSize  | 100        | number  | Limit for every single request                              | false    |
 | headers           |            | object  | Additional headers to attach to the requests                | false    |
 
