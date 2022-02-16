@@ -9,19 +9,18 @@ const configPath = path.resolve(homedir, '.contentfulrc.json')
 interface ClientConfig {
   accessToken?: string
   spaceId?: string
-  environmentId?: string,
-  proxy?: string,
+  environmentId?: string
+  proxy?: string
   rawProxy?: boolean
   requestBatchSize?: number
   headers?: Record<string, unknown>
+  retryLimit?: number
 }
 
 function getFileConfig (): ClientConfig {
   try {
     const config = require(configPath)
-    return config.cmaToken ?
-      { accessToken: config.cmaToken } :
-      {}
+    return config.cmaToken ? { accessToken: config.cmaToken } : {}
   } catch (e) {
     return {}
   }
@@ -29,12 +28,19 @@ function getFileConfig (): ClientConfig {
 
 function getEnvConfig (): ClientConfig {
   const envKey = 'CONTENTFUL_MANAGEMENT_ACCESS_TOKEN'
-  return process.env[envKey] ?
-    { accessToken : process.env[envKey] } :
-    {}
+  return process.env[envKey] ? { accessToken: process.env[envKey] } : {}
 }
 
-function getArgvConfig ({ spaceId, environmentId = 'master', accessToken, proxy, rawProxy, requestBatchSize, headers }): ClientConfig {
+function getArgvConfig ({
+  spaceId,
+  environmentId = 'master',
+  accessToken,
+  proxy,
+  rawProxy,
+  requestBatchSize,
+  headers,
+  retryLimit
+}): ClientConfig {
   const config = {
     spaceId,
     environmentId,
@@ -42,7 +48,12 @@ function getArgvConfig ({ spaceId, environmentId = 'master', accessToken, proxy,
     proxy,
     rawProxy,
     requestBatchSize,
-    headers: addSequenceHeader(headers)
+    headers: addSequenceHeader(headers),
+    retryLimit
+  }
+
+  if (config.retryLimit && (config.retryLimit < 0 || config.retryLimit > 60)) {
+    throw new Error('retryLimit must be between 0 and 60')
   }
 
   if (!config.accessToken) {
@@ -107,18 +118,17 @@ function getConfig (argv) {
  * @param {object} headers
  */
 function addSequenceHeader (headers) {
-  if (typeof headers !== 'object') throw new Error('addSequence function expects an object as input')
+  if (typeof headers !== 'object') {
+    throw new Error('addSequence function expects an object as input')
+  }
 
   return {
     ...headers,
-     // Unique sequence header
+    // Unique sequence header
     'CF-Sequence': uuidv4()
   }
 }
 
 export default getConfig
 
-export {
-  getConfig,
-  ClientConfig
-}
+export { getConfig, ClientConfig }
