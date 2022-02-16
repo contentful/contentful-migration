@@ -7,12 +7,14 @@ type ProxyAuthConfig = {
   username?: string
   password?: string
 }
-type ProxyConfig = RequestOptions | {
-  isHttps: boolean
-  auth?: ProxyAuthConfig
-}
+type ProxyConfig =
+  | RequestOptions
+  | {
+      isHttps: boolean
+      auth?: ProxyAuthConfig
+    }
 
-function parseAuth (authString: string): { username: string, password: string } {
+function parseAuth (authString: string): { username: string; password: string } {
   // authString may be a falsy value like `null`
   const [username, password] = (authString || '').split(':')
   return { username, password }
@@ -23,12 +25,7 @@ function proxyStringToObject (proxyString: string): ProxyConfig {
     return proxyStringToObject(`http://${proxyString}`)
   }
 
-  const {
-    hostname: host,
-    port: portString,
-    auth: authString,
-    protocol
-  } = url.parse(proxyString)
+  const { hostname: host, port: portString, auth: authString, protocol } = url.parse(proxyString)
 
   const auth = parseAuth(authString)
   const port = _.toInteger(portString)
@@ -48,7 +45,8 @@ function proxyStringToObject (proxyString: string): ProxyConfig {
 
 // TODO: should use @types/node ProcessEnv interface
 function loadProxyFromEnv (env: { [key: string]: any }): ProxyConfig {
-  const proxyString = env['https_proxy'] ||
+  const proxyString =
+    env['https_proxy'] ||
     env['HTTPS_PROXY'] ||
     env['http_proxy'] ||
     env['HTTP_PROXY'] ||
@@ -86,8 +84,4 @@ function agentFromProxy (proxy): { httpsAgent?: HttpsProxyAgent } {
   return { httpsAgent: agent }
 }
 
-export {
-  loadProxyFromEnv,
-  agentFromProxy,
-  proxyStringToObject
-}
+export { loadProxyFromEnv, agentFromProxy, proxyStringToObject }

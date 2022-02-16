@@ -21,8 +21,4 @@ enum EntityType {
   Tag = 'TAG'
 }
 
-export {
-  APIAction,
-  EntityAction,
-  EntityType
-}
+export { APIAction, EntityAction, EntityType }

@@ -15,9 +15,7 @@ export default class EditorInterfaceUpdateIntent extends Intent {
     return true
   }
   groupsWith (other: Intent): boolean {
-    return other.isGroupable()
-      && other.isEditorInterfaceIntent()
-      && this.isSameContentType(other)
+    return other.isGroupable() && other.isEditorInterfaceIntent() && this.isSameContentType(other)
   }
   endsGroup (): boolean {
     return false
@@ -42,15 +40,13 @@ export default class EditorInterfaceUpdateIntent extends Intent {
   }
   toPlanMessage (): PlanMessage {
     const { widgetId, fieldId, settings, widgetNamespace } = this.payload.editorInterface
-    let createDetails = [
-      chalk`{italic widgetId}: "${widgetId}"`
-    ]
+    let createDetails = [chalk`{italic widgetId}: "${widgetId}"`]
 
     if (widgetNamespace) {
       createDetails = [...createDetails, chalk`{italic widgetNamespace}: "${widgetNamespace}"`]
     }
 
-    Object.keys(settings).forEach(settingName =>
+    Object.keys(settings).forEach((settingName) =>
       createDetails.push(chalk`{italic ${settingName}}: "${settings[settingName].toString()}"`)
     )
 

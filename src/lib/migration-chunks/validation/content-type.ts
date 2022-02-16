@@ -34,7 +34,8 @@ class DuplicateCreate implements ContentTypeValidation {
 
 class EditBeforeCreate implements ContentTypeValidation {
   validate (intent: Intent, context: ValidationContext) {
-    const isRelevant = intent.isContentTypeUpdate() ||
+    const isRelevant =
+      intent.isContentTypeUpdate() ||
       intent.isContentTransform() ||
       intent.isEntryDerive() ||
       intent.isEntrySetTags()
@@ -51,12 +52,15 @@ class EditBeforeCreate implements ContentTypeValidation {
     }
 
     if (intent.isEntryDerive()) {
-      return intent.getRelatedContentTypeIds()
+      return intent
+        .getRelatedContentTypeIds()
         .map(checkContentTypeId)
         .filter(({ exists, willBeCreated }) => {
           return !exists && willBeCreated
         })
-        .map(({ contentTypeId }) => ctErrors.deriveEntries.DERIVE_BEFORE_CONTENT_TYPE_CREATE(contentTypeId))
+        .map(({ contentTypeId }) =>
+          ctErrors.deriveEntries.DERIVE_BEFORE_CONTENT_TYPE_CREATE(contentTypeId)
+        )
     }
 
     const contentTypeId = intent.getContentTypeId()
@@ -82,7 +86,8 @@ class EditBeforeCreate implements ContentTypeValidation {
 
 class NonExistingEdits implements ContentTypeValidation {
   validate (intent: Intent, context: ValidationContext) {
-    const isRelevant = intent.isContentTypeUpdate() ||
+    const isRelevant =
+      intent.isContentTypeUpdate() ||
       intent.isContentTransform() ||
       intent.isEntryDerive() ||
       intent.isEntrySetTags()
@@ -99,12 +104,15 @@ class NonExistingEdits implements ContentTypeValidation {
     }
 
     if (intent.isEntryDerive()) {
-      return intent.getRelatedContentTypeIds()
+      return intent
+        .getRelatedContentTypeIds()
         .map(checkContentTypeId)
         .filter(({ exists, willBeCreated }) => {
           return !exists && !willBeCreated
         })
-        .map(({ contentTypeId }) => ctErrors.deriveEntries.CONTENT_TYPE_DOES_NOT_EXIST(contentTypeId))
+        .map(({ contentTypeId }) =>
+          ctErrors.deriveEntries.CONTENT_TYPE_DOES_NOT_EXIST(contentTypeId)
+        )
     }
 
     const contentTypeId = intent.getContentTypeId()
@@ -125,7 +133,6 @@ class NonExistingEdits implements ContentTypeValidation {
     if (intent.isEntrySetTags()) {
       return ctErrors.setTagsForEntries.CONTENT_TYPE_DOES_NOT_EXIST(contentTypeId)
     }
-
   }
 }
 
@@ -180,7 +187,8 @@ class DuplicateDeletes implements ContentTypeValidation {
 
 class EditsAfterDeletes implements ContentTypeValidation {
   validate (intent: Intent, context: ValidationContext) {
-    const isRelevant = intent.isFieldUpdate() ||
+    const isRelevant =
+      intent.isFieldUpdate() ||
       intent.isContentTypeUpdate() ||
       intent.isContentTransform() ||
       intent.isEntryDerive() ||
@@ -196,12 +204,15 @@ class EditsAfterDeletes implements ContentTypeValidation {
     }
 
     if (intent.isEntryDerive()) {
-      return intent.getRelatedContentTypeIds()
+      return intent
+        .getRelatedContentTypeIds()
         .map(checkContentTypeId)
         .filter(({ deleted }) => {
           return deleted
         })
-        .map(({ contentTypeId }) => ctErrors.deriveEntries.DERIVE_AFTER_CONTENT_TYPE_DELETE(contentTypeId))
+        .map(({ contentTypeId }) =>
+          ctErrors.deriveEntries.DERIVE_AFTER_CONTENT_TYPE_DELETE(contentTypeId)
+        )
     }
 
     const contentTypeId = intent.getContentTypeId()
@@ -257,7 +268,9 @@ const checks: ContentTypeValidation[] = [
 
 export default function (intents: Intent[], contentTypes: ContentType[]): InvalidActionError[] {
   const remote = contentTypes.map((ct) => ct.id)
-  const toBeCreated = intents.filter((intent) => intent.isContentTypeCreate()).map((intent) => intent.getContentTypeId())
+  const toBeCreated = intents
+    .filter((intent) => intent.isContentTypeCreate())
+    .map((intent) => intent.getContentTypeId())
 
   let context = {
     remote: new Set(remote), // all currently (in the current iteration step) existing content types

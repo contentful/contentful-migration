@@ -99,11 +99,7 @@ export default abstract class Intent implements IntentInterface {
   }
 
   isAboutContentType () {
-    return (
-      this.isContentTypeUpdate() ||
-      this.isContentTypeCreate() ||
-      this.isContentTypeDelete()
-    )
+    return this.isContentTypeUpdate() || this.isContentTypeCreate() || this.isContentTypeDelete()
   }
 
   isAboutField () {

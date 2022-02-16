@@ -29,6 +29,4 @@ function createManagementClient (params) {
   return createClient(params, { type: 'plain' })
 }
 
-export {
-  createManagementClient
-}
+export { createManagementClient }

@@ -4,17 +4,17 @@ module.exports = function (migration) {
   migration.createContentType('person', {
     description: 'A content type for a person',
     name: 'foo'
-  });
+  })
 
   migration.editContentType('somethingElse', {
     description: 'bar'
-  });
+  })
 
   migration.createContentType('person', {
     name: 'the new name'
-  });
+  })
 
   migration.createContentType('person', {
     name: 'once again'
-  });
-};
+  })
+}

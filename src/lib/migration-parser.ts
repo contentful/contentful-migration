@@ -26,11 +26,11 @@ class ParseResult {
   public payloadValidationErrors: InvalidActionError[] | ValidationError[] = []
 
   hasValidationErrors () {
-    return this.batches.some(batch => batch.validationErrors.length > 0)
+    return this.batches.some((batch) => batch.validationErrors.length > 0)
   }
 
   hasRuntimeErrors () {
-    return this.batches.some(batch => batch.runtimeErrors.length > 0)
+    return this.batches.some((batch) => batch.runtimeErrors.length > 0)
   }
 
   hasStepsValidationErrors () {
@@ -54,7 +54,10 @@ class ParseResult {
   }
 }
 
-const createMigrationParser = function (makeRequest: Function, config: ClientConfig): (migrationCreator: (migration: any) => any) => Promise<ParseResult> {
+const createMigrationParser = function (
+  makeRequest: Function,
+  config: ClientConfig
+): (migrationCreator: (migration: any) => any) => Promise<ParseResult> {
   return async function migration (migrationCreator) {
     const fetcher = new Fetcher(makeRequest, config.requestBatchSize)
     const parseResult = new ParseResult()
@@ -145,7 +148,13 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
 
     const locales = await fetcher.getLocalesForSpace()
 
-    const api = new OfflineAPI({ contentTypes: existingCts, entries, locales, editorInterfacesByContentType: existingEditorInterfaces, tags: existingTags })
+    const api = new OfflineAPI({
+      contentTypes: existingCts,
+      entries,
+      locales,
+      editorInterfacesByContentType: existingEditorInterfaces,
+      tags: existingTags
+    })
 
     await intentList.compressed().applyTo(api)
 
@@ -156,8 +165,4 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
   }
 }
 
-export {
-  createMigrationParser as default,
-  createMigrationParser,
-  ParseResult
-}
+export { createMigrationParser as default, createMigrationParser, ParseResult }

@@ -4,12 +4,9 @@ interface Section {
 }
 
 interface PlanMessage {
-  heading: string,
+  heading: string
   details: string[]
   sections: Section[]
 }
 
-export {
-  PlanMessage,
-  Section
-}
+export { PlanMessage, Section }

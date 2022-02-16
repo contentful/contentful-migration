@@ -17,9 +17,7 @@ export default class ContentTypeCreateIntent extends Intent {
   }
 
   toActions () {
-    return [
-      new ContentTypeCreateAction(this.getContentTypeId())
-    ]
+    return [new ContentTypeCreateAction(this.getContentTypeId())]
   }
 
   toPlanMessage (): PlanMessage {

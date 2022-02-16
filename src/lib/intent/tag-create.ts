@@ -38,9 +38,7 @@ export default class TagCreateIntent extends Intent {
   }
 
   toActions () {
-    return [
-      new TagCreateAction(this.getTagId(), this.getTagVisibility())
-    ]
+    return [new TagCreateAction(this.getTagId(), this.getTagVisibility())]
   }
 
   toPlanMessage (): PlanMessage {

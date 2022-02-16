@@ -5,9 +5,7 @@ import chalk from 'chalk'
 
 export default class EntryTransformToTypeIntent extends Intent {
   getRelatedContentTypeIds () {
-    return [
-      this.payload.entryTransformationToType.sourceContentType
-    ]
+    return [this.payload.entryTransformationToType.sourceContentType]
   }
   isEntryTransformToType () {
     return true
@@ -26,11 +24,7 @@ export default class EntryTransformToTypeIntent extends Intent {
   }
 
   toActions () {
-    return [
-      new EntryTransformToTypeAction(
-        this.payload.entryTransformationToType
-      )
-    ]
+    return [new EntryTransformToTypeAction(this.payload.entryTransformationToType)]
   }
 
   toPlanMessage (): PlanMessage {

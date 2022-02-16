@@ -114,7 +114,7 @@ export default class ComposedIntent implements Intent {
   }
 
   requiresAllTags (): boolean {
-    return this.intents.some(intent => intent.requiresAllTags())
+    return this.intents.some((intent) => intent.requiresAllTags())
   }
 
   groupsWith (): boolean {
@@ -130,11 +130,11 @@ export default class ComposedIntent implements Intent {
   }
 
   shouldSave (): boolean {
-    return this.intents.some(intent => intent.shouldSave())
+    return this.intents.some((intent) => intent.shouldSave())
   }
 
   shouldPublish (): boolean {
-    return this.intents.some(intent => intent.shouldPublish())
+    return this.intents.some((intent) => intent.shouldPublish())
   }
 
   isComposedIntent (): boolean {
@@ -144,7 +144,7 @@ export default class ComposedIntent implements Intent {
   isTagIntent (): boolean {
     // TODO Is this a viable option? How can we be sure that composed
     // intents are not a mix of ct intents and tag intents?
-    return this.intents.some(intent => intent.isTagIntent())
+    return this.intents.some((intent) => intent.isTagIntent())
   }
 
   getTagId (): string {
@@ -190,7 +190,9 @@ export default class ComposedIntent implements Intent {
 
     const mainHeading = firstIntent.toPlanMessage().heading
 
-    const contentTypeOrTagUpdates = this.intents.filter((intent) => intent.isContentTypeUpdate() || intent.isTagUpdate())
+    const contentTypeOrTagUpdates = this.intents.filter(
+      (intent) => intent.isContentTypeUpdate() || intent.isTagUpdate()
+    )
 
     const fieldCreates = this.intents.filter((intent) => intent.isFieldCreate())
     const editorInterfaceUpdates = this.intents.filter((intent) => intent.isEditorInterfaceUpdate())
@@ -199,17 +201,23 @@ export default class ComposedIntent implements Intent {
     const fieldUpdates = this.intents.filter((intent) => intent.isFieldUpdate())
     const fieldMoves = this.intents.filter((intent) => intent.isFieldMove())
 
-    const createdFieldUpdates = fieldUpdates.filter((updateIntent) => createdFieldIds.includes(updateIntent.getFieldId()))
+    const createdFieldUpdates = fieldUpdates.filter((updateIntent) =>
+      createdFieldIds.includes(updateIntent.getFieldId())
+    )
     const onlyFieldUpdates = difference(fieldUpdates, createdFieldUpdates)
 
     const onlyFieldUpdatesByField = groupBy(onlyFieldUpdates, (intent) => intent.getFieldId())
     const createdFieldUpdatesByField = groupBy(createdFieldUpdates, (intent) => intent.getFieldId())
 
-    const topLevelDetails = flatten(contentTypeOrTagUpdates.map((updateIntent) => updateIntent.toPlanMessage().details))
+    const topLevelDetails = flatten(
+      contentTypeOrTagUpdates.map((updateIntent) => updateIntent.toPlanMessage().details)
+    )
 
-    const sidebarUpdates = flatten(this.intents
-      .filter((intent) => intent.isSidebarUpdate())
-      .map(i => i.toPlanMessage().sections))
+    const sidebarUpdates = flatten(
+      this.intents
+        .filter((intent) => intent.isSidebarUpdate())
+        .map((i) => i.toPlanMessage().sections)
+    )
 
     let createSections = []
 
@@ -229,7 +237,9 @@ export default class ComposedIntent implements Intent {
       const [createSection] = createIntent.toPlanMessage().sections
       const heading = createSection.heading
       const updateIntents = createdFieldUpdatesByField[fieldId] || []
-      const allFieldUpdateSections = flatten(updateIntents.map((fieldIntent) => fieldIntent.toPlanMessage().sections))
+      const allFieldUpdateSections = flatten(
+        updateIntents.map((fieldIntent) => fieldIntent.toPlanMessage().sections)
+      )
       const mergedSection = mergeSections(allFieldUpdateSections) || { details: [] }
       const nextCreateSection = {
         ...mergedSection,
@@ -240,7 +250,9 @@ export default class ComposedIntent implements Intent {
     }
 
     for (const updateIntents of values(onlyFieldUpdatesByField)) {
-      const allSections: Section[] = flatten(updateIntents.map((intent) => intent.toPlanMessage().sections))
+      const allSections: Section[] = flatten(
+        updateIntents.map((intent) => intent.toPlanMessage().sections)
+      )
       const nextUpdateSection = mergeSections(allSections)
 
       createSections.push(nextUpdateSection)

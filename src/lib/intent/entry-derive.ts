@@ -5,10 +5,7 @@ import chalk from 'chalk'
 
 export default class EntryDeriveIntent extends Intent {
   getRelatedContentTypeIds () {
-    return [
-      this.getContentTypeId(),
-      this.payload.derivation.derivedContentType
-    ]
+    return [this.getContentTypeId(), this.payload.derivation.derivedContentType]
   }
   isEntryDerive () {
     return true
@@ -27,12 +24,7 @@ export default class EntryDeriveIntent extends Intent {
   }
 
   toActions () {
-    return [
-      new EntryDeriveAction(
-        this.getContentTypeId(),
-        this.payload.derivation
-      )
-    ]
+    return [new EntryDeriveAction(this.getContentTypeId(), this.payload.derivation)]
   }
 
   toPlanMessage (): PlanMessage {

@@ -19,9 +19,7 @@ export default class TagUpdateIntent extends Intent {
 
   groupsWith (other: Intent): boolean {
     const sameTag = other.getTagId() === this.getTagId()
-    return (
-      other.isTagUpdate() || other.isTagCreate()
-   ) && sameTag
+    return (other.isTagUpdate() || other.isTagCreate()) && sameTag
   }
 
   endsGroup (): boolean {
@@ -37,12 +35,7 @@ export default class TagUpdateIntent extends Intent {
   }
 
   toActions () {
-    return [
-      new TagUpdateAction(
-        this.getTagId(),
-        this.payload.props
-      )
-    ]
+    return [new TagUpdateAction(this.getTagId(), this.payload.props)]
   }
 
   toPlanMessage (): PlanMessage {

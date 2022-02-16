@@ -27,8 +27,10 @@ describe('EditorInterfaceUpdateIntent', function () {
         const desc = ct.createField('description')
         desc.type('Text')
 
-        ct.changeEditorInterface('name', 'markdown')
-          .changeEditorInterface('description', 'singleLine')
+        ct.changeEditorInterface('name', 'markdown').changeEditorInterface(
+          'description',
+          'singleLine'
+        )
       })
       const message1: PlanMessage = intents[1].toPlanMessage()
       expect(message1).to.eql({
@@ -36,15 +38,11 @@ describe('EditorInterfaceUpdateIntent', function () {
         details: [],
         sections: [
           {
-            details: [
-              chalk`{italic widgetId}: \"markdown\"`
-            ],
+            details: [chalk`{italic widgetId}: \"markdown\"`],
             heading: chalk`Update field {yellow name}`
           },
           {
-            details: [
-              chalk`{italic widgetId}: \"singleLine\"`
-            ],
+            details: [chalk`{italic widgetId}: \"singleLine\"`],
             heading: chalk`Update field {yellow description}`
           }
         ]

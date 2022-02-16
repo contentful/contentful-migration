@@ -12,12 +12,13 @@ export default class FieldUpdateIntent extends Intent {
   groupsWith (other: Intent): boolean {
     const sameContentType = other.getContentTypeId() === this.getContentTypeId()
     return (
-      other.isContentTypeUpdate() ||
-      other.isContentTypeCreate() ||
-      other.isFieldCreate() ||
-      other.isFieldUpdate() ||
-      other.isFieldMove()
-    ) && sameContentType
+      (other.isContentTypeUpdate() ||
+        other.isContentTypeCreate() ||
+        other.isFieldCreate() ||
+        other.isFieldUpdate() ||
+        other.isFieldMove()) &&
+      sameContentType
+    )
   }
 
   endsGroup (): boolean {
@@ -26,11 +27,7 @@ export default class FieldUpdateIntent extends Intent {
 
   toActions () {
     return [
-      new FieldUpdateAction(
-        this.getContentTypeId(),
-        this.payload.fieldId,
-        this.payload.props
-      )
+      new FieldUpdateAction(this.getContentTypeId(), this.payload.fieldId, this.payload.props)
     ]
   }
 
@@ -41,10 +38,12 @@ export default class FieldUpdateIntent extends Intent {
 
     return {
       heading: chalk`Update Content Type {bold.yellow ${this.getContentTypeId()}}`,
-      sections: [{
-        heading: chalk`Update field {yellow ${this.getFieldId()}}`,
-        details
-      }],
+      sections: [
+        {
+          heading: chalk`Update field {yellow ${this.getFieldId()}}`,
+          details
+        }
+      ],
       details: []
     }
   }

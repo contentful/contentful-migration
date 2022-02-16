@@ -33,9 +33,7 @@ export default class EntrySetTagsIntent extends Intent {
   toPlanMessage (): PlanMessage {
     return {
       heading: chalk`Updating tags on entries for {bold.yellow ${this.getContentTypeId()}}`,
-      details: [
-        `from: ${this.payload.entryTransformationForTags.from}`
-      ],
+      details: [`from: ${this.payload.entryTransformationForTags.from}`],
       sections: []
     }
   }

@@ -1,7 +1,9 @@
 import { EntityAction, EntityType } from './action'
 import ContentType from '../entities/content-type'
 
-interface FieldRenameProps { newId: string }
+interface FieldRenameProps {
+  newId: string
+}
 
 class FieldRenameAction extends EntityAction {
   private props: FieldRenameProps
@@ -35,7 +37,4 @@ class FieldRenameAction extends EntityAction {
   }
 }
 
-export {
-  FieldRenameAction,
-  FieldRenameProps
-}
+export { FieldRenameAction, FieldRenameProps }

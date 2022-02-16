@@ -13,7 +13,7 @@ export default class TagsOnEntryValidator implements EntryValidator {
     this.tags = tags
   }
 
-  public validate (entry: Entry): (PayloadValidationError[] | InvalidActionError[]) {
+  public validate (entry: Entry): PayloadValidationError[] | InvalidActionError[] {
     const errors: InvalidActionError[] = []
     const tagsOnEntry = entry.tags
     const allTags = this.tags

@@ -1,7 +1,7 @@
-const { runMigration } = require('../built/bin/cli');
+const { runMigration } = require('../built/bin/cli')
 
-async function main (filePath) {
-  let statusCode = 0;
+async function main(filePath) {
+  let statusCode = 0
 
   try {
     await runMigration({
@@ -10,15 +10,15 @@ async function main (filePath) {
       environmentId: 'master',
       yes: true,
       filePath
-    });
+    })
   } catch (e) {
-    statusCode = 1;
-    console.log('Catching Error');
+    statusCode = 1
+    console.log('Catching Error')
   } finally {
-    console.log('Cleaning Up');
+    console.log('Cleaning Up')
   }
 
-  process.exit(statusCode);
+  process.exit(statusCode)
 }
 
-main(process.argv[2]);
+main(process.argv[2])

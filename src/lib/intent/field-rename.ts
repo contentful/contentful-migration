@@ -39,49 +39,32 @@ export default class FieldRenameIntent extends Intent {
     const ctId = this.getContentTypeId()
 
     return [
-      new FieldUpdateAction(
-        ctId,
-        this.getFieldId(),
-        { newId: this.getNewId() }
-      ),
+      new FieldUpdateAction(ctId, this.getFieldId(), { newId: this.getNewId() }),
 
       new ContentTypeSaveAction(ctId),
       new ContentTypePublishAction(ctId),
 
-      new FieldRenameAction(
-        ctId,
-        this.getFieldId(),
-        { newId: this.getNewId() }
-      ),
+      new FieldRenameAction(ctId, this.getFieldId(), { newId: this.getNewId() }),
 
-      new CopyEditorInterfaceAction(
-        ctId,
-        this.getFieldId(),
-        this.getNewId()
-      ),
+      new CopyEditorInterfaceAction(ctId, this.getFieldId(), this.getNewId()),
 
-      new ResetEditorInterfaceAction(
-        ctId,
-        this.getFieldId()
-      ),
+      new ResetEditorInterfaceAction(ctId, this.getFieldId()),
 
       new SaveEditorInterfaceAction(ctId),
 
-      new EntryFieldRenameAction(
-        ctId,
-        this.payload.fieldId,
-        { newId: this.getNewId() }
-      )
+      new EntryFieldRenameAction(ctId, this.payload.fieldId, { newId: this.getNewId() })
     ]
   }
 
   toPlanMessage (): PlanMessage {
     return {
       heading: chalk`Update Content Type {bold.yellow ${this.getContentTypeId()}}`,
-      sections: [{
-        heading: chalk`Rename field {yellow ${this.getFieldId()}} to {yellow ${this.getNewId()}}`,
-        details: []
-      }],
+      sections: [
+        {
+          heading: chalk`Rename field {yellow ${this.getFieldId()}} to {yellow ${this.getNewId()}}`,
+          details: []
+        }
+      ],
       details: []
     }
   }

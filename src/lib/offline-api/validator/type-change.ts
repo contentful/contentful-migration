@@ -8,7 +8,10 @@ import { keyBy } from 'lodash'
 export default class TypeChangeValidator implements ContentTypePayloadValidator {
   public hooks = [ApiHook.SaveContentType]
 
-  public validate ({ contentType, publishedContentType }: ContentTypePayloadValidatorOptions): InvalidActionError[] {
+  public validate ({
+    contentType,
+    publishedContentType
+  }: ContentTypePayloadValidatorOptions): InvalidActionError[] {
     const errors: InvalidActionError[] = []
 
     if (!publishedContentType) {
@@ -29,7 +32,12 @@ export default class TypeChangeValidator implements ContentTypePayloadValidator 
         if (fieldType !== parentFieldType) {
           errors.push({
             type: 'InvalidAction',
-            message: errorMessages.field.NO_TYPE_CHANGE(fieldId, contentType.id, parentFieldType, fieldType)
+            message: errorMessages.field.NO_TYPE_CHANGE(
+              fieldId,
+              contentType.id,
+              parentFieldType,
+              fieldType
+            )
           })
         }
       }

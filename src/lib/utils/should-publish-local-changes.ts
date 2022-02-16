@@ -8,7 +8,10 @@ import Entry from '../entities/entry'
  * @description we expect a diff of > 2 between version and publishedVersion because version has been already bumped in this specific use case.
  */
 
-export default function shouldPublishLocalChanges (shouldPublish: boolean | 'preserve', entry: Entry) {
+export default function shouldPublishLocalChanges (
+  shouldPublish: boolean | 'preserve',
+  entry: Entry
+) {
   if (shouldPublish === true) {
     return true
   } else if (shouldPublish === false) {

@@ -38,7 +38,4 @@ class Link {
   }
 }
 
-export {
-  Link as default,
-  Link
-}
+export { Link as default, Link }

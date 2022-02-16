@@ -23,7 +23,4 @@ abstract class FieldAction extends EntityAction {
   }
 }
 
-export {
-  FieldAction as default,
-  FieldAction
-}
+export { FieldAction as default, FieldAction }

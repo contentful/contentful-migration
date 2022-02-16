@@ -38,7 +38,12 @@ class UpdateEditorInterfaceAction extends EntityAction {
   }
 
   async applyTo (editorInterfaces: EditorInterfaces) {
-    editorInterfaces.update(this.getFieldId(), this._widgetId, this._settings, this._widgetNamespace)
+    editorInterfaces.update(
+      this.getFieldId(),
+      this._widgetId,
+      this._settings,
+      this._widgetNamespace
+    )
   }
 }
 

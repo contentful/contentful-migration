@@ -48,7 +48,4 @@ interface Intent {
   toPlanMessage (): PlanMessage
 }
 
-export {
-  Intent as default,
-  Intent
-}
+export { Intent as default, Intent }

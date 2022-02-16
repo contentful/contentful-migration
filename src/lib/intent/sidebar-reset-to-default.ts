@@ -25,9 +25,7 @@ export default class SidebarResetToDefaultIntent extends Intent {
   }
   toActions () {
     return [
-      new SidebarResetToDefaultAction(
-        this.payload.contentTypeId
-      ),
+      new SidebarResetToDefaultAction(this.payload.contentTypeId),
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]
   }

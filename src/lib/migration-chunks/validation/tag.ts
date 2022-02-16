@@ -111,7 +111,7 @@ class AlreadyExistingNameUpdates implements TagValidation {
 
     const tagName = intent.toRaw().payload.props.name
 
-    if (!context.remoteTags.find(tag => tag.name === tagName)) {
+    if (!context.remoteTags.find((tag) => tag.name === tagName)) {
       return
     }
 
@@ -185,7 +185,9 @@ const checks: TagValidation[] = [
 
 export default function (intents: Intent[], tags: Tag[]): InvalidActionError[] {
   const remote = tags.map((tag) => tag.id)
-  const toBeCreated = intents.filter((intent) => intent.isTagCreate()).map((intent) => intent.getTagId())
+  const toBeCreated = intents
+    .filter((intent) => intent.isTagCreate())
+    .map((intent) => intent.getTagId())
 
   let context = {
     remote: new Set(remote), // all currently (in the current iteration step) existing tags

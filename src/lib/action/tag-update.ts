@@ -22,7 +22,6 @@ class TagUpdateAction extends EntityAction {
   async applyTo (tag: Tag) {
     Object.assign(tag, this.props)
   }
-
 }
 
 export { TagUpdateAction }

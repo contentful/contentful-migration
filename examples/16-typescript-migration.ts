@@ -6,7 +6,5 @@ export = function (migration: Migration) {
   })
 
   const name = dog.createField('name')
-  name.name('Name')
-    .type('Symbol')
-    .required(true)
+  name.name('Name').type('Symbol').required(true)
 }

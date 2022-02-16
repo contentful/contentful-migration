@@ -121,7 +121,4 @@ class Entry {
   }
 }
 
-export {
-  Entry as default,
-  Entry
-}
+export { Entry as default, Entry }

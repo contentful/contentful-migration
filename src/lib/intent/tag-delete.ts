@@ -38,9 +38,7 @@ export default class TagDeleteIntent extends Intent {
   }
 
   toActions () {
-    return [
-      new TagDeleteAction(this.getTagId())
-    ]
+    return [new TagDeleteAction(this.getTagId())]
   }
 
   toPlanMessage (): PlanMessage {

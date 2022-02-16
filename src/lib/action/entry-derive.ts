@@ -25,7 +25,9 @@ class EntryDeriveAction extends APIAction {
     this.derivedContentType = entryDerivation.derivedContentType
     this.deriveEntryForLocale = entryDerivation.deriveEntryForLocale
     this.identityKey = entryDerivation.identityKey
-    this.shouldPublish = isDefined(entryDerivation.shouldPublish) ? entryDerivation.shouldPublish : true
+    this.shouldPublish = isDefined(entryDerivation.shouldPublish)
+      ? entryDerivation.shouldPublish
+      : true
   }
 
   async applyTo (api: OfflineAPI) {
@@ -88,10 +90,9 @@ class EntryDeriveAction extends APIAction {
             targetEntry.setField(fieldId, {})
           }
 
-          for (const [locale, localizedValue] of _.entries((localizedField as object))) {
+          for (const [locale, localizedValue] of _.entries(localizedField as object)) {
             targetEntry.setFieldForLocale(fieldId, locale, localizedValue)
           }
-
         }
         await api.saveEntry(targetEntry.id)
         if (shouldPublishLocalChanges(this.shouldPublish, entry)) {
@@ -106,7 +107,7 @@ class EntryDeriveAction extends APIAction {
           linkType: 'Entry',
           id: newEntryId
         }
-        const fieldValue = (field.type === 'Array') ? [{ sys }] : { sys }
+        const fieldValue = field.type === 'Array' ? [{ sys }] : { sys }
         entry.setFieldForLocale(this.referenceField, locale, fieldValue)
       }
 

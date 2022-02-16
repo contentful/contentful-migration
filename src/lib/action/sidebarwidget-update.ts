@@ -9,11 +9,13 @@ class SidebarWidgetUpdateAction extends EntityAction {
   protected settings: SidebarWidgetSettings
   protected disabled: boolean
 
-  constructor (contentTypeId: string,
-               widgetId: string,
-               widgetNamespace: SidebarWidgetNamespace,
-               settings?: SidebarWidgetSettings,
-               disabled?: boolean) {
+  constructor (
+    contentTypeId: string,
+    widgetId: string,
+    widgetNamespace: SidebarWidgetNamespace,
+    settings?: SidebarWidgetSettings,
+    disabled?: boolean
+  ) {
     super()
     this.contentTypeId = contentTypeId
     this.widgetId = widgetId

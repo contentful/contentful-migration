@@ -58,7 +58,4 @@ class Tag {
   }
 }
 
-export {
-    Tag as default,
-    Tag
-}
+export { Tag as default, Tag }

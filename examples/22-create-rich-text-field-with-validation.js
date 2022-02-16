@@ -1,6 +1,8 @@
 // Example of setting `validations` for rich text fields of a content type.
 module.exports = function (migration) {
-  const myRichTextCT = migration.createContentType('myContentTypeWithRichText').name('MyContentTypeWithRichText');
+  const myRichTextCT = migration
+    .createContentType('myContentTypeWithRichText')
+    .name('MyContentTypeWithRichText')
   myRichTextCT
     .createField('richText')
     .name('Text')
@@ -55,5 +57,5 @@ module.exports = function (migration) {
         message:
           'Only heading 1, heading 2, heading 3, heading 4, heading 5, ordered list, unordered list, horizontal rule, quote, block entry, asset, link to Url, link to entry, link to asset, and inline entry nodes are allowed'
       }
-    ]);
-};
+    ])
+}

@@ -11,10 +11,14 @@ const noOp = () => undefined
 
 describe('Entries fetcher', function () {
   it('adds entries info to content types', async function () {
-    const intents = await migrationSteps(function up (migration) {
-      migration.deleteContentType('foo')
-      migration.deleteContentType('bar')
-    }, noOp, {})
+    const intents = await migrationSteps(
+      function up (migration) {
+        migration.deleteContentType('foo')
+        migration.deleteContentType('bar')
+      },
+      noOp,
+      {}
+    )
 
     const request = sinon.stub()
     request
@@ -39,7 +43,10 @@ describe('Entries fetcher', function () {
     ]
 
     const fetcher = new Fetcher(request)
-    const contentTypesWithEntryInfo = await fetcher.checkContentTypesForDeletedCts(intentList, contentTypes)
+    const contentTypesWithEntryInfo = await fetcher.checkContentTypesForDeletedCts(
+      intentList,
+      contentTypes
+    )
 
     const fooCT = contentTypesWithEntryInfo.find((ct) => ct.id === 'foo')
     expect(fooCT.hasEntries).to.eql(true)

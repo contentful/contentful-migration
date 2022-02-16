@@ -5,4 +5,4 @@ module.exports = {
   rules: {
     'max-nested-callbacks': [2, 6]
   }
-};
+}

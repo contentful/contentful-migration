@@ -20,8 +20,8 @@ import Link from '../entities/link'
 interface RequestBatch {
   intent: Intent
   requests: Request[]
-  validationErrors: (PayloadValidationError | InvalidActionError)[],
-  runtimeErrors: Error[],
+  validationErrors: (PayloadValidationError | InvalidActionError)[]
+  runtimeErrors: Error[]
 }
 
 interface OfflineApiOptions {
@@ -42,7 +42,7 @@ export enum ApiHook {
 
 const saveContentTypeRequest = function (ct: ContentType): Request {
   const apiContentType = omit(ct.toAPI(), 'sys')
-  apiContentType.fields = apiContentType.fields.filter(field => !field.deleted)
+  apiContentType.fields = apiContentType.fields.filter((field) => !field.deleted)
   return {
     method: 'PUT',
     url: `/content_types/${ct.id}`,
@@ -126,7 +126,10 @@ const deleteRequest = function (ct: ContentType): Request {
   }
 }
 
-const saveEditorInterfacesRequest = function (contentTypeId: string, editorInterfaces: EditorInterfaces): Request {
+const saveEditorInterfacesRequest = function (
+  contentTypeId: string,
+  editorInterfaces: EditorInterfaces
+): Request {
   return {
     method: 'PUT',
     url: `/content_types/${contentTypeId}/editor_interface`,
@@ -233,7 +236,9 @@ class OfflineAPI {
 
   async getEditorInterfaces (contentTypeId: string): Promise<EditorInterfaces> {
     if (!this.editorInterfaces.has(contentTypeId)) {
-      throw new Error(`Cannot get editor interfaces for Content Type ${contentTypeId} because it does not exist`)
+      throw new Error(
+        `Cannot get editor interfaces for Content Type ${contentTypeId} because it does not exist`
+      )
     }
 
     return this.editorInterfaces.get(contentTypeId)
@@ -358,13 +363,14 @@ class OfflineAPI {
     this.modifiedContentTypes.delete(id)
     this.publishedContentTypes.delete(id)
     this.savedContentTypes.delete(id)
-
   }
 
   async saveEditorInterfaces (contentTypeId: string) {
     this.assertRecording()
     if (!this.editorInterfaces.has(contentTypeId)) {
-      throw new Error(`Cannot save editor interfaces for Content Type ${contentTypeId} because they do not exist`)
+      throw new Error(
+        `Cannot save editor interfaces for Content Type ${contentTypeId} because they do not exist`
+      )
     }
     const editorInterfaces = this.editorInterfaces.get(contentTypeId)
     this.currentRequestsRecorded.push(saveEditorInterfacesRequest(contentTypeId, editorInterfaces))
@@ -433,7 +439,7 @@ class OfflineAPI {
 
     if (!hasEntry) {
       throw new Error(`Cannot publish Entry ${id} because it does not exist`)
-    }    // Store clone as a request
+    } // Store clone as a request
     const entry = this.entries.find((entry) => entry.id === id)
 
     this.currentRequestsRecorded.push(publishEntryRequest(entry.clone()))
@@ -473,7 +479,7 @@ class OfflineAPI {
 
     if (!hasEntry) {
       throw new Error(`Cannot delete Entry ${id} because it does not exist`)
-    }    // Store clone as a request
+    } // Store clone as a request
     const entry = this.entries.find((entry) => entry.id === id)
 
     const index = this.entries.indexOf(entry)
@@ -490,7 +496,6 @@ class OfflineAPI {
   }
 
   async getLinks (childId: string, locales: string[]): Promise<Link[]> {
-
     const links: Link[] = []
 
     for (let entry of this.entries) {
@@ -646,8 +651,4 @@ class OfflineAPI {
   }
 }
 
-export {
-  OfflineAPI as default,
-  OfflineAPI,
-  RequestBatch
-}
+export { OfflineAPI as default, OfflineAPI, RequestBatch }

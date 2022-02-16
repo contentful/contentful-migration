@@ -12,12 +12,13 @@ export default class ContentTypeUpdateIntent extends Intent {
   groupsWith (other: Intent): boolean {
     const sameContentType = other.getContentTypeId() === this.getContentTypeId()
     return (
-      other.isContentTypeUpdate() ||
-      other.isContentTypeCreate() ||
-      other.isFieldCreate() ||
-      other.isFieldUpdate() ||
-      other.isFieldMove()
-   ) && sameContentType
+      (other.isContentTypeUpdate() ||
+        other.isContentTypeCreate() ||
+        other.isFieldCreate() ||
+        other.isFieldUpdate() ||
+        other.isFieldMove()) &&
+      sameContentType
+    )
   }
 
   endsGroup (): boolean {
@@ -25,12 +26,7 @@ export default class ContentTypeUpdateIntent extends Intent {
   }
 
   toActions () {
-    return [
-      new ContentTypeUpdateAction(
-        this.getContentTypeId(),
-        this.payload.props
-      )
-    ]
+    return [new ContentTypeUpdateAction(this.getContentTypeId(), this.payload.props)]
   }
 
   toPlanMessage (): PlanMessage {

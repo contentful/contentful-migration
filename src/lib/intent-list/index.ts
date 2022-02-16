@@ -51,7 +51,9 @@ class IntentList {
     let composableIntents: IntentInterface[] = []
 
     for (const intent of this.intents) {
-      const lastComposableIntent = composableIntents.length ? composableIntents[composableIntents.length - 1] : null
+      const lastComposableIntent = composableIntents.length
+        ? composableIntents[composableIntents.length - 1]
+        : null
       if (lastComposableIntent === null || intent.groupsWith(lastComposableIntent)) {
         composableIntents.push(intent)
       } else {

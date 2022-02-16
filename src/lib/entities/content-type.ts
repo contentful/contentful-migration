@@ -9,7 +9,8 @@ import {
   APIEditorInterfaceSettings,
   APIEditorInterfaceSidebar,
   APIEditorIntefaceEditor,
-  APISidebarWidgetNamespace, APIControlWidgetNamespace
+  APISidebarWidgetNamespace,
+  APIControlWidgetNamespace
 } from '../interfaces/content-type'
 import { SidebarWidgetNamespace, DEFAULT_SIDEBAR_LIST } from '../action/sidebarwidget'
 
@@ -187,15 +188,16 @@ class EditorInterfaces {
     insertBeforeWidgetId: string,
     disabled: boolean
   ) {
-
     this._sidebar = Array.isArray(this._sidebar) ? this._sidebar : [].concat(DEFAULT_SIDEBAR_LIST)
-    const isDuplicateWidget = this._sidebar.find(widget => widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace)
+    const isDuplicateWidget = this._sidebar.find(
+      (widget) => widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace
+    )
 
     if (isDuplicateWidget) {
       return
     }
 
-    const nextWidgetIndex = this._sidebar.map(w => w.widgetId).indexOf(insertBeforeWidgetId)
+    const nextWidgetIndex = this._sidebar.map((w) => w.widgetId).indexOf(insertBeforeWidgetId)
 
     const newWidget: APIEditorInterfaceSidebar = {
       disabled,
@@ -217,9 +219,10 @@ class EditorInterfaces {
     settings?: APISidebarWidgetSettings,
     disabled?: boolean
   ) {
-
     this._sidebar = Array.isArray(this._sidebar) ? this._sidebar : [].concat(DEFAULT_SIDEBAR_LIST)
-    const existingWidget = this._sidebar.find(widget => widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace)
+    const existingWidget = this._sidebar.find(
+      (widget) => widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace
+    )
 
     if (!existingWidget) {
       return
@@ -230,14 +233,20 @@ class EditorInterfaces {
   }
 
   removeSidebarWidget (widgetId: string, widgetNamespace: APISidebarWidgetNamespace) {
-    const currentSidebarWidgets = Array.isArray(this._sidebar) ? this._sidebar : [].concat(DEFAULT_SIDEBAR_LIST)
-    const widgetToDisable = currentSidebarWidgets.find(widget => widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace)
+    const currentSidebarWidgets = Array.isArray(this._sidebar)
+      ? this._sidebar
+      : [].concat(DEFAULT_SIDEBAR_LIST)
+    const widgetToDisable = currentSidebarWidgets.find(
+      (widget) => widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace
+    )
 
     if (!widgetToDisable) {
       return
     }
 
-    this._sidebar = currentSidebarWidgets.filter(widget => widget.widgetId !== widgetId || widget.widgetNamespace !== widgetNamespace)
+    this._sidebar = currentSidebarWidgets.filter(
+      (widget) => widget.widgetId !== widgetId || widget.widgetNamespace !== widgetNamespace
+    )
   }
 
   resetSidebarToDefault () {
@@ -269,9 +278,9 @@ class EditorInterfaces {
     })
 
     const result: {
-      controls: APIEditorInterfaceControl[],
-      sidebar?: APIEditorInterfaceSidebar[],
-      editor?: APIEditorIntefaceEditor,
+      controls: APIEditorInterfaceControl[]
+      sidebar?: APIEditorInterfaceSidebar[]
+      editor?: APIEditorIntefaceEditor
       editors?: APIEditorIntefaceEditor[]
     } = {
       controls
@@ -372,10 +381,4 @@ class ContentType {
   }
 }
 
-export {
-  ContentType as default,
-  ContentType,
-  Fields,
-  Field,
-  EditorInterfaces
-}
+export { ContentType as default, ContentType, Fields, Field, EditorInterfaces }

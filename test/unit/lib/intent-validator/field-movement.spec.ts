@@ -24,17 +24,17 @@ describe('field-movement validation', function () {
           message: '"somewhere" is not a valid field movement.',
           details: {
             step: {
-              'type': 'field/move',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/field/0'
+              type: 'field/move',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/field/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'field',
-                'movement': {
-                  'direction': 'somewhere',
-                  'pivot': undefined
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'field',
+                movement: {
+                  direction: 'somewhere',
+                  pivot: undefined
                 }
               }
             }
@@ -61,17 +61,17 @@ describe('field-movement validation', function () {
           message: 'You cannot move the field "name" relative to itself.',
           details: {
             step: {
-              'type': 'field/move',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/0'
+              type: 'field/move',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/name/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'movement': {
-                  'direction': 'afterField',
-                  'pivot': 'name'
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'name',
+                movement: {
+                  direction: 'afterField',
+                  pivot: 'name'
                 }
               }
             }
@@ -98,17 +98,17 @@ describe('field-movement validation', function () {
           message: '"toTheTp" is not a valid field movement. Did you mean "toTheTop"?',
           details: {
             step: {
-              'type': 'field/move',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/field/0'
+              type: 'field/move',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/field/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'field',
-                'movement': {
-                  'direction': 'toTheTp',
-                  'pivot': undefined
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'field',
+                movement: {
+                  direction: 'toTheTp',
+                  pivot: undefined
                 }
               }
             }
@@ -149,17 +149,17 @@ describe('field-movement validation', function () {
           message: '"boolean" is not a valid type for field movement. Expected "string".',
           details: {
             step: {
-              'type': 'field/move',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/field/0'
+              type: 'field/move',
+              meta: {
+                contentTypeInstanceId: 'contentType/person/0',
+                fieldInstanceId: 'fields/field/0'
               },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'field',
-                'movement': {
-                  'direction': 'afterField',
-                  'pivot': true
+              payload: {
+                contentTypeId: 'person',
+                fieldId: 'field',
+                movement: {
+                  direction: 'afterField',
+                  pivot: true
                 }
               }
             }

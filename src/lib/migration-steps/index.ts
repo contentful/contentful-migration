@@ -21,7 +21,7 @@ const createInstanceIdManager = () => {
     getNew: (id): number => {
       let instanceId
 
-      if ((typeof instanceCounts[id]) === 'undefined') {
+      if (typeof instanceCounts[id] === 'undefined') {
         instanceId = 0
       } else {
         instanceId = instanceCounts[id] + 1
@@ -34,7 +34,7 @@ const createInstanceIdManager = () => {
   }
 }
 
-class Movement extends DispatchProxy { }
+class Movement extends DispatchProxy {}
 
 class Field extends DispatchProxy {
   public id: string
@@ -57,7 +57,9 @@ class ContentType extends DispatchProxy {
 
   constructor (id, instanceId, props = {}, dispatch) {
     const dispatchUpdate = (callsite, propertyName, propertyValue) => {
-      dispatch(actionCreators.contentType.update(id, instanceId, callsite, propertyName, propertyValue))
+      dispatch(
+        actionCreators.contentType.update(id, instanceId, callsite, propertyName, propertyValue)
+      )
     }
     super({ dispatchUpdate })
 
@@ -78,9 +80,17 @@ class ContentType extends DispatchProxy {
     const callsite = getFirstExternalCaller()
     const fieldInstanceId = this.fieldInstanceIds.getNew(id)
 
-    this.dispatch(actionCreators.field.create(this.id, this.instanceId, id, fieldInstanceId, callsite))
+    this.dispatch(
+      actionCreators.field.create(this.id, this.instanceId, id, fieldInstanceId, callsite)
+    )
 
-    const updateField = actionCreators.field.update.bind(null, this.id, this.instanceId, id, fieldInstanceId)
+    const updateField = actionCreators.field.update.bind(
+      null,
+      this.id,
+      this.instanceId,
+      id,
+      fieldInstanceId
+    )
     const field = new Field(id, init, {
       dispatchUpdate: (callsite, property, value) => {
         return this.dispatch(updateField(callsite, property, value))
@@ -93,7 +103,13 @@ class ContentType extends DispatchProxy {
   editField (id, init) {
     const fieldInstanceId = this.fieldInstanceIds.getNew(id)
 
-    const updateField = actionCreators.field.update.bind(null, this.id, this.instanceId, id, fieldInstanceId)
+    const updateField = actionCreators.field.update.bind(
+      null,
+      this.id,
+      this.instanceId,
+      id,
+      fieldInstanceId
+    )
     const field = new Field(id, init, {
       dispatchUpdate: (callsite, property, value) => {
         return this.dispatch(updateField(callsite, property, value))
@@ -131,33 +147,32 @@ class ContentType extends DispatchProxy {
     const callsite = getFirstExternalCaller()
     const fieldInstanceId = this.fieldInstanceIds.getNew(id)
 
-    this.dispatch(actionCreators.field.delete(this.id, this.instanceId, id, fieldInstanceId, callsite))
+    this.dispatch(
+      actionCreators.field.delete(this.id, this.instanceId, id, fieldInstanceId, callsite)
+    )
   }
 
   changeFieldId (oldId, newId) {
     const callsite = getFirstExternalCaller()
     const fieldInstanceId = this.fieldInstanceIds.getNew(oldId)
-    this.dispatch(actionCreators.field.rename(
-      this.id,
-      this.instanceId,
-      oldId,
-      fieldInstanceId,
-      callsite,
-      newId
-    ))
+    this.dispatch(
+      actionCreators.field.rename(this.id, this.instanceId, oldId, fieldInstanceId, callsite, newId)
+    )
   }
 
   changeFieldControl (fieldId, widgetNamespace, widgetId, settings) {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.changeEditorInterface(
-      this.id,
-      this.instanceId,
-      callsite,
-      fieldId,
-      widgetId,
-      settings,
-      widgetNamespace
-    ))
+    this.dispatch(
+      actionCreators.contentType.changeEditorInterface(
+        this.id,
+        this.instanceId,
+        callsite,
+        fieldId,
+        widgetId,
+        settings,
+        widgetNamespace
+      )
+    )
     return this
   }
 
@@ -169,13 +184,15 @@ class ContentType extends DispatchProxy {
 
   copyFieldControl (sourceFieldId, destinationFieldId) {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.copyEditorInterface(
-      this.id,
-      this.instanceId,
-      callsite,
-      sourceFieldId,
-      destinationFieldId
-    ))
+    this.dispatch(
+      actionCreators.contentType.copyEditorInterface(
+        this.id,
+        this.instanceId,
+        callsite,
+        sourceFieldId,
+        destinationFieldId
+      )
+    )
     return this
   }
 
@@ -187,12 +204,9 @@ class ContentType extends DispatchProxy {
 
   resetFieldControl (fieldId) {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.resetEditorInterface(
-      this.id,
-      this.instanceId,
-      callsite,
-      fieldId
-    ))
+    this.dispatch(
+      actionCreators.contentType.resetEditorInterface(this.id, this.instanceId, callsite, fieldId)
+    )
     return this
   }
 
@@ -204,84 +218,83 @@ class ContentType extends DispatchProxy {
 
   resetEntryEditor () {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.resetEntryEditor(
-      this.id,
-      this.instanceId,
-      callsite
-    ))
+    this.dispatch(actionCreators.contentType.resetEntryEditor(this.id, this.instanceId, callsite))
     return this
   }
 
   configureEntryEditor (widgetNamespace, widgetId, settings?) {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.configureEntryEditor(
-      this.id,
-      this.instanceId,
-      callsite,
-      widgetNamespace,
-      widgetId,
-      settings
-    ))
+    this.dispatch(
+      actionCreators.contentType.configureEntryEditor(
+        this.id,
+        this.instanceId,
+        callsite,
+        widgetNamespace,
+        widgetId,
+        settings
+      )
+    )
     return this
   }
 
   configureEntryEditors (editors) {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.configureEntryEditors(
-      this.id,
-      this.instanceId,
-      callsite,
-      editors
-    ))
+    this.dispatch(
+      actionCreators.contentType.configureEntryEditors(this.id, this.instanceId, callsite, editors)
+    )
     return this
   }
 
   addSidebarWidget (widgetNamespace, widgetId, settings = {}, insertBeforeWidgetId = null) {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.addSidebarWidget(
-      this.id,
-      this.instanceId,
-      callsite,
-      widgetId,
-      widgetNamespace,
-      insertBeforeWidgetId,
-      settings
-    ))
+    this.dispatch(
+      actionCreators.contentType.addSidebarWidget(
+        this.id,
+        this.instanceId,
+        callsite,
+        widgetId,
+        widgetNamespace,
+        insertBeforeWidgetId,
+        settings
+      )
+    )
     return this
   }
 
   updateSidebarWidget (widgetNamespace, widgetId, settings = {}) {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.updateSidebarWidget(
-      this.id,
-      this.instanceId,
-      callsite,
-      widgetId,
-      widgetNamespace,
-      settings
-    ))
+    this.dispatch(
+      actionCreators.contentType.updateSidebarWidget(
+        this.id,
+        this.instanceId,
+        callsite,
+        widgetId,
+        widgetNamespace,
+        settings
+      )
+    )
     return this
   }
 
   removeSidebarWidget (widgetNamespace, widgetId) {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.removeSidebarWidget(
-      this.id,
-      this.instanceId,
-      callsite,
-      widgetId,
-      widgetNamespace
-    ))
+    this.dispatch(
+      actionCreators.contentType.removeSidebarWidget(
+        this.id,
+        this.instanceId,
+        callsite,
+        widgetId,
+        widgetNamespace
+      )
+    )
     return this
   }
 
   resetSidebarToDefault () {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.resetSidebarToDefault(
-      this.id,
-      this.instanceId,
-      callsite
-    ))
+    this.dispatch(
+      actionCreators.contentType.resetSidebarToDefault(this.id, this.instanceId, callsite)
+    )
     return this
   }
 }
@@ -309,7 +322,11 @@ class Tag extends DispatchProxy {
   public dispatch? (step: Intent): void
 }
 
-export async function migration (migrationCreator: Function, makeRequest: Function, config: ClientConfig): Promise<Intent[]> {
+export async function migration (
+  migrationCreator: Function,
+  makeRequest: Function,
+  config: ClientConfig
+): Promise<Intent[]> {
   const actions: Intent[] = []
   const instanceIdManager = createInstanceIdManager()
 

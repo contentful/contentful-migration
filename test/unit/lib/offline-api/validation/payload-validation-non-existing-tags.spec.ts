@@ -16,7 +16,11 @@ describe('payload validation attach tags to entry', function () {
         }
       }
       const contentTypes = [
-        { sys: { id: 'entry' }, fields: [{ id: 'name', name: 'field name', type: 'Symbol' }], name: 'Lunch' }
+        {
+          sys: { id: 'entry' },
+          fields: [{ id: 'name', name: 'field name', type: 'Symbol' }],
+          name: 'Lunch'
+        }
       ]
 
       const tags = [{ sys: { id: 'marketing' }, name: 'Buenos Aires' }]
@@ -47,7 +51,8 @@ describe('payload validation attach tags to entry', function () {
         [
           {
             type: 'InvalidAction',
-            message: 'You cannot update tags on entry "entryId" because some of the tags do not exist.'
+            message:
+              'You cannot update tags on entry "entryId" because some of the tags do not exist.'
           }
         ]
       ])

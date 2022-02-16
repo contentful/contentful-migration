@@ -11,12 +11,13 @@ export default class FieldMoveIntent extends Intent {
   groupsWith (other: Intent): boolean {
     const sameContentType = other.getContentTypeId() === this.getContentTypeId()
     return (
-      other.isContentTypeUpdate() ||
-      other.isContentTypeCreate() ||
-      other.isFieldCreate() ||
-      other.isFieldUpdate() ||
-      other.isFieldMove()
-    ) && sameContentType
+      (other.isContentTypeUpdate() ||
+        other.isContentTypeCreate() ||
+        other.isFieldCreate() ||
+        other.isFieldUpdate() ||
+        other.isFieldMove()) &&
+      sameContentType
+    )
   }
 
   endsGroup (): boolean {
@@ -36,12 +37,14 @@ export default class FieldMoveIntent extends Intent {
   }
 
   toActions () {
-    return [new FieldMoveAction(
-      this.getContentTypeId(),
-      this.getFieldId(),
-      this.getDirection(),
-      this.getPivotId()
-    )]
+    return [
+      new FieldMoveAction(
+        this.getContentTypeId(),
+        this.getFieldId(),
+        this.getDirection(),
+        this.getPivotId()
+      )
+    ]
   }
 
   toPlanMessage (): PlanMessage {
@@ -67,10 +70,12 @@ export default class FieldMoveIntent extends Intent {
 
     return {
       heading: chalk`Update Content Type {bold.yellow ${this.getContentTypeId()}}`,
-      sections: [{
-        heading: chalk`{bold Move field {yellow ${this.getFieldId()}} ${humanizedMovement}}`,
-        details: []
-      }],
+      sections: [
+        {
+          heading: chalk`{bold Move field {yellow ${this.getFieldId()}} ${humanizedMovement}}`,
+          details: []
+        }
+      ],
       details: []
     }
   }

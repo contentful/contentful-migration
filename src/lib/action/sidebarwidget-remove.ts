@@ -7,9 +7,7 @@ class SidebarWidgetRemoveAction extends EntityAction {
   protected widgetId: string
   protected widgetNamespace: SidebarWidgetNamespace
 
-  constructor (contentTypeId: string,
-               widgetId: string,
-               widgetNamespace: SidebarWidgetNamespace) {
+  constructor (contentTypeId: string, widgetId: string, widgetNamespace: SidebarWidgetNamespace) {
     super()
     this.contentTypeId = contentTypeId
     this.widgetId = widgetId
@@ -25,10 +23,7 @@ class SidebarWidgetRemoveAction extends EntityAction {
   }
 
   async applyTo (editorInterfaces: EditorInterfaces) {
-    editorInterfaces.removeSidebarWidget(
-      this.widgetId,
-      this.widgetNamespace
-    )
+    editorInterfaces.removeSidebarWidget(this.widgetId, this.widgetNamespace)
   }
 }
 

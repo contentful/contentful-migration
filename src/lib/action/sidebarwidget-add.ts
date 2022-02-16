@@ -10,12 +10,14 @@ class SidebarWidgetAddAction extends EntityAction {
   protected disabled: boolean
   protected insertBeforeWidgetId: string
 
-  constructor (contentTypeId: string,
-               widgetId: string,
-               widgetNamespace: SidebarWidgetNamespace,
-               insertBeforeWidgetId?: string,
-               settings?: SidebarWidgetSettings,
-               disabled: boolean = false) {
+  constructor (
+    contentTypeId: string,
+    widgetId: string,
+    widgetNamespace: SidebarWidgetNamespace,
+    insertBeforeWidgetId?: string,
+    settings?: SidebarWidgetSettings,
+    disabled: boolean = false
+  ) {
     super()
     this.contentTypeId = contentTypeId
     this.widgetId = widgetId

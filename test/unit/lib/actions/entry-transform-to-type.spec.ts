@@ -17,22 +17,26 @@ describe('Transform Entry to Type Action', function () {
       targetContentType: 'copycat',
       from: ['name'],
       identityKey: async (fields) => fields.name['en-US'].toString(),
-      transformEntryForLocale: async (fields, locale) => { return { name: 'x' + fields['name'][locale] } }
+      transformEntryForLocale: async (fields, locale) => {
+        return { name: 'x' + fields['name'][locale] }
+      }
     }
 
     const action = new EntryTransformToTypeAction(transformation)
     const entries = [
-      new Entry(makeApiEntry({
-        id: '246',
-        contentTypeId: 'dog',
-        version: 1,
-        fields: {
-          name: {
-            'en-US': 'bob',
-            'hawaii': 'haukea'
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'bob',
+              hawaii: 'haukea'
+            }
           }
-        }
-      }))
+        })
+      )
     ]
     const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
     await api.startRecordingRequests(null)
@@ -56,37 +60,43 @@ describe('Transform Entry to Type Action', function () {
       from: ['name'],
       updateReferences: true,
       identityKey: async (fields) => fields.name['en-US'].toString(),
-      transformEntryForLocale: async (fields, locale) => { return { name: fields['name'][locale] } }
+      transformEntryForLocale: async (fields, locale) => {
+        return { name: fields['name'][locale] }
+      }
     }
 
     const action = new EntryTransformToTypeAction(transformation)
     const entries = [
-      new Entry(makeApiEntry({
-        id: '246',
-        contentTypeId: 'dog',
-        version: 1,
-        fields: {
-          name: {
-            'en-US': 'bob',
-            'hawaii': 'haukea'
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'bob',
+              hawaii: 'haukea'
+            }
           }
-        }
-      })),
-      new Entry(makeApiEntry({
-        id: '123',
-        contentTypeId: 'person',
-        version: 1,
-        fields: {
-          pet: {
-            'en-US': {
-              sys: {
-                type: 'Link',
-                id: '246'
+        })
+      ),
+      new Entry(
+        makeApiEntry({
+          id: '123',
+          contentTypeId: 'person',
+          version: 1,
+          fields: {
+            pet: {
+              'en-US': {
+                sys: {
+                  type: 'Link',
+                  id: '246'
+                }
               }
             }
           }
-        }
-      }))
+        })
+      )
     ]
     const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
     await api.startRecordingRequests(null)
@@ -108,22 +118,26 @@ describe('Transform Entry to Type Action', function () {
       from: ['name'],
       removeOldEntries: true,
       identityKey: async (fields) => fields.name['en-US'].toString(),
-      transformEntryForLocale: async (fields, locale) => { return { name: fields['name'][locale] } }
+      transformEntryForLocale: async (fields, locale) => {
+        return { name: fields['name'][locale] }
+      }
     }
 
     const action = new EntryTransformToTypeAction(transformation)
     const entries = [
-      new Entry(makeApiEntry({
-        id: '246',
-        contentTypeId: 'dog',
-        version: 1,
-        fields: {
-          name: {
-            'en-US': 'bob',
-            'hawaii': 'haukea'
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'bob',
+              hawaii: 'haukea'
+            }
           }
-        }
-      }))
+        })
+      )
     ]
     const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
     await api.startRecordingRequests(null)
@@ -140,7 +154,6 @@ describe('Transform Entry to Type Action', function () {
   })
 
   it('publishes all changed entries', async (): Promise<void> => {
-
     const transformation: TransformEntryToType = {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
@@ -148,37 +161,43 @@ describe('Transform Entry to Type Action', function () {
       updateReferences: true,
       shouldPublish: true,
       identityKey: async () => '345',
-      transformEntryForLocale: async (fields, locale) => { return { name: fields['name'][locale] } }
+      transformEntryForLocale: async (fields, locale) => {
+        return { name: fields['name'][locale] }
+      }
     }
 
     const action = new EntryTransformToTypeAction(transformation)
     const entries = [
-      new Entry(makeApiEntry({
-        id: '246',
-        contentTypeId: 'dog',
-        version: 1,
-        fields: {
-          name: {
-            'en-US': 'bob',
-            'hawaii': 'haukea'
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'bob',
+              hawaii: 'haukea'
+            }
           }
-        }
-      })),
-      new Entry(makeApiEntry({
-        id: '123',
-        contentTypeId: 'person',
-        version: 1,
-        fields: {
-          pet: {
-            'en-US': {
-              sys: {
-                type: 'Link',
-                id: '246'
+        })
+      ),
+      new Entry(
+        makeApiEntry({
+          id: '123',
+          contentTypeId: 'person',
+          version: 1,
+          fields: {
+            pet: {
+              'en-US': {
+                sys: {
+                  type: 'Link',
+                  id: '246'
+                }
               }
             }
           }
-        }
-      }))
+        })
+      )
     ]
     const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
     await api.startRecordingRequests(null)
@@ -204,38 +223,44 @@ describe('Transform Entry to Type Action', function () {
       updateReferences: true,
       shouldPublish: 'preserve',
       identityKey: async () => '345',
-      transformEntryForLocale: async (fields, locale) => { return { name: fields['name'][locale] } }
+      transformEntryForLocale: async (fields, locale) => {
+        return { name: fields['name'][locale] }
+      }
     }
 
     const action = new EntryTransformToTypeAction(transformation)
     const entries = [
-      new Entry(makeApiEntry({
-        id: '246',
-        contentTypeId: 'dog',
-        version: 2,
-        publishedVersion: 1,
-        fields: {
-          name: {
-            'en-US': 'bob',
-            'hawaii': 'haukea'
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version: 2,
+          publishedVersion: 1,
+          fields: {
+            name: {
+              'en-US': 'bob',
+              hawaii: 'haukea'
+            }
           }
-        }
-      })),
-      new Entry(makeApiEntry({
-        id: '123',
-        contentTypeId: 'person',
-        version: 1,
-        fields: {
-          pet: {
-            'en-US': {
-              sys: {
-                type: 'Link',
-                id: '246'
+        })
+      ),
+      new Entry(
+        makeApiEntry({
+          id: '123',
+          contentTypeId: 'person',
+          version: 1,
+          fields: {
+            pet: {
+              'en-US': {
+                sys: {
+                  type: 'Link',
+                  id: '246'
+                }
               }
             }
           }
-        }
-      }))
+        })
+      )
     ]
 
     const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
@@ -252,7 +277,6 @@ describe('Transform Entry to Type Action', function () {
   })
 
   it('preserves publish state of parent entry', async (): Promise<void> => {
-
     const transformation: TransformEntryToType = {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
@@ -260,40 +284,46 @@ describe('Transform Entry to Type Action', function () {
       updateReferences: true,
       shouldPublish: 'preserve',
       identityKey: async () => '345',
-      transformEntryForLocale: async (fields, locale) => { return { name: fields['name'][locale] } }
+      transformEntryForLocale: async (fields, locale) => {
+        return { name: fields['name'][locale] }
+      }
     }
 
     const action = new EntryTransformToTypeAction(transformation)
     const entries = [
       // has never been published
-      new Entry(makeApiEntry({
-        id: '246',
-        contentTypeId: 'dog',
-        version: 1,
-        fields: {
-          name: {
-            'en-US': 'bob',
-            'hawaii': 'haukea'
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'bob',
+              hawaii: 'haukea'
+            }
           }
-        }
-      })),
+        })
+      ),
       // published, but with pending changes
-      new Entry(makeApiEntry({
-        id: '123',
-        contentTypeId: 'person',
-        version: 2,
-        publishedVersion: 1,
-        fields: {
-          pet: {
-            'en-US': {
-              sys: {
-                type: 'Link',
-                id: '246'
+      new Entry(
+        makeApiEntry({
+          id: '123',
+          contentTypeId: 'person',
+          version: 2,
+          publishedVersion: 1,
+          fields: {
+            pet: {
+              'en-US': {
+                sys: {
+                  type: 'Link',
+                  id: '246'
+                }
               }
             }
           }
-        }
-      }))
+        })
+      )
     ]
 
     const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
@@ -310,7 +340,6 @@ describe('Transform Entry to Type Action', function () {
   })
 
   it('disable publishing of any entry', async (): Promise<void> => {
-
     const transformation: TransformEntryToType = {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
@@ -318,38 +347,44 @@ describe('Transform Entry to Type Action', function () {
       updateReferences: true,
       shouldPublish: false,
       identityKey: async () => '345',
-      transformEntryForLocale: async (fields, locale) => { return { name: fields['name'][locale] } }
+      transformEntryForLocale: async (fields, locale) => {
+        return { name: fields['name'][locale] }
+      }
     }
 
     const action = new EntryTransformToTypeAction(transformation)
     const entries = [
-      new Entry(makeApiEntry({
-        id: '246',
-        contentTypeId: 'dog',
-        version: 1,
-        fields: {
-          name: {
-            'en-US': 'bob',
-            'hawaii': 'haukea'
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'bob',
+              hawaii: 'haukea'
+            }
           }
-        }
-      })),
-      new Entry(makeApiEntry({
-        id: '123',
-        contentTypeId: 'person',
-        version: 2,
-        publishedVersion: 1,
-        fields: {
-          pet: {
-            'en-US': {
-              sys: {
-                type: 'Link',
-                id: '246'
+        })
+      ),
+      new Entry(
+        makeApiEntry({
+          id: '123',
+          contentTypeId: 'person',
+          version: 2,
+          publishedVersion: 1,
+          fields: {
+            pet: {
+              'en-US': {
+                sys: {
+                  type: 'Link',
+                  id: '246'
+                }
               }
             }
           }
-        }
-      }))
+        })
+      )
     ]
 
     const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
@@ -363,7 +398,6 @@ describe('Transform Entry to Type Action', function () {
   })
 
   it('skip entry when undefined', async (): Promise<void> => {
-
     const transformation: TransformEntryToType = {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
@@ -371,22 +405,26 @@ describe('Transform Entry to Type Action', function () {
       updateReferences: true,
       shouldPublish: false,
       identityKey: async () => '345',
-      transformEntryForLocale: async () => { return undefined }
+      transformEntryForLocale: async () => {
+        return undefined
+      }
     }
 
     const action = new EntryTransformToTypeAction(transformation)
     const entries = [
-      new Entry(makeApiEntry({
-        id: '246',
-        contentTypeId: 'dog',
-        version: 1,
-        fields: {
-          name: {
-            'en-US': 'bob',
-            'hawaii': 'haukea'
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'bob',
+              hawaii: 'haukea'
+            }
           }
-        }
-      }))
+        })
+      )
     ]
 
     const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
@@ -408,27 +446,32 @@ describe('Transform Entry to Type Action', function () {
       from: ['name'],
       updateReferences: true,
       identityKey: async (fields) => fields.name['en-US'].toString(),
-      transformEntryForLocale: async (fields, locale) => { passedObject = fields; return { name: fields['name'][locale] } }
+      transformEntryForLocale: async (fields, locale) => {
+        passedObject = fields
+        return { name: fields['name'][locale] }
+      }
     }
 
     const action = new EntryTransformToTypeAction(transformation)
     const entries = [
-      new Entry(makeApiEntry({
-        id: '246',
-        contentTypeId: 'dog',
-        version: 1,
-        fields: {
-          name: {
-            'en-US': 'bob'
-          },
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'bob'
+            },
 
-          other: {
-            'en-US': 'x'
+            other: {
+              'en-US': 'x'
+            }
           }
-        }
-      }))
+        })
+      )
     ]
-    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US' ] })
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US'] })
     await api.startRecordingRequests(null)
 
     await action.applyTo(api)
@@ -446,27 +489,32 @@ describe('Transform Entry to Type Action', function () {
       targetContentType: 'copycat',
       updateReferences: true,
       identityKey: async (fields) => fields.name['en-US'].toString(),
-      transformEntryForLocale: async (fields, locale) => { passedObject = fields; return { name: fields['name'][locale] } }
+      transformEntryForLocale: async (fields, locale) => {
+        passedObject = fields
+        return { name: fields['name'][locale] }
+      }
     }
 
     const action = new EntryTransformToTypeAction(transformation)
     const entries = [
-      new Entry(makeApiEntry({
-        id: '246',
-        contentTypeId: 'dog',
-        version: 1,
-        fields: {
-          name: {
-            'en-US': 'bob'
-          },
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'bob'
+            },
 
-          other: {
-            'en-US': 'x'
+            other: {
+              'en-US': 'x'
+            }
           }
-        }
-      }))
+        })
+      )
     ]
-    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US' ] })
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US'] })
     await api.startRecordingRequests(null)
 
     await action.applyTo(api)

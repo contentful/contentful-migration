@@ -12,7 +12,12 @@ class EntryEditorConfigureAction extends EntityAction {
   protected widgetNamespace?: EntryEditorNamespace
   protected settings?: EntryEditorSettings
 
-  constructor (contentTypeId: string, widgetNamespace: EntryEditorNamespace, widgetId: string, settings: EntryEditorSettings) {
+  constructor (
+    contentTypeId: string,
+    widgetNamespace: EntryEditorNamespace,
+    widgetId: string,
+    settings: EntryEditorSettings
+  ) {
     super()
     this.contentTypeId = contentTypeId
     this.widgetId = widgetId

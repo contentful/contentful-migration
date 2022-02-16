@@ -25,10 +25,7 @@ export default class EntryEditorsConfigureIntent extends Intent {
   }
   toActions () {
     return [
-      new EntryEditorsConfigureAction(
-        this.payload.contentTypeId,
-        this.payload.entryEditors
-      ),
+      new EntryEditorsConfigureAction(this.payload.contentTypeId, this.payload.entryEditors),
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]
   }

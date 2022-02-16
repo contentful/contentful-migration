@@ -15,9 +15,7 @@ export default class SidebarWidgetRemoveIntent extends Intent {
     return true
   }
   groupsWith (other: Intent): boolean {
-    return other.isGroupable()
-      && other.isEditorInterfaceIntent()
-      && this.isSameContentType(other)
+    return other.isGroupable() && other.isEditorInterfaceIntent() && this.isSameContentType(other)
   }
   endsGroup (): boolean {
     return false
@@ -44,12 +42,12 @@ export default class SidebarWidgetRemoveIntent extends Intent {
     return {
       heading: chalk`Update sidebar for Content Type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],
-      sections: [{
-        heading: chalk`Remove sidebar widget {yellow ${widgetId}}`,
-        details: [
-          chalk`{italic widgetNamespace}: "${widgetNamespace}"`
-        ]
-      }]
+      sections: [
+        {
+          heading: chalk`Remove sidebar widget {yellow ${widgetId}}`,
+          details: [chalk`{italic widgetNamespace}: "${widgetNamespace}"`]
+        }
+      ]
     }
   }
 }

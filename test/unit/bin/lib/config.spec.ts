@@ -44,8 +44,14 @@ describe('Config', function () {
   })
 
   it('validates retryLimit argument', function () {
-    expect(() => getConfig({ retryLimit: -1 })).to.throw(Error, 'retryLimit must be between 0 and 60')
-    expect(() => getConfig({ retryLimit: 61 })).to.throw(Error, 'retryLimit must be between 0 and 60')
+    expect(() => getConfig({ retryLimit: -1 })).to.throw(
+      Error,
+      'retryLimit must be between 0 and 60'
+    )
+    expect(() => getConfig({ retryLimit: 61 })).to.throw(
+      Error,
+      'retryLimit must be between 0 and 60'
+    )
   })
 
   it('exposes requestBatchSize from argv', function () {
@@ -65,7 +71,9 @@ describe('Config', function () {
   })
 
   it('parses argv.header if provided', function () {
-    const config = getConfig({ header: ['Accept   : application/json ', ' X-Header: 1'] })
+    const config = getConfig({
+      header: ['Accept   : application/json ', ' X-Header: 1']
+    })
     expect(config.headers).to.have.property('Accept', 'application/json')
     expect(config.headers).to.have.property('X-Header', '1')
     expect(config.headers).to.have.property('CF-Sequence')

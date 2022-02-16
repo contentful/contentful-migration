@@ -12,9 +12,7 @@ export default class EditorInterfaceResetIntent extends Intent {
     return true
   }
   groupsWith (other: Intent): boolean {
-    return other.isGroupable()
-      && other.isEditorInterfaceIntent()
-      && this.isSameContentType(other)
+    return other.isGroupable() && other.isEditorInterfaceIntent() && this.isSameContentType(other)
   }
   endsGroup (): boolean {
     return false

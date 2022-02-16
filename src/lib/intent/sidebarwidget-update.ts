@@ -15,9 +15,7 @@ export default class SidebarWidgetUpdateIntent extends Intent {
     return true
   }
   groupsWith (other: Intent): boolean {
-    return other.isGroupable()
-      && other.isEditorInterfaceIntent()
-      && this.isSameContentType(other)
+    return other.isGroupable() && other.isEditorInterfaceIntent() && this.isSameContentType(other)
   }
   endsGroup (): boolean {
     return false
@@ -43,22 +41,21 @@ export default class SidebarWidgetUpdateIntent extends Intent {
   toPlanMessage (): PlanMessage {
     const { settings, widgetId, widgetNamespace } = this.payload.sidebarWidget
 
-    const settingDetails = Object.keys(settings || {}).map(settingName =>
-        chalk`{italic ${settingName}}: "${settings[settingName].toString()}"`
-      )
+    const settingDetails = Object.keys(settings || {}).map(
+      (settingName) => chalk`{italic ${settingName}}: "${settings[settingName].toString()}"`
+    )
 
-    const updateDetails = [
-      chalk`{italic widgetNamespace}: "${widgetNamespace}"`,
-      ...settingDetails
-    ]
+    const updateDetails = [chalk`{italic widgetNamespace}: "${widgetNamespace}"`, ...settingDetails]
 
     return {
       heading: chalk`Update editor interface for Content Type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],
-      sections: [{
-        heading: chalk`Update sidebar widget {yellow ${widgetId}}`,
-        details: updateDetails
-      }]
+      sections: [
+        {
+          heading: chalk`Update sidebar widget {yellow ${widgetId}}`,
+          details: updateDetails
+        }
+      ]
     }
   }
 }

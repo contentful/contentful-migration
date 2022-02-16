@@ -8,20 +8,17 @@ describe('payload validation (dependencies)', function () {
     it('returns an error', async function () {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
-        const lunch = migration.createContentType('lunch')
-          .name('Lunch')
-          .description('A Lunch')
+        const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
 
-        lunch.createField('mainCourse')
-          .name('Main Course')
-          .type('Array')
+        lunch.createField('mainCourse').name('Main Course').type('Array')
       }, existingCts)
 
       expect(errors).to.eql([
         [
           {
             type: 'InvalidPayload',
-            message: 'The property "items" is required on the field "mainCourse" because "type" is "Array".'
+            message:
+              'The property "items" is required on the field "mainCourse" because "type" is "Array".'
           }
         ]
       ])
@@ -32,21 +29,17 @@ describe('payload validation (dependencies)', function () {
     it('returns an error', async function () {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
-        const lunch = migration.createContentType('lunch')
-          .name('Lunch')
-          .description('A Lunch')
+        const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
 
-        lunch.createField('mainCourse')
-          .name('Main Course')
-          .type('Symbol')
-          .items('Entry')
+        lunch.createField('mainCourse').name('Main Course').type('Symbol').items('Entry')
       }, existingCts)
 
       expect(errors).to.eql([
         [
           {
             type: 'InvalidPayload',
-            message: 'The property "items" is forbidden on the field "mainCourse" because "type" is not "Array".'
+            message:
+              'The property "items" is forbidden on the field "mainCourse" because "type" is not "Array".'
           }
         ]
       ])
@@ -57,23 +50,19 @@ describe('payload validation (dependencies)', function () {
     it('returns an error', async function () {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
-        const lunch = migration.createContentType('lunch')
-          .name('Lunch')
-          .description('A Lunch')
+        const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
 
-        lunch.createField('mainCourse')
-          .name('Main Course')
-          .type('Array')
-          .items({
-            type: 'Hermann'
-          })
+        lunch.createField('mainCourse').name('Main Course').type('Array').items({
+          type: 'Hermann'
+        })
       }, existingCts)
 
       expect(errors).to.eql([
         [
           {
             type: 'InvalidPayload',
-            message: 'The property "items.type" on the field "mainCourse" must be one of ["Symbol", "Link"].'
+            message:
+              'The property "items.type" on the field "mainCourse" must be one of ["Symbol", "Link"].'
           }
         ]
       ])
@@ -84,23 +73,19 @@ describe('payload validation (dependencies)', function () {
     it('returns an error', async function () {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
-        const lunch = migration.createContentType('lunch')
-          .name('Lunch')
-          .description('A Lunch')
+        const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
 
-        lunch.createField('mainCourse')
-          .name('Main Course')
-          .type('Array')
-          .items({
-            type: 'Link'
-          })
+        lunch.createField('mainCourse').name('Main Course').type('Array').items({
+          type: 'Link'
+        })
       }, existingCts)
 
       expect(errors).to.eql([
         [
           {
             type: 'InvalidPayload',
-            message: 'The property "items.linkType" is required on the field "mainCourse" because "items.type" is "Link".'
+            message:
+              'The property "items.linkType" is required on the field "mainCourse" because "items.type" is "Link".'
           }
         ]
       ])
@@ -111,24 +96,20 @@ describe('payload validation (dependencies)', function () {
     it('returns an error', async function () {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
-        const lunch = migration.createContentType('lunch')
-          .name('Lunch')
-          .description('A Lunch')
+        const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
 
-        lunch.createField('mainCourse')
-          .name('Main Course')
-          .type('Array')
-          .items({
-            type: 'Link',
-            linkType: 'Hermann'
-          })
+        lunch.createField('mainCourse').name('Main Course').type('Array').items({
+          type: 'Link',
+          linkType: 'Hermann'
+        })
       }, existingCts)
 
       expect(errors).to.eql([
         [
           {
             type: 'InvalidPayload',
-            message: 'The property "items.linkType" on the field "mainCourse" must be one of ["Asset", "Entry"].'
+            message:
+              'The property "items.linkType" on the field "mainCourse" must be one of ["Asset", "Entry"].'
           }
         ]
       ])
@@ -139,22 +120,15 @@ describe('payload validation (dependencies)', function () {
     it('returns no errors', async function () {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
-        const lunch = migration.createContentType('lunch')
-          .name('Lunch')
-          .description('A Lunch')
+        const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
 
-        lunch.createField('mainCourse')
-          .name('Main Course')
-          .type('Array')
-          .items({
-            type: 'Link',
-            linkType: 'Asset'
-          })
+        lunch.createField('mainCourse').name('Main Course').type('Array').items({
+          type: 'Link',
+          linkType: 'Asset'
+        })
       }, existingCts)
 
-      expect(errors).to.eql([
-        []
-      ])
+      expect(errors).to.eql([[]])
     })
   })
 })
