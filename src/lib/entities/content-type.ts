@@ -9,22 +9,23 @@ import {
   APIEditorInterfaceSettings,
   APIEditorInterfaceSidebar,
   APIEditorIntefaceEditor,
-  APISidebarWidgetNamespace, APIControlWidgetNamespace
+  APISidebarWidgetNamespace,
+  APIControlWidgetNamespace
 } from '../interfaces/content-type'
 import { SidebarWidgetNamespace, DEFAULT_SIDEBAR_LIST } from '../action/sidebarwidget'
 
 class Fields {
   private _fields: Field[]
 
-  constructor (fields: Field[] = []) {
+  constructor(fields: Field[] = []) {
     this._fields = fields
   }
 
-  getField (id: string): Field {
+  getField(id: string): Field {
     return find(this._fields, { id })
   }
 
-  setField (id: string, field: Field) {
+  setField(id: string, field: Field) {
     const allFields = this.fields
 
     const currentFieldIndex = allFields.findIndex((field) => field.id === id)
@@ -36,12 +37,12 @@ class Fields {
     this._fields = allFields
   }
 
-  deleteField (id: string) {
+  deleteField(id: string) {
     const fieldToDelete = find(this._fields, { id })
     pull(this._fields, fieldToDelete)
   }
 
-  moveField (id: string, direction: string, pivot: string) {
+  moveField(id: string, direction: string, pivot: string) {
     const fields = this._fields
     const field = this.getField(id)
     pull(fields, field)
@@ -65,27 +66,27 @@ class Fields {
     }
   }
 
-  filter (predicate: (field: Field) => boolean): Field[] {
+  filter(predicate: (field: Field) => boolean): Field[] {
     return filter(this._fields, predicate)
   }
 
-  map<T> (mapper: (field: Field) => T): T[] {
+  map<T>(mapper: (field: Field) => T): T[] {
     return this._fields.map(mapper)
   }
 
-  get fields () {
+  get fields() {
     return this._fields
   }
 
-  set fields (fields: Field[]) {
+  set fields(fields: Field[]) {
     this._fields = fields
   }
 
-  clone (): Fields {
+  clone(): Fields {
     return new Fields(this.toRaw())
   }
 
-  toRaw (): Field[] {
+  toRaw(): Field[] {
     return cloneDeep(this.fields)
   }
 }
@@ -97,7 +98,7 @@ class EditorInterfaces {
   private _editor?: APIEditorIntefaceEditor
   private _editors?: APIEditorIntefaceEditor[]
 
-  constructor (apiEditorInterfaces: APIEditorInterfaces) {
+  constructor(apiEditorInterfaces: APIEditorInterfaces) {
     this._version = apiEditorInterfaces.sys.version
     this._controls = apiEditorInterfaces.controls
     this._sidebar = apiEditorInterfaces.sidebar || undefined
@@ -105,31 +106,31 @@ class EditorInterfaces {
     this._editors = apiEditorInterfaces.editors || undefined
   }
 
-  get version () {
+  get version() {
     return this._version
   }
 
-  set version (version: number) {
+  set version(version: number) {
     this._version = version
   }
 
-  getSidebar () {
+  getSidebar() {
     return this._sidebar
   }
 
-  getEditor () {
+  getEditor() {
     return this._editor
   }
 
-  getEditors () {
+  getEditors() {
     return this._editors
   }
 
-  getControls () {
+  getControls() {
     return this._controls
   }
 
-  reset (fieldId: string) {
+  reset(fieldId: string) {
     let controlIndex: number = findIndex(this._controls, (c) => {
       return c.fieldId === fieldId
     })
@@ -138,7 +139,7 @@ class EditorInterfaces {
     }
   }
 
-  copy (fromFieldId: string, toFieldId: string) {
+  copy(fromFieldId: string, toFieldId: string) {
     let control: APIEditorInterfaceControl = find(this._controls, (c) => {
       return c.fieldId === fromFieldId
     })
@@ -147,7 +148,7 @@ class EditorInterfaces {
     }
   }
 
-  update (
+  update(
     fieldId: string,
     widgetId: string,
     settings?: APIEditorInterfaceSettings,
@@ -180,22 +181,23 @@ class EditorInterfaces {
     }
   }
 
-  addSidebarWidget (
+  addSidebarWidget(
     widgetId: string,
     widgetNamespace: APISidebarWidgetNamespace,
     settings: APISidebarWidgetSettings,
     insertBeforeWidgetId: string,
     disabled: boolean
   ) {
-
     this._sidebar = Array.isArray(this._sidebar) ? this._sidebar : [].concat(DEFAULT_SIDEBAR_LIST)
-    const isDuplicateWidget = this._sidebar.find(widget => widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace)
+    const isDuplicateWidget = this._sidebar.find(
+      (widget) => widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace
+    )
 
     if (isDuplicateWidget) {
       return
     }
 
-    const nextWidgetIndex = this._sidebar.map(w => w.widgetId).indexOf(insertBeforeWidgetId)
+    const nextWidgetIndex = this._sidebar.map((w) => w.widgetId).indexOf(insertBeforeWidgetId)
 
     const newWidget: APIEditorInterfaceSidebar = {
       disabled,
@@ -211,15 +213,16 @@ class EditorInterfaces {
     }
   }
 
-  updateSidebarWidget (
+  updateSidebarWidget(
     widgetId: string,
     widgetNamespace: SidebarWidgetNamespace,
     settings?: APISidebarWidgetSettings,
     disabled?: boolean
   ) {
-
     this._sidebar = Array.isArray(this._sidebar) ? this._sidebar : [].concat(DEFAULT_SIDEBAR_LIST)
-    const existingWidget = this._sidebar.find(widget => widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace)
+    const existingWidget = this._sidebar.find(
+      (widget) => widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace
+    )
 
     if (!existingWidget) {
       return
@@ -229,35 +232,41 @@ class EditorInterfaces {
     existingWidget.disabled = typeof disabled === 'boolean' ? disabled : existingWidget.disabled
   }
 
-  removeSidebarWidget (widgetId: string, widgetNamespace: APISidebarWidgetNamespace) {
-    const currentSidebarWidgets = Array.isArray(this._sidebar) ? this._sidebar : [].concat(DEFAULT_SIDEBAR_LIST)
-    const widgetToDisable = currentSidebarWidgets.find(widget => widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace)
+  removeSidebarWidget(widgetId: string, widgetNamespace: APISidebarWidgetNamespace) {
+    const currentSidebarWidgets = Array.isArray(this._sidebar)
+      ? this._sidebar
+      : [].concat(DEFAULT_SIDEBAR_LIST)
+    const widgetToDisable = currentSidebarWidgets.find(
+      (widget) => widget.widgetId === widgetId && widget.widgetNamespace === widgetNamespace
+    )
 
     if (!widgetToDisable) {
       return
     }
 
-    this._sidebar = currentSidebarWidgets.filter(widget => widget.widgetId !== widgetId || widget.widgetNamespace !== widgetNamespace)
+    this._sidebar = currentSidebarWidgets.filter(
+      (widget) => widget.widgetId !== widgetId || widget.widgetNamespace !== widgetNamespace
+    )
   }
 
-  resetSidebarToDefault () {
+  resetSidebarToDefault() {
     this._sidebar = undefined
   }
 
-  resetEditorToDefault () {
+  resetEditorToDefault() {
     this._editor = undefined
     this._editors = undefined
   }
 
-  setEditor (editor: APIEditorIntefaceEditor) {
+  setEditor(editor: APIEditorIntefaceEditor) {
     this._editor = editor
   }
 
-  setEditors (editors: APIEditorIntefaceEditor[]) {
+  setEditors(editors: APIEditorIntefaceEditor[]) {
     this._editors = editors
   }
 
-  toAPI (): object {
+  toAPI(): object {
     let controls: APIEditorInterfaceControl[] = []
     forEach(this._controls, (c) => {
       controls.push({
@@ -269,9 +278,9 @@ class EditorInterfaces {
     })
 
     const result: {
-      controls: APIEditorInterfaceControl[],
-      sidebar?: APIEditorInterfaceSidebar[],
-      editor?: APIEditorIntefaceEditor,
+      controls: APIEditorInterfaceControl[]
+      sidebar?: APIEditorInterfaceSidebar[]
+      editor?: APIEditorIntefaceEditor
       editors?: APIEditorIntefaceEditor[]
     } = {
       controls
@@ -301,7 +310,7 @@ class ContentType {
   private _version: number
   private _displayField: string
 
-  constructor (ct: APIContentType) {
+  constructor(ct: APIContentType) {
     this._id = ct.sys.id
     this._fields = new Fields(ct.fields)
     this._name = ct.name
@@ -310,51 +319,51 @@ class ContentType {
     this._displayField = ct.displayField
   }
 
-  get id () {
+  get id() {
     return this._id
   }
 
-  get fields () {
+  get fields() {
     return this._fields
   }
 
-  set fields (fields: Fields) {
+  set fields(fields: Fields) {
     this._fields = fields
   }
 
-  get name () {
+  get name() {
     return this._name
   }
 
-  set name (name: string) {
+  set name(name: string) {
     this._name = name
   }
 
-  get description () {
+  get description() {
     return this._description
   }
 
-  set description (description: string) {
+  set description(description: string) {
     this._description = description
   }
 
-  get displayField () {
+  get displayField() {
     return this._displayField
   }
 
-  set displayField (displayField: string) {
+  set displayField(displayField: string) {
     this._displayField = displayField
   }
 
-  get version () {
+  get version() {
     return this._version
   }
 
-  set version (version: number) {
+  set version(version: number) {
     this._version = version
   }
 
-  toAPI (): APIContentType {
+  toAPI(): APIContentType {
     return {
       sys: {
         id: this.id,
@@ -367,15 +376,9 @@ class ContentType {
     }
   }
 
-  clone (): ContentType {
+  clone(): ContentType {
     return new ContentType(this.toAPI())
   }
 }
 
-export {
-  ContentType as default,
-  ContentType,
-  Fields,
-  Field,
-  EditorInterfaces
-}
+export { ContentType as default, ContentType, Fields, Field, EditorInterfaces }

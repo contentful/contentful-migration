@@ -3,7 +3,7 @@ import { RawStep } from '../interfaces/raw-step'
 import { PlanMessage, Section } from '../interfaces/plan-message'
 import { difference, groupBy, flatten, values, entries } from 'lodash'
 
-function mergeSections (sections: Section[]): Section {
+function mergeSections(sections: Section[]): Section {
   const sameSections = groupBy(sections, 'heading')
   const mergedSections: Section[] = []
   for (const [heading, sections] of entries(sameSections)) {
@@ -26,152 +26,152 @@ export default class ComposedIntent implements Intent {
 
   private intents: Intent[]
 
-  constructor (intents: Intent[]) {
+  constructor(intents: Intent[]) {
     // Intents share the same content type id
     this.contentTypeId = intents[0].getContentTypeId()
     this.tagId = intents[0].getTagId()
     this.intents = intents
   }
 
-  getIntents (): Intent[] {
+  getIntents(): Intent[] {
     return this.intents
   }
 
   // TODO: adjust interface so we don't have to implement all this
-  getFieldId (): string {
+  getFieldId(): string {
     return null
   }
-  getRawType (): string {
+  getRawType(): string {
     return null
   }
-  isEditorInterfaceUpdate (): boolean {
+  isEditorInterfaceUpdate(): boolean {
     return false
   }
-  isContentTypeUpdate (): boolean {
+  isContentTypeUpdate(): boolean {
     return false
   }
-  isContentTypeDelete (): boolean {
+  isContentTypeDelete(): boolean {
     return false
   }
-  isContentTypeCreate (): boolean {
+  isContentTypeCreate(): boolean {
     return false
   }
-  isFieldCreate (): boolean {
+  isFieldCreate(): boolean {
     return false
   }
-  isFieldUpdate (): boolean {
+  isFieldUpdate(): boolean {
     return false
   }
-  isFieldDelete (): boolean {
+  isFieldDelete(): boolean {
     return false
   }
-  isFieldRename (): boolean {
+  isFieldRename(): boolean {
     return false
   }
-  isFieldMove (): boolean {
+  isFieldMove(): boolean {
     return false
   }
-  isAboutContentType (): boolean {
+  isAboutContentType(): boolean {
     return false
   }
-  isAboutField (): boolean {
+  isAboutField(): boolean {
     return false
   }
-  isContentTransform (): boolean {
-    return false
-  }
-
-  isEntryDerive (): boolean {
+  isContentTransform(): boolean {
     return false
   }
 
-  isEntryTransformToType (): boolean {
+  isEntryDerive(): boolean {
     return false
   }
 
-  isGroupable (): boolean {
+  isEntryTransformToType(): boolean {
     return false
   }
 
-  isEditorInterfaceIntent (): boolean {
+  isGroupable(): boolean {
     return false
   }
 
-  isSidebarUpdate (): boolean {
+  isEditorInterfaceIntent(): boolean {
+    return false
+  }
+
+  isSidebarUpdate(): boolean {
     return true
   }
 
-  getContentTypeId (): string {
+  getContentTypeId(): string {
     return this.contentTypeId
   }
 
-  getRelatedContentTypeIds (): string[] {
+  getRelatedContentTypeIds(): string[] {
     return [this.getContentTypeId()]
   }
 
-  requiresAllEntries (): boolean {
+  requiresAllEntries(): boolean {
     return false
   }
 
-  requiresAllTags (): boolean {
-    return this.intents.some(intent => intent.requiresAllTags())
+  requiresAllTags(): boolean {
+    return this.intents.some((intent) => intent.requiresAllTags())
   }
 
-  groupsWith (): boolean {
+  groupsWith(): boolean {
     return false
   }
 
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return false
   }
 
-  toRaw (): RawStep {
+  toRaw(): RawStep {
     throw new Error('Not implemented')
   }
 
-  shouldSave (): boolean {
-    return this.intents.some(intent => intent.shouldSave())
+  shouldSave(): boolean {
+    return this.intents.some((intent) => intent.shouldSave())
   }
 
-  shouldPublish (): boolean {
-    return this.intents.some(intent => intent.shouldPublish())
+  shouldPublish(): boolean {
+    return this.intents.some((intent) => intent.shouldPublish())
   }
 
-  isComposedIntent (): boolean {
+  isComposedIntent(): boolean {
     return true
   }
 
-  isTagIntent (): boolean {
+  isTagIntent(): boolean {
     // TODO Is this a viable option? How can we be sure that composed
     // intents are not a mix of ct intents and tag intents?
-    return this.intents.some(intent => intent.isTagIntent())
+    return this.intents.some((intent) => intent.isTagIntent())
   }
 
-  getTagId (): string {
+  getTagId(): string {
     return this.tagId
   }
 
-  isTagCreate (): boolean {
+  isTagCreate(): boolean {
     return false
   }
 
-  isTagUpdate (): boolean {
+  isTagUpdate(): boolean {
     return false
   }
 
-  isTagDelete (): boolean {
+  isTagDelete(): boolean {
     return false
   }
 
-  isEntrySetTags (): boolean {
+  isEntrySetTags(): boolean {
     return false
   }
 
-  toActions () {
+  toActions() {
     return flatten(this.intents.map((intent) => intent.toActions()))
   }
 
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     const [firstIntent] = this.intents
 
     // TODO: show more details about entry transforms
@@ -190,7 +190,9 @@ export default class ComposedIntent implements Intent {
 
     const mainHeading = firstIntent.toPlanMessage().heading
 
-    const contentTypeOrTagUpdates = this.intents.filter((intent) => intent.isContentTypeUpdate() || intent.isTagUpdate())
+    const contentTypeOrTagUpdates = this.intents.filter(
+      (intent) => intent.isContentTypeUpdate() || intent.isTagUpdate()
+    )
 
     const fieldCreates = this.intents.filter((intent) => intent.isFieldCreate())
     const editorInterfaceUpdates = this.intents.filter((intent) => intent.isEditorInterfaceUpdate())
@@ -199,17 +201,23 @@ export default class ComposedIntent implements Intent {
     const fieldUpdates = this.intents.filter((intent) => intent.isFieldUpdate())
     const fieldMoves = this.intents.filter((intent) => intent.isFieldMove())
 
-    const createdFieldUpdates = fieldUpdates.filter((updateIntent) => createdFieldIds.includes(updateIntent.getFieldId()))
+    const createdFieldUpdates = fieldUpdates.filter((updateIntent) =>
+      createdFieldIds.includes(updateIntent.getFieldId())
+    )
     const onlyFieldUpdates = difference(fieldUpdates, createdFieldUpdates)
 
     const onlyFieldUpdatesByField = groupBy(onlyFieldUpdates, (intent) => intent.getFieldId())
     const createdFieldUpdatesByField = groupBy(createdFieldUpdates, (intent) => intent.getFieldId())
 
-    const topLevelDetails = flatten(contentTypeOrTagUpdates.map((updateIntent) => updateIntent.toPlanMessage().details))
+    const topLevelDetails = flatten(
+      contentTypeOrTagUpdates.map((updateIntent) => updateIntent.toPlanMessage().details)
+    )
 
-    const sidebarUpdates = flatten(this.intents
-      .filter((intent) => intent.isSidebarUpdate())
-      .map(i => i.toPlanMessage().sections))
+    const sidebarUpdates = flatten(
+      this.intents
+        .filter((intent) => intent.isSidebarUpdate())
+        .map((i) => i.toPlanMessage().sections)
+    )
 
     let createSections = []
 
@@ -229,7 +237,9 @@ export default class ComposedIntent implements Intent {
       const [createSection] = createIntent.toPlanMessage().sections
       const heading = createSection.heading
       const updateIntents = createdFieldUpdatesByField[fieldId] || []
-      const allFieldUpdateSections = flatten(updateIntents.map((fieldIntent) => fieldIntent.toPlanMessage().sections))
+      const allFieldUpdateSections = flatten(
+        updateIntents.map((fieldIntent) => fieldIntent.toPlanMessage().sections)
+      )
       const mergedSection = mergeSections(allFieldUpdateSections) || { details: [] }
       const nextCreateSection = {
         ...mergedSection,
@@ -240,7 +250,9 @@ export default class ComposedIntent implements Intent {
     }
 
     for (const updateIntents of values(onlyFieldUpdatesByField)) {
-      const allSections: Section[] = flatten(updateIntents.map((intent) => intent.toPlanMessage().sections))
+      const allSections: Section[] = flatten(
+        updateIntents.map((intent) => intent.toPlanMessage().sections)
+      )
       const nextUpdateSection = mergeSections(allSections)
 
       createSections.push(nextUpdateSection)

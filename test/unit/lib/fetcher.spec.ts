@@ -12,20 +12,24 @@ const noOp = () => undefined
 
 describe('Fetcher', function () {
   it('fetches all required Entries in the plan', async function () {
-    const intents = await buildIntents(function up (migration) {
-      migration.transformEntries({
-        contentType: 'newsArticle',
-        from: ['author', 'authorCity'],
-        to: ['byline'],
-        transformEntryForLocale: function (fromFields, currentLocale) {
-          if (currentLocale === 'de-DE') {
-            return
+    const intents = await buildIntents(
+      function up(migration) {
+        migration.transformEntries({
+          contentType: 'newsArticle',
+          from: ['author', 'authorCity'],
+          to: ['byline'],
+          transformEntryForLocale: function (fromFields, currentLocale) {
+            if (currentLocale === 'de-DE') {
+              return
+            }
+            const newByline = `${fromFields.author[currentLocale]} ${fromFields.authorCity[currentLocale]}`
+            return { byline: newByline }
           }
-          const newByline = `${fromFields.author[currentLocale]} ${fromFields.authorCity[currentLocale]}`
-          return { byline: newByline }
-        }
-      })
-    }, null, null)
+        })
+      },
+      null,
+      null
+    )
 
     const request = sinon.stub()
     request
@@ -70,19 +74,23 @@ describe('Fetcher', function () {
   })
 
   it('fetches all Entries of all CTs in the plan if an intent needs them all', async function () {
-    const intents = await buildIntents(function up (migration) {
-      migration.transformEntriesToType({
-        sourceContentType: 'sourceContentType',
-        targetContentType: 'targetContentType',
-        updateReferences: true,
-        removeOldEntries: false,
-        from: ['author', 'authorCity'],
-        identityKey: () => 'ID',
-        transformEntryForLocale: function () {
-          return {}
-        }
-      })
-    }, null, null)
+    const intents = await buildIntents(
+      function up(migration) {
+        migration.transformEntriesToType({
+          sourceContentType: 'sourceContentType',
+          targetContentType: 'targetContentType',
+          updateReferences: true,
+          removeOldEntries: false,
+          from: ['author', 'authorCity'],
+          identityKey: () => 'ID',
+          transformEntryForLocale: function () {
+            return {}
+          }
+        })
+      },
+      null,
+      null
+    )
 
     const request = sinon.stub()
     request
@@ -127,10 +135,14 @@ describe('Fetcher', function () {
   })
 
   it('adds entries info to content types', async function () {
-    const intents = await buildIntents(function up (migration) {
-      migration.deleteContentType('foo')
-      migration.deleteContentType('bar')
-    }, noOp, {})
+    const intents = await buildIntents(
+      function up(migration) {
+        migration.deleteContentType('foo')
+        migration.deleteContentType('bar')
+      },
+      noOp,
+      {}
+    )
 
     const request = sinon.stub()
     request
@@ -178,7 +190,10 @@ describe('Fetcher', function () {
       })
     ]
     const fetcher = new Fetcher(request)
-    const contentTypesWithEntryInfo = await fetcher.checkContentTypesForDeletedCts(intentList, contentTypes)
+    const contentTypesWithEntryInfo = await fetcher.checkContentTypesForDeletedCts(
+      intentList,
+      contentTypes
+    )
 
     expect(contentTypesWithEntryInfo[0].id).to.eql('foo')
     expect(contentTypesWithEntryInfo[0].hasEntries).to.eql(true)
@@ -186,30 +201,34 @@ describe('Fetcher', function () {
   })
 
   it('fetches all the Content Types in the plan', async function () {
-    const intents = await buildIntents(function up (migration) {
-      const person = migration.createContentType('person', {
-        name: 'bar',
-        description: 'A content type for a person'
-      })
+    const intents = await buildIntents(
+      function up(migration) {
+        const person = migration.createContentType('person', {
+          name: 'bar',
+          description: 'A content type for a person'
+        })
 
-      person.createField('name', {
-        name: 'Name',
-        type: 'Symbol'
-      })
+        person.createField('name', {
+          name: 'Name',
+          type: 'Symbol'
+        })
 
-      migration.editContentType('dog', {
-        name: 'Doggo',
-        description: 'A shepard dog'
-      })
+        migration.editContentType('dog', {
+          name: 'Doggo',
+          description: 'A shepard dog'
+        })
 
-      migration.editContentType('cat', {
-        name: 'Cat',
-        description: 'The trump of the animal world'
-      })
+        migration.editContentType('cat', {
+          name: 'Cat',
+          description: 'The trump of the animal world'
+        })
 
-      migration.deleteContentType('dog')
-      migration.deleteContentType('plant')
-    }, noOp, {})
+        migration.deleteContentType('dog')
+        migration.deleteContentType('plant')
+      },
+      noOp,
+      {}
+    )
 
     const request = sinon.stub()
 
@@ -287,30 +306,34 @@ describe('Fetcher', function () {
   })
 
   it('fetches all the Content Types in the plan when it includes entry derive', async function () {
-    const intents = await buildIntents(function up (migration) {
-      migration.deriveLinkedEntries({
-        contentType: 'dog',
-        derivedContentType: 'owner',
-        from: ['owner'],
-        toReferenceField: 'ownerRef',
-        derivedFields: ['firstName', 'lastName'],
-        identityKey: async (fromFields) => {
-          return fromFields.owner['en-US'].toLowerCase().replace(' ', '-')
-        },
-        shouldPublish: true,
-        deriveEntryForLocale: async (inputFields, locale) => {
-          if (locale !== 'en-US') {
-            return
-          }
-          const [firstName, lastName] = inputFields.owner[locale].split(' ')
+    const intents = await buildIntents(
+      function up(migration) {
+        migration.deriveLinkedEntries({
+          contentType: 'dog',
+          derivedContentType: 'owner',
+          from: ['owner'],
+          toReferenceField: 'ownerRef',
+          derivedFields: ['firstName', 'lastName'],
+          identityKey: async (fromFields) => {
+            return fromFields.owner['en-US'].toLowerCase().replace(' ', '-')
+          },
+          shouldPublish: true,
+          deriveEntryForLocale: async (inputFields, locale) => {
+            if (locale !== 'en-US') {
+              return
+            }
+            const [firstName, lastName] = inputFields.owner[locale].split(' ')
 
-          return {
-            firstName,
-            lastName
+            return {
+              firstName,
+              lastName
+            }
           }
-        }
-      })
-    }, noOp, {})
+        })
+      },
+      noOp,
+      {}
+    )
 
     const request = sinon.stub()
 
@@ -319,11 +342,13 @@ describe('Fetcher', function () {
         {
           name: 'Dog',
           description: 'Someone like you',
-          fields: [{
-            id: 'ownerRef',
-            name: 'ref',
-            type: 'Link'
-          }]
+          fields: [
+            {
+              id: 'ownerRef',
+              name: 'ref',
+              type: 'Link'
+            }
+          ]
         },
         {
           name: 'Owner',
@@ -359,12 +384,16 @@ describe('Fetcher', function () {
   })
 
   it('fetches all required Editor Interfaces in the plan', async function () {
-    const intents = await buildIntents(function up (migration) {
-      const foo = migration.editContentType('foo')
-      foo.changeEditorInterface('title', 'singleLine')
-      const bar = migration.editContentType('bar')
-      bar.changeEditorInterface('desc', 'markdown')
-    }, noOp, {})
+    const intents = await buildIntents(
+      function up(migration) {
+        const foo = migration.editContentType('foo')
+        foo.changeEditorInterface('title', 'singleLine')
+        const bar = migration.editContentType('bar')
+        bar.changeEditorInterface('desc', 'markdown')
+      },
+      noOp,
+      {}
+    )
 
     const request = sinon.stub()
     request
@@ -498,7 +527,7 @@ describe('Fetcher', function () {
 
   it('fetches all tags in the enviroment', async function () {
     const intents = await buildIntents(
-      function up (migration) {
+      function up(migration) {
         migration.createTag('person', {
           name: 'bar',
           description: 'A content type for a person'
@@ -551,24 +580,24 @@ describe('Fetcher', function () {
     ])
   })
 
-  it('fetches intents with \'requiresAllTags\'', async function () {
+  it("fetches intents with 'requiresAllTags'", async function () {
     class FakeIntent extends Intent {
-      constructor () {
+      constructor() {
         super({ type: 'test', meta: { callsite: { line: 1, file: ' ' } }, payload: {} })
       }
-      requiresAllTags () {
+      requiresAllTags() {
         return true
       }
 
-      toActions () {
+      toActions() {
         return []
       }
 
-      endsGroup () {
+      endsGroup() {
         return true
       }
 
-      toPlanMessage () {
+      toPlanMessage() {
         return {
           heading: '',
           details: [],
@@ -579,24 +608,24 @@ describe('Fetcher', function () {
 
     const request = sinon.stub()
     request
-    .withArgs({
-      method: 'GET',
-      url: `/tags?limit=100&order=sys.createdAt&skip=0`
-    })
-    .resolves({
-      items: [
-        {
-          name: 'Person Tag',
-          sys: { id: 'person', type: 'Tag', visibility: 'private' }
-        },
-        {
-          name: 'A very goodboy',
-          sys: { id: 'dog', type: 'Tag', visibility: 'public' }
-        }
-      ],
-      total: 2,
-      limit: 2
-    })
+      .withArgs({
+        method: 'GET',
+        url: `/tags?limit=100&order=sys.createdAt&skip=0`
+      })
+      .resolves({
+        items: [
+          {
+            name: 'Person Tag',
+            sys: { id: 'person', type: 'Tag', visibility: 'private' }
+          },
+          {
+            name: 'A very goodboy',
+            sys: { id: 'dog', type: 'Tag', visibility: 'public' }
+          }
+        ],
+        total: 2,
+        limit: 2
+      })
 
     const intentList = new IntentList([new FakeIntent()])
     const fetcher = new Fetcher(request)
@@ -616,33 +645,37 @@ describe('Fetcher', function () {
   })
 
   it('fetches with a given limit', async function () {
-    const intents = await buildIntents(function up (migration) {
-      migration.createTag('person', {
-        name: 'bar',
-        description: 'A content type for a person'
-      })
-    }, noOp, {})
+    const intents = await buildIntents(
+      function up(migration) {
+        migration.createTag('person', {
+          name: 'bar',
+          description: 'A content type for a person'
+        })
+      },
+      noOp,
+      {}
+    )
 
     const request = sinon.stub()
     request
-        .withArgs({
-          method: 'GET',
-          url: `/tags?limit=99&order=sys.createdAt&skip=0`
-        })
-        .resolves({
-          items: [
-            {
-              name: 'Person Tag',
-              sys: { 'id': 'person', 'type': 'Tag' }
-            },
-            {
-              name: 'A very goodboy',
-              sys: { 'id': 'dog', 'type': 'Tag' }
-            }
-          ],
-          total: 2,
-          limit: 2
-        })
+      .withArgs({
+        method: 'GET',
+        url: `/tags?limit=99&order=sys.createdAt&skip=0`
+      })
+      .resolves({
+        items: [
+          {
+            name: 'Person Tag',
+            sys: { id: 'person', type: 'Tag' }
+          },
+          {
+            name: 'A very goodboy',
+            sys: { id: 'dog', type: 'Tag' }
+          }
+        ],
+        total: 2,
+        limit: 2
+      })
 
     const intentList = new IntentList(intents)
 

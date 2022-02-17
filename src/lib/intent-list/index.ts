@@ -14,15 +14,15 @@ class IntentList {
   private intents: IntentInterface[]
   private validators: IntentValidator[] = []
 
-  constructor (intents: IntentInterface[]) {
+  constructor(intents: IntentInterface[]) {
     this.intents = intents
   }
 
-  addValidator (validator: IntentValidator) {
+  addValidator(validator: IntentValidator) {
     this.validators.push(validator)
   }
 
-  validate (): ValidationError[] {
+  validate(): ValidationError[] {
     let errors = []
 
     for (const intent of this.getIntents()) {
@@ -38,20 +38,22 @@ class IntentList {
     return errors
   }
 
-  toRaw (): RawStep[] {
+  toRaw(): RawStep[] {
     return this.intents.map((intent) => intent.toRaw())
   }
 
-  getIntents (): IntentInterface[] {
+  getIntents(): IntentInterface[] {
     return this.intents
   }
 
-  compressed (): IntentList {
+  compressed(): IntentList {
     let composedIntents: IntentInterface[] = []
     let composableIntents: IntentInterface[] = []
 
     for (const intent of this.intents) {
-      const lastComposableIntent = composableIntents.length ? composableIntents[composableIntents.length - 1] : null
+      const lastComposableIntent = composableIntents.length
+        ? composableIntents[composableIntents.length - 1]
+        : null
       if (lastComposableIntent === null || intent.groupsWith(lastComposableIntent)) {
         composableIntents.push(intent)
       } else {
@@ -92,7 +94,7 @@ class IntentList {
     return new IntentList(composedIntents)
   }
 
-  async applyTo (api: OfflineAPI) {
+  async applyTo(api: OfflineAPI) {
     const intents = this.getIntents()
 
     for (const intent of intents) {

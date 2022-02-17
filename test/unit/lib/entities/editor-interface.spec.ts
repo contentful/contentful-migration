@@ -19,13 +19,14 @@ describe('EditorInterfaces', () => {
     disabled: false
   }
 
-  const makeEditorInterface = (sidebar?, controls = []) => new EditorInterfaces({
-    sys: {
-      version: 1
-    },
-    controls,
-    sidebar
-  })
+  const makeEditorInterface = (sidebar?, controls = []) =>
+    new EditorInterfaces({
+      sys: {
+        version: 1
+      },
+      controls,
+      sidebar
+    })
 
   it('adds sidebar widget with default sidebar', () => {
     const editorInterface = makeEditorInterface()
@@ -44,13 +45,7 @@ describe('EditorInterfaces', () => {
   it('avoid adding duplicates to default sidebar', () => {
     const editorInterface = makeEditorInterface()
 
-    editorInterface.addSidebarWidget(
-      'translation-widget',
-      'sidebar-builtin',
-      null,
-      null,
-      false
-    )
+    editorInterface.addSidebarWidget('translation-widget', 'sidebar-builtin', null, null, false)
 
     expect(editorInterface.getSidebar()).to.eql(DEFAULT_SIDEBAR_LIST)
   })
@@ -66,10 +61,7 @@ describe('EditorInterfaces', () => {
       testWidget.disabled
     )
 
-    expect(editorInterface.getSidebar()).to.eql([
-      existingWidget,
-      testWidget
-    ])
+    expect(editorInterface.getSidebar()).to.eql([existingWidget, testWidget])
   })
 
   it('adds sidebar widget before another widget in the custom sidebar', () => {
@@ -78,10 +70,7 @@ describe('EditorInterfaces', () => {
       widgetId: 'beforeThis'
     }
 
-    const editorInterface = makeEditorInterface([
-      existingWidget,
-      beforeWidget
-    ])
+    const editorInterface = makeEditorInterface([existingWidget, beforeWidget])
 
     editorInterface.addSidebarWidget(
       testWidget.widgetId,
@@ -91,11 +80,7 @@ describe('EditorInterfaces', () => {
       testWidget.disabled
     )
 
-    expect(editorInterface.getSidebar()).to.eql([
-      existingWidget,
-      testWidget,
-      beforeWidget
-    ])
+    expect(editorInterface.getSidebar()).to.eql([existingWidget, testWidget, beforeWidget])
   })
 
   it('removes sidebar widget', () => {
@@ -103,18 +88,23 @@ describe('EditorInterfaces', () => {
 
     editorInterface.removeSidebarWidget(testWidget.widgetId, testWidget.widgetNamespace)
 
-    expect(editorInterface.getSidebar()).to.eql([
-      existingWidget
-    ])
+    expect(editorInterface.getSidebar()).to.eql([existingWidget])
   })
 
   it('allows removing built-in sidebar widgets with default settings', () => {
     const editorInterface = makeEditorInterface()
     const sidebarWidgets = [...DEFAULT_SIDEBAR_LIST]
-    const translationWidget = sidebarWidgets.find(widget => widget.widgetId === 'translation-widget')
-    const expectedWidgets = sidebarWidgets.filter(widget => widget.widgetId !== translationWidget.widgetId)
+    const translationWidget = sidebarWidgets.find(
+      (widget) => widget.widgetId === 'translation-widget'
+    )
+    const expectedWidgets = sidebarWidgets.filter(
+      (widget) => widget.widgetId !== translationWidget.widgetId
+    )
 
-    editorInterface.removeSidebarWidget(translationWidget.widgetId, translationWidget.widgetNamespace)
+    editorInterface.removeSidebarWidget(
+      translationWidget.widgetId,
+      translationWidget.widgetNamespace
+    )
 
     expect(editorInterface.getSidebar()).to.eql(expectedWidgets)
   })
@@ -124,9 +114,7 @@ describe('EditorInterfaces', () => {
 
     editorInterface.removeSidebarWidget(testWidget.widgetId, testWidget.widgetNamespace)
 
-    expect(editorInterface.getSidebar()).to.eql([
-      existingWidget
-    ])
+    expect(editorInterface.getSidebar()).to.eql([existingWidget])
   })
 
   it('resets custom sidebar to default', () => {
@@ -156,18 +144,14 @@ describe('EditorInterfaces', () => {
     }
 
     const editorInterface = makeEditorInterface([], [control])
-    editorInterface.update(
-      control.fieldId,
-      control.widgetId,
-      null,
-      'extension'
-    )
+    editorInterface.update(control.fieldId, control.widgetId, null, 'extension')
 
-    expect(editorInterface.getControls()).to.eql([{
-      ...control,
-      widgetNamespace: 'extension'
-    }])
-
+    expect(editorInterface.getControls()).to.eql([
+      {
+        ...control,
+        widgetNamespace: 'extension'
+      }
+    ])
   })
 
   it('configures editor', () => {
@@ -210,5 +194,4 @@ describe('EditorInterfaces', () => {
       widgetNamespace: 'builtin'
     })
   })
-
 })

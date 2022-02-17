@@ -11,30 +11,34 @@ const noOp = () => undefined
 
 describe('Content Type fetcher', function () {
   it('fetches all the Content Types in the plan', async function () {
-    const intents = await migrationSteps(function up (migration) {
-      const person = migration.createContentType('person', {
-        name: 'bar',
-        description: 'A content type for a person'
-      })
+    const intents = await migrationSteps(
+      function up(migration) {
+        const person = migration.createContentType('person', {
+          name: 'bar',
+          description: 'A content type for a person'
+        })
 
-      person.createField('name', {
-        name: 'Name',
-        type: 'Symbol'
-      })
+        person.createField('name', {
+          name: 'Name',
+          type: 'Symbol'
+        })
 
-      migration.editContentType('dog', {
-        name: 'Doggo',
-        description: 'A shepard dog'
-      })
+        migration.editContentType('dog', {
+          name: 'Doggo',
+          description: 'A shepard dog'
+        })
 
-      migration.editContentType('cat', {
-        name: 'Cat',
-        description: 'The trump of the animal world'
-      })
+        migration.editContentType('cat', {
+          name: 'Cat',
+          description: 'The trump of the animal world'
+        })
 
-      migration.deleteContentType('dog')
-      migration.deleteContentType('plant')
-    }, noOp, {})
+        migration.deleteContentType('dog')
+        migration.deleteContentType('plant')
+      },
+      noOp,
+      {}
+    )
 
     const request = sinon.stub()
 

@@ -17,7 +17,7 @@ class EntryDeriveAction extends APIAction {
   private identityKey: (fromFields: any) => Promise<string>
   private shouldPublish: boolean | 'preserve'
 
-  constructor (contentTypeId: string, entryDerivation: EntryDerive) {
+  constructor(contentTypeId: string, entryDerivation: EntryDerive) {
     super()
     this.contentTypeId = contentTypeId
     this.fromFields = entryDerivation.from
@@ -25,10 +25,12 @@ class EntryDeriveAction extends APIAction {
     this.derivedContentType = entryDerivation.derivedContentType
     this.deriveEntryForLocale = entryDerivation.deriveEntryForLocale
     this.identityKey = entryDerivation.identityKey
-    this.shouldPublish = isDefined(entryDerivation.shouldPublish) ? entryDerivation.shouldPublish : true
+    this.shouldPublish = isDefined(entryDerivation.shouldPublish)
+      ? entryDerivation.shouldPublish
+      : true
   }
 
-  async applyTo (api: OfflineAPI) {
+  async applyTo(api: OfflineAPI) {
     const entries: Entry[] = await api.getEntriesForContentType(this.contentTypeId)
     const locales: string[] = await api.getLocalesForSpace()
     const sourceContentType: ContentType = await api.getContentType(this.contentTypeId)
@@ -88,10 +90,9 @@ class EntryDeriveAction extends APIAction {
             targetEntry.setField(fieldId, {})
           }
 
-          for (const [locale, localizedValue] of _.entries((localizedField as object))) {
+          for (const [locale, localizedValue] of _.entries(localizedField as object)) {
             targetEntry.setFieldForLocale(fieldId, locale, localizedValue)
           }
-
         }
         await api.saveEntry(targetEntry.id)
         if (shouldPublishLocalChanges(this.shouldPublish, entry)) {
@@ -106,7 +107,7 @@ class EntryDeriveAction extends APIAction {
           linkType: 'Entry',
           id: newEntryId
         }
-        const fieldValue = (field.type === 'Array') ? [{ sys }] : { sys }
+        const fieldValue = field.type === 'Array' ? [{ sys }] : { sys }
         entry.setFieldForLocale(this.referenceField, locale, fieldValue)
       }
 

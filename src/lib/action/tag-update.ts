@@ -5,24 +5,23 @@ class TagUpdateAction extends EntityAction {
   private props: object
   private tagId: string
 
-  constructor (tagId: string, props: object) {
+  constructor(tagId: string, props: object) {
     super()
     this.props = props
     this.tagId = tagId
   }
 
-  getEntityId (): string {
+  getEntityId(): string {
     return this.tagId
   }
 
-  getEntityType (): EntityType {
+  getEntityType(): EntityType {
     return EntityType.Tag
   }
 
-  async applyTo (tag: Tag) {
+  async applyTo(tag: Tag) {
     Object.assign(tag, this.props)
   }
-
 }
 
 export { TagUpdateAction }

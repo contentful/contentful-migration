@@ -5,20 +5,20 @@ class ContentTypeUpdateAction extends EntityAction {
   private props: object
   private contentTypeId: string
 
-  constructor (contentTypeId: string, props: object) {
+  constructor(contentTypeId: string, props: object) {
     super()
     this.props = props
     this.contentTypeId = contentTypeId
   }
 
-  getEntityId (): string {
+  getEntityId(): string {
     return this.contentTypeId
   }
 
-  getEntityType (): EntityType {
+  getEntityType(): EntityType {
     return EntityType.ContentType
   }
-  async applyTo (ct: ContentType) {
+  async applyTo(ct: ContentType) {
     Object.assign(ct, this.props)
   }
 }

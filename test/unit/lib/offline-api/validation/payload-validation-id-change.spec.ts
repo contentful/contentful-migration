@@ -7,9 +7,7 @@ describe('payload validation', function () {
   describe('when setting a new id but it does not fit the requirements', function () {
     it('returns an error if too short', async function () {
       const migration = function (migration) {
-        migration
-          .editContentType('book')
-          .changeFieldId('title', '')
+        migration.editContentType('book').changeFieldId('title', '')
       }
 
       const existingCts = [
@@ -19,15 +17,18 @@ describe('payload validation', function () {
             id: 'book'
           },
           name: 'Book',
-          fields: [{
-            id: 'title',
-            name: 'Title',
-            type: 'Symbol'
-          }, {
-            id: 'pages',
-            name: 'Pages',
-            type: 'Number'
-          }]
+          fields: [
+            {
+              id: 'title',
+              name: 'Title',
+              type: 'Symbol'
+            },
+            {
+              id: 'pages',
+              name: 'Pages',
+              type: 'Number'
+            }
+          ]
         }
       ]
 
@@ -46,9 +47,7 @@ describe('payload validation', function () {
     it('returns an error if too long', async function () {
       const longId = Array(65).fill('a').join('')
       const migration = function (migration) {
-        migration
-          .editContentType('book')
-          .changeFieldId('title', longId)
+        migration.editContentType('book').changeFieldId('title', longId)
       }
 
       const existingCts = [
@@ -58,15 +57,18 @@ describe('payload validation', function () {
             id: 'book'
           },
           name: 'Book',
-          fields: [{
-            id: 'title',
-            name: 'Title',
-            type: 'Symbol'
-          }, {
-            id: 'pages',
-            name: 'Pages',
-            type: 'Number'
-          }]
+          fields: [
+            {
+              id: 'title',
+              name: 'Title',
+              type: 'Symbol'
+            },
+            {
+              id: 'pages',
+              name: 'Pages',
+              type: 'Number'
+            }
+          ]
         }
       ]
 
@@ -84,9 +86,7 @@ describe('payload validation', function () {
 
     it('returns an error for wrong characters', async function () {
       const migration = function (migration) {
-        migration
-          .editContentType('book')
-          .changeFieldId('title', '12#hello')
+        migration.editContentType('book').changeFieldId('title', '12#hello')
       }
 
       const existingCts = [
@@ -96,15 +96,18 @@ describe('payload validation', function () {
             id: 'book'
           },
           name: 'Book',
-          fields: [{
-            id: 'title',
-            name: 'Title',
-            type: 'Symbol'
-          }, {
-            id: 'pages',
-            name: 'Pages',
-            type: 'Number'
-          }]
+          fields: [
+            {
+              id: 'title',
+              name: 'Title',
+              type: 'Symbol'
+            },
+            {
+              id: 'pages',
+              name: 'Pages',
+              type: 'Number'
+            }
+          ]
         }
       ]
 
@@ -135,15 +138,18 @@ describe('payload validation', function () {
           id: 'book'
         },
         name: 'Book',
-        fields: [{
-          id: 'title',
-          name: 'Title',
-          type: 'Symbol'
-        }, {
-          id: 'pages',
-          name: 'Pages',
-          type: 'Number'
-        }]
+        fields: [
+          {
+            id: 'title',
+            name: 'Title',
+            type: 'Symbol'
+          },
+          {
+            id: 'pages',
+            name: 'Pages',
+            type: 'Number'
+          }
+        ]
       }
     ]
 

@@ -5,47 +5,40 @@ import chalk from 'chalk'
 import { entries } from 'lodash'
 
 export default class TagUpdateIntent extends Intent {
-  isTagIntent (): boolean {
+  isTagIntent(): boolean {
     return true
   }
 
-  getTagId (): string {
+  getTagId(): string {
     return this.payload.tagId
   }
 
-  isTagUpdate (): boolean {
+  isTagUpdate(): boolean {
     return true
   }
 
-  groupsWith (other: Intent): boolean {
+  groupsWith(other: Intent): boolean {
     const sameTag = other.getTagId() === this.getTagId()
-    return (
-      other.isTagUpdate() || other.isTagCreate()
-   ) && sameTag
+    return (other.isTagUpdate() || other.isTagCreate()) && sameTag
   }
 
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return false
   }
 
-  shouldPublish (): boolean {
+  shouldPublish(): boolean {
     return false
   }
 
-  requiresAllTags () {
+  requiresAllTags() {
     return true
   }
 
-  toActions () {
-    return [
-      new TagUpdateAction(
-        this.getTagId(),
-        this.payload.props
-      )
-    ]
+  toActions() {
+    return [new TagUpdateAction(this.getTagId(), this.payload.props)]
   }
 
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     const details = entries(this.payload.props).map(([key, value]) => {
       return chalk`{italic ${key}}: ${JSON.stringify(value)}`
     })

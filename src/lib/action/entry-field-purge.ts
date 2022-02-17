@@ -5,13 +5,13 @@ class EntryFieldPurgeAction extends APIAction {
   private contentTypeId: string
   private fieldId: string
 
-  constructor (contentTypeId: string, fieldId: string) {
+  constructor(contentTypeId: string, fieldId: string) {
     super()
     this.contentTypeId = contentTypeId
     this.fieldId = fieldId
   }
 
-  async applyTo (api: OfflineAPI) {
+  async applyTo(api: OfflineAPI) {
     const entries = await api.getEntriesForContentType(this.contentTypeId)
 
     for (const entry of entries) {

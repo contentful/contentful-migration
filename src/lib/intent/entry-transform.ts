@@ -4,23 +4,23 @@ import { PlanMessage } from '../interfaces/plan-message'
 import chalk from 'chalk'
 
 export default class EntryTransformIntent extends Intent {
-  isContentTransform () {
+  isContentTransform() {
     return true
   }
 
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return true
   }
 
-  groupsWith (): boolean {
+  groupsWith(): boolean {
     return false
   }
 
-  requiresAllTags () {
+  requiresAllTags() {
     return true
   }
 
-  toActions () {
+  toActions() {
     return [
       new EntryTransformAction(
         this.getContentTypeId(),
@@ -31,7 +31,7 @@ export default class EntryTransformIntent extends Intent {
     ]
   }
 
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     return {
       heading: chalk`Transform entries for {bold.yellow ${this.getContentTypeId()}}`,
       details: [
@@ -42,11 +42,11 @@ export default class EntryTransformIntent extends Intent {
     }
   }
 
-  shouldSave () {
+  shouldSave() {
     return false
   }
 
-  shouldPublish () {
+  shouldPublish() {
     return false
   }
 }

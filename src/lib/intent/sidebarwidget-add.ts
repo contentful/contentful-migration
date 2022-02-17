@@ -5,30 +5,28 @@ import { SaveEditorInterfaceAction } from '../action/editorinterface-save'
 import { SidebarWidgetAddAction } from '../action/sidebarwidget-add'
 
 export default class SidebarWidgetAddIntent extends Intent {
-  isSidebarUpdate () {
+  isSidebarUpdate() {
     return true
   }
-  isEditorInterfaceIntent () {
+  isEditorInterfaceIntent() {
     return true
   }
-  isGroupable () {
+  isGroupable() {
     return true
   }
-  groupsWith (other: Intent): boolean {
-    return other.isGroupable()
-      && other.isEditorInterfaceIntent()
-      && this.isSameContentType(other)
+  groupsWith(other: Intent): boolean {
+    return other.isGroupable() && other.isEditorInterfaceIntent() && this.isSameContentType(other)
   }
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return false
   }
-  shouldSave (): boolean {
+  shouldSave(): boolean {
     return false
   }
-  shouldPublish (): boolean {
+  shouldPublish(): boolean {
     return false
   }
-  toActions () {
+  toActions() {
     return [
       new SidebarWidgetAddAction(
         this.payload.contentTypeId,
@@ -40,25 +38,24 @@ export default class SidebarWidgetAddIntent extends Intent {
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]
   }
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     const { settings, widgetId, widgetNamespace } = this.payload.sidebarWidget
 
-    const settingDetails = Object.keys(settings).map(settingName =>
-      chalk`{italic ${settingName}}: "${settings[settingName].toString()}"`
+    const settingDetails = Object.keys(settings).map(
+      (settingName) => chalk`{italic ${settingName}}: "${settings[settingName].toString()}"`
     )
 
-    const createDetails = [
-      chalk`{italic widgetNamespace}: "${widgetNamespace}"`,
-      ...settingDetails
-    ]
+    const createDetails = [chalk`{italic widgetNamespace}: "${widgetNamespace}"`, ...settingDetails]
 
     return {
       heading: chalk`Update sidebar for Content Type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],
-      sections: [{
-        heading: chalk`Add sidebar widget {yellow ${widgetId}}`,
-        details: createDetails
-      }]
+      sections: [
+        {
+          heading: chalk`Add sidebar widget {yellow ${widgetId}}`,
+          details: createDetails
+        }
+      ]
     }
   }
 }

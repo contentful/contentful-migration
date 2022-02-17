@@ -4,15 +4,15 @@ import Tag from '../entities/tag'
 import OfflineApi from '../offline-api/index'
 
 abstract class APIAction {
-  abstract applyTo (api: OfflineApi): Promise<void>
+  abstract applyTo(api: OfflineApi): Promise<void>
 }
 
 abstract class EntityAction {
-  abstract getEntityType (): EntityType
-  abstract getEntityId (): string
+  abstract getEntityType(): EntityType
+  abstract getEntityId(): string
   // For Entries, we could add `getEntityQuery` or something like that
   // So that we do not need to know Entry IDs to transform them
-  abstract applyTo (entity: ContentType | Entry | EditorInterfaces | Tag): Promise<void>
+  abstract applyTo(entity: ContentType | Entry | EditorInterfaces | Tag): Promise<void>
 }
 
 enum EntityType {
@@ -21,8 +21,4 @@ enum EntityType {
   Tag = 'TAG'
 }
 
-export {
-  APIAction,
-  EntityAction,
-  EntityType
-}
+export { APIAction, EntityAction, EntityType }

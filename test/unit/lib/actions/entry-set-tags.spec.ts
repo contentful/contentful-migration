@@ -90,7 +90,12 @@ describe('Entry Action', function () {
         })
       )
     ]
-    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'], tags })
+    const api = new OfflineApi({
+      contentTypes: new Map(),
+      entries,
+      locales: ['en-US', 'hawaii'],
+      tags
+    })
     await api.startRecordingRequests(null)
 
     await action.applyTo(api)

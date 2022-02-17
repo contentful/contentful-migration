@@ -10,7 +10,12 @@ class EntryTransformAction extends APIAction {
   private transformEntryForLocale: Function
   private shouldPublish: boolean | 'preserve'
 
-  constructor (contentTypeId: string, fromFields: string[], transformation: Function, shouldPublish: boolean | 'preserve' = 'preserve') {
+  constructor(
+    contentTypeId: string,
+    fromFields: string[],
+    transformation: Function,
+    shouldPublish: boolean | 'preserve' = 'preserve'
+  ) {
     super()
     this.contentTypeId = contentTypeId
     this.fromFields = fromFields
@@ -19,7 +24,7 @@ class EntryTransformAction extends APIAction {
     this.shouldPublish = shouldPublish
   }
 
-  async applyTo (api: OfflineAPI) {
+  async applyTo(api: OfflineAPI) {
     const entries: Entry[] = await api.getEntriesForContentType(this.contentTypeId)
     const locales: string[] = await api.getLocalesForSpace()
     for (const entry of entries) {
@@ -47,11 +52,10 @@ class EntryTransformAction extends APIAction {
           }
           entry.setFieldForLocale(fieldId, locale, outputsForCurrentLocale[fieldId])
         })
-
       }
       if (changesForThisEntry) {
         await api.saveEntry(entry.id)
-        if (shouldPublishLocalChanges(this.shouldPublish ,entry)) {
+        if (shouldPublishLocalChanges(this.shouldPublish, entry)) {
           await api.publishEntry(entry.id)
         }
       }

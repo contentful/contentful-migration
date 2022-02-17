@@ -8,24 +8,33 @@ import makeApiEntry from '../../../helpers/make-api-entry'
 describe('FieldDeleteIntent', function () {
   describe('when deleting a field of a content type', function () {
     it('removes the field from all entries', async function () {
-      const intent: FieldDeleteIntent = actionCreators.field.delete('dog', 0, 'bites', 0, fakeCallsite())
+      const intent: FieldDeleteIntent = actionCreators.field.delete(
+        'dog',
+        0,
+        'bites',
+        0,
+        fakeCallsite()
+      )
 
-      const contentTypes = [{
-        name: 'Doggy',
-        sys: {
-          id: 'dog',
-          version: 1
-        },
-        fields: [
-          {
-            id: 'bites',
-            type: 'Symbol'
-          }, {
-            id: 'goodboys',
-            type: 'Number'
-          }
-        ]
-      }]
+      const contentTypes = [
+        {
+          name: 'Doggy',
+          sys: {
+            id: 'dog',
+            version: 1
+          },
+          fields: [
+            {
+              id: 'bites',
+              type: 'Symbol'
+            },
+            {
+              id: 'goodboys',
+              type: 'Number'
+            }
+          ]
+        }
+      ]
 
       const entries = [
         makeApiEntry({

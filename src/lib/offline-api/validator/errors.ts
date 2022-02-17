@@ -46,7 +46,9 @@ const errors = {
     },
     validations: {
       DUPLICATED_VALIDATION: (duplicatedValue) => {
-        return `A field can't have duplicates in the validations array. Duplicate: "${JSON.stringify(duplicatedValue)}"`
+        return `A field can't have duplicates in the validations array. Duplicate: "${JSON.stringify(
+          duplicatedValue
+        )}"`
       },
       INVALID_VALIDATION_PROPERTY: (propName) => {
         return `A field can't have "${propName}" as a validation.`

@@ -5,25 +5,25 @@ import { SaveEditorInterfaceAction } from '../action/editorinterface-save'
 import { EntryEditorConfigureAction } from '../action/entryeditor-configure'
 
 export default class EntryEditorConfigureIntent extends Intent {
-  isEditorInterfaceIntent () {
+  isEditorInterfaceIntent() {
     return true
   }
-  isGroupable () {
+  isGroupable() {
     return false
   }
-  groupsWith (): boolean {
+  groupsWith(): boolean {
     return false
   }
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return false
   }
-  shouldSave (): boolean {
+  shouldSave(): boolean {
     return false
   }
-  shouldPublish (): boolean {
+  shouldPublish(): boolean {
     return false
   }
-  toActions () {
+  toActions() {
     return [
       new EntryEditorConfigureAction(
         this.payload.contentTypeId,
@@ -34,7 +34,7 @@ export default class EntryEditorConfigureIntent extends Intent {
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]
   }
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     return {
       heading: chalk`Configure entry editor interface for content type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],

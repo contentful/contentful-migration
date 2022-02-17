@@ -17,7 +17,7 @@ interface ClientConfig {
   retryLimit?: number
 }
 
-function getFileConfig (): ClientConfig {
+function getFileConfig(): ClientConfig {
   try {
     const config = require(configPath)
     return config.cmaToken ? { accessToken: config.cmaToken } : {}
@@ -26,12 +26,12 @@ function getFileConfig (): ClientConfig {
   }
 }
 
-function getEnvConfig (): ClientConfig {
+function getEnvConfig(): ClientConfig {
   const envKey = 'CONTENTFUL_MANAGEMENT_ACCESS_TOKEN'
   return process.env[envKey] ? { accessToken: process.env[envKey] } : {}
 }
 
-function getArgvConfig ({
+function getArgvConfig({
   spaceId,
   environmentId = 'master',
   accessToken,
@@ -75,7 +75,7 @@ function getArgvConfig ({
  * getHeadersConfig(['Accept: Any', 'X-Version: 1'])
  * // -> {Accept: 'Any', 'X-Version': '1'}
  */
-function getHeadersConfig (value?: string | string[]) {
+function getHeadersConfig(value?: string | string[]) {
   if (!value) {
     return {}
   }
@@ -102,7 +102,7 @@ function getHeadersConfig (value?: string | string[]) {
   }, {})
 }
 
-function getConfig (argv) {
+function getConfig(argv) {
   const fileConfig = getFileConfig()
   const envConfig = getEnvConfig()
   const argvConfig = getArgvConfig({
@@ -117,7 +117,7 @@ function getConfig (argv) {
  * Adds a sequence header to a header object
  * @param {object} headers
  */
-function addSequenceHeader (headers) {
+function addSequenceHeader(headers) {
   if (typeof headers !== 'object') {
     throw new Error('addSequence function expects an object as input')
   }

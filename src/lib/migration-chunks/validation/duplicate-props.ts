@@ -33,9 +33,11 @@ const getErrorMsgParams = (step) => {
 const getDuplicateProps = (step, chunk, stepIndex) => {
   return Object.keys(step.payload.props).reduce((duplicateProps, prop) => {
     const isDuplicate = chunk.slice(0, stepIndex).some((stepBefore) => {
-      return stepBefore.payload.props &&
+      return (
+        stepBefore.payload.props &&
         isSameEntity(step, stepBefore) &&
         stepBefore.payload.props.hasOwnProperty(prop)
+      )
     })
     if (isDuplicate) {
       duplicateProps.push(prop)

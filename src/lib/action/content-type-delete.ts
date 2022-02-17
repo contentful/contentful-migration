@@ -4,12 +4,12 @@ import OfflineAPI from '../offline-api/index'
 class ContentTypeDeleteAction extends APIAction {
   private contentTypeId: string
 
-  constructor (contentTypeId: string) {
+  constructor(contentTypeId: string) {
     super()
     this.contentTypeId = contentTypeId
   }
 
-  async applyTo (api: OfflineAPI) {
+  async applyTo(api: OfflineAPI) {
     await api.deleteContentType(this.contentTypeId)
   }
 }

@@ -8,7 +8,9 @@ describe('Migration parser', function () {
   describe('when transforming content', function () {
     it('returns all collected errors', async function () {
       const fakeMakeRequest = (config) => {
-        if (config.url === `/content_types?limit=100&order=sys.createdAt&sys.id[in]=foo,cat&skip=0`) {
+        if (
+          config.url === `/content_types?limit=100&order=sys.createdAt&sys.id[in]=foo,cat&skip=0`
+        ) {
           return {
             total: 2,
             skip: 0,
@@ -26,7 +28,11 @@ describe('Migration parser', function () {
           }
         }
 
-        if (config.url.indexOf(`/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=foo,cat&skip=0`) !== -1) {
+        if (
+          config.url.indexOf(
+            `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=foo,cat&skip=0`
+          ) !== -1
+        ) {
           return {
             total: 2,
             skip: 0,
@@ -103,7 +109,6 @@ describe('Migration parser', function () {
             throw catError
           }
         })
-
       }
 
       const parseResult = await migrationParser(throws)
@@ -139,7 +144,10 @@ describe('Migration parser', function () {
           }
         }
 
-        if (config.url === `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=foo&skip=0`) {
+        if (
+          config.url ===
+          `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=foo&skip=0`
+        ) {
           return {
             total: 2,
             skip: 0,

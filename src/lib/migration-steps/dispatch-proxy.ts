@@ -11,8 +11,7 @@ import getFirstExternalCaller from './first-external-caller'
 */
 
 class DispatchProxy {
-
-  constructor ({ dispatchUpdate }) {
+  constructor({ dispatchUpdate }) {
     const dispatchProxy = new Proxy(this, {
       get: function (target, propertyName: string) {
         // Promises are determined by duck-typing

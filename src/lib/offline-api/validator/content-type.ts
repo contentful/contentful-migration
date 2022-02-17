@@ -11,5 +11,7 @@ export type ContentTypePayloadValidatorOptions = {
 
 export interface ContentTypePayloadValidator {
   hooks: ApiHook[]
-  validate (options: ContentTypePayloadValidatorOptions): (InvalidActionError | PayloadValidationError)[]
+  validate(
+    options: ContentTypePayloadValidatorOptions
+  ): (InvalidActionError | PayloadValidationError)[]
 }

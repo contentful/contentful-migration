@@ -16,21 +16,21 @@ class EntryEditorsConfigureAction extends EntityAction {
   protected contentTypeId: string
   protected editors: EntryEditor[]
 
-  constructor (contentTypeId: string, editors: EntryEditor[]) {
+  constructor(contentTypeId: string, editors: EntryEditor[]) {
     super()
     this.contentTypeId = contentTypeId
     this.editors = editors
   }
 
-  getEntityType (): EntityType {
+  getEntityType(): EntityType {
     return EntityType.EditorInterface
   }
 
-  getEntityId (): string {
+  getEntityId(): string {
     return this.contentTypeId
   }
 
-  async applyTo (editorInterfaces: EditorInterfaces) {
+  async applyTo(editorInterfaces: EditorInterfaces) {
     editorInterfaces.setEditors(this.editors)
   }
 }

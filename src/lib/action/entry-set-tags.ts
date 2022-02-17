@@ -9,14 +9,14 @@ class EntrySetTagsAction extends APIAction {
   private fields: string[]
   private setTagsForEntry: Function
 
-  constructor (contentTypeId: string, fields: string[], entryTransformationForTags: Function) {
+  constructor(contentTypeId: string, fields: string[], entryTransformationForTags: Function) {
     super()
     this.contentTypeId = contentTypeId
     this.fields = fields
     this.setTagsForEntry = entryTransformationForTags
   }
 
-  async applyTo (api: OfflineAPI) {
+  async applyTo(api: OfflineAPI) {
     // TODO: Refactor currently confusing naming!
     const entries: Entry[] = await api.getEntriesForContentType(this.contentTypeId)
     const tags: Map<String, Tag> = await api.getTagsForEnvironment()

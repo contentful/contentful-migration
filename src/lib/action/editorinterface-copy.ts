@@ -6,30 +6,30 @@ class CopyEditorInterfaceAction extends EntityAction {
   protected sourceFieldId: string
   protected destinationFieldId: string
 
-  constructor (contentTypeId: string, sourceFieldId: string, destinationFieldId: string) {
+  constructor(contentTypeId: string, sourceFieldId: string, destinationFieldId: string) {
     super()
     this.contentTypeId = contentTypeId
     this.sourceFieldId = sourceFieldId
     this.destinationFieldId = destinationFieldId
   }
 
-  getEntityType (): EntityType {
+  getEntityType(): EntityType {
     return EntityType.EditorInterface
   }
 
-  getEntityId (): string {
+  getEntityId(): string {
     return this.contentTypeId
   }
 
-  getSourceFieldId (): string {
+  getSourceFieldId(): string {
     return this.sourceFieldId
   }
 
-  getDestinationFieldId (): string {
+  getDestinationFieldId(): string {
     return this.destinationFieldId
   }
 
-  async applyTo (editorInterfaces: EditorInterfaces) {
+  async applyTo(editorInterfaces: EditorInterfaces) {
     editorInterfaces.copy(this.getSourceFieldId(), this.getDestinationFieldId())
   }
 }
