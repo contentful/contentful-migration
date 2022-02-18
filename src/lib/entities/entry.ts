@@ -11,7 +11,7 @@ class Entry {
   private _publishedVersion?: number
   private _tags?: APITagLink[]
 
-  constructor (entry: APIEntry) {
+  constructor(entry: APIEntry) {
     this._id = entry.sys.id
     this._fields = entry.fields
     this._version = entry.sys.version
@@ -20,33 +20,33 @@ class Entry {
     this._tags = entry.metadata?.tags
   }
 
-  get id () {
+  get id() {
     return this._id
   }
 
-  get contentTypeId () {
+  get contentTypeId() {
     return this._contentTypeId
   }
 
-  get fields () {
+  get fields() {
     return this._fields
   }
 
-  set fields (fields: object) {
+  set fields(fields: object) {
     this._fields = fields
   }
 
-  setField (id: string, value: any) {
+  setField(id: string, value: any) {
     this._fields[id] = value
   }
 
-  setFieldForLocale (id: string, locale: string, value: any) {
+  setFieldForLocale(id: string, locale: string, value: any) {
     const field = this._fields[id] || {}
     field[locale] = value
     this._fields[id] = field
   }
 
-  replaceArrayLinkForLocale (id: string, locale: string, index: number, linkId: string) {
+  replaceArrayLinkForLocale(id: string, locale: string, index: number, linkId: string) {
     const link = { sys: { id: linkId, type: 'Link', linkType: 'Entry' } }
     const field = this._fields[id] || {}
     const fieldArray: any[] = field[locale]
@@ -58,35 +58,35 @@ class Entry {
     }
   }
 
-  get version () {
+  get version() {
     return this._version
   }
 
-  set version (version: number) {
+  set version(version: number) {
     this._version = version
   }
 
-  get isPublished () {
+  get isPublished() {
     return isDefined(this._publishedVersion)
   }
 
-  get publishedVersion () {
+  get publishedVersion() {
     return this._publishedVersion
   }
 
-  set publishedVersion (version: number | null) {
+  set publishedVersion(version: number | null) {
     this._publishedVersion = version
   }
 
-  get tags (): APITagLink[] {
+  get tags(): APITagLink[] {
     return this._tags
   }
 
-  set tags (tags: APITagLink[]) {
+  set tags(tags: APITagLink[]) {
     this._tags = tags
   }
 
-  toApiEntry (): APIEntry {
+  toApiEntry(): APIEntry {
     const sys = {
       id: this.id,
       version: this.version,
@@ -116,12 +116,9 @@ class Entry {
     return payload
   }
 
-  clone (): Entry {
+  clone(): Entry {
     return new Entry(this.toApiEntry())
   }
 }
 
-export {
-  Entry as default,
-  Entry
-}
+export { Entry as default, Entry }

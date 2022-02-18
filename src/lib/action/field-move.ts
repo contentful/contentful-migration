@@ -5,13 +5,13 @@ class FieldMoveAction extends FieldAction {
   private direction: string
   private pivot: string
 
-  constructor (contentTypeId: string, fieldId: string, direction: string, pivot: string) {
+  constructor(contentTypeId: string, fieldId: string, direction: string, pivot: string) {
     super(contentTypeId, fieldId)
     this.direction = direction
     this.pivot = pivot
   }
 
-  async applyTo (ct: ContentType) {
+  async applyTo(ct: ContentType) {
     ct.fields.moveField(this.getFieldId(), this.direction, this.pivot)
   }
 }

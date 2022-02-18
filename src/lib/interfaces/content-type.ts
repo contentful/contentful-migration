@@ -20,12 +20,12 @@ interface Field {
 
 interface APIContentType {
   sys: {
-    id: string,
+    id: string
     version: number
-  },
-  fields: Field[],
-  name: string,
-  description?: string,
+  }
+  fields: Field[]
+  name: string
+  description?: string
   displayField?: string
 }
 
@@ -39,9 +39,9 @@ type APISidebarWidgetNamespace = 'sidebar-builtin' | 'extension' | 'app'
 type APIControlWidgetNamespace = 'builtin' | 'extension' | 'app'
 
 interface APIEditorInterfaceControl {
-  fieldId: string,
-  widgetId?: string,
-  widgetNamespace?: APIControlWidgetNamespace,
+  fieldId: string
+  widgetId?: string
+  widgetNamespace?: APIControlWidgetNamespace
   settings?: APIEditorInterfaceSettings
 }
 
@@ -57,15 +57,15 @@ interface APISidebarWidgetSettings {
 }
 
 interface APIEditorInterfaceSidebar {
-  widgetId: string,
-  widgetNamespace: APISidebarWidgetNamespace,
-  disabled?: boolean,
+  widgetId: string
+  widgetNamespace: APISidebarWidgetNamespace
+  disabled?: boolean
   settings?: APISidebarWidgetSettings
 }
 
 interface APIEditorIntefaceEditor {
-  widgetId: string,
-  widgetNamespace: APIControlWidgetNamespace,
+  widgetId: string
+  widgetNamespace: APIControlWidgetNamespace
   settings?: { [key: string]: APIParameterValue }
 }
 
@@ -86,9 +86,9 @@ type APIEditorInterfaceEditorLayout = APIEditorLayoutFieldGroupItem[]
 interface APIEditorInterfaces {
   sys: {
     version: number
-  },
-  controls: APIEditorInterfaceControl[],
-  sidebar?: APIEditorInterfaceSidebar[],
+  }
+  controls: APIEditorInterfaceControl[]
+  sidebar?: APIEditorInterfaceSidebar[]
   editor?: APIEditorIntefaceEditor
   editors?: APIEditorIntefaceEditor[]
   editorLayout?: APIEditorInterfaceEditorLayout

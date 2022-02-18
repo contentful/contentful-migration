@@ -4,12 +4,12 @@ import { OfflineAPI } from '../offline-api/index'
 class SaveEditorInterfaceAction extends APIAction {
   protected contentTypeId: string
 
-  constructor (contentTypeId: string) {
+  constructor(contentTypeId: string) {
     super()
     this.contentTypeId = contentTypeId
   }
 
-  async applyTo (api: OfflineAPI) {
+  async applyTo(api: OfflineAPI) {
     try {
       await api.saveEditorInterfaces(this.contentTypeId)
     } catch {

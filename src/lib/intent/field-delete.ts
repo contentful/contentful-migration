@@ -7,51 +7,42 @@ import { PlanMessage } from '../interfaces/plan-message'
 import chalk from 'chalk'
 
 export default class FieldDeleteIntent extends Intent {
-  isFieldDelete () {
+  isFieldDelete() {
     return true
   }
 
-  groupsWith (): boolean {
+  groupsWith(): boolean {
     return false
   }
 
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return true
   }
 
-  toActions () {
+  toActions() {
     const contentTypeId = this.getContentTypeId()
     const fieldId = this.getFieldId()
 
     return [
-      new FieldUpdateAction(
-        contentTypeId,
-        fieldId,
-        { omitted: true }
-      ),
+      new FieldUpdateAction(contentTypeId, fieldId, { omitted: true }),
       // Save and publish are wrapped around packages automatically
       // But in this case we need to insert some explicit ones
       new ContentTypeSaveAction(contentTypeId),
       new ContentTypePublishAction(contentTypeId),
-      new FieldUpdateAction(
-        contentTypeId,
-        fieldId,
-        { deleted: true }
-      ),
-      new EntryFieldPurgeAction(
-        contentTypeId,
-        fieldId
-      )
+      new FieldUpdateAction(contentTypeId, fieldId, { deleted: true }),
+      new EntryFieldPurgeAction(contentTypeId, fieldId)
     ]
   }
 
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     return {
       heading: chalk`Update Content Type {bold.yellow ${this.getContentTypeId()}}`,
-      sections: [{
-        heading: chalk`Delete field {yellow ${this.getFieldId()}}`,
-        details: []
-      }],
+      sections: [
+        {
+          heading: chalk`Delete field {yellow ${this.getFieldId()}}`,
+          details: []
+        }
+      ],
       details: []
     }
   }

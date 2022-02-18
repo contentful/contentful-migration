@@ -4,25 +4,23 @@ import chalk from 'chalk'
 import { PlanMessage } from '../interfaces/plan-message'
 
 export default class ContentTypeCreateIntent extends Intent {
-  isContentTypeCreate () {
+  isContentTypeCreate() {
     return true
   }
 
-  groupsWith (): boolean {
+  groupsWith(): boolean {
     return false
   }
 
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return false
   }
 
-  toActions () {
-    return [
-      new ContentTypeCreateAction(this.getContentTypeId())
-    ]
+  toActions() {
+    return [new ContentTypeCreateAction(this.getContentTypeId())]
   }
 
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     return {
       heading: chalk`Create Content Type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],

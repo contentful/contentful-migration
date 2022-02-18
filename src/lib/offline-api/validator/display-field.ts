@@ -14,7 +14,7 @@ const fieldIsDisplayField = function (field, displayField) {
 export default class DisplayFieldValidator implements ContentTypePayloadValidator {
   public hooks = [ApiHook.SaveContentType]
 
-  public validate ({ contentType }): InvalidActionError[] {
+  public validate({ contentType }): InvalidActionError[] {
     const errors: InvalidActionError[] = []
 
     const displayField = contentType.displayField

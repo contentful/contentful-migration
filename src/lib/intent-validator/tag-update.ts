@@ -9,11 +9,11 @@ class TagUpdateStepValidator extends SchemaValidator {
   protected article = 'a'
   protected displayName = 'tag'
 
-  appliesTo (step) {
+  appliesTo(step) {
     return step.isTagUpdate()
   }
 
-  get schema () {
+  get schema() {
     return {
       name: Joi.string().max(MAX_NAME_LENGTH).required()
     }

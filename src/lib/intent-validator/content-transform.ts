@@ -6,18 +6,18 @@ class ContentTransformIntentValidator extends SchemaValidator {
   protected article = 'a'
   protected displayName = 'content transformation'
 
-  appliesTo (step: Intent) {
+  appliesTo(step: Intent) {
     return step.isContentTransform()
   }
 
   // NOTE: this could be change to return the object to
   // validate against the schema instead of returning
   // just the prop name
-  get propertyNameToValidate () {
+  get propertyNameToValidate() {
     return 'transformation'
   }
 
-  get schema () {
+  get schema() {
     return {
       contentType: Joi.string().required(),
       from: Joi.array().items(Joi.string()).required(),

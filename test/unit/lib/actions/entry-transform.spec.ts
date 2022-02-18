@@ -18,26 +18,30 @@ describe('Entry Action', function () {
     }
     const action = new EntryTransformAction('dog', ['name'], transformation)
     const entries = [
-      new Entry(makeApiEntry({
-        id: '246',
-        contentTypeId: 'dog',
-        version: 1,
-        fields: {
-          name: {
-            'en-US': 'Putin'
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'Putin'
+            }
           }
-        }
-      })),
-      new Entry(makeApiEntry({
-        id: '123',
-        contentTypeId: 'dog',
-        version: 1,
-        fields: {
-          name: {
-            'en-US': 'Trump'
+        })
+      ),
+      new Entry(
+        makeApiEntry({
+          id: '123',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'Trump'
+            }
           }
-        }
-      }))
+        })
+      )
     ]
     const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US'] })
     await api.startRecordingRequests(null)
@@ -64,28 +68,32 @@ describe('Entry Action', function () {
 
     const action = new EntryTransformAction('dog', ['name'], transformation)
     const entries = [
-      new Entry(makeApiEntry({
-        id: '246',
-        contentTypeId: 'dog',
-        version: 1,
-        fields: {
-          name: {
-            'en-US': 'bob',
-            'hawaii': 'haukea'
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'bob',
+              hawaii: 'haukea'
+            }
           }
-        }
-      })),
-      new Entry(makeApiEntry({
-        id: '123',
-        contentTypeId: 'dog',
-        version: 1,
-        fields: {
-          name: {
-            'en-US': 'jim',
-            'hawaii': 'aloha'
+        })
+      ),
+      new Entry(
+        makeApiEntry({
+          id: '123',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'jim',
+              hawaii: 'aloha'
+            }
           }
-        }
-      }))
+        })
+      )
     ]
     const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
     await api.startRecordingRequests(null)
@@ -96,13 +104,13 @@ describe('Entry Action', function () {
     expect(batches[0].requests[0].data.fields).to.eql({
       name: {
         'en-US': 'bob!',
-        'hawaii': 'haukea'
+        hawaii: 'haukea'
       }
     })
     expect(batches[0].requests[1].data.fields).to.eql({
       name: {
         'en-US': 'jim!',
-        'hawaii': 'aloha'
+        hawaii: 'aloha'
       }
     })
   })
@@ -114,28 +122,32 @@ describe('Entry Action', function () {
 
     const action = new EntryTransformAction('dog', ['name'], transformation)
     const entries = [
-      new Entry(makeApiEntry({
-        id: '246',
-        contentTypeId: 'dog',
-        version: 1,
-        fields: {
-          name: {
-            'en-US': 'bob',
-            'hawaii': 'haukea'
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'bob',
+              hawaii: 'haukea'
+            }
           }
-        }
-      })),
-      new Entry(makeApiEntry({
-        id: '123',
-        contentTypeId: 'dog',
-        version: 1,
-        fields: {
-          name: {
-            'en-US': 'jim',
-            'hawaii': 'aloha'
+        })
+      ),
+      new Entry(
+        makeApiEntry({
+          id: '123',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'jim',
+              hawaii: 'aloha'
+            }
           }
-        }
-      }))
+        })
+      )
     ]
     const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
     await api.startRecordingRequests(null)
@@ -146,7 +158,7 @@ describe('Entry Action', function () {
     expect(batches[0].requests).to.eql([])
   })
 
-  async function shouldPublishTest (shouldPublish, version, publishedVersion, expectPublish) {
+  async function shouldPublishTest(shouldPublish, version, publishedVersion, expectPublish) {
     const transformation: TransformEntryToType = {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
@@ -181,7 +193,7 @@ describe('Entry Action', function () {
     await api.stopRecordingRequests()
     const batches = await api.getRequestBatches()
 
-    const requestUrls = batches[0].requests.map(r => r.url)
+    const requestUrls = batches[0].requests.map((r) => r.url)
 
     expect(requestUrls).include('/entries/345')
 
@@ -201,5 +213,4 @@ describe('Entry Action', function () {
     return shouldPublishTest('preserve', 2, 1, true)
     return shouldPublishTest('preserve', 3, 1, true)
   })
-
 })

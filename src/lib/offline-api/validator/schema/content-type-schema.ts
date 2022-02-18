@@ -9,7 +9,4 @@ const contentTypeSchema = Joi.object().keys({
 })
 
 export default contentTypeSchema
-export {
-  MAX_FIELDS,
-  contentTypeSchema
-}
+export { MAX_FIELDS, contentTypeSchema }

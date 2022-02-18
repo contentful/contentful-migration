@@ -7,14 +7,14 @@ class EntryFieldRenameAction extends APIAction {
   private fieldId: string
   private props: FieldRenameProps
 
-  constructor (contentTypeId: string, fieldId: string, props: FieldRenameProps) {
+  constructor(contentTypeId: string, fieldId: string, props: FieldRenameProps) {
     super()
     this.contentTypeId = contentTypeId
     this.fieldId = fieldId
     this.props = props
   }
 
-  async applyTo (api: OfflineAPI) {
+  async applyTo(api: OfflineAPI) {
     const entries = await api.getEntriesForContentType(this.contentTypeId)
 
     for (const entry of entries) {

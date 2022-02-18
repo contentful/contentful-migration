@@ -1,8 +1,8 @@
 interface SimpleEntry {
   id: string
   contentTypeId: string
-  version: number,
-  publishedVersion?: number,
+  version: number
+  publishedVersion?: number
   fields: object
 }
 
@@ -26,7 +26,4 @@ const makeApiEntry = function (simpleEntry: SimpleEntry) {
   }
 }
 
-export {
-  makeApiEntry as default,
-  SimpleEntry
-}
+export { makeApiEntry as default, SimpleEntry }

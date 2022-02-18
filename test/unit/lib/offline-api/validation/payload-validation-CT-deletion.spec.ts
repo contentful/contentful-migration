@@ -5,11 +5,13 @@ import validateBatches from './validate-batches'
 
 describe('payload validation (content type deletion)', function () {
   it('skips ct delete payloads', async function () {
-    const existingCts = [{
-      sys: { id: 'breakfast' },
-      name: 'breakfast',
-      fields: []
-    }]
+    const existingCts = [
+      {
+        sys: { id: 'breakfast' },
+        name: 'breakfast',
+        fields: []
+      }
+    ]
 
     const errors = await validateBatches(function (migration) {
       const lunch = migration.createContentType('lunch').name('lunch')
@@ -17,9 +19,6 @@ describe('payload validation (content type deletion)', function () {
       migration.deleteContentType('breakfast')
     }, existingCts)
 
-    expect(errors).to.eql([
-      [],
-      []
-    ])
+    expect(errors).to.eql([[], []])
   })
 })

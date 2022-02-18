@@ -6,21 +6,21 @@ class TagCreateAction extends APIAction {
   private tagId: string
   private tagVisibility: TagVisibility
 
-  constructor (tagId: string, tagVisibility: TagVisibility = 'private') {
+  constructor(tagId: string, tagVisibility: TagVisibility = 'private') {
     super()
     this.tagId = tagId
     this.tagVisibility = tagVisibility
   }
 
-  getEntityId (): string {
+  getEntityId(): string {
     return this.tagId
   }
 
-  getEntityType (): EntityType {
+  getEntityType(): EntityType {
     return EntityType.Tag
   }
 
-  async applyTo (api: OfflineAPI) {
+  async applyTo(api: OfflineAPI) {
     await api.createTag(this.tagId, this.tagVisibility)
   }
 }

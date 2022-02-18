@@ -1,2 +1,2 @@
 /* tslint:disable */
-module.exports = function () {};
+module.exports = function () {}

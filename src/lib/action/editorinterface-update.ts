@@ -9,7 +9,7 @@ class UpdateEditorInterfaceAction extends EntityAction {
   private _settings?: APIEditorInterfaceSettings
   private _widgetNamespace: APIControlWidgetNamespace
 
-  constructor (
+  constructor(
     contentTypeId: string,
     fieldId: string,
     widgetId: string,
@@ -24,21 +24,26 @@ class UpdateEditorInterfaceAction extends EntityAction {
     this._widgetNamespace = widgetNamespace
   }
 
-  getEntityType (): EntityType {
+  getEntityType(): EntityType {
     // TODO: enums
     return EntityType.EditorInterface
   }
 
-  getEntityId (): string {
+  getEntityId(): string {
     return this.contentTypeId
   }
 
-  getFieldId (): string {
+  getFieldId(): string {
     return this.fieldId
   }
 
-  async applyTo (editorInterfaces: EditorInterfaces) {
-    editorInterfaces.update(this.getFieldId(), this._widgetId, this._settings, this._widgetNamespace)
+  async applyTo(editorInterfaces: EditorInterfaces) {
+    editorInterfaces.update(
+      this.getFieldId(),
+      this._widgetId,
+      this._settings,
+      this._widgetNamespace
+    )
   }
 }
 

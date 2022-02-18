@@ -1,6 +1,6 @@
 export default interface APITagLink {
   sys: {
-    id: string,
+    id: string
     type: 'Link'
     linkType: 'Tag'
   }

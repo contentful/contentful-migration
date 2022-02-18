@@ -9,11 +9,11 @@ export default class TagsOnEntryValidator implements EntryValidator {
   public hooks = [ApiHook.SaveEntry]
   private tags: Map<String, Tag>
 
-  constructor (tags: Map<String, Tag>) {
+  constructor(tags: Map<String, Tag>) {
     this.tags = tags
   }
 
-  public validate (entry: Entry): (PayloadValidationError[] | InvalidActionError[]) {
+  public validate(entry: Entry): PayloadValidationError[] | InvalidActionError[] {
     const errors: InvalidActionError[] = []
     const tagsOnEntry = entry.tags
     const allTags = this.tags

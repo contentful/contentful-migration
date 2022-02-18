@@ -38,6 +38,22 @@ describe('Config', function () {
     expect(config.rawProxy).to.eql(true)
   })
 
+  it('exposes retryLimit from argv', function () {
+    const config = getConfig({ retryLimit: 10 })
+    expect(config.retryLimit).to.eql(10)
+  })
+
+  it('validates retryLimit argument', function () {
+    expect(() => getConfig({ retryLimit: -1 })).to.throw(
+      Error,
+      'retryLimit must be between 0 and 60'
+    )
+    expect(() => getConfig({ retryLimit: 61 })).to.throw(
+      Error,
+      'retryLimit must be between 0 and 60'
+    )
+  })
+
   it('exposes requestBatchSize from argv', function () {
     const config = getConfig({ requestBatchSize: 99 })
     expect(config.requestBatchSize).to.eql(99)
