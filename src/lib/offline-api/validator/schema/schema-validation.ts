@@ -89,17 +89,25 @@ const unknownCombinationError = function ({ path, keys }): SimplifiedValidationE
 //   type: 'object.allowUnknown',
 //   context: { child: 'foo', key: 'foo' }
 // }]
-const combineErrors = function (fieldValidationsErrors: SimplifiedValidationError[]): SimplifiedValidationError[] {
-  const byItemPath: _.Dictionary<SimplifiedValidationError[]> = _.groupBy(fieldValidationsErrors, ({ path }) => {
-    return path.slice(0, -1).join('.')
-  })
+const combineErrors = function (
+  fieldValidationsErrors: SimplifiedValidationError[]
+): SimplifiedValidationError[] {
+  const byItemPath: _.Dictionary<SimplifiedValidationError[]> = _.groupBy(
+    fieldValidationsErrors,
+    ({ path }) => {
+      return path.slice(0, -1).join('.')
+    }
+  )
 
   const pathErrorTuples: [string, SimplifiedValidationError[]][] = _.entries(byItemPath)
 
-  const uniqPropErrorsByPath: [string, SimplifiedValidationError[]][] = _.map(pathErrorTuples, ([path, itemErrors]): [string, SimplifiedValidationError[]] => {
-    const uniqErrors: SimplifiedValidationError[] = _.uniqBy(itemErrors, 'context.key')
-    return [path, uniqErrors]
-  })
+  const uniqPropErrorsByPath: [string, SimplifiedValidationError[]][] = _.map(
+    pathErrorTuples,
+    ([path, itemErrors]): [string, SimplifiedValidationError[]] => {
+      const uniqErrors: SimplifiedValidationError[] = _.uniqBy(itemErrors, 'context.key')
+      return [path, uniqErrors]
+    }
+  )
 
   return uniqPropErrorsByPath.map(([path, errors]) => {
     const keys = errors.map((error) => reach(error, 'context.key'))
@@ -147,15 +155,19 @@ const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): Simplifie
       continue
     }
 
-    const remainingFieldValidationsErrors = errorDetails.filter(({ type }) => type !== 'object.unknown')
+    const remainingFieldValidationsErrors = errorDetails.filter(
+      ({ type }) => type !== 'object.unknown'
+    )
     allErrors = [...allErrors, ...remainingFieldValidationsErrors]
-
   }
 
   return allErrors
 }
 
-const validateFields = function (contentType: ContentType, locales: string[]): PayloadValidationError[] {
+const validateFields = function (
+  contentType: ContentType,
+  locales: string[]
+): PayloadValidationError[] {
   const fields = contentType.fields.toRaw()
   const validateResult = createFieldsSchema(locales).validate(fields, {
     abortEarly: false
@@ -178,7 +190,6 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
     const prop = fieldNames.join('.')
     const field = fields[index]
     if (prop.startsWith('defaultValue')) {
-
       if (type === 'object.unknown') {
         return {
           type: 'InvalidPayload',
@@ -187,28 +198,46 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
       }
 
       if (type === 'any.unknown') {
-
         if (field.type === 'Array') {
           return {
             type: 'InvalidPayload',
-            message: errorMessages.field.defaultValue.UNSUPPORTED_ARRAY_ITEMS_TYPE(field.id, path[1], field.items.type)
+            message: errorMessages.field.defaultValue.UNSUPPORTED_ARRAY_ITEMS_TYPE(
+              field.id,
+              path[1],
+              field.items.type
+            )
           }
         }
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.defaultValue.UNSUPPORTED_FIELD_TYPE(field.id, path[1], field.type)
+          message: errorMessages.field.defaultValue.UNSUPPORTED_FIELD_TYPE(
+            field.id,
+            path[1],
+            field.type
+          )
         }
       }
 
       if (field.type === 'Date') {
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.defaultValue.DATE_TYPE_MISMATCH(field.id, kindOf(context.value), context.value, context.key, field.type)
+          message: errorMessages.field.defaultValue.DATE_TYPE_MISMATCH(
+            field.id,
+            kindOf(context.value),
+            context.value,
+            context.key,
+            field.type
+          )
         }
       }
       return {
         type: 'InvalidPayload',
-        message: errorMessages.field.defaultValue.TYPE_MISMATCH(field.id, kindOf(context.value), context.key, field.type)
+        message: errorMessages.field.defaultValue.TYPE_MISMATCH(
+          field.id,
+          kindOf(context.value),
+          context.key,
+          field.type
+        )
       }
     }
 
@@ -219,7 +248,12 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
 
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.REQUIRED_DEPENDENT_PROPERTY(prop, field.id, dependentProp, dependentValue)
+          message: errorMessages.field.REQUIRED_DEPENDENT_PROPERTY(
+            prop,
+            field.id,
+            dependentProp,
+            dependentValue
+          )
         }
       }
 
@@ -236,7 +270,12 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
 
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.FORBIDDEN_DEPENDENT_PROPERTY(prop, field.id, dependentProp, dependentValue)
+          message: errorMessages.field.FORBIDDEN_DEPENDENT_PROPERTY(
+            prop,
+            field.id,
+            dependentProp,
+            dependentValue
+          )
         }
       }
 
@@ -290,7 +329,9 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
       if (type === 'object.unknownCombination') {
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.validations.INVALID_VALIDATION_PROPERTY_COMBINATION(context.keys)
+          message: errorMessages.field.validations.INVALID_VALIDATION_PROPERTY_COMBINATION(
+            context.keys
+          )
         }
       }
 
@@ -300,15 +341,15 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
 
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.validations.INVALID_VALIDATION_PARAMETER(context.key, expectedType, actualType)
+          message: errorMessages.field.validations.INVALID_VALIDATION_PARAMETER(
+            context.key,
+            expectedType,
+            actualType
+          )
         }
       }
     }
   })
 }
 
-export {
-  validateContentType,
-  validateFields,
-  validateTag
-}
+export { validateContentType, validateFields, validateTag }

@@ -18,7 +18,7 @@ describe('EntryEditorConfigureIntent', function () {
   const ctId = 'test'
 
   it('configures editor', async function () {
-    const intents = await composedIntent(migration => {
+    const intents = await composedIntent((migration) => {
       const ct = migration.createContentType(ctId)
       ct.name('Test CT')
       ct.description('This is a test CT')

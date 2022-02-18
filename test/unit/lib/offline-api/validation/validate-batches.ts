@@ -6,7 +6,13 @@ import { migration } from '../../../../../src/lib/migration-steps'
 
 const noOp = () => undefined
 
-const validateBatches = async function (runMigration, contentTypes, tags = [], entries = [], locales = []) {
+const validateBatches = async function (
+  runMigration,
+  contentTypes,
+  tags = [],
+  entries = [],
+  locales = []
+) {
   const intents = await migration(runMigration, noOp, {})
   const list = new IntentList(intents)
 

@@ -19,7 +19,7 @@ describe('Set tags chunk validation', function () {
       const contentTypes = []
 
       const errors = await validateChunks(
-        function up (migration) {
+        function up(migration) {
           migration.setTagsForEntries(step)
         },
         contentTypes,
@@ -40,7 +40,8 @@ describe('Set tags chunk validation', function () {
               type: 'contentType/setTagsForEntries'
             }
           },
-          message: 'You cannot update tags on entries for content type "entry" because it does not exist.',
+          message:
+            'You cannot update tags on entries for content type "entry" because it does not exist.',
           type: 'InvalidAction'
         }
       ])

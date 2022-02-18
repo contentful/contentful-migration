@@ -48,24 +48,15 @@ describe('ComposedIntent', function () {
         sections: [
           {
             heading: chalk`Create field {yellow name}`,
-            details: [
-              chalk`{italic type}: "Symbol"`,
-              chalk`{italic required}: true`
-            ]
+            details: [chalk`{italic type}: "Symbol"`, chalk`{italic required}: true`]
           },
           {
             heading: chalk`Create field {yellow description}`,
-            details: [
-              chalk`{italic type}: "Text"`,
-              chalk`{italic required}: false`
-            ]
+            details: [chalk`{italic type}: "Text"`, chalk`{italic required}: false`]
           },
           {
             heading: chalk`Update field {yellow data}`,
-            details: [
-              chalk`{italic required}: true`,
-              chalk`{italic name}: "Random data"`
-            ]
+            details: [chalk`{italic required}: true`, chalk`{italic name}: "Random data"`]
           },
           {
             heading: chalk`{bold Move field {yellow description} to the first position}`,
@@ -74,22 +65,19 @@ describe('ComposedIntent', function () {
         ]
       })
     }),
+      it('creates the right plan message for composed tag intent', async function () {
+        const intent = await composedIntent((migration) => {
+          const ct = migration.createTag('test')
+          ct.name('Test Tag')
+        })
 
-    it('creates the right plan message for composed tag intent', async function () {
-      const intent = await composedIntent((migration) => {
-        const ct = migration.createTag('test')
-        ct.name('Test Tag')
+        const message: PlanMessage = intent.toPlanMessage()
+
+        expect(message).to.eql({
+          heading: chalk`Create Tag {bold.yellow test} with visibility: "private"`,
+          details: [chalk`{italic name}: "Test Tag"`],
+          sections: []
+        })
       })
-
-      const message: PlanMessage = intent.toPlanMessage()
-
-      expect(message).to.eql({
-        heading: chalk`Create Tag {bold.yellow test} with visibility: "private"`,
-        details: [
-          chalk`{italic name}: "Test Tag"`
-        ],
-        sections: []
-      })
-    })
   })
 })

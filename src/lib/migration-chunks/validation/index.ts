@@ -8,7 +8,11 @@ import { Tag } from '../../entities/tag'
 import { Intent } from '../../interfaces/intent'
 import ValidationError, { InvalidActionError } from '../../interfaces/errors'
 
-function validateIntents (intentList: IntentList, contentTypes: ContentType[], tags: Tag[]): ValidationError[] | InvalidActionError[] {
+function validateIntents(
+  intentList: IntentList,
+  contentTypes: ContentType[],
+  tags: Tag[]
+): ValidationError[] | InvalidActionError[] {
   const intents: Intent[] = intentList.getIntents()
   const ctErrors = contentTypeValidations(intents, contentTypes)
   if (ctErrors.length > 0) {
@@ -17,7 +21,9 @@ function validateIntents (intentList: IntentList, contentTypes: ContentType[], t
 
   const createCTs = intents.filter((intent) => intent.isContentTypeCreate())
   const createdIds = createCTs.map((createIntent) => createIntent.getContentTypeId())
-  const createdCTs = createdIds.map((id) => new ContentType({ sys: { id, version: 0 }, name: undefined, fields: [] }))
+  const createdCTs = createdIds.map(
+    (id) => new ContentType({ sys: { id, version: 0 }, name: undefined, fields: [] })
+  )
 
   const allCTs = contentTypes.concat(createdCTs)
   let fieldErrors = fieldValidations(intents, allCTs)
@@ -35,7 +41,4 @@ function validateIntents (intentList: IntentList, contentTypes: ContentType[], t
   return []
 }
 
-export {
-  validateIntents as default,
-  validateIntents
-}
+export { validateIntents as default, validateIntents }

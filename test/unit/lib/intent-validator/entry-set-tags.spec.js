@@ -1,25 +1,25 @@
-'use strict';
+'use strict'
 
-import { expect } from 'chai';
+import { expect } from 'chai'
 
-import EntrySetTagsIntentValidator from '../../../../src/lib/intent-validator/entry-set-tags';
-import createValidator from './validate-steps';
-const validateSteps = createValidator([EntrySetTagsIntentValidator]);
+import EntrySetTagsIntentValidator from '../../../../src/lib/intent-validator/entry-set-tags'
+import createValidator from './validate-steps'
+const validateSteps = createValidator([EntrySetTagsIntentValidator])
 
 describe('Entry tag update', function () {
   describe('when providing the required properties', function () {
     it('returns no validation errors', async function () {
-      const validationErrors = await validateSteps(function up (migration) {
+      const validationErrors = await validateSteps(function up(migration) {
         migration.setTagsForEntries({
           contentType: 'dog',
           from: ['owner'],
           setTagsForEntry: async (entryFields, entryTags, apiTags) => {
-            return [...entryTags, ...apiTags];
+            return [...entryTags, ...apiTags]
           }
-        });
-      });
-      expect(validationErrors).to.eql([]);
-    });
+        })
+      })
+      expect(validationErrors).to.eql([])
+    })
 
     describe('when using the wrong type for the properties', function () {
       it('returns all validation errors', async function () {
@@ -28,10 +28,10 @@ describe('Entry tag update', function () {
           from: 'information',
           to: 'address',
           setTagsForEntry: {}
-        };
-        const validationErrors = await validateSteps(function up (migration) {
-          migration.setTagsForEntries(properties);
-        });
+        }
+        const validationErrors = await validateSteps(function up(migration) {
+          migration.setTagsForEntries(properties)
+        })
 
         expect(validationErrors).to.eql([
           {
@@ -51,7 +51,8 @@ describe('Entry tag update', function () {
                 type: 'contentType/setTagsForEntries'
               }
             },
-            message: '"string" is not a valid type for the tags update for entry property "from". Expected "array".',
+            message:
+              '"string" is not a valid type for the tags update for entry property "from". Expected "array".',
             type: 'InvalidType'
           },
           {
@@ -91,11 +92,12 @@ describe('Entry tag update', function () {
                 type: 'contentType/setTagsForEntries'
               }
             },
-            message: '"object" is not a valid type for the tags update for entry property "setTagsForEntry". Expected "function".',
+            message:
+              '"object" is not a valid type for the tags update for entry property "setTagsForEntry". Expected "function".',
             type: 'InvalidType'
           }
-        ]);
-      });
-    });
-  });
-});
+        ])
+      })
+    })
+  })
+})

@@ -4,46 +4,44 @@ import chalk from 'chalk'
 import { PlanMessage } from '../interfaces/plan-message'
 
 export default class TagDeleteIntent extends Intent {
-  isTagIntent (): boolean {
+  isTagIntent(): boolean {
     return true
   }
 
-  getTagId (): string {
+  getTagId(): string {
     return this.payload.tagId
   }
 
-  isTagDelete () {
+  isTagDelete() {
     return true
   }
 
-  groupsWith (): boolean {
+  groupsWith(): boolean {
     return false
   }
 
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return true
   }
 
-  shouldSave (): boolean {
+  shouldSave(): boolean {
     return false
   }
 
-  shouldPublish (): boolean {
+  shouldPublish(): boolean {
     // TODO: Do we need this in general in tag classes?
     return false
   }
 
-  requiresAllTags () {
+  requiresAllTags() {
     return true
   }
 
-  toActions () {
-    return [
-      new TagDeleteAction(this.getTagId())
-    ]
+  toActions() {
+    return [new TagDeleteAction(this.getTagId())]
   }
 
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     return {
       heading: chalk`Delete Tag {bold.yellow ${this.getTagId()}}`,
       details: [],

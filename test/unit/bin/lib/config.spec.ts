@@ -44,8 +44,14 @@ describe('Config', function () {
   })
 
   it('validates retryLimit argument', function () {
-    expect(() => getConfig({ retryLimit: -1 })).to.throw(Error, 'retryLimit must be between 0 and 60')
-    expect(() => getConfig({ retryLimit: 61 })).to.throw(Error, 'retryLimit must be between 0 and 60')
+    expect(() => getConfig({ retryLimit: -1 })).to.throw(
+      Error,
+      'retryLimit must be between 0 and 60'
+    )
+    expect(() => getConfig({ retryLimit: 61 })).to.throw(
+      Error,
+      'retryLimit must be between 0 and 60'
+    )
   })
 
   it('exposes requestBatchSize from argv', function () {

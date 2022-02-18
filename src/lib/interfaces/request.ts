@@ -10,7 +10,4 @@ interface HttpRequest {
   }
 }
 
-export {
-  HttpRequest as default,
-  HttpRequest
-}
+export { HttpRequest as default, HttpRequest }

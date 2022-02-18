@@ -27,15 +27,15 @@ const validationErrors = {
   into the SchemaValidator too. So for now there is a bit of duplication
 */
 class FieldMovementStepValidator implements IntentValidator {
-  appliesTo (step) {
+  appliesTo(step) {
     return step.isFieldMove()
   }
 
-  get validationErrors () {
+  get validationErrors() {
     return validationErrors
   }
 
-  get schema () {
+  get schema() {
     return {
       toTheTop: Joi.any(),
       toTheBottom: Joi.any(),
@@ -44,7 +44,7 @@ class FieldMovementStepValidator implements IntentValidator {
     }
   }
 
-  validate (intent: FieldMoveIntent): ValidationError[] {
+  validate(intent: FieldMoveIntent): ValidationError[] {
     const validationErrors = this.validationErrors
     const fieldMovementValidations = this.schema
     const validMoves = Object.keys(fieldMovementValidations)

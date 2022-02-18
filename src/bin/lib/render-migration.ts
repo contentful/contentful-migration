@@ -40,13 +40,17 @@ const renderPlan = (batches: RequestBatch[], environment: string, isQuiet: boole
     }
 
     if (batch.intent.shouldPublish()) {
-      console.log(chalk`\n{bold.underline Publish Content Type} {bold.yellow ${batch.intent.getContentTypeId()}}`)
+      console.log(
+        chalk`\n{bold.underline Publish Content Type} {bold.yellow ${batch.intent.getContentTypeId()}}`
+      )
     }
   }
 }
 
 const renderValidationErrors = (batches: RequestBatch[], environment: string) => {
-  console.error(chalk`{bold.red The following migration has been planned but cannot be run because it contains errors}\n\n`)
+  console.error(
+    chalk`{bold.red The following migration has been planned but cannot be run because it contains errors}\n\n`
+  )
   renderPlan(batches, environment)
   console.error(chalk`🚨  {bold.red Migration unsuccessful}`)
 }
@@ -56,13 +60,11 @@ const renderRuntimeErrors = (batches: RequestBatch[], filename: string) => {
     renderBatch(batch)
 
     const errorCount = batch.runtimeErrors.length
-    console.error(chalk`\n{red ${errorCount.toString()} errors while transforming this content. Please check the errors log for details: ${filename}}\n`)
+    console.error(
+      chalk`\n{red ${errorCount.toString()} errors while transforming this content. Please check the errors log for details: ${filename}}\n`
+    )
     console.error(chalk`🚨  {bold.red Migration unsuccessful}`)
   }
 }
 
-export {
-  renderPlan,
-  renderValidationErrors,
-  renderRuntimeErrors
-}
+export { renderPlan, renderValidationErrors, renderRuntimeErrors }

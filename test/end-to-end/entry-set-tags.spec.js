@@ -1,25 +1,25 @@
-'use strict';
+'use strict'
 
-const { expect } = require('chai');
-const _ = require('lodash');
-const assert = require('./assertions');
-const cli = require('./cli');
-const { createDevEnvironment, deleteDevEnvironment, makeRequest } = require('../helpers/client');
+const { expect } = require('chai')
+const _ = require('lodash')
+const assert = require('./assertions')
+const cli = require('./cli')
+const { createDevEnvironment, deleteDevEnvironment, makeRequest } = require('../helpers/client')
 
-const uuid = require('uuid');
-const ENVIRONMENT_ID = uuid.v4();
+const uuid = require('uuid')
+const ENVIRONMENT_ID = uuid.v4()
 
-const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID;
+const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID
 
 describe('apply set tags transformation', function () {
-  this.timeout(30000);
-  let environmentId;
-  let request;
+  this.timeout(30000)
+  let environmentId
+  let request
 
   before(async function () {
-    this.timeout(30000);
-    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
-    request = makeRequest.bind(null, SOURCE_TEST_SPACE, environmentId);
+    this.timeout(30000)
+    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
+    request = makeRequest.bind(null, SOURCE_TEST_SPACE, environmentId)
     await request({
       method: 'PUT',
       url: '/content_types/article',
@@ -36,7 +36,7 @@ describe('apply set tags transformation', function () {
           }
         ]
       }
-    });
+    })
 
     await request({
       method: 'PUT',
@@ -45,7 +45,7 @@ describe('apply set tags transformation', function () {
         'X-Contentful-Beta-Dev-Spaces': 1,
         'X-Contentful-Version': 1
       }
-    });
+    })
 
     await request({
       method: 'PUT',
@@ -57,7 +57,7 @@ describe('apply set tags transformation', function () {
         name: 'new',
         sys: { id: 'new' }
       }
-    });
+    })
 
     await request({
       method: 'PUT',
@@ -69,7 +69,7 @@ describe('apply set tags transformation', function () {
         name: 'old',
         sys: { id: 'old' }
       }
-    });
+    })
 
     await request({
       method: 'POST',
@@ -92,26 +92,30 @@ describe('apply set tags transformation', function () {
           ]
         }
       }
-    });
-  });
+    })
+  })
 
   after(async function () {
-    await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId);
-  });
+    await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId)
+  })
 
   it('aborts 31-set-tags-for-entries', function (done) {
     cli()
-      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/31-set-tags-for-entries.js`)
+      .run(
+        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/31-set-tags-for-entries.js`
+      )
       .on(/\? Do you want to apply the migration \(Y\/n\)/)
       .respond('n\n')
       .expect(assert.plans.entriesSetTags('article'))
       .expect(assert.plans.actions.abort())
-      .end(done);
-  });
+      .end(done)
+  })
 
   it('applies 31-set-tags-for-entries', function (done) {
     cli()
-      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/31-set-tags-for-entries.js`)
+      .run(
+        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/31-set-tags-for-entries.js`
+      )
       .on(/\? Do you want to apply the migration \(Y\/n\)/)
       .respond('y\n')
       .expect(assert.plans.actions.apply())
@@ -122,17 +126,22 @@ describe('apply set tags transformation', function () {
           headers: {
             'X-Contentful-Beta-Dev-Spaces': 1
           }
-        });
+        })
 
-        expect(blogEntries.items[0].fields.title).to.exist();
+        expect(blogEntries.items[0].fields.title).to.exist()
 
-        const blogEntriesWithoutSysAndFields = blogEntries.items.map(i => _.omit(i, ['sys', 'fields']));
-        expect(blogEntriesWithoutSysAndFields[0].metadata.tags.length).to.eql(2);
-        expect(blogEntriesWithoutSysAndFields[0].metadata.tags.some((tag) => tag.sys.id === 'new')).to.eql(true);
-        expect(blogEntriesWithoutSysAndFields[0].metadata.tags.some((tag) => tag.sys.id === 'old')).to.eql(true);
+        const blogEntriesWithoutSysAndFields = blogEntries.items.map((i) =>
+          _.omit(i, ['sys', 'fields'])
+        )
+        expect(blogEntriesWithoutSysAndFields[0].metadata.tags.length).to.eql(2)
+        expect(
+          blogEntriesWithoutSysAndFields[0].metadata.tags.some((tag) => tag.sys.id === 'new')
+        ).to.eql(true)
+        expect(
+          blogEntriesWithoutSysAndFields[0].metadata.tags.some((tag) => tag.sys.id === 'old')
+        ).to.eql(true)
 
-
-        done();
-      });
-  });
-});
+        done()
+      })
+  })
+})

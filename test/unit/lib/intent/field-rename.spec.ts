@@ -8,27 +8,35 @@ import makeApiEntry from '../../../helpers/make-api-entry'
 import { EditorInterfaces } from '../../../../src/lib/entities/content-type'
 
 describe('FieldRenameIntent', function () {
-
   describe('when renaming a field of a content type', function () {
-
     it('renames the field on all entries', async function () {
-      const intent: FieldRenameIntent = actionCreators.field.rename('dog', 0, 'bits', 0, fakeCallsite(), 'bites')
-      const contentTypes = [{
-        name: 'Doggy',
-        sys: {
-          id: 'dog',
-          version: 1
-        },
-        fields: [
-          {
-            id: 'bits',
-            type: 'Symbol'
-          }, {
-            id: 'goodboys',
-            type: 'Number'
-          }
-        ]
-      }]
+      const intent: FieldRenameIntent = actionCreators.field.rename(
+        'dog',
+        0,
+        'bits',
+        0,
+        fakeCallsite(),
+        'bites'
+      )
+      const contentTypes = [
+        {
+          name: 'Doggy',
+          sys: {
+            id: 'dog',
+            version: 1
+          },
+          fields: [
+            {
+              id: 'bits',
+              type: 'Symbol'
+            },
+            {
+              id: 'goodboys',
+              type: 'Number'
+            }
+          ]
+        }
+      ]
 
       const editorInterfacesByContentType: Map<String, EditorInterfaces> = new Map()
       const ei = new EditorInterfaces({
@@ -100,20 +108,20 @@ describe('FieldRenameIntent', function () {
   })
 
   describe('rename Fields with editor interfaces', function () {
-
     it('keeps the editor interface when renaming a field', async function () {
-
       const editorInterfacesByContentType: Map<String, EditorInterfaces> = new Map()
       const ei = new EditorInterfaces({
         sys: {
           version: 1
         },
-        controls: [{
-          widgetId: 'dropdown',
-          fieldId: 'bits',
-          widgetNamespace: 'extension',
-          settings: { setting: 'value' }
-        }]
+        controls: [
+          {
+            widgetId: 'dropdown',
+            fieldId: 'bits',
+            widgetNamespace: 'extension',
+            settings: { setting: 'value' }
+          }
+        ]
       })
       editorInterfacesByContentType.set('dog', ei)
       const entries = [
@@ -142,34 +150,46 @@ describe('FieldRenameIntent', function () {
           }
         })
       ]
-      const intent: FieldRenameIntent = actionCreators.field.rename('dog', 0, 'bits', 0, fakeCallsite(), 'bites')
-      const contentTypes = [{
-        name: 'Doggy',
-        sys: {
-          id: 'dog',
-          version: 1
-        },
-        fields: [
-          {
-            id: 'bits',
-            type: 'Symbol'
-          }, {
-            id: 'goodboys',
-            type: 'Number'
-          }
-        ]
-      }]
+      const intent: FieldRenameIntent = actionCreators.field.rename(
+        'dog',
+        0,
+        'bits',
+        0,
+        fakeCallsite(),
+        'bites'
+      )
+      const contentTypes = [
+        {
+          name: 'Doggy',
+          sys: {
+            id: 'dog',
+            version: 1
+          },
+          fields: [
+            {
+              id: 'bits',
+              type: 'Symbol'
+            },
+            {
+              id: 'goodboys',
+              type: 'Number'
+            }
+          ]
+        }
+      ]
 
       const api = await runIntent(intent, contentTypes, entries, [], editorInterfacesByContentType)
       const requestBatches = await api.getRequestBatches()
       expect(requestBatches[0].requests.length).to.eq(3)
       expect(requestBatches[0].requests[2].data).to.deep.include({
-        controls: [{
-          fieldId: 'bites',
-          widgetId: 'dropdown',
-          settings: { setting: 'value' },
-          widgetNamespace: 'extension'
-        }]
+        controls: [
+          {
+            fieldId: 'bites',
+            widgetId: 'dropdown',
+            settings: { setting: 'value' },
+            widgetNamespace: 'extension'
+          }
+        ]
       })
     })
   })

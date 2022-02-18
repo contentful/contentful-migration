@@ -10,7 +10,7 @@ const validateSteps = createValidator([EntryDeriveIntentValidator])
 describe('Entry derivation', function () {
   describe('when providing the required properties', function () {
     it('returns no validation errors', async function () {
-      const validationErrors = await validateSteps(function up (migration) {
+      const validationErrors = await validateSteps(function up(migration) {
         migration.deriveLinkedEntries({
           contentType: 'dog',
           derivedContentType: 'owner',
@@ -41,7 +41,7 @@ describe('Entry derivation', function () {
 
   describe('when using the wrong type for the properties', function () {
     it('returns all validation errors', async function () {
-      const validationErrors = await validateSteps(function up (migration) {
+      const validationErrors = await validateSteps(function up(migration) {
         migration.deriveLinkedEntries({
           contentType: ['dog'],
           derivedContentType: 1232,
@@ -57,7 +57,8 @@ describe('Entry derivation', function () {
       expect(validationErrors).to.eql([
         {
           type: 'InvalidType',
-          message: '\"number\" is not a valid type for the entry derivation property \"derivedContentType\". Expected \"string\".',
+          message:
+            '"number" is not a valid type for the entry derivation property "derivedContentType". Expected "string".',
           details: {
             step: {
               type: 'contentType/deriveEntries',
@@ -74,16 +75,15 @@ describe('Entry derivation', function () {
                   shouldPublish: 48,
                   deriveEntryForLocale: {}
                 },
-                contentTypeId: [
-                  'dog'
-                ]
+                contentTypeId: ['dog']
               }
             }
           }
         },
         {
           type: 'InvalidType',
-          message: '\"string\" is not a valid type for the entry derivation property \"from\". Expected \"array\".',
+          message:
+            '"string" is not a valid type for the entry derivation property "from". Expected "array".',
           details: {
             step: {
               type: 'contentType/deriveEntries',
@@ -100,16 +100,15 @@ describe('Entry derivation', function () {
                   shouldPublish: 48,
                   deriveEntryForLocale: {}
                 },
-                contentTypeId: [
-                  'dog'
-                ]
+                contentTypeId: ['dog']
               }
             }
           }
         },
         {
           type: 'InvalidType',
-          message: '\"array\" is not a valid type for the entry derivation property \"toReferenceField\". Expected \"string\".',
+          message:
+            '"array" is not a valid type for the entry derivation property "toReferenceField". Expected "string".',
           details: {
             step: {
               type: 'contentType/deriveEntries',
@@ -126,16 +125,15 @@ describe('Entry derivation', function () {
                   shouldPublish: 48,
                   deriveEntryForLocale: {}
                 },
-                contentTypeId: [
-                  'dog'
-                ]
+                contentTypeId: ['dog']
               }
             }
           }
         },
         {
           type: 'InvalidType',
-          message: '\"null\" is not a valid type for the entry derivation property \"derivedFields\". Expected \"array\".',
+          message:
+            '"null" is not a valid type for the entry derivation property "derivedFields". Expected "array".',
           details: {
             step: {
               type: 'contentType/deriveEntries',
@@ -152,16 +150,15 @@ describe('Entry derivation', function () {
                   shouldPublish: 48,
                   deriveEntryForLocale: {}
                 },
-                contentTypeId: [
-                  'dog'
-                ]
+                contentTypeId: ['dog']
               }
             }
           }
         },
         {
           type: 'InvalidType',
-          message: '\"object\" is not a valid type for the entry derivation property \"identityKey\". Expected \"function\".',
+          message:
+            '"object" is not a valid type for the entry derivation property "identityKey". Expected "function".',
           details: {
             step: {
               type: 'contentType/deriveEntries',
@@ -178,16 +175,15 @@ describe('Entry derivation', function () {
                   shouldPublish: 48,
                   deriveEntryForLocale: {}
                 },
-                contentTypeId: [
-                  'dog'
-                ]
+                contentTypeId: ['dog']
               }
             }
           }
         },
         {
           type: 'InvalidType',
-          message: '"48" is not a valid value for the entry derivation property "shouldPublish". Expected boolean or preserve.',
+          message:
+            '"48" is not a valid value for the entry derivation property "shouldPublish". Expected boolean or preserve.',
           details: {
             step: {
               type: 'contentType/deriveEntries',
@@ -204,16 +200,15 @@ describe('Entry derivation', function () {
                   shouldPublish: 48,
                   deriveEntryForLocale: {}
                 },
-                contentTypeId: [
-                  'dog'
-                ]
+                contentTypeId: ['dog']
               }
             }
           }
         },
         {
           type: 'InvalidType',
-          message: '\"object\" is not a valid type for the entry derivation property \"deriveEntryForLocale\". Expected \"function\".',
+          message:
+            '"object" is not a valid type for the entry derivation property "deriveEntryForLocale". Expected "function".',
           details: {
             step: {
               type: 'contentType/deriveEntries',
@@ -230,9 +225,7 @@ describe('Entry derivation', function () {
                   shouldPublish: 48,
                   deriveEntryForLocale: {}
                 },
-                contentTypeId: [
-                  'dog'
-                ]
+                contentTypeId: ['dog']
               }
             }
           }
@@ -266,23 +259,24 @@ describe('Entry derivation', function () {
         }
       }
 
-      const validationErrors = await validateSteps(function up (migration) {
+      const validationErrors = await validateSteps(function up(migration) {
         migration.deriveLinkedEntries(properties)
       })
 
       expect(validationErrors).to.eql([
         {
           type: 'InvalidProperty',
-          message: '"driveEntryForLocale" is not a valid property name for an entry derivation. Did you mean "deriveEntryForLocale"?',
+          message:
+            '"driveEntryForLocale" is not a valid property name for an entry derivation. Did you mean "deriveEntryForLocale"?',
           details: {
             step: {
-              'type': 'contentType/deriveEntries',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/dog/0'
+              type: 'contentType/deriveEntries',
+              meta: {
+                contentTypeInstanceId: 'contentType/dog/0'
               },
-              'payload': {
-                'contentTypeId': 'dog',
-                'derivation': omit(properties, 'contentType')
+              payload: {
+                contentTypeId: 'dog',
+                derivation: omit(properties, 'contentType')
               }
             }
           }

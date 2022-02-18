@@ -12,7 +12,6 @@ const runIntent = async function (
   locales: string[] = [],
   editorInterfacesByContentType: Map<String, EditorInterfaces> = new Map()
 ): Promise<OfflineAPI> {
-
   const list = new IntentList([intent])
 
   const existingCTs: Map<String, ContentType> = new Map()
@@ -28,7 +27,12 @@ const runIntent = async function (
     existingEntries.push(new Entry(apiEntry))
   }
 
-  const api = new OfflineAPI({ contentTypes: existingCTs, entries: existingEntries, locales, editorInterfacesByContentType: editorInterfacesByContentType })
+  const api = new OfflineAPI({
+    contentTypes: existingCTs,
+    entries: existingEntries,
+    locales,
+    editorInterfacesByContentType: editorInterfacesByContentType
+  })
 
   await list.compressed().applyTo(api)
 

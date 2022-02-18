@@ -5,7 +5,7 @@ import { createClient as _createClient } from 'contentful-management'
 // for rewiring during tests
 let createClient = _createClient
 
-function createManagementClient (params) {
+function createManagementClient(params) {
   if (!params.application) {
     throw new Error('Please specify the application name that uses this client instance')
   }
@@ -29,6 +29,4 @@ function createManagementClient (params) {
   return createClient(params, { type: 'plain' })
 }
 
-export {
-  createManagementClient
-}
+export { createManagementClient }

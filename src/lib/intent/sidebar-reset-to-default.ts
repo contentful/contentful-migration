@@ -5,33 +5,31 @@ import { SaveEditorInterfaceAction } from '../action/editorinterface-save'
 import { SidebarResetToDefaultAction } from '../action/sidebar-reset-to-default'
 
 export default class SidebarResetToDefaultIntent extends Intent {
-  isEditorInterfaceIntent () {
+  isEditorInterfaceIntent() {
     return true
   }
-  isGroupable () {
+  isGroupable() {
     return false
   }
-  groupsWith (): boolean {
+  groupsWith(): boolean {
     return false
   }
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return false
   }
-  shouldSave (): boolean {
+  shouldSave(): boolean {
     return false
   }
-  shouldPublish (): boolean {
+  shouldPublish(): boolean {
     return false
   }
-  toActions () {
+  toActions() {
     return [
-      new SidebarResetToDefaultAction(
-        this.payload.contentTypeId
-      ),
+      new SidebarResetToDefaultAction(this.payload.contentTypeId),
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]
   }
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     return {
       heading: chalk`Reset sidebar for content type {bold.yellow ${this.getContentTypeId()}} to default`,
       details: [],
