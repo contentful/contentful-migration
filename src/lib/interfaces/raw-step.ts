@@ -4,13 +4,8 @@ import EntryDerive from './entry-derive'
 import EntrySetTags from './entry-set-tags'
 import TransformEntryToType from './entry-transform-to-type'
 import { SidebarWidgetNamespace, SidebarWidgetSettings } from '../action/sidebarwidget'
-import {
-  EntryEditorNamespace,
-  EntryEditorSettings
-} from '../action/entryeditor-configure'
-import {
-  EntryEditor
-} from '../action/entryeditors-configure'
+import { EntryEditorNamespace, EntryEditorSettings } from '../action/entryeditor-configure'
+import { EntryEditor } from '../action/entryeditors-configure'
 import { APIEditorInterfaceGroupControl, APIEditorLayoutFieldGroupItem } from './content-type'
 
 interface RawStep {

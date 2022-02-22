@@ -4,38 +4,39 @@ import { PlanMessage } from '../interfaces/plan-message'
 import chalk from 'chalk'
 
 export default class FieldCreateIntent extends Intent {
-  isFieldCreate () {
+  isFieldCreate() {
     return true
   }
 
-  groupsWith (other: Intent): boolean {
+  groupsWith(other: Intent): boolean {
     const sameContentType = other.getContentTypeId() === this.getContentTypeId()
     return (
-      other.isContentTypeUpdate() ||
-      other.isContentTypeCreate() ||
-      other.isFieldCreate() ||
-      other.isFieldUpdate() ||
-      other.isFieldMove()
-    ) && sameContentType
+      (other.isContentTypeUpdate() ||
+        other.isContentTypeCreate() ||
+        other.isFieldCreate() ||
+        other.isFieldUpdate() ||
+        other.isFieldMove()) &&
+      sameContentType
+    )
   }
 
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return false
   }
 
-  toActions () {
-    return [
-      new FieldCreateAction(this.getContentTypeId(), this.payload.fieldId)
-    ]
+  toActions() {
+    return [new FieldCreateAction(this.getContentTypeId(), this.payload.fieldId)]
   }
 
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     return {
       heading: chalk`Update Content Type {bold.yellow ${this.getContentTypeId()}}`,
-      sections: [{
-        heading: chalk`Create field {yellow ${this.getFieldId()}}`,
-        details: []
-      }],
+      sections: [
+        {
+          heading: chalk`Create field {yellow ${this.getFieldId()}}`,
+          details: []
+        }
+      ],
       details: []
     }
   }

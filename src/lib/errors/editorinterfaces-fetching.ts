@@ -1,5 +1,5 @@
 class EditorInterfacesFetchingError extends Error {
-  constructor () {
+  constructor() {
     const message = `Unable to fetch editor interfaces listed in intents.`
     super(message)
   }

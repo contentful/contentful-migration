@@ -1,6 +1,6 @@
-const { expect } = require('chai');
+const { expect } = require('chai')
 
-const Fields = require('../../../../src/lib/entities/content-type').Fields;
+const Fields = require('../../../../src/lib/entities/content-type').Fields
 
 it('moves fields correctly', () => {
   const myFields = [
@@ -11,14 +11,14 @@ it('moves fields correctly', () => {
     { id: 'e' },
     { id: 'f' },
     { id: 'g' }
-  ];
+  ]
 
-  const fields = new Fields(myFields);
+  const fields = new Fields(myFields)
 
-  fields.moveField('c', 'toTheTop');
-  fields.moveField('d', 'toTheBottom');
-  fields.moveField('f', 'beforeField', 'e');
-  fields.moveField('g', 'afterField', 'e');
+  fields.moveField('c', 'toTheTop')
+  fields.moveField('d', 'toTheBottom')
+  fields.moveField('f', 'beforeField', 'e')
+  fields.moveField('g', 'afterField', 'e')
 
   expect(myFields).to.eql([
     { id: 'c' },
@@ -28,5 +28,5 @@ it('moves fields correctly', () => {
     { id: 'e' },
     { id: 'g' },
     { id: 'd' }
-  ]);
-});
+  ])
+})

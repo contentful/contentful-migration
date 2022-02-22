@@ -8,20 +8,17 @@ describe('payload validation (dependencies)', function () {
     it('returns an error', async function () {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
-        const lunch = migration.createContentType('lunch')
-          .name('Lunch')
-          .description('A Lunch')
+        const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
 
-        lunch.createField('mainCourse')
-          .name('Main Course')
-          .type('Link')
+        lunch.createField('mainCourse').name('Main Course').type('Link')
       }, existingCts)
 
       expect(errors).to.eql([
         [
           {
             type: 'InvalidPayload',
-            message: 'The property "linkType" is required on the field "mainCourse" because "type" is "Link".'
+            message:
+              'The property "linkType" is required on the field "mainCourse" because "type" is "Link".'
           }
         ]
       ])
@@ -32,21 +29,17 @@ describe('payload validation (dependencies)', function () {
     it('returns an error', async function () {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
-        const lunch = migration.createContentType('lunch')
-          .name('Lunch')
-          .description('A Lunch')
+        const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
 
-        lunch.createField('mainCourse')
-          .name('Main Course')
-          .type('Symbol')
-          .linkType('Entry')
+        lunch.createField('mainCourse').name('Main Course').type('Symbol').linkType('Entry')
       }, existingCts)
 
       expect(errors).to.eql([
         [
           {
             type: 'InvalidPayload',
-            message: 'The property "linkType" is forbidden on the field "mainCourse" because "type" is not "Link".'
+            message:
+              'The property "linkType" is forbidden on the field "mainCourse" because "type" is not "Link".'
           }
         ]
       ])
@@ -57,21 +50,17 @@ describe('payload validation (dependencies)', function () {
     it('returns an error', async function () {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
-        const lunch = migration.createContentType('lunch')
-          .name('Lunch')
-          .description('A Lunch')
+        const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
 
-        lunch.createField('mainCourse')
-          .name('Main Course')
-          .type('Link')
-          .linkType('Hermann')
+        lunch.createField('mainCourse').name('Main Course').type('Link').linkType('Hermann')
       }, existingCts)
 
       expect(errors).to.eql([
         [
           {
             type: 'InvalidPayload',
-            message: 'The property "linkType" on the field "mainCourse" must be one of ["Asset", "Entry"].'
+            message:
+              'The property "linkType" on the field "mainCourse" must be one of ["Asset", "Entry"].'
           }
         ]
       ])

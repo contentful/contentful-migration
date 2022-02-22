@@ -6,18 +6,18 @@ class EntryDeriveIntentValidator extends SchemaValidator {
   protected article = 'an'
   protected displayName = 'entry derivation'
 
-  appliesTo (step: Intent) {
+  appliesTo(step: Intent) {
     return step.isEntryDerive()
   }
 
   // NOTE: this could be change to return the object to
   // validate against the schema instead of returning
   // just the prop name
-  get propertyNameToValidate () {
+  get propertyNameToValidate() {
     return 'derivation'
   }
 
-  get schema () {
+  get schema() {
     return {
       contentType: Joi.string().required(),
       derivedContentType: Joi.string().required(),

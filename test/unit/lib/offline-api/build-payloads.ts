@@ -28,7 +28,12 @@ const buildPayloads = async function (runMigration, contentTypes: APIContentType
     existingCTs.set(contentType.id, contentType)
   }
 
-  const api = new OfflineAPI({ contentTypes: existingCTs, entries: [], locales: [], editorInterfacesByContentType })
+  const api = new OfflineAPI({
+    contentTypes: existingCTs,
+    entries: [],
+    locales: [],
+    editorInterfacesByContentType
+  })
 
   await list.compressed().applyTo(api)
 

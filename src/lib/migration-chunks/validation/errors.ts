@@ -17,8 +17,8 @@ interface ErrorCreators {
   }
   tag: {
     [groupIdentifier: string]: ErrorGroup
-  },
-  generic: ErrorGroup,
+  }
+  generic: ErrorGroup
 }
 
 const errorCreators: ErrorCreators = {
@@ -152,7 +152,6 @@ const errorCreators: ErrorCreators = {
         return `You cannot update tags on entries for content type "${id}" because it has not yet been created.`
       }
     }
-
   },
   editorLayout: {
     createEditorLayout: {

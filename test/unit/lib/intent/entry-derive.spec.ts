@@ -33,49 +33,62 @@ describe('EntryDeriveIntent', function () {
         }
       }
 
-      const intent: EntryDeriveIntent = actionCreators.contentType.deriveLinkedEntries('entry', 0, step, fakeCallsite())
+      const intent: EntryDeriveIntent = actionCreators.contentType.deriveLinkedEntries(
+        'entry',
+        0,
+        step,
+        fakeCallsite()
+      )
 
-      const contentTypes = [{
-        name: 'Entry',
-        sys: {
-          id: 'entry',
-          version: 1
+      const contentTypes = [
+        {
+          name: 'Entry',
+          sys: {
+            id: 'entry',
+            version: 1
+          },
+          fields: [
+            {
+              id: 'text',
+              type: 'Text'
+            },
+            {
+              id: 'authorName',
+              type: 'Symbol'
+            },
+            {
+              id: 'authorTwitterHandle',
+              type: 'Symbol'
+            },
+            {
+              id: 'author',
+              type: 'Link',
+              linkType: 'Entry'
+            }
+          ]
         },
-        fields: [
-          {
-            id: 'text',
-            type: 'Text'
-          }, {
-            id: 'authorName',
-            type: 'Symbol'
-          }, {
-            id: 'authorTwitterHandle',
-            type: 'Symbol'
-          }, {
+        {
+          name: 'Author',
+          sys: {
             id: 'author',
-            type: 'Link',
-            linkType: 'Entry'
-          }
-        ]
-      }, {
-        name: 'Author',
-        sys: {
-          id: 'author',
-          version: 1
-        },
-        fields: [
-          {
-            id: 'firstName',
-            type: 'Text'
-          }, {
-            id: 'lastName',
-            type: 'Symbol'
-          }, {
-            id: 'twitterHandle',
-            type: 'Symbol'
-          }
-        ]
-      }]
+            version: 1
+          },
+          fields: [
+            {
+              id: 'firstName',
+              type: 'Text'
+            },
+            {
+              id: 'lastName',
+              type: 'Symbol'
+            },
+            {
+              id: 'twitterHandle',
+              type: 'Symbol'
+            }
+          ]
+        }
+      ]
 
       const entries = [
         makeApiEntry({
@@ -101,7 +114,7 @@ describe('EntryDeriveIntent', function () {
           version: 1,
           fields: {
             text: {
-              'en-US': 'You won\'t believe what happened next',
+              'en-US': "You won't believe what happened next",
               'de-DE': 'Du wirst nicht glauben was als nächstes passierte'
             },
             authorName: {
@@ -118,8 +131,10 @@ describe('EntryDeriveIntent', function () {
           version: 1,
           fields: {
             text: {
-              'en-US': 'Act only according to that maxim whereby you can, at the same time, will that it should become a universal law',
-              'de-DE': 'Handle nur nach derjenigen Maxime, durch die du zugleich wollen kannst, dass sie ein allgemeines Gesetz werde'
+              'en-US':
+                'Act only according to that maxim whereby you can, at the same time, will that it should become a universal law',
+              'de-DE':
+                'Handle nur nach derjenigen Maxime, durch die du zugleich wollen kannst, dass sie ein allgemeines Gesetz werde'
             },
             authorName: {
               'en-US': 'Immanuel Kant'
@@ -169,7 +184,7 @@ describe('EntryDeriveIntent', function () {
           publishedVersion: 2,
           fields: {
             text: {
-              'en-US': 'You won\'t believe what happened next',
+              'en-US': "You won't believe what happened next",
               'de-DE': 'Du wirst nicht glauben was als nächstes passierte'
             },
             authorName: {
@@ -191,8 +206,10 @@ describe('EntryDeriveIntent', function () {
           publishedVersion: 2,
           fields: {
             text: {
-              'en-US': 'Act only according to that maxim whereby you can, at the same time, will that it should become a universal law',
-              'de-DE': 'Handle nur nach derjenigen Maxime, durch die du zugleich wollen kannst, dass sie ein allgemeines Gesetz werde'
+              'en-US':
+                'Act only according to that maxim whereby you can, at the same time, will that it should become a universal law',
+              'de-DE':
+                'Handle nur nach derjenigen Maxime, durch die du zugleich wollen kannst, dass sie ein allgemeines Gesetz werde'
             },
             authorName: {
               'en-US': 'Immanuel Kant'
@@ -272,49 +289,62 @@ describe('EntryDeriveIntent', function () {
         }
       }
 
-      const intent: EntryDeriveIntent = actionCreators.contentType.deriveLinkedEntries('entry', 0, step, fakeCallsite())
+      const intent: EntryDeriveIntent = actionCreators.contentType.deriveLinkedEntries(
+        'entry',
+        0,
+        step,
+        fakeCallsite()
+      )
 
-      const contentTypes = [{
-        name: 'Entry',
-        sys: {
-          id: 'entry',
-          version: 1
+      const contentTypes = [
+        {
+          name: 'Entry',
+          sys: {
+            id: 'entry',
+            version: 1
+          },
+          fields: [
+            {
+              id: 'text',
+              type: 'Text'
+            },
+            {
+              id: 'authorName',
+              type: 'Symbol'
+            },
+            {
+              id: 'authorTwitterHandle',
+              type: 'Symbol'
+            },
+            {
+              id: 'author',
+              type: 'Link',
+              linkType: 'Entry'
+            }
+          ]
         },
-        fields: [
-          {
-            id: 'text',
-            type: 'Text'
-          }, {
-            id: 'authorName',
-            type: 'Symbol'
-          }, {
-            id: 'authorTwitterHandle',
-            type: 'Symbol'
-          }, {
+        {
+          name: 'Author',
+          sys: {
             id: 'author',
-            type: 'Link',
-            linkType: 'Entry'
-          }
-        ]
-      }, {
-        name: 'Author',
-        sys: {
-          id: 'author',
-          version: 1
-        },
-        fields: [
-          {
-            id: 'firstName',
-            type: 'Text'
-          }, {
-            id: 'lastName',
-            type: 'Symbol'
-          }, {
-            id: 'twitterHandle',
-            type: 'Symbol'
-          }
-        ]
-      }]
+            version: 1
+          },
+          fields: [
+            {
+              id: 'firstName',
+              type: 'Text'
+            },
+            {
+              id: 'lastName',
+              type: 'Symbol'
+            },
+            {
+              id: 'twitterHandle',
+              type: 'Symbol'
+            }
+          ]
+        }
+      ]
 
       const entries = [
         makeApiEntry({
@@ -340,7 +370,7 @@ describe('EntryDeriveIntent', function () {
           version: 1,
           fields: {
             text: {
-              'en-US': 'You won\'t believe what happened next',
+              'en-US': "You won't believe what happened next",
               'de-DE': 'Du wirst nicht glauben was als nächstes passierte'
             },
             authorName: {
@@ -357,8 +387,10 @@ describe('EntryDeriveIntent', function () {
           version: 1,
           fields: {
             text: {
-              'en-US': 'Act only according to that maxim whereby you can, at the same time, will that it should become a universal law',
-              'de-DE': 'Handle nur nach derjenigen Maxime, durch die du zugleich wollen kannst, dass sie ein allgemeines Gesetz werde'
+              'en-US':
+                'Act only according to that maxim whereby you can, at the same time, will that it should become a universal law',
+              'de-DE':
+                'Handle nur nach derjenigen Maxime, durch die du zugleich wollen kannst, dass sie ein allgemeines Gesetz werde'
             },
             authorName: {
               'en-US': 'Immanuel Kant'
@@ -408,7 +440,7 @@ describe('EntryDeriveIntent', function () {
           publishedVersion: 2,
           fields: {
             text: {
-              'en-US': 'You won\'t believe what happened next',
+              'en-US': "You won't believe what happened next",
               'de-DE': 'Du wirst nicht glauben was als nächstes passierte'
             },
             authorName: {
@@ -430,8 +462,10 @@ describe('EntryDeriveIntent', function () {
           version: 1,
           fields: {
             text: {
-              'en-US': 'Act only according to that maxim whereby you can, at the same time, will that it should become a universal law',
-              'de-DE': 'Handle nur nach derjenigen Maxime, durch die du zugleich wollen kannst, dass sie ein allgemeines Gesetz werde'
+              'en-US':
+                'Act only according to that maxim whereby you can, at the same time, will that it should become a universal law',
+              'de-DE':
+                'Handle nur nach derjenigen Maxime, durch die du zugleich wollen kannst, dass sie ein allgemeines Gesetz werde'
             },
             authorName: {
               'en-US': 'Immanuel Kant'

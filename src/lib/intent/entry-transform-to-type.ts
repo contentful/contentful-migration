@@ -4,36 +4,30 @@ import { PlanMessage } from '../interfaces/plan-message'
 import chalk from 'chalk'
 
 export default class EntryTransformToTypeIntent extends Intent {
-  getRelatedContentTypeIds () {
-    return [
-      this.payload.entryTransformationToType.sourceContentType
-    ]
+  getRelatedContentTypeIds() {
+    return [this.payload.entryTransformationToType.sourceContentType]
   }
-  isEntryTransformToType () {
+  isEntryTransformToType() {
     return true
   }
 
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return true
   }
 
-  groupsWith (): boolean {
+  groupsWith(): boolean {
     return false
   }
 
-  requiresAllTags () {
+  requiresAllTags() {
     return true
   }
 
-  toActions () {
-    return [
-      new EntryTransformToTypeAction(
-        this.payload.entryTransformationToType
-      )
-    ]
+  toActions() {
+    return [new EntryTransformToTypeAction(this.payload.entryTransformationToType)]
   }
 
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     return {
       heading: chalk`Migrate entries from {bold.yellow ${this.getContentTypeId()}}`,
       details: [
@@ -44,15 +38,15 @@ export default class EntryTransformToTypeIntent extends Intent {
     }
   }
 
-  shouldSave () {
+  shouldSave() {
     return false
   }
 
-  shouldPublish () {
+  shouldPublish() {
     return false
   }
 
-  requiresAllEntries () {
+  requiresAllEntries() {
     return this.payload.entryTransformationToType.updateReferences
   }
 }

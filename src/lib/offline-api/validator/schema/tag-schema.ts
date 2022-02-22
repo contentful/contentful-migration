@@ -6,6 +6,4 @@ const tagSchema = Joi.object().keys({
 })
 
 export default tagSchema
-export {
-  tagSchema
-}
+export { tagSchema }

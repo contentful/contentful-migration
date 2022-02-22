@@ -1,41 +1,41 @@
 import { Intent } from './intent'
 
 interface ValidationError {
-  type: string,
-  message: string,
+  type: string
+  message: string
   details?: {
     intent: Intent
   }
 }
 
 interface PayloadValidationError extends ValidationError {
-  type: 'InvalidPayload',
+  type: 'InvalidPayload'
   message: string
 }
 
 interface InvalidActionError extends ValidationError {
-  type: 'InvalidAction',
+  type: 'InvalidAction'
   message: string
 }
 
 interface InvalidTypeError extends ValidationError {
-  type: 'InvalidType',
-  message: string,
+  type: 'InvalidType'
+  message: string
   details: {
     intent: Intent
   }
 }
 
 interface InvalidMovementError extends ValidationError {
-  type: 'InvalidMovement',
-  message: string,
+  type: 'InvalidMovement'
+  message: string
   details: {
     intent: Intent
   }
 }
 
 interface InvalidPropertyError extends ValidationError {
-  type: 'InvalidProperty',
+  type: 'InvalidProperty'
   message: string
 }
 

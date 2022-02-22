@@ -5,11 +5,11 @@ class FieldUpdateStepValidator extends SchemaValidator {
   protected article = 'a'
   protected displayName = 'field'
 
-  appliesTo (step) {
+  appliesTo(step) {
     return step.isFieldUpdate()
   }
 
-  get schema () {
+  get schema() {
     return {
       id: Joi.string().required(),
       newId: Joi.string().required(),

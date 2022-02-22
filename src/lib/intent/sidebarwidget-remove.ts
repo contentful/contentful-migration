@@ -5,30 +5,28 @@ import { SaveEditorInterfaceAction } from '../action/editorinterface-save'
 import { SidebarWidgetRemoveAction } from '../action/sidebarwidget-remove'
 
 export default class SidebarWidgetRemoveIntent extends Intent {
-  isSidebarUpdate () {
+  isSidebarUpdate() {
     return true
   }
-  isEditorInterfaceIntent () {
+  isEditorInterfaceIntent() {
     return true
   }
-  isGroupable () {
+  isGroupable() {
     return true
   }
-  groupsWith (other: Intent): boolean {
-    return other.isGroupable()
-      && other.isEditorInterfaceIntent()
-      && this.isSameContentType(other)
+  groupsWith(other: Intent): boolean {
+    return other.isGroupable() && other.isEditorInterfaceIntent() && this.isSameContentType(other)
   }
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return false
   }
-  shouldSave (): boolean {
+  shouldSave(): boolean {
     return false
   }
-  shouldPublish (): boolean {
+  shouldPublish(): boolean {
     return false
   }
-  toActions () {
+  toActions() {
     return [
       new SidebarWidgetRemoveAction(
         this.payload.contentTypeId,
@@ -38,18 +36,18 @@ export default class SidebarWidgetRemoveIntent extends Intent {
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]
   }
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     const { widgetId, widgetNamespace } = this.payload.sidebarWidget
 
     return {
       heading: chalk`Update sidebar for Content Type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],
-      sections: [{
-        heading: chalk`Remove sidebar widget {yellow ${widgetId}}`,
-        details: [
-          chalk`{italic widgetNamespace}: "${widgetNamespace}"`
-        ]
-      }]
+      sections: [
+        {
+          heading: chalk`Remove sidebar widget {yellow ${widgetId}}`,
+          details: [chalk`{italic widgetNamespace}: "${widgetNamespace}"`]
+        }
+      ]
     }
   }
 }

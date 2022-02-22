@@ -8,160 +8,156 @@ export default abstract class Intent implements IntentInterface {
   protected meta: RawStepMeta
   protected payload: RawStepPayload
 
-  constructor (rawStep: RawStep) {
+  constructor(rawStep: RawStep) {
     this.type = rawStep.type
     this.meta = rawStep.meta
     this.payload = rawStep.payload
   }
 
-  getContentTypeId () {
+  getContentTypeId() {
     return this.payload.contentTypeId
   }
 
-  isSameContentType (other: Intent): boolean {
+  isSameContentType(other: Intent): boolean {
     return this.getContentTypeId() === other.getContentTypeId()
   }
 
-  getRelatedContentTypeIds () {
+  getRelatedContentTypeIds() {
     return [this.getContentTypeId()]
   }
 
-  getFieldId () {
+  getFieldId() {
     return this.payload.fieldId
   }
 
-  getInvalidMethod () {
+  getInvalidMethod() {
     return this.payload.invalidMethod
   }
 
-  getFieldGroupId () {
+  getFieldGroupId() {
     return this.payload.fieldGroupId
   }
 
-  getNewFieldGroupId () {
+  getNewFieldGroupId() {
     return this.payload.newFieldGroupId
   }
 
-  getFieldGroupProps () {
+  getFieldGroupProps() {
     return this.payload.fieldGroupProps
   }
 
-  requiresAllEntries () {
+  requiresAllEntries() {
     return false
   }
 
-  requiresAllTags () {
+  requiresAllTags() {
     return false
   }
 
-  requiresContentType () {
+  requiresContentType() {
     return false
   }
 
-  isContentTypeUpdate () {
+  isContentTypeUpdate() {
     return false
   }
 
-  isContentTypeDelete () {
+  isContentTypeDelete() {
     return false
   }
 
-  isContentTypeCreate () {
+  isContentTypeCreate() {
     return false
   }
 
-  isFieldCreate () {
+  isFieldCreate() {
     return false
   }
 
-  isFieldUpdate () {
+  isFieldUpdate() {
     return false
   }
 
-  isFieldDelete () {
+  isFieldDelete() {
     return false
   }
 
-  isFieldRename () {
+  isFieldRename() {
     return false
   }
 
-  isFieldMove () {
+  isFieldMove() {
     return false
   }
 
-  isContentTransform () {
+  isContentTransform() {
     return false
   }
 
-  isEntryDerive () {
+  isEntryDerive() {
     return false
   }
 
-  isEntryTransformToType () {
+  isEntryTransformToType() {
     return false
   }
 
-  isEditorInterfaceUpdate () {
+  isEditorInterfaceUpdate() {
     return false
   }
 
-  isSidebarUpdate () {
+  isSidebarUpdate() {
     return false
   }
 
-  isGroupable () {
+  isGroupable() {
     return false
   }
 
-  isEditorInterfaceIntent () {
+  isEditorInterfaceIntent() {
     return false
   }
 
-  isEditorLayoutCreate () {
+  isEditorLayoutCreate() {
     return false
   }
 
-  isEditorLayoutDelete () {
+  isEditorLayoutDelete() {
     return false
   }
 
-  isEditorLayoutUpdate () {
+  isEditorLayoutUpdate() {
     return false
   }
-  isEditorLayoutInvalidMethod () {
-    return false
-  }
-
-  isFieldGroupCreate () {
+  isEditorLayoutInvalidMethod() {
     return false
   }
 
-  isFieldGroupDelete () {
+  isFieldGroupCreate() {
     return false
   }
 
-  isFieldGroupUpdate () {
+  isFieldGroupDelete() {
     return false
   }
 
-  isFieldGroupIdChange () {
+  isFieldGroupUpdate() {
     return false
   }
 
-  isFieldGroupControlChange () {
+  isFieldGroupIdChange() {
     return false
   }
 
-  isAboutContentType () {
-    return (
-      this.isContentTypeUpdate() ||
-      this.isContentTypeCreate() ||
-      this.isContentTypeDelete()
-    )
+  isFieldGroupControlChange() {
+    return false
   }
 
-  isAboutField () {
+  isAboutContentType() {
+    return this.isContentTypeUpdate() || this.isContentTypeCreate() || this.isContentTypeDelete()
+  }
+
+  isAboutField() {
     return (
       this.isFieldCreate() ||
       this.isFieldUpdate() ||
@@ -171,7 +167,7 @@ export default abstract class Intent implements IntentInterface {
     )
   }
 
-  isAboutEditorLayout () {
+  isAboutEditorLayout() {
     return (
       this.isEditorLayoutCreate() ||
       this.isEditorLayoutDelete() ||
@@ -179,11 +175,11 @@ export default abstract class Intent implements IntentInterface {
     )
   }
 
-  isComposedIntent () {
+  isComposedIntent() {
     return false
   }
 
-  groupsWith (other: Intent): boolean {
+  groupsWith(other: Intent): boolean {
     // A content transform does not end the group,
     // but still could share a content type ID
     if (other.isContentTransform()) {
@@ -196,13 +192,13 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
-  abstract endsGroup (): boolean
+  abstract endsGroup(): boolean
 
-  shouldSave (): boolean {
+  shouldSave(): boolean {
     return true
   }
 
-  shouldPublish (): boolean {
+  shouldPublish(): boolean {
     if (!this.shouldSave()) {
       throw new Error('Cannot publish when shouldSave has falsy value')
     }
@@ -210,7 +206,7 @@ export default abstract class Intent implements IntentInterface {
     return true
   }
 
-  toRaw (): RawStep {
+  toRaw(): RawStep {
     return {
       type: this.type,
       meta: this.meta,
@@ -218,34 +214,34 @@ export default abstract class Intent implements IntentInterface {
     }
   }
 
-  getRawType (): string {
+  getRawType(): string {
     return this.type
   }
 
-  getTagId (): string {
+  getTagId(): string {
     return ''
   }
 
-  isTagCreate (): boolean {
+  isTagCreate(): boolean {
     return false
   }
 
-  isTagUpdate (): boolean {
+  isTagUpdate(): boolean {
     return false
   }
 
-  isTagDelete (): boolean {
+  isTagDelete(): boolean {
     return false
   }
 
-  isTagIntent (): boolean {
+  isTagIntent(): boolean {
     return false
   }
 
-  isEntrySetTags (): boolean {
+  isEntrySetTags(): boolean {
     return false
   }
 
-  abstract toActions (): (APIAction | EntityAction)[]
-  abstract toPlanMessage (): PlanMessage
+  abstract toActions(): (APIAction | EntityAction)[]
+  abstract toPlanMessage(): PlanMessage
 }

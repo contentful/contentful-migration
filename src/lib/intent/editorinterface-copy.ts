@@ -5,27 +5,25 @@ import chalk from 'chalk'
 import { SaveEditorInterfaceAction } from '../action/editorinterface-save'
 
 export default class EditorInterfaceCopyIntent extends Intent {
-  isEditorInterfaceIntent () {
+  isEditorInterfaceIntent() {
     return true
   }
-  isGroupable () {
+  isGroupable() {
     return true
   }
-  groupsWith (other: Intent): boolean {
-    return other.isGroupable()
-      && other.isEditorInterfaceIntent()
-      && this.isSameContentType(other)
+  groupsWith(other: Intent): boolean {
+    return other.isGroupable() && other.isEditorInterfaceIntent() && this.isSameContentType(other)
   }
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return false
   }
-  shouldSave (): boolean {
+  shouldSave(): boolean {
     return false
   }
-  shouldPublish (): boolean {
+  shouldPublish(): boolean {
     return false
   }
-  toActions () {
+  toActions() {
     return [
       new CopyEditorInterfaceAction(
         this.payload.contentTypeId,
@@ -35,7 +33,7 @@ export default class EditorInterfaceCopyIntent extends Intent {
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]
   }
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     const { source, destination } = this.payload.editorInterfaceCopy
     return {
       heading: chalk`Copy field control for Content Type {bold.yellow ${this.getContentTypeId()}} from field {italic ${source}} to field {italic ${destination}}`,

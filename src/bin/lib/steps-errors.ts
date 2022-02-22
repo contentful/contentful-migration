@@ -12,10 +12,10 @@ interface LineContext {
 
 const getLineWithContext = function (lines, lineNumber, context): LineContext {
   // Lines start at 1, arrays at 0
-  const line = (lineNumber - 1)
+  const line = lineNumber - 1
 
-  const firstLine = (line > context) ? (line - context) : 0
-  const lastLine = (line + context) < lines.length ? line + context : lines.length
+  const firstLine = line > context ? line - context : 0
+  const lastLine = line + context < lines.length ? line + context : lines.length
 
   return {
     before: lines.slice(firstLine, line),
@@ -38,20 +38,22 @@ const renderStepsErrors = function (errors: ValidationError[]) {
     const lines = highlightedCode.split('\n')
 
     const fileErrorsMessage = chalk`{red Errors in ${file}}\n\n`
-    const errorMessages = errorsByFile[file].map((error) => {
-      const intent = error.details.intent
-      const callsite = intent.toRaw().meta.callsite
-      const context = 2
-      const { before, line, after } = getLineWithContext(lines, callsite.line, context)
+    const errorMessages = errorsByFile[file]
+      .map((error) => {
+        const intent = error.details.intent
+        const callsite = intent.toRaw().meta.callsite
+        const context = 2
+        const { before, line, after } = getLineWithContext(lines, callsite.line, context)
 
-      const beforeLines = before.map((line) => chalk`${line}\n`).join('')
-      const afterLines = after.map((line) => chalk`${line}\n`).join('')
-      const highlightedLine = chalk`{bold ${line}}\n`
+        const beforeLines = before.map((line) => chalk`${line}\n`).join('')
+        const afterLines = after.map((line) => chalk`${line}\n`).join('')
+        const highlightedLine = chalk`{bold ${line}}\n`
 
-      const formattedCode = beforeLines + highlightedLine + afterLines
+        const formattedCode = beforeLines + highlightedLine + afterLines
 
-      return chalk`{red Line ${String(callsite.line)}:} {bold ${error.message}}\n${formattedCode}`
-    }).join('\n')
+        return chalk`{red Line ${String(callsite.line)}:} {bold ${error.message}}\n${formattedCode}`
+      })
+      .join('\n')
 
     messages.push(`${fileErrorsMessage}${errorMessages}`)
   }

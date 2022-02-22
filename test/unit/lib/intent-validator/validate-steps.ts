@@ -15,7 +15,7 @@ const stripCallsites = (errors) => {
   })
 }
 
-export default function createValidator (validators) {
+export default function createValidator(validators) {
   return async function (migration) {
     const steps = await createSteps(migration, noOp, {})
 

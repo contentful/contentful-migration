@@ -4,12 +4,12 @@ import ContentType from '../entities/content-type'
 class FieldUpdateAction extends FieldAction {
   protected props: { newId?: string }
 
-  constructor (contentTypeId: string, fieldId: string, props: object) {
+  constructor(contentTypeId: string, fieldId: string, props: object) {
     super(contentTypeId, fieldId)
     this.props = props
   }
 
-  async applyTo (ct: ContentType) {
+  async applyTo(ct: ContentType) {
     const fields = ct.fields
     const field = fields.getField(this.getFieldId())
 

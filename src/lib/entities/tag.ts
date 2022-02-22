@@ -6,42 +6,42 @@ class Tag {
   private _version: number
   private _visibility: TagVisibility
 
-  constructor (tag: APITag) {
+  constructor(tag: APITag) {
     this._id = tag.sys.id
     this._version = tag.sys.version
     this._name = tag.name
     this._visibility = tag.sys.visibility || 'private'
   }
 
-  get id () {
+  get id() {
     return this._id
   }
 
-  get name () {
+  get name() {
     return this._name
   }
 
-  get version () {
+  get version() {
     return this._version
   }
 
-  set version (version: number) {
+  set version(version: number) {
     this._version = version
   }
 
-  set name (name: string) {
+  set name(name: string) {
     this._name = name
   }
 
-  get visibility () {
+  get visibility() {
     return this._visibility || 'private'
   }
 
-  set visibility (visibility: TagVisibility) {
+  set visibility(visibility: TagVisibility) {
     this._visibility = visibility
   }
 
-  toApiTag (): APITag {
+  toApiTag(): APITag {
     const sys = {
       id: this.id,
       version: this.version,
@@ -53,12 +53,9 @@ class Tag {
     }
   }
 
-  clone (): Tag {
+  clone(): Tag {
     return new Tag(this.toApiTag())
   }
 }
 
-export {
-    Tag as default,
-    Tag
-}
+export { Tag as default, Tag }

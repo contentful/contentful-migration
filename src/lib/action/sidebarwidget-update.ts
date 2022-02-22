@@ -9,11 +9,13 @@ class SidebarWidgetUpdateAction extends EntityAction {
   protected settings: SidebarWidgetSettings
   protected disabled: boolean
 
-  constructor (contentTypeId: string,
-               widgetId: string,
-               widgetNamespace: SidebarWidgetNamespace,
-               settings?: SidebarWidgetSettings,
-               disabled?: boolean) {
+  constructor(
+    contentTypeId: string,
+    widgetId: string,
+    widgetNamespace: SidebarWidgetNamespace,
+    settings?: SidebarWidgetSettings,
+    disabled?: boolean
+  ) {
     super()
     this.contentTypeId = contentTypeId
     this.widgetId = widgetId
@@ -22,15 +24,15 @@ class SidebarWidgetUpdateAction extends EntityAction {
     this.widgetNamespace = widgetNamespace
   }
 
-  getEntityType (): EntityType {
+  getEntityType(): EntityType {
     return EntityType.EditorInterface
   }
 
-  getEntityId (): string {
+  getEntityId(): string {
     return this.contentTypeId
   }
 
-  async applyTo (editorInterfaces: EditorInterfaces) {
+  async applyTo(editorInterfaces: EditorInterfaces) {
     editorInterfaces.updateSidebarWidget(
       this.widgetId,
       this.widgetNamespace,

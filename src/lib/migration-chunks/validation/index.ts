@@ -24,7 +24,7 @@ export const invalidActionError = (message, intent) => {
   }
 }
 
-function validateIntents (
+function validateIntents(
   intentList: IntentList,
   contentTypes: ContentType[],
   editorInterfaces: Map<string, EditorInterfaces>,
@@ -39,7 +39,9 @@ function validateIntents (
 
   const createCTs = intents.filter((intent) => intent.isContentTypeCreate())
   const createdIds = createCTs.map((createIntent) => createIntent.getContentTypeId())
-  const createdCTs = createdIds.map((id) => new ContentType({ sys: { id, version: 0 }, name: undefined, fields: [] }))
+  const createdCTs = createdIds.map(
+    (id) => new ContentType({ sys: { id, version: 0 }, name: undefined, fields: [] })
+  )
 
   const allCTs = contentTypes.concat(createdCTs)
   let { errors: fieldErrors, fieldsContext } = fieldValidations(intents, allCTs)
@@ -62,7 +64,4 @@ function validateIntents (
   return []
 }
 
-export {
-  validateIntents as default,
-  validateIntents
-}
+export { validateIntents as default, validateIntents }
