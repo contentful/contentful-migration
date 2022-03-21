@@ -65,7 +65,7 @@
     "listr2": "^3.13.5",
     "lodash": "^4.17.15",
     "uuid": "^8.3.2",
-    "yargs": "^15.3.1"
+    "yargs": "^17.4.0"
   },
   "devDependencies": {
     "@contentful/eslint-config-backend": "^9.0.0",
