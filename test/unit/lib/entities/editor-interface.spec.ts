@@ -75,10 +75,7 @@ describe('EditorInterfaces', () => {
       widgetId: 'beforeThis'
     }
 
-    const editorInterface = makeEditorInterface({ sidebar: [
-      existingWidget,
-      beforeWidget
-    ]})
+    const editorInterface = makeEditorInterface({ sidebar: [existingWidget, beforeWidget] })
 
     editorInterface.addSidebarWidget(
       testWidget.widgetId,
@@ -151,7 +148,9 @@ describe('EditorInterfaces', () => {
       }
     }
 
-    const editorInterface = makeEditorInterface({ controls: [control as APIEditorInterfaceControl] })
+    const editorInterface = makeEditorInterface({
+      controls: [control as APIEditorInterfaceControl]
+    })
     editorInterface.update(control.fieldId, control.widgetId, null, 'extension')
 
     expect(editorInterface.getControls()).to.eql([
@@ -206,20 +205,28 @@ describe('EditorInterfaces', () => {
   describe('createEditorLayoutFieldGroup', () => {
     it('creates tab if no parent is passed', () => {
       const editorInterface = makeEditorInterface({
-        editorLayout: [{ fieldId: 'a' }, { fieldId: 'b' }] as unknown as APIEditorLayoutFieldGroupItem[]
+        editorLayout: [
+          { fieldId: 'a' },
+          { fieldId: 'b' }
+        ] as unknown as APIEditorLayoutFieldGroupItem[]
       })
 
       editorInterface.createEditorLayoutFieldGroup('tab')
 
-      expect(editorInterface.getEditorLayout()).to.eql([{
-        groupId: 'tab',
-        items: [{ fieldId: 'a' }, { fieldId: 'b' }]
-      }])
+      expect(editorInterface.getEditorLayout()).to.eql([
+        {
+          groupId: 'tab',
+          items: [{ fieldId: 'a' }, { fieldId: 'b' }]
+        }
+      ])
     })
 
     it('adds new tab to the end of the tab list', () => {
       const editorInterface = makeEditorInterface({
-        editorLayout: [{ fieldId: 'a' }, { fieldId: 'b' }] as unknown as APIEditorLayoutFieldGroupItem[]
+        editorLayout: [
+          { fieldId: 'a' },
+          { fieldId: 'b' }
+        ] as unknown as APIEditorLayoutFieldGroupItem[]
       })
 
       editorInterface.createEditorLayoutFieldGroup('tab1')
@@ -239,40 +246,48 @@ describe('EditorInterfaces', () => {
 
     it('creates field set if parent is passed', () => {
       const editorInterface = makeEditorInterface({
-        editorLayout: [{ groupId: 'parentId', items: [{ fieldId: 'a' }, { fieldId: 'b' }] }] as APIEditorLayoutFieldGroupItem[]
+        editorLayout: [
+          { groupId: 'parentId', items: [{ fieldId: 'a' }, { fieldId: 'b' }] }
+        ] as APIEditorLayoutFieldGroupItem[]
       })
 
       editorInterface.createEditorLayoutFieldGroup('groupId', 'parentId')
 
-      expect(editorInterface.getEditorLayout()).to.eql([{
-        groupId: 'parentId',
-        items: [
-          { fieldId: 'a' },
-          { fieldId: 'b' },
-          {
-            groupId: 'groupId',
-            items: []
-          }
-        ]
-      }])
+      expect(editorInterface.getEditorLayout()).to.eql([
+        {
+          groupId: 'parentId',
+          items: [
+            { fieldId: 'a' },
+            { fieldId: 'b' },
+            {
+              groupId: 'groupId',
+              items: []
+            }
+          ]
+        }
+      ])
     })
   })
 
   describe('createEditorLayoutFieldGroup', () => {
     it('has no effect if field group is not present', () => {
       const editorInterface = makeEditorInterface({
-        editorLayout: [{
-          groupId: 'tab',
-          items: [{ fieldId: 'a' }, { fieldId: 'b' }]
-        }]
+        editorLayout: [
+          {
+            groupId: 'tab',
+            items: [{ fieldId: 'a' }, { fieldId: 'b' }]
+          }
+        ]
       })
 
       editorInterface.deleteEditorLayoutFieldGroup('tab2')
 
-      expect(editorInterface.getEditorLayout()).to.eql([{
-        groupId: 'tab',
-        items: [{ fieldId: 'a' }, { fieldId: 'b' }]
-      }])
+      expect(editorInterface.getEditorLayout()).to.eql([
+        {
+          groupId: 'tab',
+          items: [{ fieldId: 'a' }, { fieldId: 'b' }]
+        }
+      ])
     })
 
     it('deletes tab', () => {
@@ -288,10 +303,12 @@ describe('EditorInterfaces', () => {
 
       editorInterface.deleteEditorLayoutFieldGroup('tab2')
 
-      expect(editorInterface.getEditorLayout()).to.eql([{
-        groupId: 'tab',
-        items: [{ fieldId: 'a' }, { fieldId: 'b' }]
-      }])
+      expect(editorInterface.getEditorLayout()).to.eql([
+        {
+          groupId: 'tab',
+          items: [{ fieldId: 'a' }, { fieldId: 'b' }]
+        }
+      ])
     })
 
     it('appends contents of deleted tab to first tab', () => {
@@ -307,10 +324,12 @@ describe('EditorInterfaces', () => {
 
       editorInterface.deleteEditorLayoutFieldGroup('tab2')
 
-      expect(editorInterface.getEditorLayout()).to.eql([{
-        groupId: 'tab',
-        items: [{ fieldId: 'a' }, { fieldId: 'b' }, { groupId: 'fieldSet', items: [] }]
-      }])
+      expect(editorInterface.getEditorLayout()).to.eql([
+        {
+          groupId: 'tab',
+          items: [{ fieldId: 'a' }, { fieldId: 'b' }, { groupId: 'fieldSet', items: [] }]
+        }
+      ])
     })
 
     it('deletes field set', () => {
@@ -319,11 +338,7 @@ describe('EditorInterfaces', () => {
           { groupId: 'tab', items: [] },
           {
             groupId: 'tab2',
-            items: [
-              { fieldId: 'a' },
-              { groupId: 'fieldSet', items: [] },
-              { fieldId: 'b' }
-            ]
+            items: [{ fieldId: 'a' }, { groupId: 'fieldSet', items: [] }, { fieldId: 'b' }]
           }
         ]
       })
@@ -334,7 +349,7 @@ describe('EditorInterfaces', () => {
         { groupId: 'tab', items: [] },
         {
           groupId: 'tab2',
-          items: [ { fieldId: 'a' }, { fieldId: 'b' } ]
+          items: [{ fieldId: 'a' }, { fieldId: 'b' }]
         }
       ])
     })
@@ -358,7 +373,7 @@ describe('EditorInterfaces', () => {
       expect(editorInterface.getEditorLayout()).to.eql([
         {
           groupId: 'tab',
-          items: [ { fieldId: 'a' }, { fieldId: 'b' }, { fieldId: 'c' }, { fieldId: 'd' } ]
+          items: [{ fieldId: 'a' }, { fieldId: 'b' }, { fieldId: 'c' }, { fieldId: 'd' }]
         }
       ])
     })
@@ -376,22 +391,26 @@ describe('EditorInterfaces', () => {
         settings: { helpText: 'help text' }
       })
 
-      expect(editorInterface.getGroupControls()).to.eql([{
-        groupId: 'fieldSetId',
-        widgetId: 'customWidgetId',
-        widgetNamespace: 'customWidgetNamespace',
-        settings: { helpText: 'help text' }
-      }])
+      expect(editorInterface.getGroupControls()).to.eql([
+        {
+          groupId: 'fieldSetId',
+          widgetId: 'customWidgetId',
+          widgetNamespace: 'customWidgetNamespace',
+          settings: { helpText: 'help text' }
+        }
+      ])
     })
 
     it('updates group control if it exists', () => {
       const editorInterface = makeEditorInterface({
-        groupControls: [{
-          groupId: 'fieldSetId',
-          widgetId: 'fieldset',
-          widgetNamespace: 'builtin',
-          settings: {}
-        }]
+        groupControls: [
+          {
+            groupId: 'fieldSetId',
+            widgetId: 'fieldset',
+            widgetNamespace: 'builtin',
+            settings: {}
+          }
+        ]
       })
 
       editorInterface.updateGroupControl('fieldSetId', {
@@ -400,22 +419,26 @@ describe('EditorInterfaces', () => {
         settings: { helpText: 'help text' }
       })
 
-      expect(editorInterface.getGroupControls()).to.eql([{
-        groupId: 'fieldSetId',
-        widgetId: 'customWidgetId',
-        widgetNamespace: 'customWidgetNamespace',
-        settings: { helpText: 'help text' }
-      }])
+      expect(editorInterface.getGroupControls()).to.eql([
+        {
+          groupId: 'fieldSetId',
+          widgetId: 'customWidgetId',
+          widgetNamespace: 'customWidgetNamespace',
+          settings: { helpText: 'help text' }
+        }
+      ])
     })
 
     it('keeps old settings if not passed', () => {
       const editorInterface = makeEditorInterface({
-        groupControls: [{
-          groupId: 'fieldSetId',
-          widgetId: 'fieldset',
-          widgetNamespace: 'builtin',
-          settings: { helpText: 'help text' }
-        }]
+        groupControls: [
+          {
+            groupId: 'fieldSetId',
+            widgetId: 'fieldset',
+            widgetNamespace: 'builtin',
+            settings: { helpText: 'help text' }
+          }
+        ]
       })
 
       editorInterface.updateGroupControl('fieldSetId', {
@@ -423,12 +446,14 @@ describe('EditorInterfaces', () => {
         widgetNamespace: 'customWidgetNamespace'
       })
 
-      expect(editorInterface.getGroupControls()).to.eql([{
-        groupId: 'fieldSetId',
-        widgetId: 'customWidgetId',
-        widgetNamespace: 'customWidgetNamespace',
-        settings: { helpText: 'help text' }
-      }])
+      expect(editorInterface.getGroupControls()).to.eql([
+        {
+          groupId: 'fieldSetId',
+          widgetId: 'customWidgetId',
+          widgetNamespace: 'customWidgetNamespace',
+          settings: { helpText: 'help text' }
+        }
+      ])
     })
   })
 })

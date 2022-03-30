@@ -30,7 +30,6 @@ function validateIntents(
   editorInterfaces: Map<string, EditorInterfaces>,
   tags: Tag[]
 ): ValidationError[] | InvalidActionError[] {
-
   const intents: Intent[] = intentList.getIntents()
   const ctErrors = contentTypeValidations(intents, contentTypes)
   if (ctErrors.length > 0) {

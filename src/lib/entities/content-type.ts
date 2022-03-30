@@ -10,16 +10,29 @@ import {
   APIEditorInterfaceSettings,
   APIEditorInterfaceSidebar,
   APIEditorIntefaceEditor,
-  APIEditorInterfaceEditorLayout,
   APISidebarWidgetNamespace,
   APIControlWidgetNamespace,
+  APIEditorInterfaceEditorLayout,
   APIEditorLayoutFieldGroupItem
 } from '../interfaces/content-type'
 import { SidebarWidgetNamespace, DEFAULT_SIDEBAR_LIST } from '../action/sidebarwidget'
-import { findFieldGroup, isFieldGroupItem, find as findEditorLayoutItem, isFieldItem, FieldGroupItem, FieldItem } from '../utils/editor-layout'
+import {
+  findFieldGroup,
+  isFieldGroupItem,
+  find as findEditorLayoutItem,
+  isFieldItem,
+  FieldGroupItem,
+  FieldItem
+} from '../utils/editor-layout'
 import { EditorLayoutItem } from 'contentful-management/dist/typings/export-types'
 
-export type EditorLayoutFieldMovementDirection = 'afterField' | 'beforeField' | 'afterFieldGroup' | 'beforeFieldGroup' | 'toTheTopOfFieldGroup' | 'toTheBottomOfFieldGroup'
+export type EditorLayoutFieldMovementDirection =
+  | 'afterField'
+  | 'beforeField'
+  | 'afterFieldGroup'
+  | 'beforeFieldGroup'
+  | 'toTheTopOfFieldGroup'
+  | 'toTheBottomOfFieldGroup'
 
 class Fields {
   private _fields: Field[]
@@ -285,17 +298,19 @@ class EditorInterfaces {
     this._editors = editors
   }
 
-  createEditorLayout (fields: Field[]) {
+  createEditorLayout(fields: Field[]) {
     // A newly created editor layout doesn’t have the correct shape. This is corrected when adding the first group.
-    this._editorLayout = fields.map(field => ({ fieldId: field.id })) as unknown as APIEditorInterfaceEditorLayout
+    this._editorLayout = fields.map((field) => ({
+      fieldId: field.id
+    })) as unknown as APIEditorInterfaceEditorLayout
   }
 
-  deleteEditorLayout () {
+  deleteEditorLayout() {
     delete this._groupControls
     delete this._editorLayout
   }
 
-  createEditorLayoutFieldGroup (fieldGroupId: string, parentFieldGroupId?: string) {
+  createEditorLayoutFieldGroup(fieldGroupId: string, parentFieldGroupId?: string) {
     if (parentFieldGroupId) {
       // create field set
       const parent = findFieldGroup(this._editorLayout, parentFieldGroupId)
@@ -305,22 +320,24 @@ class EditorInterfaces {
       })
     } else {
       // create tab
-      const hasFieldGroup = this._editorLayout.some(item => isFieldGroupItem(item))
+      const hasFieldGroup = this._editorLayout.some((item) => isFieldGroupItem(item))
       if (hasFieldGroup) {
         this._editorLayout.push({
           groupId: fieldGroupId,
           items: []
         })
       } else {
-        this._editorLayout = [{
-          groupId: fieldGroupId,
-          items: [...this._editorLayout]
-        }]
+        this._editorLayout = [
+          {
+            groupId: fieldGroupId,
+            items: [...this._editorLayout]
+          }
+        ]
       }
     }
   }
 
-  deleteEditorLayoutFieldGroup (fieldGroupId: string) {
+  deleteEditorLayoutFieldGroup(fieldGroupId: string) {
     const fieldGroup = findFieldGroup(this._editorLayout, fieldGroupId)
     if (!fieldGroup) {
       return
@@ -330,7 +347,7 @@ class EditorInterfaces {
     const groupIndex = fieldGroup.path[fieldGroup.path.length - 1] as number
 
     if (parentPath.length === 0) {
-      this._editorLayout = this._editorLayout.filter(item => item.groupId !== fieldGroupId)
+      this._editorLayout = this._editorLayout.filter((item) => item.groupId !== fieldGroupId)
       this._editorLayout[0].items = [...this._editorLayout[0].items, ...fieldGroup.item.items]
 
       return
@@ -343,30 +360,35 @@ class EditorInterfaces {
     })
   }
 
-  changeFieldGroupId (fieldGroupId: string, newFieldGroupId: string) {
+  changeFieldGroupId(fieldGroupId: string, newFieldGroupId: string) {
     const fieldGroup = findFieldGroup(this._editorLayout, fieldGroupId)
 
     if (fieldGroup?.item) {
       fieldGroup.item.groupId = newFieldGroupId
     }
 
-    const existingGroupControl = this._groupControls.find(control => control.groupId === fieldGroupId)
+    const existingGroupControl = this._groupControls.find(
+      (control) => control.groupId === fieldGroupId
+    )
     if (existingGroupControl) {
       existingGroupControl.groupId = newFieldGroupId
     }
   }
 
-  updateEditorLayoutFieldGroup (fieldGroupId: string, props: Pick<APIEditorLayoutFieldGroupItem, 'name'>) {
+  updateEditorLayoutFieldGroup(
+    fieldGroupId: string,
+    props: Pick<APIEditorLayoutFieldGroupItem, 'name'>
+  ) {
     const fieldGroup = findFieldGroup(this._editorLayout, fieldGroupId)
 
     Object.assign(fieldGroup.item, pick(props, ['name']))
   }
 
-  createGroupControls () {
+  createGroupControls() {
     this._groupControls = []
   }
 
-  createTabGroupControl (fieldGroupId: string) {
+  createTabGroupControl(fieldGroupId: string) {
     this._groupControls.push({
       groupId: fieldGroupId,
       widgetId: 'topLevelTab',
@@ -374,8 +396,13 @@ class EditorInterfaces {
     })
   }
 
-  updateGroupControl (fieldGroupId: string, groupControl: Omit<APIEditorInterfaceGroupControl, 'groupId'>) {
-    const existingGroupControl = this._groupControls.find(control => control.groupId === fieldGroupId)
+  updateGroupControl(
+    fieldGroupId: string,
+    groupControl: Omit<APIEditorInterfaceGroupControl, 'groupId'>
+  ) {
+    const existingGroupControl = this._groupControls.find(
+      (control) => control.groupId === fieldGroupId
+    )
     if (existingGroupControl) {
       existingGroupControl.widgetId = groupControl.widgetId
       existingGroupControl.widgetNamespace = groupControl.widgetNamespace
@@ -387,30 +414,35 @@ class EditorInterfaces {
         groupId: fieldGroupId,
         widgetId: groupControl.widgetId,
         widgetNamespace: groupControl.widgetNamespace,
-        settings: (groupControl.settings ?? {})
+        settings: groupControl.settings ?? {}
       })
     }
   }
 
-  deleteGroupControl (fieldGroupId: string) {
-    this._groupControls = this._groupControls.filter(control => control.groupId !== fieldGroupId)
+  deleteGroupControl(fieldGroupId: string) {
+    this._groupControls = this._groupControls.filter((control) => control.groupId !== fieldGroupId)
   }
 
-  moveFieldInEditorLayout (
+  moveFieldInEditorLayout(
     fieldId: string,
     direction: EditorLayoutFieldMovementDirection,
-    pivot?: string) {
-
+    pivot?: string
+  ) {
     // find the field and its parent (sourceGroup) within editorLayout
     let fieldItem: FieldItem
-    const { item: sourceGroupItem } = findEditorLayoutItem(this._editorLayout, (item) =>
-      isFieldGroupItem(item) && Boolean(item.items.find((item) => {
-        if (isTargetFieldItem(item, fieldId)) {
-          fieldItem = item
-          return true
-        }
-        return false
-      }))
+    const { item: sourceGroupItem } = findEditorLayoutItem(
+      this._editorLayout,
+      (item) =>
+        isFieldGroupItem(item) &&
+        Boolean(
+          item.items.find((item) => {
+            if (isTargetFieldItem(item, fieldId)) {
+              fieldItem = item
+              return true
+            }
+            return false
+          })
+        )
     ) as { item: FieldGroupItem | undefined }
 
     // remove field item from original group
@@ -424,9 +456,8 @@ class EditorInterfaces {
     let destinationGroupItem: FieldGroupItem = sourceGroupItem
 
     const findGroupItem = (groupId) => {
-      const { item } = findEditorLayoutItem(
-        this._editorLayout,
-        (item) => isTargetGroupItem(item, groupId)
+      const { item } = findEditorLayoutItem(this._editorLayout, (item) =>
+        isTargetGroupItem(item, groupId)
       ) as { item: FieldGroupItem | undefined }
 
       return item
@@ -444,10 +475,13 @@ class EditorInterfaces {
       }
       pivotIndex = destinationGroupItem.items.length
     } else {
-      const movementConfigMap: Record<string, {
-        isTargetPivot: (EditorLayoutItem) => boolean,
-        pivotIndexOffset: number
-      }> = {
+      const movementConfigMap: Record<
+        string,
+        {
+          isTargetPivot: (EditorLayoutItem) => boolean
+          pivotIndexOffset: number
+        }
+      > = {
         afterField: {
           isTargetPivot: (item) => isTargetFieldItem(item, pivot),
           pivotIndexOffset: 1
@@ -468,15 +502,19 @@ class EditorInterfaces {
       const movementConfig = movementConfigMap[direction]
 
       // find the parent group of target pivot
-      const { item: pivotParent } = findEditorLayoutItem(this._editorLayout, (item) =>
-        isFieldGroupItem(item)
-        && Boolean(item.items.find((childItem, childItemIndex) => {
-          if (movementConfig.isTargetPivot(childItem)) {
-            pivotIndex = childItemIndex + movementConfig.pivotIndexOffset
-            return true
-          }
-          return false
-        }))
+      const { item: pivotParent } = findEditorLayoutItem(
+        this._editorLayout,
+        (item) =>
+          isFieldGroupItem(item) &&
+          Boolean(
+            item.items.find((childItem, childItemIndex) => {
+              if (movementConfig.isTargetPivot(childItem)) {
+                pivotIndex = childItemIndex + movementConfig.pivotIndexOffset
+                return true
+              }
+              return false
+            })
+          )
       ) as { item: FieldGroupItem | undefined }
 
       destinationGroupItem = pivotParent
@@ -609,7 +647,9 @@ class ContentType {
   }
 }
 
-const isTargetFieldItem = (item, fieldId): item is FieldItem => isFieldItem(item) && item.fieldId === fieldId
-const isTargetGroupItem = (item, groupId): item is FieldGroupItem => isFieldGroupItem(item) && item.groupId === groupId
+const isTargetFieldItem = (item, fieldId): item is FieldItem =>
+  isFieldItem(item) && item.fieldId === fieldId
+const isTargetGroupItem = (item, groupId): item is FieldGroupItem =>
+  isFieldGroupItem(item) && item.groupId === groupId
 
 export { ContentType as default, ContentType, Fields, Field, EditorInterfaces }

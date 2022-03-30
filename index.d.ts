@@ -7,6 +7,7 @@ export type RunMigrationConfig = {
   proxy?: string
   rawProxy?: boolean
   yes?: boolean
+  retryLimit?: number
 } & ({ filePath: string } | { migrationFunction: MigrationFunction })
 
 export function runMigration(config: RunMigrationConfig): Promise<any>
@@ -27,7 +28,18 @@ export interface EditorLayoutMovement {
   afterFieldGroup(groupId?: string): void
 }
 
-type FieldType = 'Symbol' | 'Text' | 'Integer' | 'Number' | 'Date' | 'Boolean' | 'Object' | 'Location' | 'RichText' | 'Array' | 'Link'
+type FieldType =
+  | 'Symbol'
+  | 'Text'
+  | 'Integer'
+  | 'Number'
+  | 'Date'
+  | 'Boolean'
+  | 'Object'
+  | 'Location'
+  | 'RichText'
+  | 'Array'
+  | 'Link'
 
 export interface IFieldOptions {
   newId?: string
@@ -90,30 +102,44 @@ export interface Field {
   defaultValue(defaultValue: { [locale: string]: any }): Field
 }
 
-type LinkMimetype = 'attachment' | 'plaintext' | 'image' | 'audio' | 'video' | 'richtext' |
-  'presentation' | 'spreadsheet' | 'pdfdocument' | 'archive' | 'code' | 'markup'
+type LinkMimetype =
+  | 'attachment'
+  | 'plaintext'
+  | 'image'
+  | 'audio'
+  | 'video'
+  | 'richtext'
+  | 'presentation'
+  | 'spreadsheet'
+  | 'pdfdocument'
+  | 'archive'
+  | 'code'
+  | 'markup'
 
 export interface IValidation {
   /** Takes an array of content type ids and validates that the link points to an entry of that content type. */
-  linkContentType?: string[],
+  linkContentType?: string[]
   /** Takes an array of values and validates that the field value is in this array. */
-  in?: string[] | number[],
+  in?: string[] | number[]
   /** Takes a MIME type group name and validates that the link points to an asset of this group. */
-  linkMimetypeGroup?: LinkMimetype[],
+  linkMimetypeGroup?: LinkMimetype[]
   /** Takes min and/or max parameters and validates the size of the array (number of objects in it). */
-  size?: { max?: number, min?: number },
+  size?: { max?: number; min?: number }
   /** Takes min and/or max parameters and validates the range of a value. */
-  range?: { max?: number, min?: number },
+  range?: { max?: number; min?: number }
   /** Takes a string that reflects a JS regex and flags, validates against a string. See JS reference for the parameters. */
-  regexp?: { pattern: string, flags?: string },
+  regexp?: { pattern: string; flags?: string }
   /** Validates that there are no other entries that have the same field value at the time of publication. */
-  unique?: true,
+  unique?: true
   /** Validates that a value falls within a certain range of dates. */
-  dateRange?: { min?: string, max?: string },
+  dateRange?: { min?: string; max?: string }
   /** Validates that an image asset is of a certain image dimension. */
-  assetImageDimensions?: { width: { min?: number, max?: number }, height: { min?: number, max?: number } }
+  assetImageDimensions?: {
+    width: { min?: number; max?: number }
+    height: { min?: number; max?: number }
+  }
   /** Validates that an asset is of a certain file size. */
-  assetFileSize?: { max?: number, min?: number },
+  assetFileSize?: { max?: number; min?: number }
 
   message?: string
 
@@ -124,7 +150,6 @@ export interface IValidation {
 export type WidgetSettingsValue = number | boolean | string | undefined
 
 export interface IEditorInterfaceOptions {
-
   /** This help text will show up below the field. */
   helpText?: string
   /** (only for fields of type boolean) Shows this text next to the radio button that sets this value to true. Defaults to “Yes”. */
@@ -187,7 +212,11 @@ export interface ContentType {
    * @param widgetId The new widget ID for the field.
    * @param settings Widget settings
    */
-  configureEntryEditor(widgetNamespace: 'builtin' | 'extension' | 'app', widgetId: string, settings?: IEditorInterfaceOptions): void
+  configureEntryEditor(
+    widgetNamespace: 'builtin' | 'extension' | 'app',
+    widgetId: string,
+    settings?: IEditorInterfaceOptions
+  ): void
 
   /**
    * Changes the control of given field's ID.
@@ -197,13 +226,23 @@ export interface ContentType {
    * @param widgetId The new widget ID for the field.
    * @param settings Widget settings
    */
-  changeFieldControl(fieldId: string, widgetNamespace: 'builtin' | 'extension' | 'app', widgetId: string, settings?: IEditorInterfaceOptions): void
+  changeFieldControl(
+    fieldId: string,
+    widgetNamespace: 'builtin' | 'extension' | 'app',
+    widgetId: string,
+    settings?: IEditorInterfaceOptions
+  ): void
 
   /**
    * @deprecated
    * Use change field control instead
    */
-  changeEditorInterface(fieldId: string, widgetId: string, settings?: IEditorInterfaceOptions, widgetNamespace?: 'builtin' | 'extension'): void
+  changeEditorInterface(
+    fieldId: string,
+    widgetId: string,
+    settings?: IEditorInterfaceOptions,
+    widgetNamespace?: 'builtin' | 'extension'
+  ): void
 
   /**
    * Resets the field control of given field's ID.
@@ -240,10 +279,12 @@ export interface ContentType {
    * @param settings Instance settings for the widget
    * @param insertBeforeWidgetId Insert widget above this widget in the sidebar. If null, the widget will be added to the end.
    */
-  addSidebarWidget(widgetNamespace: 'sidebar-builtin' | 'extension' | 'app',
+  addSidebarWidget(
+    widgetNamespace: 'sidebar-builtin' | 'extension' | 'app',
     widgetId: string,
     settings?: ISidebarWidgetSettings,
-    insertBeforeWidgetId?: string | null): void
+    insertBeforeWidgetId?: string | null
+  ): void
 
   /**
    * Updates the configuration of a widget in the sidebar of the content type.
@@ -252,9 +293,11 @@ export interface ContentType {
    * @param widgetId The ID of the widget to update.
    * @param settings Instance settings for the widget
    */
-  updateSidebarWidget(widgetNamespace: 'sidebar-builtin' | 'extension' | 'app',
+  updateSidebarWidget(
+    widgetNamespace: 'sidebar-builtin' | 'extension' | 'app',
     widgetId: string,
-    settings: ISidebarWidgetSettings): void
+    settings: ISidebarWidgetSettings
+  ): void
 
   /**
    * Removes a widget from the sidebar of the content type.
@@ -262,8 +305,10 @@ export interface ContentType {
    * @param widgetNamespace The namespace of the widget. Use 'sidebar-builtin' for standard widgets or 'extension' for UI extensions.
    * @param widgetId The ID of the widget to remove.
    */
-  removeSidebarWidget(widgetNamespace: 'sidebar-builtin' | 'extension' | 'app',
-    widgetId: string): void
+  removeSidebarWidget(
+    widgetNamespace: 'sidebar-builtin' | 'extension' | 'app',
+    widgetId: string
+  ): void
 
   /**
    * Resets the sidebar of the content type to default
@@ -283,7 +328,7 @@ export interface ContentType {
   /**
    * Removes editor layout and group controls from the editor interface of this content type.
    */
-   deleteEditorLayout(): void
+  deleteEditorLayout(): void
 }
 
 export interface InitFieldGroupOptions {
@@ -292,27 +337,27 @@ export interface InitFieldGroupOptions {
 
 export type FieldGroupUpdateFunction = (groupId: string, init?: InitFieldGroupOptions) => FieldGroup
 export interface FieldGroup {
-  name: (name: string) => FieldGroup,
-  /** 
+  name: (name: string) => FieldGroup
+  /**
    * Creates a field group nested to this one
    */
   createFieldGroup: FieldGroupUpdateFunction
 }
 
 export interface EditorLayout {
-  /** 
+  /**
    * Creates a field group at the top level of editor layout
    * A group control is automatically generated
    */
-  createFieldGroup: FieldGroupUpdateFunction,
-  /** 
+  createFieldGroup: FieldGroupUpdateFunction
+  /**
    * Edits a field group
    */
-  editFieldGroup: FieldGroupUpdateFunction,
-  /** 
+  editFieldGroup: FieldGroupUpdateFunction
+  /**
    * Changes the identifier of a field group
    */
-  changeFieldGroupId: (currentId: string, newId: string) => void,
+  changeFieldGroupId: (currentId: string, newId: string) => void
   /**
    * Removes a field group from the editor layout
    */
@@ -321,17 +366,22 @@ export interface EditorLayout {
    * Allows movements of a field in the editor layout
    */
   moveField: (fieldId: string) => EditorLayoutMovement
-  /** 
+  /**
    * Edits the field group control of a field group
    */
-  changeFieldGroupControl: (groupId: string, widgetNameSpace: 'builtin', widgetId: 'fieldset' | 'topLevelTab', settings?: IFieldGroupWidgetSettings) => void,
+  changeFieldGroupControl: (
+    groupId: string,
+    widgetNameSpace: 'builtin',
+    widgetId: 'fieldset' | 'topLevelTab',
+    settings?: IFieldGroupWidgetSettings
+  ) => void
 }
 
 export interface IContentTypeOptions {
   /** Name of the content type. */
-  name: string,
+  name: string
   /** Description of the content type. */
-  description?: string,
+  description?: string
   /** ID of the field to use as the display field for the content type. */
   displayField?: string
 }
@@ -340,11 +390,11 @@ type ContentFields = { [field: string]: { [locale: string]: any } }
 
 export interface ITransformEntriesConfig {
   /** (required) – Content type ID */
-  contentType: string,
+  contentType: string
   /** (required) – Array of the source field IDs */
-  from: string[],
+  from: string[]
   /** (required) – Array of the target field IDs */
-  to: string[],
+  to: string[]
   /**
    * (required) – Transformation function to be applied.
    *
@@ -352,27 +402,27 @@ export interface ITransformEntriesConfig {
    * locale one of the locales in the space being transformed
    *
    * The return value must be an object with the same keys as specified in to. Their values will be written to the respective entry fields for the current locale (i.e. {nameField: 'myNewValue'}). If it returns undefined, this the values for this locale on the entry will be left untouched.
-  */
-  transformEntryForLocale: (fromFields: ContentFields, currentLocale: string) => any,
+   */
+  transformEntryForLocale: (fromFields: ContentFields, currentLocale: string) => any
   /** (optional) – If true, the transformed entries will be published. If false, they will remain in draft state. When the value is set to "preserve" items will be published only if the original entry was published as well (default true) */
-  shouldPublish?: boolean | "preserve"
+  shouldPublish?: boolean | 'preserve'
 }
 
 export interface ITransformEntriesToTypeConfig {
   /** (required) – Content type ID of source entries */
-  sourceContentType: string,
+  sourceContentType: string
   /** (required) – Targeted Content type ID */
-  targetContentType: string,
+  targetContentType: string
   /** (optional) – Array of the source field IDs, returns complete list of fields if not configured */
-  from?: string[],
+  from?: string[]
   /** (required) - Function to create a new entry ID for the target entry */
-  identityKey: (fromFields: ContentFields) => string,
+  identityKey: (fromFields: ContentFields) => string
   /** (optional) – Flag that specifies publishing of target entries, preserve will keep current states of the source entries (default false) */
-  shouldPublish?: boolean | "preserve",
+  shouldPublish?: boolean | 'preserve'
   /** (optional) – Flag that specifies if linking entries should be updated with target entries (default false) */
-  updateReferences?: boolean,
+  updateReferences?: boolean
   /** (optional) – Flag that specifies if source entries should be deleted (default false). Note that this flag does not support Rich Text Fields references. */
-  removeOldEntries?: boolean,
+  removeOldEntries?: boolean
   /**
    * (required) – Transformation function to be applied.
    *
@@ -380,8 +430,8 @@ export interface ITransformEntriesToTypeConfig {
    * locale one of the locales in the space being transformed
    *
    * The return value must be an object with the same keys as specified in to. Their values will be written to the respective entry fields for the current locale (i.e. {nameField: 'myNewValue'}). If it returns undefined, this the values for this locale on the entry will be left untouched.
-  */
-  transformEntryForLocale: (fromFields: ContentFields, currentLocale: string) => any,
+   */
+  transformEntryForLocale: (fromFields: ContentFields, currentLocale: string) => any
 }
 
 export interface IDeriveLinkedEntriesConfig {
@@ -389,44 +439,44 @@ export interface IDeriveLinkedEntriesConfig {
    * (required) – Source content type ID
    *
    * This is the content type which has the 'from' fields
-  */
-  contentType: string,
+   */
+  contentType: string
   /**
    * (required) – Target content type ID
    *
    * This is the content type that the link points to
    */
-  derivedContentType: string,
+  derivedContentType: string
   /**
    * (required) – Array of the source field IDs
    *
    * The values in these fields on the source content type
    * will be given to "deriveEntryForLocale"
    */
-  from: string[],
+  from: string[]
   /** (required) – ID of the field on the source content type in which to insert the reference */
-  toReferenceField: string,
+  toReferenceField: string
   /**
    * (required) – Array of the field IDs on the target content type
    *
    * The fields returned from "deriveEntryForLocale" will be written to these fields
    * on the new instance of the derived content type.
    */
-  derivedFields: string[],
+  derivedFields: string[]
   /**
    * (required) - Called once per source entry. Returns the ID used for the derived entry, which is also used for de-duplication so that multiple source entries can link to the same derived entry.
    *   fields is an object containing each of the from fields. Each field will contain their current localized values (i.e. fields == {myField: {'en-US': 'my field value'}})
    */
-  identityKey: (fromFields: ContentFields) => string,
+  identityKey: (fromFields: ContentFields) => string
   /** (optional) – If true, both the source and the derived entries will be published. If false, both will remain in draft state. If preserve, will keep current states of the source entries (default true) */
-  shouldPublish?: boolean | 'preserve',
+  shouldPublish?: boolean | 'preserve'
   /**
    * (required) – Function that generates the field values for the derived entry.
    *  fields is an object containing each of the from fields. Each field will contain their current localized values (i.e. fields == {myField: {'en-US': 'my field value'}})
    *  locale one of the locales in the space being transformed
    *
    * The return value must be an object with the same keys as specified in derivedFields. Their values will be written to the respective new entry fields for the current locale (i.e. {nameField: 'myNewValue'})
-  */
+   */
   deriveEntryForLocale: (inputFields: ContentFields, locale: string) => { [field: string]: any }
 }
 
@@ -441,12 +491,12 @@ export interface ITag {
 
 export interface ITagOptions {
   /** Name of the tag. */
-  name: string,
+  name: string
 }
 
 export interface ITagLink {
   sys: {
-    id: string,
+    id: string
     type: 'Link'
     linkType: 'Tag'
   }
@@ -454,9 +504,9 @@ export interface ITagLink {
 
 export interface ISetTagsForEntriesConfig {
   /** (required) – Content type ID */
-  contentType: string,
+  contentType: string
   /** (required) – Array of the source field IDs */
-  from: string[],
+  from: string[]
   /**
    * (required) – Transformation function to be applied.
    *
@@ -466,10 +516,13 @@ export interface ISetTagsForEntriesConfig {
    *
    * The return value must be an array with TagLinks. The corresponding tags will be attached to the entry. If the transformation function returns undefined, the entry will be left untouched.
    *
-  */
-  setTagsForEntry: (entryFields: ContentFields, entryTags: ITagLink[], apiTags: ITagLink[]) => ITagLink[] | undefined
+   */
+  setTagsForEntry: (
+    entryFields: ContentFields,
+    entryTags: ITagLink[],
+    apiTags: ITagLink[]
+  ) => ITagLink[] | undefined
 }
-
 
 /**
  * The main interface for creating and editing content types.
@@ -555,14 +608,13 @@ export default interface Migration {
    * @param transformation
    */
   setTagsForEntries(transformation: ISetTagsForEntriesConfig): void
-
 }
 
 export interface ClientConfig {
   accessToken?: string
   spaceId?: string
-  environmentId?: string,
-  proxy?: string,
+  environmentId?: string
+  proxy?: string
   rawProxy?: boolean
 }
 
