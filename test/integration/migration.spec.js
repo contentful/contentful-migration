@@ -873,12 +873,12 @@ describe('the migration', function () {
   })
 
   it('creates an editor layout', async function () {
-    await migrator(createEditorLayout);
+    await migrator(createEditorLayout)
 
     const editorInterfaces = await request({
       method: 'GET',
       url: '/content_types/page/editor_interface'
-    });
+    })
 
     expect(editorInterfaces?.editorLayout).to.eql([
       {
@@ -896,7 +896,7 @@ describe('the migration', function () {
         name: 'Metadata',
         items: []
       }
-    ]);
+    ])
 
     expect(editorInterfaces?.groupControls).to.eql([
       {
@@ -926,16 +926,16 @@ describe('the migration', function () {
         widgetId: 'topLevelTab',
         widgetNamespace: 'builtin'
       }
-    ]);
-  });
+    ])
+  })
 
   it('deletes an editor layout tab', async function () {
-    await migrator(deleteEditorLayoutTab);
+    await migrator(deleteEditorLayoutTab)
 
     const editorInterface = await request({
       method: 'GET',
       url: '/content_types/page/editor_interface'
-    });
+    })
 
     expect(editorInterface.editorLayout).to.eql([
       {
@@ -952,16 +952,16 @@ describe('the migration', function () {
         name: 'Metadata',
         items: []
       }
-    ]);
-  });
+    ])
+  })
 
   it('deletes an editor layout field set', async function () {
-    await migrator(deleteEditorLayoutFieldSet);
+    await migrator(deleteEditorLayoutFieldSet)
 
     const editorInterface = await request({
       method: 'GET',
       url: '/content_types/page/editor_interface'
-    });
+    })
 
     expect(editorInterface.editorLayout).to.eql([
       {
@@ -974,16 +974,16 @@ describe('the migration', function () {
         name: 'Metadata',
         items: []
       }
-    ]);
-  });
+    ])
+  })
 
   it('changes field group id', async function () {
-    await migrator(changeFieldGroupId);
+    await migrator(changeFieldGroupId)
 
     const editorInterface = await request({
       method: 'GET',
       url: '/content_types/page/editor_interface'
-    });
+    })
 
     expect(editorInterface.editorLayout).to.eql([
       {
@@ -996,28 +996,28 @@ describe('the migration', function () {
         name: 'Metadata',
         items: []
       }
-    ]);
-  });
+    ])
+  })
 
   it('deletes editor layout and group controls', async function () {
-    await migrator(deleteEditorLayout);
+    await migrator(deleteEditorLayout)
 
     const editorInterface = await request({
       method: 'GET',
       url: '/content_types/page/editor_interface'
-    });
+    })
 
-    expect(editorInterface.editorLayout).to.be.undefined();
-    expect(editorInterface.groupControls).to.be.undefined();
-  });
+    expect(editorInterface.editorLayout).to.be.undefined()
+    expect(editorInterface.groupControls).to.be.undefined()
+  })
 
   it('moves fields in newly created editor layout', async function () {
-    await migrator(moveFieldInNewEditorLayout);
+    await migrator(moveFieldInNewEditorLayout)
 
     const editorInterface = await request({
       method: 'GET',
       url: '/content_types/mytype/editor_interface'
-    });
+    })
 
     expect(editorInterface.editorLayout).to.eql([
       {
@@ -1037,16 +1037,16 @@ describe('the migration', function () {
         ],
         groupId: 'secondtab'
       }
-    ]);
-  });
+    ])
+  })
 
   it('moves fields in existing editor layout', async function () {
-    await migrator(moveFieldInExistingEditorLayout);
+    await migrator(moveFieldInExistingEditorLayout)
 
     const editorInterface = await request({
       method: 'GET',
       url: '/content_types/mytype/editor_interface'
-    });
+    })
 
     expect(editorInterface.editorLayout).to.eql([
       {
@@ -1068,6 +1068,6 @@ describe('the migration', function () {
         ],
         groupId: 'secondtab'
       }
-    ]);
-  });
-});
+    ])
+  })
+})

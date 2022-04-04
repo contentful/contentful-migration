@@ -47,8 +47,8 @@ interface APIEditorInterfaceControl {
 
 interface APIEditorInterfaceGroupControl {
   groupId: string
-  widgetId?: string,
-  widgetNamespace?: string,
+  widgetId?: string
+  widgetNamespace?: string
   settings?: APIEditorInterfaceSettings
 }
 
