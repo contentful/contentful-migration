@@ -16,6 +16,8 @@ import { Intent } from '../interfaces/intent'
 import APIEntry from '../interfaces/api-entry'
 import APITag, { TagVisibility } from '../interfaces/api-tag'
 import Link from '../entities/link'
+import { EditorInterfaceSchemaValidator } from './validator/editor-interface'
+import FieldGroupsCountValidator from './validator/field-groups-count'
 
 interface RequestBatch {
   intent: Intent
@@ -37,7 +39,8 @@ export enum ApiHook {
   PublishContentType = 'PUBLISH_CONTENT_TYPE',
   UnpublishContentType = 'UNPUBLISH_CONTENT_TYPE',
   SaveTag = 'SAVE_TAG',
-  SaveEntry = 'SAVE_ENTRY'
+  SaveEntry = 'SAVE_ENTRY',
+  SaveEditorInterface = 'SAVE_EDITOR_INTERFACE'
 }
 
 const saveContentTypeRequest = function (ct: ContentType): Request {
@@ -174,6 +177,7 @@ class OfflineAPI {
   private intent: Intent = null
   private requestBatches: RequestBatch[] = []
   private contentTypeValidators: ContentTypePayloadValidator[] = []
+  private editorInterfaceValidators: EditorInterfaceSchemaValidator[] = []
   private locales: string[] = []
   private modifiedTags: Map<String, Tag> = null
   private savedTags: Map<String, Tag> = null
@@ -214,6 +218,9 @@ class OfflineAPI {
     this.contentTypeValidators.push(new DisplayFieldValidator())
     this.contentTypeValidators.push(new SchemaValidator())
     this.contentTypeValidators.push(new TypeChangeValidator())
+
+    this.editorInterfaceValidators.push(new EditorInterfaceSchemaValidator())
+    this.editorInterfaceValidators.push(new FieldGroupsCountValidator())
 
     this.tagValidators.push(new TagSchemaValidator())
 
@@ -375,6 +382,14 @@ class OfflineAPI {
     const editorInterfaces = this.editorInterfaces.get(contentTypeId)
     this.currentRequestsRecorded.push(saveEditorInterfacesRequest(contentTypeId, editorInterfaces))
     editorInterfaces.version = editorInterfaces.version + 1
+
+    for (const validator of this.editorInterfaceValidators) {
+      if (validator.hooks.includes(ApiHook.SaveEditorInterface)) {
+        const errors = validator.validate(editorInterfaces)
+        this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
+      }
+    }
+
     return editorInterfaces
   }
 

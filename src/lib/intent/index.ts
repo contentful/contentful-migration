@@ -20,10 +20,19 @@ import SidebarResetToDefaultIntent from './sidebar-reset-to-default'
 import EntryEditorResetToDefaultIntent from './entryeditor-reset-to-default'
 import EntryEditorConfigureIntent from './entryeditor-configure'
 import EntryEditorsConfigureIntent from './entryeditors-configure'
+import EditorLayoutCreateIntent from './editor-layout/editor-layout-create'
+import EditorLayoutInvalidMethodIntent from './editor-layout/editor-layout-invalid-method'
+import EditorLayoutCreateFieldGroupIntent from './editor-layout/editor-layout-create-field-group'
+import EditorLayoutDeleteFieldGroupIntent from './editor-layout/editor-layout-delete-field-group'
+import EditorLayoutUpdateFieldGroupIntent from './editor-layout/editor-layout-update-field-group'
+import EditorLayoutChangeFieldGroupControlIntent from './editor-layout/editor-layout-change-field-group-control'
+import EditorLayoutMoveFieldIntent from './editor-layout/editor-layout-move-field'
 import TagCreateIntent from './tag-create'
 import TagUpdateIntent from './tag-update'
 import TagDeleteIntent from './tag-delete'
 import EntrySetTagsIntent from './entry-set-tags'
+import EditorLayoutChangeFieldGroupIdIntent from './editor-layout/editor-layout-change-field-group-id'
+import EditorLayoutDeleteIntent from './editor-layout/editor-layout-delete'
 
 export {
   Intent as default,
@@ -49,8 +58,17 @@ export {
   EntryEditorResetToDefaultIntent as EntryEditorResetToDefault,
   EntryEditorConfigureIntent as EntryEditorConfigure,
   EntryEditorsConfigureIntent as EntryEditorsConfigure,
+  EditorLayoutCreateIntent as EditorLayoutCreate,
+  EditorLayoutCreateFieldGroupIntent as EditorLayoutCreateFieldGroup,
+  EditorLayoutDeleteFieldGroupIntent as EditorLayoutDeleteFieldGroup,
+  EditorLayoutInvalidMethodIntent as EditorLayoutInvalidMethod,
+  EditorLayoutUpdateFieldGroupIntent as EditorLayoutUpdateFieldGroup,
+  EditorLayoutChangeFieldGroupControlIntent as EditorLayoutChangeFieldGroupControl,
   TagCreateIntent as TagCreate,
   TagUpdateIntent as TagUpdate,
   TagDeleteIntent as TagDelete,
-  EntrySetTagsIntent as EntrySetTags
+  EntrySetTagsIntent as EntrySetTags,
+  EditorLayoutMoveFieldIntent as EditorLayoutMoveField,
+  EditorLayoutChangeFieldGroupIdIntent as EditorLayoutChangeFieldGroupId,
+  EditorLayoutDeleteIntent as EditorLayoutDelete
 }

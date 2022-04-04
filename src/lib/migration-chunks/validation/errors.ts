@@ -1,5 +1,5 @@
 interface ErrorGroup {
-  [identifier: string]: (id, ...args: any[]) => string
+  [identifier: string]: (id?, ...args: any[]) => string
 }
 
 interface ErrorCreators {
@@ -7,6 +7,9 @@ interface ErrorCreators {
     [groupIdentifier: string]: ErrorGroup
   }
   contentType: {
+    [groupIdentifier: string]: ErrorGroup
+  }
+  editorLayout: {
     [groupIdentifier: string]: ErrorGroup
   }
   entry: {
@@ -147,6 +150,97 @@ const errorCreators: ErrorCreators = {
       },
       SET_TAGS_BEFORE_CONTENT_TYPE_CREATE: (id) => {
         return `You cannot update tags on entries for content type "${id}" because it has not yet been created.`
+      }
+    }
+  },
+  editorLayout: {
+    createEditorLayout: {
+      EDITOR_LAYOUT_ALREADY_CREATED: (ctId) => {
+        return `Editor layout for content type "${ctId}" cannot be created more than once.`
+      },
+      EDITOR_LAYOUT_ALREADY_EXISTS: (ctId) => {
+        return `Editor layout for content type "${ctId}" already exists.`
+      }
+    },
+    updateEditorLayout: {
+      CONTENT_TYPE_DOES_NOT_EXIST: (ctId) => {
+        return `You cannot update the editor layout for content type "${ctId}" because it does not exist.`
+      },
+      INVALID_METHOD: (method) => {
+        return `"${method}" is not a valid method for editor layout.`
+      }
+    },
+    createFieldGroup: {
+      FIELD_GROUP_ALREADY_CREATED: (id, ctId) => {
+        return `Field group with id "${id}" for content type "${ctId}" cannot be created more than once.`
+      },
+      FIELD_GROUP_ALREADY_EXISTS: (id, ctId) => {
+        return `Field group with id "${id}" for content type "${ctId}" already exists.`
+      },
+      FIELD_GROUP_DOES_NOT_EXIST: (fieldGroupId) => {
+        return `Field group "${fieldGroupId}" does not exist`
+      },
+      INVALID_CHARACTER_IN_ID: (id, ctId) => {
+        return `Field group id "${id}" for content type "${ctId}" must consist of only letters and numbers.`
+      },
+      INVALID_FIRST_CHARACTER_IN_ID: (id, ctId) => {
+        return `Field group id "${id}" for content type "${ctId}" must start with a letter.`
+      },
+      ID_TOO_LONG: (id, ctId) => {
+        return `Field group id "${id}" for content type "${ctId}" must not exceed 50 characters.`
+      },
+      NAME_TOO_LONG: (id, ctId) => {
+        return `Name for field group with id "${id}" for content type "${ctId}" must not exceed 50 characters.`
+      }
+    },
+    moveField: {
+      MISSING_FIELD_ID: () => {
+        return 'Missing field id'
+      },
+      FIELD_DOES_NOT_EXIST: (fieldId) => {
+        return `Field "${fieldId}" does not exist`
+      },
+      INVALID_DIRECTION: (fieldId, direction) => {
+        return `Field "${fieldId}" cannot be moved: invalid direction "${direction}"`
+      },
+      MISSING_PIVOT: (fieldId, pivotType) => {
+        return `Field "${fieldId}" cannot be moved: missing ${pivotType} pivot`
+      },
+      SELF_PIVOT: (fieldId) => {
+        return `Field "${fieldId}" cannot be moved using itself as pivot`
+      },
+      INVALID_PIVOT: (fieldId, reason) => {
+        return `Field "${fieldId}" cannot be moved: ${reason}`
+      }
+    },
+    deleteFieldGroup: {
+      FIELD_GROUP_DOES_NOT_EXIST: (id, ctId) => {
+        return `You cannot delete a field group with id "${id}" on content type "${ctId}" because it does not exist.`
+      },
+      FIELD_GROUP_ALREADY_DELETED: (id, ctId) => {
+        return `Field group with id "${id}" on content type "${ctId}" cannot be deleted more than once.`
+      }
+    },
+    changeFieldGroupId: {
+      FIELD_GROUP_DOES_NOT_EXIST: (id, ctId) => {
+        return `Field group "${id}" does not exist on content type "${ctId}"`
+      },
+      FIELD_GROUP_CONFLICT: (id, ctId) => {
+        return `Field group "${id}" already exists on content type "${ctId}"`
+      },
+      SELF_FIELD_GROUP: (id) => {
+        return `New field group id "${id}" is the same as original`
+      },
+      MISSING_FIELD_GROUP_ID: () => {
+        return 'Field group id to change not specified'
+      },
+      MISSING_NEW_FIELD_GROUP: (id) => {
+        return `New id for field group "${id}" not specified`
+      }
+    },
+    changeFieldGroupControl: {
+      FIELD_GROUP_DOES_NOT_EXIST: (fieldGroupId) => {
+        return `Field group "${fieldGroupId}" does not exist.`
       }
     }
   },

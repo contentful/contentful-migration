@@ -19,6 +19,15 @@ export interface Movement {
   afterField(field: string): void
 }
 
+export interface EditorLayoutMovement {
+  toTheTopOfFieldGroup(groupId?: string): void
+  toTheBottomOfFieldGroup(groupId?: string): void
+  beforeField(field: string): void
+  afterField(field: string): void
+  beforeFieldGroup(groupId?: string): void
+  afterFieldGroup(groupId?: string): void
+}
+
 type FieldType =
   | 'Symbol'
   | 'Text'
@@ -167,6 +176,11 @@ export interface ISidebarWidgetSettings {
   [setting: string]: WidgetSettingsValue
 }
 
+export interface IFieldGroupWidgetSettings {
+  /** Instance settings for the field group widget as key-value pairs. */
+  [setting: string]: WidgetSettingsValue
+}
+
 export interface ContentType {
   id: string
   instanceId: string
@@ -300,6 +314,67 @@ export interface ContentType {
    * Resets the sidebar of the content type to default
    */
   resetSidebarToDefault(): void
+
+  /**
+   * Generates the default editor layout in the editor interface related to this content type.
+   */
+  createEditorLayout(): EditorLayout
+
+  /**
+   * Returns the editor layout related to this content type.
+   */
+  editEditorLayout(): EditorLayout
+
+  /**
+   * Removes editor layout and group controls from the editor interface of this content type.
+   */
+  deleteEditorLayout(): void
+}
+
+export interface InitFieldGroupOptions {
+  name: string
+}
+
+export type FieldGroupUpdateFunction = (groupId: string, init?: InitFieldGroupOptions) => FieldGroup
+export interface FieldGroup {
+  name: (name: string) => FieldGroup
+  /**
+   * Creates a field group nested to this one
+   */
+  createFieldGroup: FieldGroupUpdateFunction
+}
+
+export interface EditorLayout {
+  /**
+   * Creates a field group at the top level of editor layout
+   * A group control is automatically generated
+   */
+  createFieldGroup: FieldGroupUpdateFunction
+  /**
+   * Edits a field group
+   */
+  editFieldGroup: FieldGroupUpdateFunction
+  /**
+   * Changes the identifier of a field group
+   */
+  changeFieldGroupId: (currentId: string, newId: string) => void
+  /**
+   * Removes a field group from the editor layout
+   */
+  deleteFieldGroup: (groupId: string) => void
+  /**
+   * Allows movements of a field in the editor layout
+   */
+  moveField: (fieldId: string) => EditorLayoutMovement
+  /**
+   * Edits the field group control of a field group
+   */
+  changeFieldGroupControl: (
+    groupId: string,
+    widgetNameSpace: 'builtin',
+    widgetId: 'fieldset' | 'topLevelTab',
+    settings?: IFieldGroupWidgetSettings
+  ) => void
 }
 
 export interface IContentTypeOptions {

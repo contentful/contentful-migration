@@ -67,7 +67,7 @@
         - [`deriveLinkedEntries(config)` Example](#derivelinkedentriesconfig-example)
       - [`transformEntriesToType(config)`](#transformentriestotypeconfig)
         - [`transformEntriesToType` Example](#transformentriestotype-example)
-      - [`createTag(id[, opts])`](#createtagid-opts)
+      - [`createTag(id[, opts, visibility])`](#createtagid-opts-visibility)
       - [`editTag(id[, opts])`](#edittagid-opts)
       - [`deleteTag(id)`](#deletetagid)
       - [`setTagsForEntries(config)`](#settagsforentriesconfig)
@@ -92,11 +92,24 @@
       - [`configureEntryEditor (widgetNamespace, widgetId[, settings])` : void](#configureentryeditor-widgetnamespace-widgetid-settings--void)
       - [`configureEntryEditors (EntryEditor[])` : void](#configureentryeditors-entryeditor--void)
       - [`resetEntryEditorToDefault ()` : void](#resetentryeditortodefault---void)
+      - [`createEditorLayout ()` : EditorLayout](#createeditorlayout---editorlayout)
+      - [`editEditorLayout ()` : EditorLayout](#editeditorlayout---editorlayout)
+      - [`deleteEditorLayout ()` : void](#deleteeditorlayout---void)
     - [Field](#field)
+    - [Editor Layout](#editor-layout)
+      - [`moveField(id)` : MovableEditorLayoutItem](#movefieldid--movableeditorlayoutitem)
+      - [`createFieldGroup(id[, opts])` : EditorLayoutFieldGroup](#createfieldgroupid-opts--editorlayoutfieldgroup)
+      - [`deleteFieldGroup (id)` : void](#deletefieldgroup-id--void)
+      - [`changeFieldGroupId (currentId, newId)`](#changefieldgroupid-currentid-newid)
+      - [`editFieldGroup (id[, opts])` : EditorLayoutFieldGroup](#editfieldgroup-id-opts--editorlayoutfieldgroup)
+    - [Editor Layout Field Group](#editor-layout-field-group)
+      - [`createFieldGroup (id[, opts])` : EditorLayoutFieldGroup](#createfieldgroup-id-opts--editorlayoutfieldgroup)
+      - [`changeFieldGroupControl (id, widgetNamespace, widgetId[, settings])` : void](#changefieldgroupcontrol-id-widgetnamespace-widgetid-settings--void)
   - [Validation errors](#validation-errors)
   - [Example migrations](#example-migrations)
   - [Writing Migrations in Typescript](#writing-migrations-in-typescript)
   - [Troubleshooting](#troubleshooting)
+  - [Updating Integration tests fixtures](#updating-integration-tests-fixtures)
   - [Reach out to us](#reach-out-to-us)
     - [You have questions about how to use this library?](#you-have-questions-about-how-to-use-this-library)
     - [You found a bug or want to propose a feature?](#you-found-a-bug-or-want-to-propose-a-feature)
@@ -247,7 +260,7 @@ Creates a content type with provided `id` and returns a reference to the newly c
 
 **`opts : Object`** – Content type definition, with the following options:
 
-- **`name : string`** – Name of the content type.
+- **`name : string`** – Name of the content type.
 - **`description : string`** – Description of the content type.
 - **`displayField : string`** – ID of the field to use as the display field for the content type. This is referred to as the "Entry title" in the web application.
 
@@ -407,7 +420,7 @@ Creates a tag with provided `id` and returns a reference to the newly created ta
 
 - **`opts : Object`** – Tag definition, with the following options:
 
-  - **`name : string`** – Name of the tag.
+  - **`name : string`** – Name of the tag.
 
 - **`visibility : 'private' | 'public'`** Tag visibility - defaults to `private`.
 
@@ -511,7 +524,7 @@ For a comprehensive guide to content modelling, please refer to [this guide](htt
 
 Creates a field with provided `id`.
 
-**`id : string`** – The ID of the field.
+**`id : string`** – The ID of the field.
 
 **`opts : Object`** – Field definition, with the following options:
 
@@ -735,9 +748,87 @@ Each `EntryEditor` has the following properties:
 
 Resets the entry editor of the content type to default.
 
+#### `createEditorLayout ()` : [EditorLayout](#editor-layout)
+
+Creates an empty editor layout for this content type.
+
+#### `editEditorLayout ()` : [EditorLayout](#editor-layout)
+
+Edits the editor layout for this content type.
+
+#### `deleteEditorLayout ()` : void
+
+Deletes the editor layout for this content type.
+
 ### Field
 
 The field object has the same methods as the properties listed in the [`ContentType.createField`](#createfieldid--string-opts--object--field) method.
+
+### Editor Layout
+
+#### `moveField(id)` : MovableEditorLayoutItem
+
+Moves the field with the provided `id`.
+
+`moveField(id)` returns a movable editor layout item type which must be called with a direction function:
+
+- **`.toTheTopOfFieldGroup(groupId)`**
+  -   - if no `groupId` is provided, the field will be moved within its group
+- **`.toTheBottomOfFieldGroup(groupId)`**
+  -   - if no `groupId` is provided, the field will be moved within its group
+- **`.beforeFieldGroup(groupId)`**
+- **`.afterFieldGroup(groupId)`**
+- **`.beforeField(fieldId)`**
+- **`.afterField(fieldId)`**
+
+#### `createFieldGroup(id[, opts])` : [EditorLayoutFieldGroup](#editor-layout-field-group)
+
+Creates a tab with the provided `id`.
+
+**`id : string`** – The ID of the group.
+
+**`opts : Object`** – Group settings, with the following options:
+
+- **`name : string`** _(required)_ – Group name.
+
+#### `deleteFieldGroup (id)` : void
+
+Deletes the group with the provided `id` from the editor layout,
+moving its contents to the parent if the group to delete is a field set or to the default tab if it’s a tab.
+
+#### `changeFieldGroupId (currentId, newId)`
+
+Changes the group’s ID.
+
+**`currentId : string`** – The current ID of the group.
+
+**`newId : string`** – The new ID for the group.
+
+#### `editFieldGroup (id[, opts])` : [EditorLayoutFieldGroup](#editor-layout-field-group)
+
+### Editor Layout Field Group
+
+#### `createFieldGroup (id[, opts])` : [EditorLayoutFieldGroup](#editor-layout-field-group)
+
+Creates a field set with the provided `id`.
+
+**`id : string`** – The ID of the group.
+
+**`opts : Object`** – Group settings, with the following options:
+
+- **`name : string`** _(required)_ – Group name.
+
+#### `changeFieldGroupControl (id, widgetNamespace, widgetId[, settings])` : void
+
+Sets the group control for a field group.
+
+**`widgetNamespace : string`** – The namespace for the group control. Currently allowed: `builtin`.
+**`widgetId : string`** - The widget ID for the group control. Allowed values: `fieldset`, `topLevelTab`.
+**`settings : Object`** – Field set settings, with the following properties:
+
+- **`helpText : string`** – Help text for the field set. Displayed when editing.
+- **`collapsible : boolean`** – Whether the field set can be collapsed when editing.
+- **`collapsedByDefault : string`** – Whether the field set is collapsed when opening the editor.
 
 ## Validation errors
 

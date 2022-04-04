@@ -30,11 +30,31 @@ export default abstract class Intent implements IntentInterface {
     return this.payload.fieldId
   }
 
+  getInvalidMethod() {
+    return this.payload.invalidMethod
+  }
+
+  getFieldGroupId() {
+    return this.payload.fieldGroupId
+  }
+
+  getNewFieldGroupId() {
+    return this.payload.newFieldGroupId
+  }
+
+  getFieldGroupProps() {
+    return this.payload.fieldGroupProps
+  }
+
   requiresAllEntries() {
     return false
   }
 
   requiresAllTags() {
+    return false
+  }
+
+  requiresContentType() {
     return false
   }
 
@@ -98,6 +118,41 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
+  isEditorLayoutCreate() {
+    return false
+  }
+
+  isEditorLayoutDelete() {
+    return false
+  }
+
+  isEditorLayoutUpdate() {
+    return false
+  }
+  isEditorLayoutInvalidMethod() {
+    return false
+  }
+
+  isFieldGroupCreate() {
+    return false
+  }
+
+  isFieldGroupDelete() {
+    return false
+  }
+
+  isFieldGroupUpdate() {
+    return false
+  }
+
+  isFieldGroupIdChange() {
+    return false
+  }
+
+  isFieldGroupControlChange() {
+    return false
+  }
+
   isAboutContentType() {
     return this.isContentTypeUpdate() || this.isContentTypeCreate() || this.isContentTypeDelete()
   }
@@ -109,6 +164,14 @@ export default abstract class Intent implements IntentInterface {
       this.isFieldMove() ||
       this.isFieldRename() ||
       this.isFieldDelete()
+    )
+  }
+
+  isAboutEditorLayout() {
+    return (
+      this.isEditorLayoutCreate() ||
+      this.isEditorLayoutDelete() ||
+      this.isEditorLayoutUpdate()
     )
   }
 

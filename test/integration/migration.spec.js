@@ -24,6 +24,13 @@ const createWithLinkToNonExistingContentType = require('../../examples/34-create
 const modifyTag = require('../../examples/29-modify-tag')
 const deleteTag = require('../../examples/30-delete-tag')
 const setTagsForEntries = require('../../examples/31-set-tags-for-entries')
+const createEditorLayout = require('../../examples/xx-create-editor-layout')
+const moveFieldInExistingEditorLayout = require('../../examples/xx-move-field-in-existing-editor-layout')
+const moveFieldInNewEditorLayout = require('../../examples/xx-move-field-in-editor-layout')
+const deleteEditorLayoutFieldSet = require('../../examples/xx-delete-editor-layout-field-set')
+const changeFieldGroupId = require('../../examples/xx-change-field-group-id-editor-layout')
+const deleteEditorLayout = require('../../examples/xx-delete-editor-layout')
+const deleteEditorLayoutTab = require('../../examples/xx-delete-editor-layout-tab')
 
 const { createMigrationParser } = require('../../built/lib/migration-parser')
 const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget')
@@ -863,5 +870,204 @@ describe('the migration', function () {
       url: '/content_types/contentTypeWithLink'
     })
     expect(contentType.fields[0].id).to.eql('linkToNonExistingContentType')
+  })
+
+  it('creates an editor layout', async function () {
+    await migrator(createEditorLayout)
+
+    const editorInterfaces = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    })
+
+    expect(editorInterfaces?.editorLayout).to.eql([
+      {
+        groupId: 'content',
+        name: 'Content',
+        items: [{ fieldId: 'name' }, { fieldId: 'title' }]
+      },
+      {
+        groupId: 'settings',
+        name: 'Settings',
+        items: [{ groupId: 'seo', name: 'SEO', items: [] }]
+      },
+      {
+        groupId: 'metadata',
+        name: 'Metadata',
+        items: []
+      }
+    ])
+
+    expect(editorInterfaces?.groupControls).to.eql([
+      {
+        groupId: 'content',
+        widgetId: 'topLevelTab',
+        widgetNamespace: 'builtin',
+        settings: {
+          helpText: 'Main content'
+        }
+      },
+      {
+        groupId: 'settings',
+        widgetId: 'topLevelTab',
+        widgetNamespace: 'builtin'
+      },
+      {
+        groupId: 'seo',
+        widgetId: 'fieldset',
+        widgetNamespace: 'builtin',
+        settings: {
+          helpText: 'Search related fields',
+          collapsedByDefault: false
+        }
+      },
+      {
+        groupId: 'metadata',
+        widgetId: 'topLevelTab',
+        widgetNamespace: 'builtin'
+      }
+    ])
+  })
+
+  it('deletes an editor layout tab', async function () {
+    await migrator(deleteEditorLayoutTab)
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    })
+
+    expect(editorInterface.editorLayout).to.eql([
+      {
+        groupId: 'content',
+        name: 'Content',
+        items: [
+          { fieldId: 'name' },
+          { fieldId: 'title' },
+          { groupId: 'seo', name: 'SEO', items: [] }
+        ]
+      },
+      {
+        groupId: 'metadata',
+        name: 'Metadata',
+        items: []
+      }
+    ])
+  })
+
+  it('deletes an editor layout field set', async function () {
+    await migrator(deleteEditorLayoutFieldSet)
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    })
+
+    expect(editorInterface.editorLayout).to.eql([
+      {
+        groupId: 'content',
+        name: 'Content',
+        items: [{ fieldId: 'name' }, { fieldId: 'title' }]
+      },
+      {
+        groupId: 'metadata',
+        name: 'Metadata',
+        items: []
+      }
+    ])
+  })
+
+  it('changes field group id', async function () {
+    await migrator(changeFieldGroupId)
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    })
+
+    expect(editorInterface.editorLayout).to.eql([
+      {
+        groupId: 'content',
+        name: 'Content',
+        items: [{ fieldId: 'name' }, { fieldId: 'title' }]
+      },
+      {
+        groupId: 'info',
+        name: 'Metadata',
+        items: []
+      }
+    ])
+  })
+
+  it('deletes editor layout and group controls', async function () {
+    await migrator(deleteEditorLayout)
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    })
+
+    expect(editorInterface.editorLayout).to.be.undefined()
+    expect(editorInterface.groupControls).to.be.undefined()
+  })
+
+  it('moves fields in newly created editor layout', async function () {
+    await migrator(moveFieldInNewEditorLayout)
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/mytype/editor_interface'
+    })
+
+    expect(editorInterface.editorLayout).to.eql([
+      {
+        name: 'First Tab',
+        items: [{ fieldId: 'fieldD' }],
+        groupId: 'firsttab'
+      },
+      {
+        name: 'Second Tab',
+        items: [
+          { fieldId: 'fieldB' },
+          {
+            name: 'Field Set',
+            items: [{ fieldId: 'fieldA' }, { fieldId: 'fieldC' }, { fieldId: 'fieldE' }],
+            groupId: 'fieldset'
+          }
+        ],
+        groupId: 'secondtab'
+      }
+    ])
+  })
+
+  it('moves fields in existing editor layout', async function () {
+    await migrator(moveFieldInExistingEditorLayout)
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/mytype/editor_interface'
+    })
+
+    expect(editorInterface.editorLayout).to.eql([
+      {
+        name: 'First Tab',
+        items: [{ fieldId: 'fieldA' }, { fieldId: 'fieldD' }],
+        groupId: 'firsttab'
+      },
+      {
+        name: 'Second Tab',
+        items: [
+          {
+            name: 'Field Set',
+            items: [],
+            groupId: 'fieldset'
+          },
+          { fieldId: 'fieldB' },
+          { fieldId: 'fieldC' },
+          { fieldId: 'fieldE' }
+        ],
+        groupId: 'secondtab'
+      }
+    ])
   })
 })

@@ -77,6 +77,9 @@ export default class ComposedIntent implements Intent {
   isAboutField(): boolean {
     return false
   }
+  isAboutEditorLayout(): boolean {
+    return false
+  }
   isContentTransform(): boolean {
     return false
   }
@@ -94,7 +97,7 @@ export default class ComposedIntent implements Intent {
   }
 
   isEditorInterfaceIntent(): boolean {
-    return false
+    return this.intents.some((intent) => intent.isEditorInterfaceIntent())
   }
 
   isSidebarUpdate(): boolean {
@@ -115,6 +118,10 @@ export default class ComposedIntent implements Intent {
 
   requiresAllTags(): boolean {
     return this.intents.some((intent) => intent.requiresAllTags())
+  }
+
+  requiresContentType() {
+    return false
   }
 
   groupsWith(): boolean {
@@ -167,6 +174,58 @@ export default class ComposedIntent implements Intent {
     return false
   }
 
+  getInvalidMethod(): string {
+    return null
+  }
+
+  getFieldGroupId(): string {
+    return null
+  }
+
+  getNewFieldGroupId(): string {
+    return null
+  }
+
+  getFieldGroupProps() {
+    return null
+  }
+
+  isEditorLayoutCreate(): boolean {
+    return false
+  }
+
+  isEditorLayoutDelete(): boolean {
+    return false
+  }
+
+  isEditorLayoutUpdate(): boolean {
+    return false
+  }
+
+  isEditorLayoutInvalidMethod(): boolean {
+    return false
+  }
+
+  isFieldGroupCreate(): boolean {
+    return false
+  }
+
+  isFieldGroupDelete(): boolean {
+    return false
+  }
+
+  isFieldGroupUpdate(): boolean {
+    return false
+  }
+
+  isFieldGroupIdChange(): boolean {
+    return false
+  }
+
+  isFieldGroupControlChange(): boolean {
+    return false
+  }
+
   toActions() {
     return flatten(this.intents.map((intent) => intent.toActions()))
   }
@@ -209,6 +268,8 @@ export default class ComposedIntent implements Intent {
     const onlyFieldUpdatesByField = groupBy(onlyFieldUpdates, (intent) => intent.getFieldId())
     const createdFieldUpdatesByField = groupBy(createdFieldUpdates, (intent) => intent.getFieldId())
 
+    const editorLayoutUpdates = this.intents.filter((intent) => intent.isEditorLayoutUpdate())
+
     const topLevelDetails = flatten(
       contentTypeOrTagUpdates.map((updateIntent) => updateIntent.toPlanMessage().details)
     )
@@ -232,6 +293,7 @@ export default class ComposedIntent implements Intent {
       }
       createSections.push(nextUpdateSection)
     }
+
     for (const createIntent of fieldCreates) {
       const fieldId = createIntent.getFieldId()
       const [createSection] = createIntent.toPlanMessage().sections
@@ -260,6 +322,11 @@ export default class ComposedIntent implements Intent {
 
     for (const moveIntent of fieldMoves) {
       const planMessage = moveIntent.toPlanMessage()
+      createSections = createSections.concat(planMessage.sections)
+    }
+
+    for (const updateIntent of editorLayoutUpdates) {
+      const planMessage = updateIntent.toPlanMessage()
       createSections = createSections.concat(planMessage.sections)
     }
 
