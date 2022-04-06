@@ -27,6 +27,7 @@ interface APIContentType {
   name: string
   description?: string
   displayField?: string
+  metadata?: object
 }
 
 type APIParameterValue = number | boolean | string
