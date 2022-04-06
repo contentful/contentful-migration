@@ -1,4 +1,4 @@
-import { cloneDeep, find, filter, findIndex, pull, forEach, pick, update } from 'lodash'
+import { cloneDeep, find, filter, findIndex, pull, forEach, pick, update, set } from 'lodash'
 
 import {
   APIContentType,
@@ -36,8 +36,10 @@ export type EditorLayoutFieldMovementDirection =
 
 class Fields {
   private _fields: Field[]
+  private _contentType: ContentType
 
-  constructor(fields: Field[] = []) {
+  constructor(contentType: ContentType, fields: Field[] = []) {
+    this._contentType = contentType
     this._fields = fields
   }
 
@@ -54,12 +56,17 @@ class Fields {
     } else {
       allFields[currentFieldIndex] = field
     }
+
+    if (field.deleted) {
+      this._contentType.deleteFieldAnnotations(id)
+    }
     this._fields = allFields
   }
 
   deleteField(id: string) {
     const fieldToDelete = find(this._fields, { id })
     pull(this._fields, fieldToDelete)
+    this._contentType.deleteFieldAnnotations(id)
   }
 
   moveField(id: string, direction: string, pivot: string) {
@@ -103,7 +110,7 @@ class Fields {
   }
 
   clone(): Fields {
-    return new Fields(this.toRaw())
+    return new Fields(this._contentType.clone(), this.toRaw())
   }
 
   toRaw(): Field[] {
@@ -567,6 +574,21 @@ class EditorInterfaces {
   }
 }
 
+type AnnotationLink = {
+  sys: {
+    type: 'Link'
+    linkType: 'Annotation'
+    id: string
+  }
+}
+
+type ContentTypeMetadata = {
+  annotations?: {
+    ContentType?: AnnotationLink[]
+    ContentTypeField?: Record<string, AnnotationLink[]>
+  }
+}
+
 class ContentType {
   public hasEntries: Boolean
   private _id: string
@@ -575,14 +597,16 @@ class ContentType {
   private _description: string
   private _version: number
   private _displayField: string
+  private _metadata: ContentTypeMetadata | undefined
 
   constructor(ct: APIContentType) {
     this._id = ct.sys.id
-    this._fields = new Fields(ct.fields)
+    this._fields = new Fields(this, ct.fields)
     this._name = ct.name
     this._description = ct.description
     this._version = ct.sys.version
     this._displayField = ct.displayField
+    this._metadata = ct.metadata
   }
 
   get id() {
@@ -621,6 +645,37 @@ class ContentType {
     this._displayField = displayField
   }
 
+  get metadata() {
+    return this._metadata
+  }
+
+  getContentTypeFieldAnnotations(fieldId: string) {
+    return this._metadata?.annotations?.ContentTypeField[fieldId]
+  }
+
+  setFieldAnnotations(fieldId: string, annotations: AnnotationLink[]) {
+    set(this, `metadata.annotations.ContentTypeField.${fieldId}`, annotations)
+  }
+
+  deleteFieldAnnotations(id: string) {
+    delete this.metadata?.annotations?.ContentTypeField[id]
+    this.normalizeMetadata()
+  }
+
+  private normalizeMetadata() {
+    if (Object.keys(this._metadata?.annotations?.ContentTypeField || {}).length === 0) {
+      delete this._metadata?.annotations?.ContentTypeField
+    }
+
+    if (Object.keys(this._metadata?.annotations || {}).length === 0) {
+      delete this._metadata?.annotations
+    }
+
+    if (Object.keys(this._metadata || {}).length === 0) {
+      delete this._metadata
+    }
+  }
+
   get version() {
     return this._version
   }
@@ -638,7 +693,8 @@ class ContentType {
       name: this.name,
       displayField: this.displayField,
       fields: this.fields.toRaw(),
-      description: this.description
+      description: this.description,
+      ...(this._metadata ? { metadata: cloneDeep(this._metadata) } : undefined)
     }
   }
 
