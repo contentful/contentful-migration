@@ -93,7 +93,7 @@
     "eslint-plugin-standard": "^5.0.0",
     "husky": "^7.0.4",
     "lint-staged": "^12.3.4",
-    "mocha": "^7.1.1",
+    "mocha": "^9.2.2",
     "nixt": "^0.5.1",
     "nock": "^13.0.0",
     "prettier": "^2.5.1",
