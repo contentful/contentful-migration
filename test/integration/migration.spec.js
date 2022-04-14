@@ -31,6 +31,10 @@ const deleteEditorLayoutFieldSet = require('../../examples/37-delete-editor-layo
 const changeFieldGroupId = require('../../examples/38-change-field-group-id-editor-layout')
 const deleteEditorLayout = require('../../examples/39-delete-editor-layout')
 const deleteEditorLayoutTab = require('../../examples/36-delete-editor-layout-tab')
+const assignContentTypeAnnotations = require('../../examples/42-assign-content-type-annotations')
+const assignFieldAnnotations = require('../../examples/43-assign-field-annotations')
+const clearFieldAnnotations = require('../../examples/44-clear-field-annotations')
+const clearContentTypeAnnotations = require('../../examples/45-clear-content-type-annotations')
 
 const { createMigrationParser } = require('../../built/lib/migration-parser')
 const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget')
@@ -1069,5 +1073,92 @@ describe('the migration', function () {
         groupId: 'secondtab'
       }
     ])
+  })
+
+  it('assigns content type annotations', async function () {
+    await migrator(assignContentTypeAnnotations)
+    const ct = await request({
+      method: 'GET',
+      url: '/content_types/blogPost'
+    })
+
+    expect(ct.metadata).to.eql({
+      annotations: {
+        ContentType: [
+          {
+            sys: {
+              id: 'Contentful:AggregateRoot',
+              type: 'Link',
+              linkType: 'Annotation'
+            }
+          }
+        ]
+      }
+    })
+  })
+
+  it('assigns field annotations', async function () {
+    await migrator(assignFieldAnnotations)
+    const ct = await request({
+      method: 'GET',
+      url: '/content_types/blogPost'
+    })
+
+    expect(ct.metadata).to.eql({
+      annotations: {
+        ContentType: [
+          {
+            sys: {
+              id: 'Contentful:AggregateRoot',
+              type: 'Link',
+              linkType: 'Annotation'
+            }
+          }
+        ],
+        ContentTypeField: {
+          sources: [
+            {
+              sys: {
+                id: 'Contentful:AggregateComponent',
+                type: 'Link',
+                linkType: 'Annotation'
+              }
+            }
+          ]
+        }
+      }
+    })
+  })
+
+  it('clears field annotations', async function () {
+    await migrator(clearFieldAnnotations)
+    const ct = await request({
+      method: 'GET',
+      url: '/content_types/blogPost'
+    })
+
+    expect(ct.metadata).to.eql({
+      annotations: {
+        ContentType: [
+          {
+            sys: {
+              id: 'Contentful:AggregateRoot',
+              type: 'Link',
+              linkType: 'Annotation'
+            }
+          }
+        ]
+      }
+    })
+  })
+
+  it('clears field annotations', async function () {
+    await migrator(clearContentTypeAnnotations)
+    const ct = await request({
+      method: 'GET',
+      url: '/content_types/blogPost'
+    })
+
+    expect(ct.metadata).to.be.undefined()
   })
 })

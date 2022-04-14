@@ -29,7 +29,7 @@ class FieldRenameAction extends EntityAction {
     const fields = ct.fields
     const field = fields.getField(this.fieldId)
 
-    const fieldAnnotations = ct.getContentTypeFieldAnnotations(this.fieldId)
+    const fieldAnnotations = ct.getFieldAnnotations(this.fieldId)
     fields.deleteField(this.fieldId)
     field.id = this.props.newId
     delete field.newId

@@ -13,7 +13,7 @@ it('moves fields correctly', () => {
     { id: 'g' }
   ]
 
-  const fields = new Fields(myFields)
+  const fields = new Fields(undefined, myFields)
 
   fields.moveField('c', 'toTheTop')
   fields.moveField('d', 'toTheBottom')

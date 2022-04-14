@@ -1,3 +1,5 @@
+import { AnnotationLink } from './annotation'
+
 interface Field {
   id: string
   newId?: string
@@ -18,6 +20,13 @@ interface Field {
   defaultValue?: { [locale: string]: any }
 }
 
+type ContentTypeMetadata = {
+  annotations?: {
+    ContentType?: AnnotationLink[]
+    ContentTypeField?: Record<string, AnnotationLink[]>
+  }
+}
+
 interface APIContentType {
   sys: {
     id: string
@@ -27,7 +36,7 @@ interface APIContentType {
   name: string
   description?: string
   displayField?: string
-  metadata?: object
+  metadata?: ContentTypeMetadata
 }
 
 type APIParameterValue = number | boolean | string
@@ -110,5 +119,6 @@ export {
   APIEditorLayoutFieldGroupItem,
   APISidebarWidgetSettings,
   APIControlWidgetNamespace,
-  APISidebarWidgetNamespace
+  APISidebarWidgetNamespace,
+  ContentTypeMetadata
 }

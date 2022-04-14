@@ -1,6 +1,7 @@
 import Intent from './base-intent'
 import FieldUpdateIntent from './field-update'
 import ContentTypeUpdateIntent from './content-type-update'
+import ContentTypeAnnotateIntent from './content-type-annotate'
 import EntryTransformIntent from './entry-transform'
 import FieldRenameIntent from './field-rename'
 import FieldMoveIntent from './field-move'
@@ -33,6 +34,7 @@ import TagDeleteIntent from './tag-delete'
 import EntrySetTagsIntent from './entry-set-tags'
 import EditorLayoutChangeFieldGroupIdIntent from './editor-layout/editor-layout-change-field-group-id'
 import EditorLayoutDeleteIntent from './editor-layout/editor-layout-delete'
+import FieldAnnotateIntent from './field-annotate'
 
 export {
   Intent as default,
@@ -43,9 +45,11 @@ export {
   FieldMoveIntent as FieldMove,
   FieldDeleteIntent as FieldDelete,
   FieldCreateIntent as FieldCreate,
+  FieldAnnotateIntent as FieldAnnotate,
   ContentTypeCreateIntent as ContentTypeCreate,
   ContentTypeDeleteIntent as ContentTypeDelete,
   ContentTypeUpdateIntent as ContentTypeUpdate,
+  ContentTypeAnnotateIntent as ContentTypeAnnotate,
   EntryDeriveIntent as EntryDerive,
   EntryTransformToTypeIntent as EntryTransformToType,
   EditorInterfaceUpdateIntent as EditorInterfaceUpdate,

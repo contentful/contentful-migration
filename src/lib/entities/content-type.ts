@@ -13,7 +13,8 @@ import {
   APISidebarWidgetNamespace,
   APIControlWidgetNamespace,
   APIEditorInterfaceEditorLayout,
-  APIEditorLayoutFieldGroupItem
+  APIEditorLayoutFieldGroupItem,
+  ContentTypeMetadata
 } from '../interfaces/content-type'
 import { SidebarWidgetNamespace, DEFAULT_SIDEBAR_LIST } from '../action/sidebarwidget'
 import {
@@ -25,6 +26,27 @@ import {
   FieldItem
 } from '../utils/editor-layout'
 import { EditorLayoutItem } from 'contentful-management/dist/typings/export-types'
+import { AnnotationLink } from '../interfaces/annotation'
+
+function prune(obj: any) {
+  if (obj === undefined) {
+    return undefined
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.length === 0 ? undefined : obj
+  }
+  let isEmpty = true
+  for (const [key, value] of Object.entries(obj)) {
+    if (!prune(value)) {
+      delete obj[key]
+    } else {
+      isEmpty = false
+    }
+  }
+
+  return isEmpty ? undefined : obj
+}
 
 export type EditorLayoutFieldMovementDirection =
   | 'afterField'
@@ -58,7 +80,7 @@ class Fields {
     }
 
     if (field.deleted) {
-      this._contentType.deleteFieldAnnotations(id)
+      this._contentType.clearFieldAnnotations(id)
     }
     this._fields = allFields
   }
@@ -66,7 +88,7 @@ class Fields {
   deleteField(id: string) {
     const fieldToDelete = find(this._fields, { id })
     pull(this._fields, fieldToDelete)
-    this._contentType.deleteFieldAnnotations(id)
+    this._contentType.clearFieldAnnotations(id)
   }
 
   moveField(id: string, direction: string, pivot: string) {
@@ -574,21 +596,6 @@ class EditorInterfaces {
   }
 }
 
-type AnnotationLink = {
-  sys: {
-    type: 'Link'
-    linkType: 'Annotation'
-    id: string
-  }
-}
-
-type ContentTypeMetadata = {
-  annotations?: {
-    ContentType?: AnnotationLink[]
-    ContentTypeField?: Record<string, AnnotationLink[]>
-  }
-}
-
 class ContentType {
   public hasEntries: Boolean
   private _id: string
@@ -645,35 +652,28 @@ class ContentType {
     this._displayField = displayField
   }
 
-  get metadata() {
-    return this._metadata
+  setAnnotations(annotations: AnnotationLink[]) {
+    set(this, '_metadata.annotations.ContentType', annotations)
   }
 
-  getContentTypeFieldAnnotations(fieldId: string) {
-    return this._metadata?.annotations?.ContentTypeField[fieldId]
+  getAnnotations() {
+    return this._metadata?.annotations?.ContentType
+  }
+
+  clearAnnotations() {
+    delete this._metadata?.annotations?.ContentType
   }
 
   setFieldAnnotations(fieldId: string, annotations: AnnotationLink[]) {
-    set(this, `metadata.annotations.ContentTypeField.${fieldId}`, annotations)
+    set(this, `_metadata.annotations.ContentTypeField.${fieldId}`, annotations)
   }
 
-  deleteFieldAnnotations(id: string) {
-    delete this.metadata?.annotations?.ContentTypeField[id]
-    this.normalizeMetadata()
+  getFieldAnnotations(fieldId: string) {
+    return this._metadata?.annotations?.ContentTypeField?.[fieldId]
   }
 
-  private normalizeMetadata() {
-    if (Object.keys(this._metadata?.annotations?.ContentTypeField || {}).length === 0) {
-      delete this._metadata?.annotations?.ContentTypeField
-    }
-
-    if (Object.keys(this._metadata?.annotations || {}).length === 0) {
-      delete this._metadata?.annotations
-    }
-
-    if (Object.keys(this._metadata || {}).length === 0) {
-      delete this._metadata
-    }
+  clearFieldAnnotations(fieldId: string) {
+    delete this._metadata?.annotations?.ContentTypeField?.[fieldId]
   }
 
   get version() {
@@ -685,7 +685,7 @@ class ContentType {
   }
 
   toAPI(): APIContentType {
-    return {
+    return cloneDeep({
       sys: {
         id: this.id,
         version: this.version
@@ -694,8 +694,8 @@ class ContentType {
       displayField: this.displayField,
       fields: this.fields.toRaw(),
       description: this.description,
-      ...(this._metadata ? { metadata: cloneDeep(this._metadata) } : undefined)
-    }
+      ...(this._metadata ? prune({ metadata: this._metadata }) : undefined)
+    })
   }
 
   clone(): ContentType {
@@ -708,4 +708,4 @@ const isTargetFieldItem = (item, fieldId): item is FieldItem =>
 const isTargetGroupItem = (item, groupId): item is FieldGroupItem =>
   isFieldGroupItem(item) && item.groupId === groupId
 
-export { ContentType as default, ContentType, Fields, Field, EditorInterfaces }
+export { ContentType as default, ContentType, Fields, Field, EditorInterfaces, AnnotationLink }

@@ -11,6 +11,7 @@ import { PayloadValidationError, InvalidActionError } from '../interfaces/errors
 import DisplayFieldValidator from './validator/display-field'
 import SchemaValidator from './validator/schema/index'
 import TypeChangeValidator from './validator/type-change'
+import AnnotationValidator from './validator/annotations'
 import TagsOnEntryValidator from './validator/tags-on-entry'
 import { Intent } from '../interfaces/intent'
 import APIEntry from '../interfaces/api-entry'
@@ -214,13 +215,18 @@ class OfflineAPI {
       this.publishedContentTypes.set(id, contentType.clone())
     }
 
-    this.contentTypeValidators.push(new FieldDeletionValidator())
-    this.contentTypeValidators.push(new DisplayFieldValidator())
-    this.contentTypeValidators.push(new SchemaValidator())
-    this.contentTypeValidators.push(new TypeChangeValidator())
+    this.contentTypeValidators.push(
+      new FieldDeletionValidator(),
+      new DisplayFieldValidator(),
+      new SchemaValidator(),
+      new TypeChangeValidator(),
+      new AnnotationValidator()
+    )
 
-    this.editorInterfaceValidators.push(new EditorInterfaceSchemaValidator())
-    this.editorInterfaceValidators.push(new FieldGroupsCountValidator())
+    this.editorInterfaceValidators.push(
+      new EditorInterfaceSchemaValidator(),
+      new FieldGroupsCountValidator()
+    )
 
     this.tagValidators.push(new TagSchemaValidator())
 

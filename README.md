@@ -1,4 +1,5 @@
 ![header](./.github/header.png)
+
 <p align="center">
   <a href="https://www.contentful.com/slack/">
     <img src="https://img.shields.io/badge/-Join%20Community%20Slack-2AB27B.svg?logo=slack&maxAge=31557600" alt="Join Contentful Community Slack">
@@ -24,7 +25,6 @@
     <img src="https://travis-ci.org/contentful/contentful-migration.svg?branch=master" alt="Build Status">
   </a>
 </p>
-
 
 <p align="center">
   <a href="https://www.npmjs.com/package/contentful-migration">
@@ -163,6 +163,7 @@ npm install contentful-migration
 > We moved the CLI version of this tool into our [Contentful CLI](https://github.com/contentful/contentful-cli). This allows our users to use and install only one single CLI tool to get the full Contentful experience.
 >
 > Please have a look at the [Contentful CLI migration command documentation](https://github.com/contentful/contentful-cli/tree/master/docs/space/migration) to learn more about how to use this as command line tool.
+
 ### Usage as a library
 
 ```javascript
@@ -181,10 +182,10 @@ In your migration description file, export a function that accepts the `migratio
 
 ```javascript
 module.exports = function (migration, context) {
-  const dog = migration.createContentType('dog');
-  const name = dog.createField('name');
-  name.type('Symbol').required(true);
-};
+  const dog = migration.createContentType('dog')
+  const name = dog.createField('name')
+  name.type('Symbol').required(true)
+}
 ```
 
 You can also pass the function directly. For example:
@@ -192,10 +193,10 @@ You can also pass the function directly. For example:
 ```javascript
 const { runMigration } = require('contentful-migration')
 
-function migrationFunction (migration, context) {
-  const dog = migration.createContentType('dog');
-  const name = dog.createField('name');
-  name.type('Symbol').required(true);
+function migrationFunction(migration, context) {
+  const dog = migration.createContentType('dog')
+  const name = dog.createField('name')
+  name.type('Symbol').required(true)
 }
 
 const options = {
@@ -205,39 +206,40 @@ const options = {
 }
 
 runMigration(options)
-        .then(() => console.log('Migration Done!'))
-        .catch((e) => console.error(e))
+  .then(() => console.log('Migration Done!'))
+  .catch((e) => console.error(e))
 ```
 
 ## Documentation & References
 
 ### Configuration
 
-| Name              | Default    | Type    | Description                                                 | Required |
-|-------------------|------------|---------|-------------------------------------------------------------|----------|
-| filePath          |            | string  | The path to the migration file                              | if `migrationFunction` is not supplied     |
-| migrationFunction |            | function| Specify the migration function directly. See the [expected signature](https://github.com/contentful/contentful-migration/blob/4b9dcae0e7616da9153d0fa481871978595049e7/index.d.ts#L506).               | if `filePath` is not supplied    |
-| spaceId           |            | string  | ID of the space to run the migration script on              | true     |
-| environmentId     | `'master'` | string  | ID of the environment within the space to run the           | false    |
-| accessToken       |            | string  | The access token to use                                     | true     |
-| yes               | false      | boolean | Skips any confirmation before applying the migration,script | false    |
-| retryLimit        | 5          | number  | Number of retries before failure (every subsequent retry will increase the timeout to the previous retry by about 1.5 seconds)                            | false    |
-| requestBatchSize  | 100        | number  | Limit for every single request                              | false    |
-| headers           |            | object  | Additional headers to attach to the requests                | false    |
+| Name              | Default    | Type     | Description                                                                                                                                                                              | Required                               |
+| ----------------- | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| filePath          |            | string   | The path to the migration file                                                                                                                                                           | if `migrationFunction` is not supplied |
+| migrationFunction |            | function | Specify the migration function directly. See the [expected signature](https://github.com/contentful/contentful-migration/blob/4b9dcae0e7616da9153d0fa481871978595049e7/index.d.ts#L506). | if `filePath` is not supplied          |
+| spaceId           |            | string   | ID of the space to run the migration script on                                                                                                                                           | true                                   |
+| environmentId     | `'master'` | string   | ID of the environment within the space to run the                                                                                                                                        | false                                  |
+| accessToken       |            | string   | The access token to use                                                                                                                                                                  | true                                   |
+| yes               | false      | boolean  | Skips any confirmation before applying the migration,script                                                                                                                              | false                                  |
+| retryLimit        | 5          | number   | Number of retries before failure (every subsequent retry will increase the timeout to the previous retry by about 1.5 seconds)                                                           | false                                  |
+| requestBatchSize  | 100        | number   | Limit for every single request                                                                                                                                                           | false                                  |
+| headers           |            | object   | Additional headers to attach to the requests                                                                                                                                             | false                                  |
 
 ### Chaining vs Object notation
 
 All methods described below can be used in two flavors:
 
- 1. The chained approach:
+1.  The chained approach:
 
     ```javascript
-    const author = migration.createContentType('author')
+    const author = migration
+      .createContentType('author')
       .name('Author')
       .description('Author of blog posts or pages')
     ```
 
- 1. The object approach:
+1.  The object approach:
 
     ```javascript
     const author = migration.createContentType('author', {
@@ -284,27 +286,26 @@ The transform function is expected to return an object with the desired target f
 - **`from : array`** _(required)_ – Array of the source field IDs
 - **`to : array`** _(required)_ – Array of the target field IDs
 - **`transformEntryForLocale : function (fields, locale): object`** _(required)_ – Transformation function to be applied.
-    - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `fields == {myField: {'en-US': 'my field value'}}`)
-    - `locale` one of the locales in the space being transformed
-  The return value must be an object with the same keys as specified in `to`. Their values will be written to the respective entry fields for the current locale (i.e. `{nameField: 'myNewValue'}`). If it returns `undefined`, this the values for this locale on the entry will be left untouched.
+  - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `fields == {myField: {'en-US': 'my field value'}}`)
+  - `locale` one of the locales in the space being transformed
+    The return value must be an object with the same keys as specified in `to`. Their values will be written to the respective entry fields for the current locale (i.e. `{nameField: 'myNewValue'}`). If it returns `undefined`, this the values for this locale on the entry will be left untouched.
 - **`shouldPublish : bool | 'preserve'`** _(optional)_ – Flag that specifies publishing of target entries, `preserve` will keep current states of the source entries (default `'preserve'`)
-
 
 ##### `transformEntries` Example
 
 ```javascript
 migration.transformEntries({
-    contentType: 'newsArticle',
-    from: ['author', 'authorCity'],
-    to: ['byline'],
-    transformEntryForLocale: function (fromFields, currentLocale) {
-      if (currentLocale === 'de-DE') {
-        return;
-      }
-      const newByline = `${fromFields.author[currentLocale]} ${fromFields.authorCity[currentLocale]}`;
-      return { byline: newByline };
+  contentType: 'newsArticle',
+  from: ['author', 'authorCity'],
+  to: ['byline'],
+  transformEntryForLocale: function (fromFields, currentLocale) {
+    if (currentLocale === 'de-DE') {
+      return
     }
-  });
+    const newByline = `${fromFields.author[currentLocale]} ${fromFields.authorCity[currentLocale]}`
+    return { byline: newByline }
+  }
+})
 ```
 
 For the complete version, please refer to [this example](./examples/12-transform-content.js).
@@ -328,9 +329,11 @@ The derive function is expected to return an object with the desired target fiel
 - **`derivedFields : array`** _(required)_ – Array of the field IDs on the target content type
 
 - **`identityKey: function (fields): string`** _(required)_ - Called once per source entry. Returns the ID used for the derived entry, which is also used for de-duplication so that multiple source entries can link to the same derived entry.
+
   - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `fields == {myField: {'en-US': 'my field value'}}`)
 
 - **`deriveEntryForLocale : function (fields, locale): object`** _(required)_ – Function that generates the field values for the derived entry.
+
   - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `fields == {myField: {'en-US': 'my field value'}}`)
   - `locale` one of the locales in the space being transformed
 
@@ -338,31 +341,30 @@ The derive function is expected to return an object with the desired target fiel
 
 - **`shouldPublish : bool|'preserve'`** _(optional)_ – If true, both the source and the derived entries will be published. If false, both will remain in draft state. If preserve, will keep current states of the source entries (default `true`)
 
-
 ##### `deriveLinkedEntries(config)` Example
 
 ```javascript
 migration.deriveLinkedEntries({
-    contentType: 'dog',
-    derivedContentType: 'owner',
-    from: ['owner'],
-    toReferenceField: 'ownerRef',
-    derivedFields: ['firstName', 'lastName'],
-    identityKey: async (fromFields) => {
-      return fromFields.owner['en-US'].toLowerCase().replace(' ', '-');
-    },
-    shouldPublish: true,
-    deriveEntryForLocale: async (inputFields, locale) => {
-      if (locale !== 'en-US') {
-        return;
-      }
-      const [firstName, lastName] = inputFields.owner[locale].split(' ');
-      return {
-        firstName,
-        lastName
-      };
+  contentType: 'dog',
+  derivedContentType: 'owner',
+  from: ['owner'],
+  toReferenceField: 'ownerRef',
+  derivedFields: ['firstName', 'lastName'],
+  identityKey: async (fromFields) => {
+    return fromFields.owner['en-US'].toLowerCase().replace(' ', '-')
+  },
+  shouldPublish: true,
+  deriveEntryForLocale: async (inputFields, locale) => {
+    if (locale !== 'en-US') {
+      return
     }
-  });
+    const [firstName, lastName] = inputFields.owner[locale].split(' ')
+    return {
+      firstName,
+      lastName
+    }
+  }
+})
 ```
 
 For the complete version of this migration, please refer to [this example](./examples/15-derive-entry-n-to-1.js).
@@ -381,33 +383,34 @@ For the given (source) content type, transforms all its entries according to the
 - **`updateReferences : bool`** _(optional)_ – Flag that specifies if linking entries should be updated with target entries (default `false`). Note that this flag does not support Rich Text Fields references.
 - **`removeOldEntries : bool`** _(optional)_ – Flag that specifies if source entries should be deleted (default `false`)
 - **`transformEntryForLocale : function (fields, locale): object`** _(required)_ – Transformation function to be applied.
-    - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `fields == {myField: {'en-US': 'my field value'}}`)
-    - `locale` one of the locales in the space being transformed
+
+  - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `fields == {myField: {'en-US': 'my field value'}}`)
+  - `locale` one of the locales in the space being transformed
 
   The return value must be an object with the same keys as specified in the `targetContentType`. Their values will be written to the respective entry fields for the current locale (i.e. `{nameField: 'myNewValue'}`). If it returns `undefined`, this the values for this locale on the entry will be left untouched.
 
 ##### `transformEntriesToType` Example
 
 ```javascript
-const MurmurHash3 = require('imurmurhash');
+const MurmurHash3 = require('imurmurhash')
 
 migration.transformEntriesToType({
-    sourceContentType: 'dog',
-    targetContentType: 'copycat',
-    from: ['woofs'],
-    shouldPublish: false,
-    updateReferences: false,
-    removeOldEntries: false,
-    identityKey: function (fields) {
-      const value = fields.woofs['en-US'].toString();
-      return MurmurHash3(value).result().toString();
-    },
-    transformEntryForLocale: function (fromFields, currentLocale) {
-      return {
-        woofs: `copy - ${fromFields.woofs[currentLocale]}`
-      };
+  sourceContentType: 'dog',
+  targetContentType: 'copycat',
+  from: ['woofs'],
+  shouldPublish: false,
+  updateReferences: false,
+  removeOldEntries: false,
+  identityKey: function (fields) {
+    const value = fields.woofs['en-US'].toString()
+    return MurmurHash3(value).result().toString()
+  },
+  transformEntryForLocale: function (fromFields, currentLocale) {
+    return {
+      woofs: `copy - ${fromFields.woofs[currentLocale]}`
     }
-  });
+  }
+})
 ```
 
 For the complete version of this migration, please refer to [this example](./examples/22-transform-entries-to-type.js).
@@ -441,22 +444,19 @@ For the given content type, updates the tags that are attached to its entries ac
 
 - **`contentType : string`** _(required)_ – Content type ID
 - **`from : array`** _(required)_ – Array of the source field IDs
-- **`setTagsForEntry : function (entryFields, entryTags, apiTags): array`** _(required)_ – Transformation function to be applied.
-    - `entryFields` is an object containing each of the `from` fields.
-    - `entryTags` is an array containing link objects of all tags
-already attached to the entry.
-    - `apiTags` is an array containing link objects of all tags
-available in the environment.
+- **`setTagsForEntry : function (entryFields, entryTags, apiTags): array`** _(required)_ – Transformation function to be applied. - `entryFields` is an object containing each of the `from` fields. - `entryTags` is an array containing link objects of all tags
+  already attached to the entry. - `apiTags` is an array containing link objects of all tags
+  available in the environment.
 
 ##### `setTagsForEntries` Example
 
-``` javascript
+```javascript
 migration.createTag('department-sf').name('Department: San Francisco')
 migration.createTag('department-ldn').name('Department: London')
 
 const departmentMapping = {
   'san-francisco': 'department-sf',
-  'london': 'department-ldn'
+  london: 'department-ldn'
 }
 
 migration.setTagsForEntries({
@@ -466,11 +466,7 @@ migration.setTagsForEntries({
     const departmentField = entryFields.department['en-US']
     const newTag = apiTags.find((tag) => tag.sys.id === departmentMapping[departmentField])
 
-    return [
-      ...entryTags,
-      newTag,
-    ]
-
+    return [...entryTags, newTag]
   }
 })
 ```
@@ -484,10 +480,10 @@ module.exports = async function (migration, { makeRequest, spaceId, accessToken 
   const contentType = await makeRequest({
     method: 'GET',
     url: `/content_types?sys.id[in]=foo`
-  });
+  })
 
   const anyOtherTool = new AnyOtherTool({ spaceId, accessToken })
-};
+}
 ```
 
 #### `makeRequest(config)`
@@ -495,8 +491,9 @@ module.exports = async function (migration, { makeRequest, spaceId, accessToken 
 The function used by the migration object to talk to the Contentful Management API. This can be useful if you want to use API features that may not be supported by the `migration` object.
 
 `config : Object` - Configuration for the request based on [the Contentful management SDK](https://contentful.github.io/contentful-management.js/contentful-management/7.3.0/globals.html#http)
-  - `method` : `string` – HTTP method
-  - `url` : `string` - HTTP endpoint
+
+- `method` : `string` – HTTP method
+- `url` : `string` - HTTP endpoint
 
 ```javascript
 module.exports = async function (migration, { makeRequest }) {
@@ -504,7 +501,7 @@ module.exports = async function (migration, { makeRequest }) {
     method: 'GET',
     url: `/content_types?sys.id[in]=foo`
   })
-};
+}
 ```
 
 #### `spaceId` : `string`
@@ -514,7 +511,6 @@ The space ID that was set for the current migration.
 #### `accessToken` : `string`
 
 The access token that was set for the current migration.
-
 
 ### Content type
 
@@ -561,19 +557,18 @@ Creates a field with provided `id`.
   Example:
 
   ```javascript
-  validations: [
-    { in: [ 'Web', 'iOS', 'Android' ] }
-  ]
+  validations: [{ in: ['Web', 'iOS', 'Android'] }]
   ```
 
   _See [The CMA documentation](https://www.contentful.com/developers/docs/references/content-management-api/#/reference/content-types/content-type) for the list of available validations._
+
 - **`localized : boolean`** – Sets the field as localized.
 - **`disabled : boolean`** – Sets the field as disabled, hence not editable by authors.
 - **`omitted : boolean`** – Sets the field as omitted, hence not sent in response.
 - **`deleted : boolean`** – Sets the field as deleted. Requires to have been `omitted` first.
   _You may prefer using the `deleteField` method._
-- **`defaultValue : Object`**  – Sets the default value for the field.
- Example:
+- **`defaultValue : Object`** – Sets the default value for the field.
+  Example:
 
   ```javascript
   defaultValue: {
@@ -619,35 +614,26 @@ Move the field (position of the field in the web editor)
 - **`.afterField(fieldId)`**
 
 Example:
+
 ```javascript
 module.exports = function (migration) {
-  const food = migration.editContentType('food');
+  const food = migration.editContentType('food')
 
-  food.createField('calories')
-    .type('Number')
-    .name('How many calories does it have?');
+  food.createField('calories').type('Number').name('How many calories does it have?')
 
-  food.createField('sugar')
-    .type('Number')
-    .name('Amount of sugar');
+  food.createField('sugar').type('Number').name('Amount of sugar')
 
-  food.createField('vegan')
-    .type('Boolean')
-    .name('Vegan friendly');
+  food.createField('vegan').type('Boolean').name('Vegan friendly')
 
-  food.createField('producer')
-    .type('Symbol')
-    .name('Food producer');
+  food.createField('producer').type('Symbol').name('Food producer')
 
-  food.createField('gmo')
-    .type('Boolean')
-    .name('Genetically modified food');
+  food.createField('gmo').type('Boolean').name('Genetically modified food')
 
-  food.moveField('calories').toTheTop();
-  food.moveField('sugar').toTheBottom();
-  food.moveField('producer').beforeField('vegan');
-  food.moveField('gmo').afterField('vegan');
-};
+  food.moveField('calories').toTheTop()
+  food.moveField('sugar').toTheBottom()
+  food.moveField('producer').beforeField('vegan')
+  food.moveField('gmo').afterField('vegan')
+}
 ```
 
 #### `changeFieldControl (fieldId, widgetNamespace, widgetId[, settings])` : void
@@ -657,6 +643,7 @@ Changes control interface of given field's ID.
 **`fieldId : string`** – The ID of the field.
 
 **`widgetNamespace : string`** – The namespace of the widget, one of the following values:
+
 - `builtin` (Standard widget)
 - `app` (Custom App)
 - `extension` (Custom UI extension)
@@ -691,6 +678,7 @@ Changes control interface of given field's ID.
 Adds a builtin or custom widget to the sidebar of the content type.
 
 **`widgetNamespace: string`** – The namespace of the widget, one of the following values:
+
 - `sidebar-builtin` (Standard widget, default)
 - `extension` (Custom UI extension)
 
@@ -705,6 +693,7 @@ Adds a builtin or custom widget to the sidebar of the content type.
 Updates the configuration of a widget in the sidebar of the content type.
 
 **`widgetNamespace: string`** – The namespace of the widget, one of the following values:
+
 - `sidebar-builtin` (Standard widget, default)
 - `extension` (Custom UI extension)
 
@@ -717,6 +706,7 @@ Updates the configuration of a widget in the sidebar of the content type.
 Removes a widget from the sidebar of the content type.
 
 **`widgetNamespace: string`** – The namespace of the widget, one of the following values:
+
 - `sidebar-builtin` (Standard widget, default)
 - `extension` (Custom UI extension)
 
@@ -760,9 +750,27 @@ Edits the editor layout for this content type.
 
 Deletes the editor layout for this content type.
 
+#### `setAnnotations(AnnotationId[])`
+
+Configure the annotations assigned to this content type. See [annotations documentation](#annotations) for more details on valid `AnnotationId`.
+
+#### `clearAnnotations()`
+
+Remove all assigned annotations from this content type
+
 ### Field
 
 The field object has the same methods as the properties listed in the [`ContentType.createField`](#createfieldid--string-opts--object--field) method.
+
+In addition the following methods allow to manage field annotations.
+
+#### `setAnnotations(AnnotationId[])`
+
+Configure the annotations assigned to this field. See [annotations documentation](#annotations) for more details on valid `AnnotationId`.
+
+#### `clearAnnotations()`
+
+Remove all assigned annotations from this field.
 
 ### Editor Layout
 
@@ -773,9 +781,9 @@ Moves the field with the provided `id`.
 `moveField(id)` returns a movable editor layout item type which must be called with a direction function:
 
 - **`.toTheTopOfFieldGroup(groupId)`**
-  -   - if no `groupId` is provided, the field will be moved within its group
+  - - if no `groupId` is provided, the field will be moved within its group
 - **`.toTheBottomOfFieldGroup(groupId)`**
-  -   - if no `groupId` is provided, the field will be moved within its group
+  - - if no `groupId` is provided, the field will be moved within its group
 - **`.beforeFieldGroup(groupId)`**
 - **`.afterFieldGroup(groupId)`**
 - **`.beforeField(fieldId)`**
@@ -849,22 +857,21 @@ const options = {
 }
 
 const migrations = async () => {
-  await runMigration({...options, ...{filePath: '01-angry-dog.js'}})
-  await runMigration({...options, ...{filePath: '02-friendly-dog.js'}})
-  await runMigration({...options, ...{filePath: '03-long-example.js'}})
-  await runMigration({...options, ...{filePath: '04-steps-errors.js'}})
-  await runMigration({...options, ...{filePath: '05-plan-errors.js'}})
-  await runMigration({...options, ...{filePath: '06-delete-field.js'}})
-  await runMigration({...options, ...{filePath: '07-display-field.js'}})
+  await runMigration({ ...options, ...{ filePath: '01-angry-dog.js' } })
+  await runMigration({ ...options, ...{ filePath: '02-friendly-dog.js' } })
+  await runMigration({ ...options, ...{ filePath: '03-long-example.js' } })
+  await runMigration({ ...options, ...{ filePath: '04-steps-errors.js' } })
+  await runMigration({ ...options, ...{ filePath: '05-plan-errors.js' } })
+  await runMigration({ ...options, ...{ filePath: '06-delete-field.js' } })
+  await runMigration({ ...options, ...{ filePath: '07-display-field.js' } })
 }
 
 migrations()
-
 ```
 
 ## Writing Migrations in Typescript
 
-You can use Typescript to write your migration files using `ts-node`!  First `npm install --save ts-node typescript`,
+You can use Typescript to write your migration files using `ts-node`! First `npm install --save ts-node typescript`,
 then run your migration with ts-node:
 
 ```bash
@@ -872,6 +879,7 @@ node_modules/.bin/ts-node node_modules/.bin/contentful-migration -s $CONTENTFUL_
 ```
 
 An example Typescript migration:
+
 ```typescript
 import { MigrationFunction } from 'contentful-migration'
 
@@ -882,9 +890,7 @@ export = function (migration, { makeRequest, spaceId, accessToken }) {
   })
 
   const name = dog.createField('name')
-  name.name('Name')
-    .type('Symbol')
-    .required(true)
+  name.name('Name').type('Symbol').required(true)
 } as MigrationFunction
 ```
 
@@ -894,7 +900,7 @@ Here's how it looks inside VS Code:
 
 ## Troubleshooting
 
-*  Unable to connect to Contentful through your Proxy? Try to set the `rawProxy` option to `true`.
+- Unable to connect to Contentful through your Proxy? Try to set the `rawProxy` option to `true`.
 
 ```javascript
 runMigration({
@@ -905,8 +911,8 @@ runMigration({
 ```
 
 ## Updating Integration tests fixtures
-*  To add new/update integration tests, you need to set environment variable `NOCK_RECORD=1` which should automatically update fixtures
 
+- To add new/update integration tests, you need to set environment variable `NOCK_RECORD=1` which should automatically update fixtures
 
 ## Reach out to us
 

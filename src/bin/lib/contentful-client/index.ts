@@ -26,7 +26,12 @@ function createManagementClient(params) {
     delete params.proxy
   }
 
-  return createClient(params, { type: 'plain' })
+  return createClient(
+    {
+      ...params
+    },
+    { type: 'plain' }
+  )
 }
 
 export { createManagementClient }
