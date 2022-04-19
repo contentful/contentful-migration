@@ -20,6 +20,7 @@ export default class ContentTypeAnnotateIntent extends Intent {
   endsGroup(): boolean {
     return false
   }
+
   shouldSave(): boolean {
     return true
   }

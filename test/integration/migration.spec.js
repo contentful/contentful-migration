@@ -1079,7 +1079,7 @@ describe('the migration', function () {
     await migrator(assignContentTypeAnnotations)
     const ct = await request({
       method: 'GET',
-      url: '/content_types/blogPost'
+      url: '/content_types/annotated'
     })
 
     expect(ct.metadata).to.eql({
@@ -1101,7 +1101,7 @@ describe('the migration', function () {
     await migrator(assignFieldAnnotations)
     const ct = await request({
       method: 'GET',
-      url: '/content_types/blogPost'
+      url: '/content_types/annotated'
     })
 
     expect(ct.metadata).to.eql({
@@ -1134,7 +1134,7 @@ describe('the migration', function () {
     await migrator(clearFieldAnnotations)
     const ct = await request({
       method: 'GET',
-      url: '/content_types/blogPost'
+      url: '/content_types/annotated'
     })
 
     expect(ct.metadata).to.eql({
@@ -1156,7 +1156,7 @@ describe('the migration', function () {
     await migrator(clearContentTypeAnnotations)
     const ct = await request({
       method: 'GET',
-      url: '/content_types/blogPost'
+      url: '/content_types/annotated'
     })
 
     expect(ct.metadata).to.be.undefined()

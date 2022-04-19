@@ -1,5 +1,4 @@
 import * as axios from 'axios'
-import { AnnotationId } from './src/lib/interfaces/annotation'
 
 export type RunMigrationConfig = {
   accessToken?: string
@@ -103,10 +102,10 @@ export interface Field {
   defaultValue(defaultValue: { [locale: string]: any }): Field
 
   /** Set annotations associated with the field */
-  setAnnotations(annotations: AnnotationId[])
+  setAnnotations(annotationsIds: string[]): Field
 
   /** Removes all annotaions associated with the field */
-  clearAnnotations()
+  clearAnnotations(): Field
 }
 
 type LinkMimetype =
@@ -200,10 +199,10 @@ export interface ContentType {
   displayField(displayField: string): ContentType
 
   /** Annotations associated with the content type */
-  setAnnotations(annotationIds: AnnotationId[])
+  setAnnotations(annotationIds: string[]): ContentType
 
   /** Removes all annotaions associated with the field */
-  clearAnnotations()
+  clearAnnotations(): ContentType
 
   /** Creates a field with provided id. */
   createField(id: string, init?: IFieldOptions): Field

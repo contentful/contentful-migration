@@ -14,7 +14,6 @@ import TransformEntryToType from '../interfaces/entry-transform-to-type'
 import { ClientConfig } from '../../bin/lib/config'
 import { deprecatedMethod } from '../utils/deprecated'
 import { APIEditorInterfaceSettings } from '../interfaces/content-type'
-import { AnnotationId } from '../interfaces/annotation'
 
 const createInstanceIdManager = () => {
   const instanceCounts = {}
@@ -53,7 +52,7 @@ class Field extends DispatchProxy {
     })
   }
 
-  setAnnotations(annotationIds: AnnotationId[]) {
+  setAnnotations(annotationIds: string[]) {
     const callsite = getFirstExternalCaller()
     const fieldInstanceId = this.contentType.fieldInstanceIds.getNew(this.id)
     this.contentType.dispatch(
@@ -66,6 +65,8 @@ class Field extends DispatchProxy {
         annotationIds
       )
     )
+
+    return this
   }
 
   clearAnnotations() {
@@ -81,6 +82,7 @@ class Field extends DispatchProxy {
         undefined
       )
     )
+    return this
   }
 }
 
@@ -289,12 +291,13 @@ class ContentType extends DispatchProxy {
 
   public dispatch?(step: Intent): void
 
-  setAnnotations(annotationIds: AnnotationId[]) {
+  setAnnotations(annotationIds: string[]) {
     const callsite = getFirstExternalCaller()
 
     this.dispatch(
       actionCreators.contentType.setAnnotations(this.id, this.instanceId, callsite, annotationIds)
     )
+    return this
   }
 
   clearAnnotations() {
@@ -303,6 +306,7 @@ class ContentType extends DispatchProxy {
     this.dispatch(
       actionCreators.contentType.setAnnotations(this.id, this.instanceId, callsite, undefined)
     )
+    return this
   }
 
   createField(id, init) {
