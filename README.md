@@ -752,7 +752,7 @@ Deletes the editor layout for this content type.
 
 #### `setAnnotations(AnnotationId[])`
 
-Configure the annotations assigned to this content type. See [annotations documentation](#annotations) for more details on valid `AnnotationId`.
+Configure the annotations assigned to this content type. See [annotations documentation](https://www.contentful.com/developers/docs/references/content-management-api/#annotations) for more details on valid `AnnotationId`.
 
 #### `clearAnnotations()`
 
@@ -766,7 +766,7 @@ In addition the following methods allow to manage field annotations.
 
 #### `setAnnotations(AnnotationId[])`
 
-Configure the annotations assigned to this field. See [annotations documentation](#annotations) for more details on valid `AnnotationId`.
+Configure the annotations assigned to this field. See [annotations documentation](https://www.contentful.com/developers/docs/references/content-management-api/#annotations) for more details on valid `AnnotationId`.
 
 #### `clearAnnotations()`
 
