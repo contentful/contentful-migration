@@ -1,5 +1,3 @@
-// TODO: rename file before merging to master
-
 module.exports = function (migration) {
   const annotatedContentType = migration.createContentType('annotated').name('Blog Post')
   annotatedContentType.createField('name').name('Internal name').type('Symbol')

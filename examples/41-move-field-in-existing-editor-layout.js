@@ -1,5 +1,3 @@
-// TODO: rename file before merging to master
-
 module.exports = function (migration) {
   const myType = migration.editContentType('mytype')
   const editorLayout = myType.editEditorLayout()

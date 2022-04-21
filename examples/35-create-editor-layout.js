@@ -1,5 +1,3 @@
-// TODO: rename file before merging to master
-
 module.exports = function (migration) {
   const page = migration.createContentType('page').name('Page')
   page.createField('name').name('Internal name').type('Symbol')

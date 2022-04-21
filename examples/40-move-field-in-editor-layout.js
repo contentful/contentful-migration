@@ -1,5 +1,3 @@
-// TODO: rename file before merging to master
-
 module.exports = function (migration) {
   const myType = migration.createContentType('mytype').name('My type')
   myType.createField('fieldA').name('Field A').type('Symbol')
