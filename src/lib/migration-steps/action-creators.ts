@@ -38,6 +38,21 @@ const actionCreators = {
         }
       })
     },
+    setAnnotations: (id, instanceId, callsite, annotationIds): Intents.ContentTypeAnnotate =>
+      new Intents.ContentTypeAnnotate({
+        type: 'contentType/update',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite.getFileName(),
+            line: callsite.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: id,
+          annotations: annotationIds
+        }
+      }),
     delete: (id, instanceId, callsite): Intents.ContentTypeDelete => {
       return new Intents.ContentTypeDelete({
         type: 'contentType/delete',
@@ -243,7 +258,11 @@ const actionCreators = {
           contentTypeId: id
         }
       }),
-    deleteEditorLayout: (contentTypeId: string, contentTypeInstanceId: string, callsite): Intents.EditorLayoutDelete =>
+    deleteEditorLayout: (
+      contentTypeId: string,
+      contentTypeInstanceId: string,
+      callsite
+    ): Intents.EditorLayoutDelete =>
       new Intents.EditorLayoutDelete({
         type: 'contentType/deleteEditorLayout',
         meta: {
@@ -371,7 +390,13 @@ const actionCreators = {
       })
   },
   editorLayout: {
-    changeFieldGroupControl: (contentTypeId, contentTypeInstanceId, fieldGroupId, callsite, groupControl): Intents.EditorLayoutChangeFieldGroupControl =>
+    changeFieldGroupControl: (
+      contentTypeId,
+      contentTypeInstanceId,
+      fieldGroupId,
+      callsite,
+      groupControl
+    ): Intents.EditorLayoutChangeFieldGroupControl =>
       new Intents.EditorLayoutChangeFieldGroupControl({
         type: 'contentType/updateGroupControl',
         meta: {
@@ -387,7 +412,13 @@ const actionCreators = {
           groupControl
         }
       }),
-    createFieldGroup: (id, instanceId, callsite, fieldGroupId, parentId = undefined): Intents.EditorLayoutCreateFieldGroup =>
+    createFieldGroup: (
+      id,
+      instanceId,
+      callsite,
+      fieldGroupId,
+      parentId = undefined
+    ): Intents.EditorLayoutCreateFieldGroup =>
       new Intents.EditorLayoutCreateFieldGroup({
         type: 'contentType/createEditorLayoutFieldGroup',
         meta: {
@@ -403,7 +434,12 @@ const actionCreators = {
           parentFieldGroupId: parentId
         }
       }),
-    deleteEditorLayoutFieldGroup: (id, instanceId, callsite, fieldGroupId): Intents.EditorLayoutDeleteFieldGroup =>
+    deleteEditorLayoutFieldGroup: (
+      id,
+      instanceId,
+      callsite,
+      fieldGroupId
+    ): Intents.EditorLayoutDeleteFieldGroup =>
       new Intents.EditorLayoutDeleteFieldGroup({
         type: 'contentType/deleteEditorLayoutFieldGroup',
         meta: {
@@ -418,7 +454,13 @@ const actionCreators = {
           fieldGroupId
         }
       }),
-    changeFieldGroupId: (contentTypeId: string, contentTypeInstanceId: string, fieldGroupId: string, newFieldGroupId: string, callsite): Intents.EditorLayoutChangeFieldGroupId =>
+    changeFieldGroupId: (
+      contentTypeId: string,
+      contentTypeInstanceId: string,
+      fieldGroupId: string,
+      newFieldGroupId: string,
+      callsite
+    ): Intents.EditorLayoutChangeFieldGroupId =>
       new Intents.EditorLayoutChangeFieldGroupId({
         type: 'contentType/changeEditorLayoutFieldGroupId',
         meta: {
@@ -434,7 +476,12 @@ const actionCreators = {
           newFieldGroupId
         }
       }),
-    callInvalidEditorLayoutMethod: (contentTypeId, contentTypeInstanceId, callsite, invalidMethod): Intents.EditorLayoutInvalidMethod =>
+    callInvalidEditorLayoutMethod: (
+      contentTypeId,
+      contentTypeInstanceId,
+      callsite,
+      invalidMethod
+    ): Intents.EditorLayoutInvalidMethod =>
       new Intents.EditorLayoutInvalidMethod({
         type: 'contentType/callInvalidEditorLayoutMethod',
         meta: {
@@ -449,7 +496,14 @@ const actionCreators = {
           invalidMethod
         }
       }),
-    updateFieldGroup: (contentTypeId, contentTypeInstanceId, fieldGroupId, callsite, property, value): Intents.EditorLayoutUpdateFieldGroup =>
+    updateFieldGroup: (
+      contentTypeId,
+      contentTypeInstanceId,
+      fieldGroupId,
+      callsite,
+      property,
+      value
+    ): Intents.EditorLayoutUpdateFieldGroup =>
       new Intents.EditorLayoutUpdateFieldGroup({
         type: 'contentType/updateEditorLayoutFieldGroup',
         meta: {
@@ -467,7 +521,14 @@ const actionCreators = {
           }
         }
       }),
-    moveField: (contentTypeId, contentTypeInstanceId, fieldId, fieldGroupId, movement, callsite): Intents.EditorLayoutMoveField =>
+    moveField: (
+      contentTypeId,
+      contentTypeInstanceId,
+      fieldId,
+      fieldGroupId,
+      movement,
+      callsite
+    ): Intents.EditorLayoutMoveField =>
       new Intents.EditorLayoutMoveField({
         type: 'contentType/moveFieldInEditorLayout',
         meta: {
@@ -605,6 +666,30 @@ const actionCreators = {
         payload: {
           contentTypeId,
           fieldId
+        }
+      }),
+    setAnnotations: (
+      contentTypeId,
+      contentTypeInstanceId,
+      fieldId,
+      fieldInstanceId,
+      callsite,
+      annotationIds
+    ): Intents.FieldAnnotate =>
+      new Intents.FieldAnnotate({
+        type: 'field/annotate',
+        meta: {
+          contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+          fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
+          callsite: {
+            file: callsite.getFileName(),
+            line: callsite.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId,
+          fieldId,
+          annotations: annotationIds
         }
       })
   },

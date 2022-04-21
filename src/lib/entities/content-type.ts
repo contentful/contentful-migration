@@ -1,4 +1,4 @@
-import { cloneDeep, find, filter, findIndex, pull, forEach, pick, update } from 'lodash'
+import { cloneDeep, find, filter, findIndex, pull, forEach, pick, update, set } from 'lodash'
 
 import {
   APIContentType,
@@ -13,7 +13,8 @@ import {
   APISidebarWidgetNamespace,
   APIControlWidgetNamespace,
   APIEditorInterfaceEditorLayout,
-  APIEditorLayoutFieldGroupItem
+  APIEditorLayoutFieldGroupItem,
+  ContentTypeMetadata
 } from '../interfaces/content-type'
 import { SidebarWidgetNamespace, DEFAULT_SIDEBAR_LIST } from '../action/sidebarwidget'
 import {
@@ -25,6 +26,27 @@ import {
   FieldItem
 } from '../utils/editor-layout'
 import { EditorLayoutItem } from 'contentful-management/dist/typings/export-types'
+import { AnnotationLink } from '../interfaces/annotation'
+
+function prune(obj: any) {
+  if (obj === undefined) {
+    return undefined
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.length === 0 ? undefined : obj
+  }
+  let isEmpty = true
+  for (const [key, value] of Object.entries(obj)) {
+    if (!prune(value)) {
+      delete obj[key]
+    } else {
+      isEmpty = false
+    }
+  }
+
+  return isEmpty ? undefined : obj
+}
 
 export type EditorLayoutFieldMovementDirection =
   | 'afterField'
@@ -36,8 +58,10 @@ export type EditorLayoutFieldMovementDirection =
 
 class Fields {
   private _fields: Field[]
+  private _contentType: ContentType
 
-  constructor(fields: Field[] = []) {
+  constructor(contentType: ContentType, fields: Field[] = []) {
+    this._contentType = contentType
     this._fields = fields
   }
 
@@ -54,12 +78,17 @@ class Fields {
     } else {
       allFields[currentFieldIndex] = field
     }
+
+    if (field.deleted) {
+      this._contentType.clearFieldAnnotations(id)
+    }
     this._fields = allFields
   }
 
   deleteField(id: string) {
     const fieldToDelete = find(this._fields, { id })
     pull(this._fields, fieldToDelete)
+    this._contentType.clearFieldAnnotations(id)
   }
 
   moveField(id: string, direction: string, pivot: string) {
@@ -103,7 +132,7 @@ class Fields {
   }
 
   clone(): Fields {
-    return new Fields(this.toRaw())
+    return new Fields(this._contentType.clone(), this.toRaw())
   }
 
   toRaw(): Field[] {
@@ -575,14 +604,16 @@ class ContentType {
   private _description: string
   private _version: number
   private _displayField: string
+  private _metadata: ContentTypeMetadata | undefined
 
   constructor(ct: APIContentType) {
     this._id = ct.sys.id
-    this._fields = new Fields(ct.fields)
+    this._fields = new Fields(this, ct.fields)
     this._name = ct.name
     this._description = ct.description
     this._version = ct.sys.version
     this._displayField = ct.displayField
+    this._metadata = ct.metadata
   }
 
   get id() {
@@ -621,6 +652,30 @@ class ContentType {
     this._displayField = displayField
   }
 
+  setAnnotations(annotations: AnnotationLink[]) {
+    set(this, '_metadata.annotations.ContentType', annotations)
+  }
+
+  getAnnotations() {
+    return this._metadata?.annotations?.ContentType
+  }
+
+  clearAnnotations() {
+    delete this._metadata?.annotations?.ContentType
+  }
+
+  setFieldAnnotations(fieldId: string, annotations: AnnotationLink[]) {
+    set(this, `_metadata.annotations.ContentTypeField.${fieldId}`, annotations)
+  }
+
+  getFieldAnnotations(fieldId: string) {
+    return this._metadata?.annotations?.ContentTypeField?.[fieldId]
+  }
+
+  clearFieldAnnotations(fieldId: string) {
+    delete this._metadata?.annotations?.ContentTypeField?.[fieldId]
+  }
+
   get version() {
     return this._version
   }
@@ -630,7 +685,7 @@ class ContentType {
   }
 
   toAPI(): APIContentType {
-    return {
+    return cloneDeep({
       sys: {
         id: this.id,
         version: this.version
@@ -638,8 +693,9 @@ class ContentType {
       name: this.name,
       displayField: this.displayField,
       fields: this.fields.toRaw(),
-      description: this.description
-    }
+      description: this.description,
+      ...(this._metadata ? prune({ metadata: this._metadata }) : undefined)
+    })
   }
 
   clone(): ContentType {
@@ -652,4 +708,4 @@ const isTargetFieldItem = (item, fieldId): item is FieldItem =>
 const isTargetGroupItem = (item, groupId): item is FieldGroupItem =>
   isFieldGroupItem(item) && item.groupId === groupId
 
-export { ContentType as default, ContentType, Fields, Field, EditorInterfaces }
+export { ContentType as default, ContentType, Fields, Field, EditorInterfaces, AnnotationLink }

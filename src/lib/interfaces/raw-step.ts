@@ -7,6 +7,7 @@ import { SidebarWidgetNamespace, SidebarWidgetSettings } from '../action/sidebar
 import { EntryEditorNamespace, EntryEditorSettings } from '../action/entryeditor-configure'
 import { EntryEditor } from '../action/entryeditors-configure'
 import { APIEditorInterfaceGroupControl, APIEditorLayoutFieldGroupItem } from './content-type'
+import { AnnotationId } from './annotation'
 
 interface RawStep {
   type: string
@@ -50,6 +51,7 @@ interface RawStepPayload {
   tagId?: string
   tagVisibility?: TagVisibility
   entryTransformationForTags?: EntrySetTags
+  annotations?: AnnotationId[]
 }
 
 interface EditorInterfaceInfo {

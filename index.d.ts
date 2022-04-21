@@ -100,6 +100,12 @@ export interface Field {
 
   /** Sets the default value for the field. */
   defaultValue(defaultValue: { [locale: string]: any }): Field
+
+  /** Set annotations associated with the field */
+  setAnnotations(annotationsIds: string[]): Field
+
+  /** Removes all annotaions associated with the field */
+  clearAnnotations(): Field
 }
 
 type LinkMimetype =
@@ -191,6 +197,12 @@ export interface ContentType {
   description(description: string): ContentType
   /** ID of the field to use as the display field for the content type. */
   displayField(displayField: string): ContentType
+
+  /** Annotations associated with the content type */
+  setAnnotations(annotationIds: string[]): ContentType
+
+  /** Removes all annotaions associated with the field */
+  clearAnnotations(): ContentType
 
   /** Creates a field with provided id. */
   createField(id: string, init?: IFieldOptions): Field
