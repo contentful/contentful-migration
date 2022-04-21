@@ -1,3 +1,5 @@
+import { AnnotationLink } from './annotation'
+
 interface Field {
   id: string
   newId?: string
@@ -18,6 +20,13 @@ interface Field {
   defaultValue?: { [locale: string]: any }
 }
 
+type ContentTypeMetadata = {
+  annotations?: {
+    ContentType?: AnnotationLink[]
+    ContentTypeField?: Record<string, AnnotationLink[]>
+  }
+}
+
 interface APIContentType {
   sys: {
     id: string
@@ -27,6 +36,7 @@ interface APIContentType {
   name: string
   description?: string
   displayField?: string
+  metadata?: ContentTypeMetadata
 }
 
 type APIParameterValue = number | boolean | string
@@ -42,6 +52,13 @@ interface APIEditorInterfaceControl {
   fieldId: string
   widgetId?: string
   widgetNamespace?: APIControlWidgetNamespace
+  settings?: APIEditorInterfaceSettings
+}
+
+interface APIEditorInterfaceGroupControl {
+  groupId: string
+  widgetId?: string
+  widgetNamespace?: string
   settings?: APIEditorInterfaceSettings
 }
 
@@ -62,6 +79,20 @@ interface APIEditorIntefaceEditor {
   settings?: { [key: string]: APIParameterValue }
 }
 
+interface APIEditorLayoutFieldGroupItem {
+  groupId: string
+  name?: string
+  items: APIEditorLayoutItem[]
+}
+
+interface APIEditorLayoutFieldItem {
+  fieldId: string
+}
+
+type APIEditorLayoutItem = APIEditorLayoutFieldItem | APIEditorLayoutFieldGroupItem
+
+type APIEditorInterfaceEditorLayout = APIEditorLayoutFieldGroupItem[]
+
 interface APIEditorInterfaces {
   sys: {
     version: number
@@ -70,6 +101,8 @@ interface APIEditorInterfaces {
   sidebar?: APIEditorInterfaceSidebar[]
   editor?: APIEditorIntefaceEditor
   editors?: APIEditorIntefaceEditor[]
+  editorLayout?: APIEditorInterfaceEditorLayout
+  groupControls?: APIEditorInterfaceGroupControl[]
 }
 
 export {
@@ -78,10 +111,14 @@ export {
   Field,
   APIEditorInterfaces,
   APIEditorInterfaceControl,
+  APIEditorInterfaceGroupControl,
   APIEditorInterfaceSettings,
   APIEditorInterfaceSidebar,
   APIEditorIntefaceEditor,
+  APIEditorInterfaceEditorLayout,
+  APIEditorLayoutFieldGroupItem,
   APISidebarWidgetSettings,
   APIControlWidgetNamespace,
-  APISidebarWidgetNamespace
+  APISidebarWidgetNamespace,
+  ContentTypeMetadata
 }

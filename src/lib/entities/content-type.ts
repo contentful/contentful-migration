@@ -1,4 +1,4 @@
-import { cloneDeep, find, filter, findIndex, pull, forEach } from 'lodash'
+import { cloneDeep, find, filter, findIndex, pull, forEach, pick, update, set } from 'lodash'
 
 import {
   APIContentType,
@@ -6,18 +6,62 @@ import {
   APISidebarWidgetSettings,
   APIEditorInterfaceControl,
   APIEditorInterfaces,
+  APIEditorInterfaceGroupControl,
   APIEditorInterfaceSettings,
   APIEditorInterfaceSidebar,
   APIEditorIntefaceEditor,
   APISidebarWidgetNamespace,
-  APIControlWidgetNamespace
+  APIControlWidgetNamespace,
+  APIEditorInterfaceEditorLayout,
+  APIEditorLayoutFieldGroupItem,
+  ContentTypeMetadata
 } from '../interfaces/content-type'
 import { SidebarWidgetNamespace, DEFAULT_SIDEBAR_LIST } from '../action/sidebarwidget'
+import {
+  findFieldGroup,
+  isFieldGroupItem,
+  find as findEditorLayoutItem,
+  isFieldItem,
+  FieldGroupItem,
+  FieldItem
+} from '../utils/editor-layout'
+import { EditorLayoutItem } from 'contentful-management/dist/typings/export-types'
+import { AnnotationLink } from '../interfaces/annotation'
+
+function prune(obj: any) {
+  if (obj === undefined) {
+    return undefined
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.length === 0 ? undefined : obj
+  }
+  let isEmpty = true
+  for (const [key, value] of Object.entries(obj)) {
+    if (!prune(value)) {
+      delete obj[key]
+    } else {
+      isEmpty = false
+    }
+  }
+
+  return isEmpty ? undefined : obj
+}
+
+export type EditorLayoutFieldMovementDirection =
+  | 'afterField'
+  | 'beforeField'
+  | 'afterFieldGroup'
+  | 'beforeFieldGroup'
+  | 'toTheTopOfFieldGroup'
+  | 'toTheBottomOfFieldGroup'
 
 class Fields {
   private _fields: Field[]
+  private _contentType: ContentType
 
-  constructor(fields: Field[] = []) {
+  constructor(contentType: ContentType, fields: Field[] = []) {
+    this._contentType = contentType
     this._fields = fields
   }
 
@@ -34,12 +78,17 @@ class Fields {
     } else {
       allFields[currentFieldIndex] = field
     }
+
+    if (field.deleted) {
+      this._contentType.clearFieldAnnotations(id)
+    }
     this._fields = allFields
   }
 
   deleteField(id: string) {
     const fieldToDelete = find(this._fields, { id })
     pull(this._fields, fieldToDelete)
+    this._contentType.clearFieldAnnotations(id)
   }
 
   moveField(id: string, direction: string, pivot: string) {
@@ -83,7 +132,7 @@ class Fields {
   }
 
   clone(): Fields {
-    return new Fields(this.toRaw())
+    return new Fields(this._contentType.clone(), this.toRaw())
   }
 
   toRaw(): Field[] {
@@ -97,6 +146,8 @@ class EditorInterfaces {
   private _sidebar?: APIEditorInterfaceSidebar[]
   private _editor?: APIEditorIntefaceEditor
   private _editors?: APIEditorIntefaceEditor[]
+  private _editorLayout?: APIEditorInterfaceEditorLayout
+  private _groupControls?: APIEditorInterfaceGroupControl[]
 
   constructor(apiEditorInterfaces: APIEditorInterfaces) {
     this._version = apiEditorInterfaces.sys.version
@@ -104,6 +155,8 @@ class EditorInterfaces {
     this._sidebar = apiEditorInterfaces.sidebar || undefined
     this._editor = apiEditorInterfaces.editor || undefined
     this._editors = apiEditorInterfaces.editors || undefined
+    this._editorLayout = apiEditorInterfaces.editorLayout || undefined
+    this._groupControls = apiEditorInterfaces.groupControls || undefined
   }
 
   get version() {
@@ -128,6 +181,14 @@ class EditorInterfaces {
 
   getControls() {
     return this._controls
+  }
+
+  getEditorLayout() {
+    return this._editorLayout
+  }
+
+  getGroupControls() {
+    return this._groupControls
   }
 
   reset(fieldId: string) {
@@ -266,6 +327,230 @@ class EditorInterfaces {
     this._editors = editors
   }
 
+  createEditorLayout(fields: Field[]) {
+    // A newly created editor layout doesn’t have the correct shape. This is corrected when adding the first group.
+    this._editorLayout = fields.map((field) => ({
+      fieldId: field.id
+    })) as unknown as APIEditorInterfaceEditorLayout
+  }
+
+  deleteEditorLayout() {
+    delete this._groupControls
+    delete this._editorLayout
+  }
+
+  createEditorLayoutFieldGroup(fieldGroupId: string, parentFieldGroupId?: string) {
+    if (parentFieldGroupId) {
+      // create field set
+      const parent = findFieldGroup(this._editorLayout, parentFieldGroupId)
+      parent.item.items.push({
+        groupId: fieldGroupId,
+        items: []
+      })
+    } else {
+      // create tab
+      const hasFieldGroup = this._editorLayout.some((item) => isFieldGroupItem(item))
+      if (hasFieldGroup) {
+        this._editorLayout.push({
+          groupId: fieldGroupId,
+          items: []
+        })
+      } else {
+        this._editorLayout = [
+          {
+            groupId: fieldGroupId,
+            items: [...this._editorLayout]
+          }
+        ]
+      }
+    }
+  }
+
+  deleteEditorLayoutFieldGroup(fieldGroupId: string) {
+    const fieldGroup = findFieldGroup(this._editorLayout, fieldGroupId)
+    if (!fieldGroup) {
+      return
+    }
+
+    const parentPath = fieldGroup.path.slice(0, -1)
+    const groupIndex = fieldGroup.path[fieldGroup.path.length - 1] as number
+
+    if (parentPath.length === 0) {
+      this._editorLayout = this._editorLayout.filter((item) => item.groupId !== fieldGroupId)
+      this._editorLayout[0].items = [...this._editorLayout[0].items, ...fieldGroup.item.items]
+
+      return
+    }
+
+    update(this._editorLayout, parentPath, (prev) => {
+      const group = prev[groupIndex]
+
+      return [...prev.slice(0, groupIndex), ...group.items, ...prev.slice(groupIndex + 1)]
+    })
+  }
+
+  changeFieldGroupId(fieldGroupId: string, newFieldGroupId: string) {
+    const fieldGroup = findFieldGroup(this._editorLayout, fieldGroupId)
+
+    if (fieldGroup?.item) {
+      fieldGroup.item.groupId = newFieldGroupId
+    }
+
+    const existingGroupControl = this._groupControls.find(
+      (control) => control.groupId === fieldGroupId
+    )
+    if (existingGroupControl) {
+      existingGroupControl.groupId = newFieldGroupId
+    }
+  }
+
+  updateEditorLayoutFieldGroup(
+    fieldGroupId: string,
+    props: Pick<APIEditorLayoutFieldGroupItem, 'name'>
+  ) {
+    const fieldGroup = findFieldGroup(this._editorLayout, fieldGroupId)
+
+    Object.assign(fieldGroup.item, pick(props, ['name']))
+  }
+
+  createGroupControls() {
+    this._groupControls = []
+  }
+
+  createTabGroupControl(fieldGroupId: string) {
+    this._groupControls.push({
+      groupId: fieldGroupId,
+      widgetId: 'topLevelTab',
+      widgetNamespace: 'builtin'
+    })
+  }
+
+  updateGroupControl(
+    fieldGroupId: string,
+    groupControl: Omit<APIEditorInterfaceGroupControl, 'groupId'>
+  ) {
+    const existingGroupControl = this._groupControls.find(
+      (control) => control.groupId === fieldGroupId
+    )
+    if (existingGroupControl) {
+      existingGroupControl.widgetId = groupControl.widgetId
+      existingGroupControl.widgetNamespace = groupControl.widgetNamespace
+      if (groupControl.settings !== undefined) {
+        existingGroupControl.settings = groupControl.settings
+      }
+    } else {
+      this._groupControls.push({
+        groupId: fieldGroupId,
+        widgetId: groupControl.widgetId,
+        widgetNamespace: groupControl.widgetNamespace,
+        settings: groupControl.settings ?? {}
+      })
+    }
+  }
+
+  deleteGroupControl(fieldGroupId: string) {
+    this._groupControls = this._groupControls.filter((control) => control.groupId !== fieldGroupId)
+  }
+
+  moveFieldInEditorLayout(
+    fieldId: string,
+    direction: EditorLayoutFieldMovementDirection,
+    pivot?: string
+  ) {
+    // find the field and its parent (sourceGroup) within editorLayout
+    let fieldItem: FieldItem
+    const { item: sourceGroupItem } = findEditorLayoutItem(
+      this._editorLayout,
+      (item) =>
+        isFieldGroupItem(item) &&
+        Boolean(
+          item.items.find((item) => {
+            if (isTargetFieldItem(item, fieldId)) {
+              fieldItem = item
+              return true
+            }
+            return false
+          })
+        )
+    ) as { item: FieldGroupItem | undefined }
+
+    // remove field item from original group
+    if (sourceGroupItem) {
+      pull(sourceGroupItem.items, fieldItem)
+    } else {
+      fieldItem = { fieldId }
+    }
+
+    // here it's assumed the field is moved within its group. If not the case, later below destination is updated
+    let destinationGroupItem: FieldGroupItem = sourceGroupItem
+
+    const findGroupItem = (groupId) => {
+      const { item } = findEditorLayoutItem(this._editorLayout, (item) =>
+        isTargetGroupItem(item, groupId)
+      ) as { item: FieldGroupItem | undefined }
+
+      return item
+    }
+
+    let pivotIndex: number
+    if (direction === 'toTheTopOfFieldGroup') {
+      if (pivot) {
+        destinationGroupItem = findGroupItem(pivot)
+      }
+      pivotIndex = 0
+    } else if (direction === 'toTheBottomOfFieldGroup') {
+      if (pivot) {
+        destinationGroupItem = findGroupItem(pivot)
+      }
+      pivotIndex = destinationGroupItem.items.length
+    } else {
+      const movementConfigMap: Record<
+        string,
+        {
+          isTargetPivot: (EditorLayoutItem) => boolean
+          pivotIndexOffset: number
+        }
+      > = {
+        afterField: {
+          isTargetPivot: (item) => isTargetFieldItem(item, pivot),
+          pivotIndexOffset: 1
+        },
+        beforeField: {
+          isTargetPivot: (item) => isTargetFieldItem(item, pivot),
+          pivotIndexOffset: 0
+        },
+        afterFieldGroup: {
+          isTargetPivot: (item) => isTargetGroupItem(item, pivot),
+          pivotIndexOffset: 1
+        },
+        beforeFieldGroup: {
+          isTargetPivot: (item) => isTargetGroupItem(item, pivot),
+          pivotIndexOffset: 0
+        }
+      }
+      const movementConfig = movementConfigMap[direction]
+
+      // find the parent group of target pivot
+      const { item: pivotParent } = findEditorLayoutItem(
+        this._editorLayout,
+        (item) =>
+          isFieldGroupItem(item) &&
+          Boolean(
+            item.items.find((childItem, childItemIndex) => {
+              if (movementConfig.isTargetPivot(childItem)) {
+                pivotIndex = childItemIndex + movementConfig.pivotIndexOffset
+                return true
+              }
+              return false
+            })
+          )
+      ) as { item: FieldGroupItem | undefined }
+
+      destinationGroupItem = pivotParent
+    }
+    destinationGroupItem.items.splice(pivotIndex, 0, fieldItem)
+  }
+
   toAPI(): object {
     let controls: APIEditorInterfaceControl[] = []
     forEach(this._controls, (c) => {
@@ -282,6 +567,8 @@ class EditorInterfaces {
       sidebar?: APIEditorInterfaceSidebar[]
       editor?: APIEditorIntefaceEditor
       editors?: APIEditorIntefaceEditor[]
+      editorLayout?: APIEditorInterfaceEditorLayout
+      groupControls?: APIEditorInterfaceGroupControl[]
     } = {
       controls
     }
@@ -297,6 +584,14 @@ class EditorInterfaces {
       result.editor = this._editor
     }
 
+    if (this._editorLayout) {
+      result.editorLayout = this._editorLayout
+    }
+
+    if (this._groupControls) {
+      result.groupControls = this._groupControls
+    }
+
     return result
   }
 }
@@ -309,14 +604,16 @@ class ContentType {
   private _description: string
   private _version: number
   private _displayField: string
+  private _metadata: ContentTypeMetadata | undefined
 
   constructor(ct: APIContentType) {
     this._id = ct.sys.id
-    this._fields = new Fields(ct.fields)
+    this._fields = new Fields(this, ct.fields)
     this._name = ct.name
     this._description = ct.description
     this._version = ct.sys.version
     this._displayField = ct.displayField
+    this._metadata = ct.metadata
   }
 
   get id() {
@@ -355,6 +652,30 @@ class ContentType {
     this._displayField = displayField
   }
 
+  setAnnotations(annotations: AnnotationLink[]) {
+    set(this, '_metadata.annotations.ContentType', annotations)
+  }
+
+  getAnnotations() {
+    return this._metadata?.annotations?.ContentType
+  }
+
+  clearAnnotations() {
+    delete this._metadata?.annotations?.ContentType
+  }
+
+  setFieldAnnotations(fieldId: string, annotations: AnnotationLink[]) {
+    set(this, `_metadata.annotations.ContentTypeField.${fieldId}`, annotations)
+  }
+
+  getFieldAnnotations(fieldId: string) {
+    return this._metadata?.annotations?.ContentTypeField?.[fieldId]
+  }
+
+  clearFieldAnnotations(fieldId: string) {
+    delete this._metadata?.annotations?.ContentTypeField?.[fieldId]
+  }
+
   get version() {
     return this._version
   }
@@ -364,7 +685,7 @@ class ContentType {
   }
 
   toAPI(): APIContentType {
-    return {
+    return cloneDeep({
       sys: {
         id: this.id,
         version: this.version
@@ -372,8 +693,9 @@ class ContentType {
       name: this.name,
       displayField: this.displayField,
       fields: this.fields.toRaw(),
-      description: this.description
-    }
+      description: this.description,
+      ...(this._metadata ? prune({ metadata: this._metadata }) : undefined)
+    })
   }
 
   clone(): ContentType {
@@ -381,4 +703,9 @@ class ContentType {
   }
 }
 
-export { ContentType as default, ContentType, Fields, Field, EditorInterfaces }
+const isTargetFieldItem = (item, fieldId): item is FieldItem =>
+  isFieldItem(item) && item.fieldId === fieldId
+const isTargetGroupItem = (item, groupId): item is FieldGroupItem =>
+  isFieldGroupItem(item) && item.groupId === groupId
+
+export { ContentType as default, ContentType, Fields, Field, EditorInterfaces, AnnotationLink }

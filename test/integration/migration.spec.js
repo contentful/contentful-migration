@@ -24,6 +24,17 @@ const createWithLinkToNonExistingContentType = require('../../examples/34-create
 const modifyTag = require('../../examples/29-modify-tag')
 const deleteTag = require('../../examples/30-delete-tag')
 const setTagsForEntries = require('../../examples/31-set-tags-for-entries')
+const createEditorLayout = require('../../examples/35-create-editor-layout')
+const moveFieldInExistingEditorLayout = require('../../examples/41-move-field-in-existing-editor-layout')
+const moveFieldInNewEditorLayout = require('../../examples/40-move-field-in-editor-layout')
+const deleteEditorLayoutFieldSet = require('../../examples/37-delete-editor-layout-field-set')
+const changeFieldGroupId = require('../../examples/38-change-field-group-id-editor-layout')
+const deleteEditorLayout = require('../../examples/39-delete-editor-layout')
+const deleteEditorLayoutTab = require('../../examples/36-delete-editor-layout-tab')
+const assignContentTypeAnnotations = require('../../examples/42-assign-content-type-annotations')
+const assignFieldAnnotations = require('../../examples/43-assign-field-annotations')
+const clearFieldAnnotations = require('../../examples/44-clear-field-annotations')
+const clearContentTypeAnnotations = require('../../examples/45-clear-content-type-annotations')
 
 const { createMigrationParser } = require('../../built/lib/migration-parser')
 const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget')
@@ -863,5 +874,291 @@ describe('the migration', function () {
       url: '/content_types/contentTypeWithLink'
     })
     expect(contentType.fields[0].id).to.eql('linkToNonExistingContentType')
+  })
+
+  it('creates an editor layout', async function () {
+    await migrator(createEditorLayout)
+
+    const editorInterfaces = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    })
+
+    expect(editorInterfaces?.editorLayout).to.eql([
+      {
+        groupId: 'content',
+        name: 'Content',
+        items: [{ fieldId: 'name' }, { fieldId: 'title' }]
+      },
+      {
+        groupId: 'settings',
+        name: 'Settings',
+        items: [{ groupId: 'seo', name: 'SEO', items: [] }]
+      },
+      {
+        groupId: 'metadata',
+        name: 'Metadata',
+        items: []
+      }
+    ])
+
+    expect(editorInterfaces?.groupControls).to.eql([
+      {
+        groupId: 'content',
+        widgetId: 'topLevelTab',
+        widgetNamespace: 'builtin',
+        settings: {
+          helpText: 'Main content'
+        }
+      },
+      {
+        groupId: 'settings',
+        widgetId: 'topLevelTab',
+        widgetNamespace: 'builtin'
+      },
+      {
+        groupId: 'seo',
+        widgetId: 'fieldset',
+        widgetNamespace: 'builtin',
+        settings: {
+          helpText: 'Search related fields',
+          collapsedByDefault: false
+        }
+      },
+      {
+        groupId: 'metadata',
+        widgetId: 'topLevelTab',
+        widgetNamespace: 'builtin'
+      }
+    ])
+  })
+
+  it('deletes an editor layout tab', async function () {
+    await migrator(deleteEditorLayoutTab)
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    })
+
+    expect(editorInterface.editorLayout).to.eql([
+      {
+        groupId: 'content',
+        name: 'Content',
+        items: [
+          { fieldId: 'name' },
+          { fieldId: 'title' },
+          { groupId: 'seo', name: 'SEO', items: [] }
+        ]
+      },
+      {
+        groupId: 'metadata',
+        name: 'Metadata',
+        items: []
+      }
+    ])
+  })
+
+  it('deletes an editor layout field set', async function () {
+    await migrator(deleteEditorLayoutFieldSet)
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    })
+
+    expect(editorInterface.editorLayout).to.eql([
+      {
+        groupId: 'content',
+        name: 'Content',
+        items: [{ fieldId: 'name' }, { fieldId: 'title' }]
+      },
+      {
+        groupId: 'metadata',
+        name: 'Metadata',
+        items: []
+      }
+    ])
+  })
+
+  it('changes field group id', async function () {
+    await migrator(changeFieldGroupId)
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    })
+
+    expect(editorInterface.editorLayout).to.eql([
+      {
+        groupId: 'content',
+        name: 'Content',
+        items: [{ fieldId: 'name' }, { fieldId: 'title' }]
+      },
+      {
+        groupId: 'info',
+        name: 'Metadata',
+        items: []
+      }
+    ])
+  })
+
+  it('deletes editor layout and group controls', async function () {
+    await migrator(deleteEditorLayout)
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    })
+
+    expect(editorInterface.editorLayout).to.be.undefined()
+    expect(editorInterface.groupControls).to.be.undefined()
+  })
+
+  it('moves fields in newly created editor layout', async function () {
+    await migrator(moveFieldInNewEditorLayout)
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/mytype/editor_interface'
+    })
+
+    expect(editorInterface.editorLayout).to.eql([
+      {
+        name: 'First Tab',
+        items: [{ fieldId: 'fieldD' }],
+        groupId: 'firsttab'
+      },
+      {
+        name: 'Second Tab',
+        items: [
+          { fieldId: 'fieldB' },
+          {
+            name: 'Field Set',
+            items: [{ fieldId: 'fieldA' }, { fieldId: 'fieldC' }, { fieldId: 'fieldE' }],
+            groupId: 'fieldset'
+          }
+        ],
+        groupId: 'secondtab'
+      }
+    ])
+  })
+
+  it('moves fields in existing editor layout', async function () {
+    await migrator(moveFieldInExistingEditorLayout)
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/mytype/editor_interface'
+    })
+
+    expect(editorInterface.editorLayout).to.eql([
+      {
+        name: 'First Tab',
+        items: [{ fieldId: 'fieldA' }, { fieldId: 'fieldD' }],
+        groupId: 'firsttab'
+      },
+      {
+        name: 'Second Tab',
+        items: [
+          {
+            name: 'Field Set',
+            items: [],
+            groupId: 'fieldset'
+          },
+          { fieldId: 'fieldB' },
+          { fieldId: 'fieldC' },
+          { fieldId: 'fieldE' }
+        ],
+        groupId: 'secondtab'
+      }
+    ])
+  })
+
+  it('assigns content type annotations', async function () {
+    await migrator(assignContentTypeAnnotations)
+    const ct = await request({
+      method: 'GET',
+      url: '/content_types/annotated'
+    })
+
+    expect(ct.metadata).to.eql({
+      annotations: {
+        ContentType: [
+          {
+            sys: {
+              id: 'Contentful:AggregateRoot',
+              type: 'Link',
+              linkType: 'Annotation'
+            }
+          }
+        ]
+      }
+    })
+  })
+
+  it('assigns field annotations', async function () {
+    await migrator(assignFieldAnnotations)
+    const ct = await request({
+      method: 'GET',
+      url: '/content_types/annotated'
+    })
+
+    expect(ct.metadata).to.eql({
+      annotations: {
+        ContentType: [
+          {
+            sys: {
+              id: 'Contentful:AggregateRoot',
+              type: 'Link',
+              linkType: 'Annotation'
+            }
+          }
+        ],
+        ContentTypeField: {
+          sources: [
+            {
+              sys: {
+                id: 'Contentful:AggregateComponent',
+                type: 'Link',
+                linkType: 'Annotation'
+              }
+            }
+          ]
+        }
+      }
+    })
+  })
+
+  it('clears field annotations', async function () {
+    await migrator(clearFieldAnnotations)
+    const ct = await request({
+      method: 'GET',
+      url: '/content_types/annotated'
+    })
+
+    expect(ct.metadata).to.eql({
+      annotations: {
+        ContentType: [
+          {
+            sys: {
+              id: 'Contentful:AggregateRoot',
+              type: 'Link',
+              linkType: 'Annotation'
+            }
+          }
+        ]
+      }
+    })
+  })
+
+  it('clears field annotations', async function () {
+    await migrator(clearContentTypeAnnotations)
+    const ct = await request({
+      method: 'GET',
+      url: '/content_types/annotated'
+    })
+
+    expect(ct.metadata).to.be.undefined()
   })
 })
