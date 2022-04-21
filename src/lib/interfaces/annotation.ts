@@ -16,10 +16,6 @@ export type AnnotationAssignment = {
   target: AssignmentTarget
 }
 
-/**
- * This data structure does not include all the properties defined in CEP-0125
- * It only contains the operative information needed at this implementation stage.
- */
 export type AnnotationData = {
   id: string
   targets: AnnotationTarget[]
