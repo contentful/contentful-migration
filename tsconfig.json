@@ -5,6 +5,7 @@
     "target": "es2017",
     "esModuleInterop":true,
     "module": "commonjs",
+    "declaration": true,
     "lib": [
       "es2015",
       "es2016",
