@@ -14,7 +14,7 @@ delete process.env.CONTENTFUL_MANAGEMENT_ACCESS_TOKEN
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID
 
 const fileConfig = {
-  cmaToken: process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN
+  managementToken: process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN
 }
 
 describe('contentful-client', function () {

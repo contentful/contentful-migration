@@ -5,7 +5,7 @@ import { expect } from 'chai'
 import { getConfig } from '../../../../src/bin/lib/config'
 
 const fileConfig = {
-  cmaToken: process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN
+  managementToken: process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN
 }
 
 describe('Config', function () {

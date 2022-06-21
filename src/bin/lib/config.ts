@@ -20,7 +20,7 @@ interface ClientConfig {
 function getFileConfig(): ClientConfig {
   try {
     const config = require(configPath)
-    return config.cmaToken ? { accessToken: config.cmaToken } : {}
+    return config.managementToken ? { accessToken: config.managementToken } : {}
   } catch (e) {
     return {}
   }
