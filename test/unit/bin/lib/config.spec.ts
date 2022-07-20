@@ -8,17 +8,43 @@ const fileConfig = {
   cmaToken: process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN
 }
 
+// TODO: This test file actually does not work correctly as it works
+// with the assumption that for every unit test ".contentfulrc" is read
+// from disk again. This however is most likely not true, see
+// https://nodejs.org/docs/latest/api/modules.html#caching. This means we
+// can actually not correctly run the skipped test, as the read
+// .contentfulrc won't be updated for it. We therefore need a different
+// setup
+
 describe('Config', function () {
   beforeEach(function () {
     writeFileSync(resolve('/tmp', '.contentfulrc.json'), JSON.stringify(fileConfig))
   })
 
-  it('reads the contentfulrc.json', async function () {
+  it('reads the contentfulrc.json', function () {
     const config = getConfig({})
     expect(config.accessToken).to.eql(process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN)
   })
 
-  it('prefers env config over contentfulrc.json', async function () {
+  it.skip('chooses cmaToken even if managementToken is provided as well', function () {
+    writeFileSync(
+      resolve('/tmp', '.contentfulrc.json'),
+      JSON.stringify({ cmaToken: 'cmaToken', managementToken: 'managementToken' })
+    )
+    const config = getConfig({})
+    expect(config.accessToken).to.eql('cmaToken')
+  })
+
+  it.skip('chooses managementToken if no cmaToken is provided', function () {
+    writeFileSync(
+      resolve('/tmp', '.contentfulrc.json'),
+      JSON.stringify({ managementToken: 'managementToken' })
+    )
+    const config = getConfig({})
+    expect(config.accessToken).to.eql('managementToken')
+  })
+
+  it('prefers env config over contentfulrc.json', function () {
     const token = process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN
 
     process.env.CONTENTFUL_MANAGEMENT_ACCESS_TOKEN = 'schnitzel'
@@ -27,7 +53,7 @@ describe('Config', function () {
     process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN = token
   })
 
-  it('prefers handed in config over env config', async function () {
+  it('prefers handed in config over env config', function () {
     const config = getConfig({ accessToken: 'fooMyBar' })
     expect(config.accessToken).to.eql('fooMyBar')
   })
