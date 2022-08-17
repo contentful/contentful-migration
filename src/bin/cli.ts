@@ -136,13 +136,15 @@ const createRun = ({ shouldThrow }) =>
 
     if (parseResult.hasRuntimeErrors()) {
       renderRuntimeErrors(batches, errorsFile)
-      await writeErrorsToLog(parseResult.getRuntimeErrors(), errorsFile)
+      if (!shouldThrow) {
+        await writeErrorsToLog(parseResult.getRuntimeErrors(), errorsFile)
+      }
       terminate(new ManyError('Runtime Errors', parseResult.getRuntimeErrors()))
     }
 
     await renderPlan(batches, argv.environmentId, argv.quiet)
 
-    const serverErrorsWritten = []
+    const serverErrorsToWrite = []
 
     const tasks = batches.map((batch) => {
       return {
@@ -152,7 +154,7 @@ const createRun = ({ shouldThrow }) =>
             {
               title: 'Making requests',
               task: async (_ctx, task) => {
-                // TODO: We wanted to make this an async interator
+                // TODO: We wanted to make this an async iterator
                 // So we should not inspect the length but have a property for that
                 const numRequests = batch.requests.length
                 const requestErrors = []
@@ -163,7 +165,9 @@ const createRun = ({ shouldThrow }) =>
                   task.output = `${request.method} ${request.url} at V${request.headers['X-Contentful-Version']}`
 
                   await makeRequest(request).catch((error) => {
-                    serverErrorsWritten.push(writeErrorsToLog(error, errorsFile))
+                    if (!shouldThrow) {
+                      serverErrorsToWrite.push({ error, errorsFile })
+                    }
                     let errorMessage
 
                     if (error instanceof TypeError) {
@@ -222,8 +226,12 @@ const createRun = ({ shouldThrow }) =>
         console.error(chalk`🚨  {bold.red Migration unsuccessful}`)
         console.error(chalk`{red ${err.message}}\n`)
         err.errors.forEach((err) => console.error(chalk`{red ${err}}\n\n`))
-        await Promise.all(serverErrorsWritten)
-        console.error(`Please check the errors log for more details: ${errorsFile}`)
+
+        if (!shouldThrow) {
+          await Promise.all(serverErrorsToWrite.map(({ error, errorsFile }) => writeErrorsToLog(error, errorsFile)))
+          console.error(`Please check the errors log for more details: ${errorsFile}`)
+        }
+
         terminate(err)
       }
     } else {
