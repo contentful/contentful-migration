@@ -5,11 +5,16 @@ import { ContentTypeAnnotateAction } from '../action/content-type-annotate'
 import { AnnotationLink } from '../interfaces/annotation'
 
 export default class ContentTypeAnnotateIntent extends Intent {
+  isContentTypeAnnotate() {
+    return true
+  }
+
   groupsWith(other: Intent): boolean {
     const sameContentType = other.getContentTypeId() === this.getContentTypeId()
     return (
       (other.isContentTypeUpdate() ||
         other.isContentTypeCreate() ||
+        other.isContentTypeAnnotate() ||
         other.isFieldCreate() ||
         other.isFieldUpdate() ||
         other.isFieldMove()) &&

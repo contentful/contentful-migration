@@ -13,6 +13,7 @@ export default class FieldCreateIntent extends Intent {
     return (
       (other.isContentTypeUpdate() ||
         other.isContentTypeCreate() ||
+        other.isContentTypeAnnotate() ||
         other.isFieldCreate() ||
         other.isFieldUpdate() ||
         other.isFieldMove()) &&
