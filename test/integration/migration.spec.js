@@ -35,6 +35,7 @@ const assignContentTypeAnnotations = require('../../examples/42-assign-content-t
 const assignFieldAnnotations = require('../../examples/43-assign-field-annotations')
 const clearFieldAnnotations = require('../../examples/44-clear-field-annotations')
 const clearContentTypeAnnotations = require('../../examples/45-clear-content-type-annotations')
+const canSetDisplayFieldBeforeAnnotations = require('../../examples/46-can-set-display-field-before-annotations')
 
 const { createMigrationParser } = require('../../built/lib/migration-parser')
 const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget')
@@ -1160,5 +1161,28 @@ describe('the migration', function () {
     })
 
     expect(ct.metadata).to.be.undefined()
+  })
+
+  it('can set displayField before annotations', async function () {
+    await migrator(canSetDisplayFieldBeforeAnnotations)
+    const ct = await request({
+      method: 'GET',
+      url: '/content_types/annotatedWithDisplayField'
+    })
+
+    expect(ct.displayField).to.eql('name')
+    expect(ct.metadata).to.eql({
+      annotations: {
+        ContentType: [
+          {
+            sys: {
+              id: 'Contentful:AggregateRoot',
+              type: 'Link',
+              linkType: 'Annotation'
+            }
+          }
+        ]
+      }
+    })
   })
 })
