@@ -18,6 +18,7 @@ interface Field {
   validations?: any[]
   disabled?: boolean
   defaultValue?: { [locale: string]: any }
+  allowedResources?: any[]
 }
 
 type ContentTypeMetadata = {

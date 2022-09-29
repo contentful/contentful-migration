@@ -13,6 +13,9 @@ const errors = {
     },
     DELETE_DISPLAY_FIELD: (displayField, ctId) => {
       return `Cannot delete field "${displayField}" on content type "${ctId}" because it is set as the display field`
+    },
+    TOO_MANY_RESOURCE_LINKS: (id, maxResourceLinks) => {
+      return `Content type "${id}" cannot have more than ${maxResourceLinks} resource links.`
     }
   },
   field: {
@@ -67,6 +70,23 @@ const errors = {
       },
       INVALID_VALIDATION_PARAMETER: (propName, expectedType, actualType) => {
         return `"${propName}" validation expected to be "${expectedType}", but got "${actualType}"`
+      }
+    },
+    allowedResources: {
+      DUPLICATE_SOURCE: (fieldId, source) => {
+        return `Allowed resources on the field "${fieldId}" contains duplicate source "${source}".`
+      },
+      INVALID_RESOURCE: (fieldId, index, actualType) => {
+        return `Allowed resource at index ${index} on the field "${fieldId}" expected to be "object", but got "${actualType}".`
+      },
+      INVALID_RESOURCE_PROPERTY: (fieldId, index, error) => {
+        return `Allowed resource at index ${index} on the field "${fieldId}" has invalid property: ${error}.`
+      },
+      TOO_FEW_ITEMS: (fieldId) => {
+        return `Allowed resources on the field "${fieldId}" must not be empty.`
+      },
+      TOO_MANY_ITEMS: (fieldId, max) => {
+        return `Allowed resources on the field "${fieldId}" must have at most ${max} items.`
       }
     },
     defaultValue: {

@@ -10,6 +10,7 @@ import { contentTypeSchema, MAX_FIELDS } from './content-type-schema'
 import { tagSchema } from './tag-schema'
 import { createFieldsSchema } from './fields-schema'
 import { createEditorLayoutSchema } from './editor-layout-schema'
+import { MAX_ALLOWED_RESOURCES } from '../../../utils/resource-links'
 
 interface SimplifiedValidationError {
   message: string
@@ -289,6 +290,61 @@ const validateFields = function (
           context.key,
           field.type
         )
+      }
+    }
+
+    // Field `allowedResources` errors
+    if (path[1] === 'allowedResources') {
+      if (path.length > 3) {
+        const error = details.message.replace(/".+?"/, `"${context.key}"`)
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.allowedResources.INVALID_RESOURCE_PROPERTY(
+            field.id,
+            path[2],
+            error
+          )
+        }
+      }
+
+      if (type === 'object.base') {
+        const actualType = kindOf(reach(field, prop))
+
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.allowedResources.INVALID_RESOURCE(
+            field.id,
+            context.key,
+            actualType
+          )
+        }
+      }
+
+      if (type === 'array.min') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.allowedResources.TOO_FEW_ITEMS(field.id)
+        }
+      }
+
+      if (type === 'array.max') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.allowedResources.TOO_MANY_ITEMS(
+            field.id,
+            MAX_ALLOWED_RESOURCES
+          )
+        }
+      }
+
+      if (type === 'array.unique') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.allowedResources.DUPLICATE_SOURCE(
+            field.id,
+            context.value.source
+          )
+        }
       }
     }
 

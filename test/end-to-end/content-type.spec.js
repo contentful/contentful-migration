@@ -217,4 +217,65 @@ describe('apply content-type migration examples', function () {
         })
       )
   })
+
+  it('aborts 47-create-resource-link-fields', function (done) {
+    cli()
+      .run(
+        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/47-create-resource-link-fields.js`
+      )
+      .on(/\? Do you want to apply the migration \(Y\/n\)/)
+      .respond('n\n')
+      .expect(assert.plans.contentType.create('contentTypeWithResourceLinks'))
+      .expect(assert.plans.actions.abort())
+      .end(done)
+  })
+
+  it('applies 47-create-resource-link-fields', function (done) {
+    const allowedResources = [
+      {
+        type: 'Contentful:Entry',
+        source: 'crn:contentful:::content:spaces/another-space',
+        contentTypes: ['contentType1', 'contentType2', 'contentType3']
+      }
+    ]
+
+    cli()
+      .run(
+        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/47-create-resource-link-fields.js`
+      )
+      .on(/\? Do you want to apply the migration \(Y\/n\)/)
+      .respond('Y\n')
+      .expect(assert.plans.contentType.create('contentTypeWithResourceLinks'))
+      .expect(
+        assert.plans.field.create('resourceLink', {
+          name: 'resourceLink',
+          type: 'ResourceLink',
+          allowedResources
+        })
+      )
+      .expect(
+        assert.plans.field.create('resourceLinkArray', {
+          name: 'resourceLinkArray',
+          type: 'Array',
+          items: { type: 'ResourceLink' },
+          allowedResources
+        })
+      )
+      .expect(assert.plans.actions.apply())
+      .end(
+        co(function* () {
+          const contentType = yield getDevContentType(
+            SOURCE_TEST_SPACE,
+            environmentId,
+            'contentTypeWithResourceLinks'
+          )
+          expect(contentType.fields.length).to.eql(2)
+          expect(contentType.fields[0].type).to.eql('ResourceLink')
+          expect(contentType.fields[0].allowedResources).to.eql(allowedResources)
+          expect(contentType.fields[1].items.type).to.eql('ResourceLink')
+          expect(contentType.fields[1].allowedResources).to.eql(allowedResources)
+          done()
+        })
+      )
+  })
 })
