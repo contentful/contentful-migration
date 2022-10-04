@@ -77,6 +77,7 @@ workflows:
       - test-integration
       - test-e2e
       - release:
+          context: vault
           requires:
             - check
             - test-unit
