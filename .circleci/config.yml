@@ -1,4 +1,8 @@
 version: 2.1
+
+orbs:
+  vault: contentful/vault@1
+
 jobs:
   check:
     docker:
