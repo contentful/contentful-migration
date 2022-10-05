@@ -24,7 +24,7 @@ class FieldUpdateStepValidator extends SchemaValidator {
       deleted: Joi.boolean().required().strict(),
       linkType: Joi.string().required(),
       items: Joi.object().required(),
-      allowedResources: Joi.array().required()
+      allowedResources: Joi.array()
     }
   }
 }
