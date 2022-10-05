@@ -80,7 +80,7 @@ const errors = {
         return `Allowed resource at index ${index} on the field "${fieldId}" expected to be "object", but got "${actualType}".`
       },
       INVALID_RESOURCE_PROPERTY: (fieldId, index, error) => {
-        return `Allowed resource at index ${index} on the field "${fieldId}" has invalid property: ${error}.`
+        return `Allowed resource at index ${index} on the field "${fieldId}" has an invalid property: ${error}.`
       },
       TOO_FEW_ITEMS: (fieldId) => {
         return `Allowed resources on the field "${fieldId}" must not be empty.`
