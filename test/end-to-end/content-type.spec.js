@@ -218,18 +218,6 @@ describe('apply content-type migration examples', function () {
       )
   })
 
-  it('aborts 47-create-resource-link-fields', function (done) {
-    cli()
-      .run(
-        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/47-create-resource-link-fields.js`
-      )
-      .on(/\? Do you want to apply the migration \(Y\/n\)/)
-      .respond('n\n')
-      .expect(assert.plans.contentType.create('contentTypeWithResourceLinks'))
-      .expect(assert.plans.actions.abort())
-      .end(done)
-  })
-
   it('applies 47-create-resource-link-fields', function (done) {
     const allowedResources = [
       {
