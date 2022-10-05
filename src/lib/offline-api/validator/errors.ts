@@ -15,7 +15,7 @@ const errors = {
     DELETE_DISPLAY_FIELD: (displayField, ctId) => {
       return `Cannot delete field "${displayField}" on content type "${ctId}" because it is set as the display field`
     },
-    TOO_MANY_RESOURCE_LINKS: (id) => {
+    TOO_MANY_RESOURCE_LINK_FIELDS: (id) => {
       return `Content type "${id}" cannot have more than ${MAX_RESOURCE_LINKS} resource link fields.`
     }
   },
