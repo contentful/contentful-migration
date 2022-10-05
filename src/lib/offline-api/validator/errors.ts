@@ -74,7 +74,7 @@ const errors = {
     },
     allowedResources: {
       DUPLICATE_SOURCE: (fieldId, source) => {
-        return `Allowed resources on the field "${fieldId}" contains duplicate source "${source}".`
+        return `Allowed resources on the field "${fieldId}" contain duplicate source "${source}".`
       },
       INVALID_RESOURCE: (fieldId, index, actualType) => {
         return `Allowed resource at index ${index} on the field "${fieldId}" expected to be "object", but got "${actualType}".`
