@@ -1,5 +1,11 @@
 import { AnnotationLink } from './annotation'
 
+interface AllowedResource {
+  type: 'Contentful:Entry'
+  source: string
+  contentTypes: string[]
+}
+
 interface Field {
   id: string
   newId?: string
@@ -18,7 +24,7 @@ interface Field {
   validations?: any[]
   disabled?: boolean
   defaultValue?: { [locale: string]: any }
-  allowedResources?: any[]
+  allowedResources?: AllowedResource[]
 }
 
 type ContentTypeMetadata = {
