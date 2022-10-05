@@ -16,10 +16,7 @@ export default class ResourceLinksValidator implements ContentTypePayloadValidat
     if (resourceLinkCount > MAX_RESOURCE_LINKS) {
       errors.push({
         type: 'InvalidPayload',
-        message: errorMessages.contentType.TOO_MANY_RESOURCE_LINKS(
-          contentType.id,
-          MAX_RESOURCE_LINKS
-        )
+        message: errorMessages.contentType.TOO_MANY_RESOURCE_LINKS(contentType.id)
       })
     }
 

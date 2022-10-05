@@ -10,7 +10,7 @@ const VALID_ALLOWED_RESOURCE = {
   contentTypes: ['cookingMethod', 'recipe']
 }
 
-describe.only('payload validation (dependencies)', function () {
+describe('payload validation (dependencies)', function () {
   describe('when setting a field to ResourceLink but not specifying allowedResources', function () {
     it('returns an error', async function () {
       const existingCts = []
@@ -164,7 +164,7 @@ describe.only('payload validation (dependencies)', function () {
     })
   })
 
-  describe('when setting a field to ResourceLink but specifying wrong allowedResources', function () {
+  describe('when setting a field to ResourceLink but specifying non-object allowedResources', function () {
     it('returns an error', async function () {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
@@ -219,16 +219,16 @@ describe.only('payload validation (dependencies)', function () {
           {
             type: 'InvalidPayload',
             message:
-              'Allowed resource at index 0 on the field "mainCourse" has invalid property: "contentTypes" must contain at least 1 items.'
+              'Allowed resource at index 0 on the field "mainCourse" has an invalid property: "contentTypes" must contain at least 1 items.'
           },
           {
             type: 'InvalidPayload',
             message:
-              'Allowed resource at index 1 on the field "mainCourse" has invalid property: "type" must be [Contentful:Entry].'
+              'Allowed resource at index 1 on the field "mainCourse" has an invalid property: "type" must be [Contentful:Entry].'
           },
           {
             message:
-              'Allowed resource at index 1 on the field "mainCourse" has invalid property: "unexpectedProperty" is not allowed.',
+              'Allowed resource at index 1 on the field "mainCourse" has an invalid property: "unexpectedProperty" is not allowed.',
             type: 'InvalidPayload'
           }
         ]
@@ -254,7 +254,7 @@ describe.only('payload validation (dependencies)', function () {
   })
 
   describe('when setting a field to ResourceLink with duplicate sources in allowedResources', function () {
-    it('does not return an error', async function () {
+    it('returns an error', async function () {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
@@ -296,7 +296,7 @@ describe.only('payload validation (dependencies)', function () {
       expect(errors).to.eql([
         [
           {
-            message: 'Content type "lunch" cannot have more than 3 resource links.',
+            message: 'Content type "lunch" cannot have more than 3 resource link fields.',
             type: 'InvalidPayload'
           }
         ]

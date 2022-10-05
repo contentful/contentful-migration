@@ -10,7 +10,6 @@ import { contentTypeSchema, MAX_FIELDS } from './content-type-schema'
 import { tagSchema } from './tag-schema'
 import { createFieldsSchema } from './fields-schema'
 import { createEditorLayoutSchema } from './editor-layout-schema'
-import { MAX_ALLOWED_RESOURCES } from '../../../utils/resource-links'
 
 interface SimplifiedValidationError {
   message: string
@@ -294,7 +293,7 @@ const validateFields = function (
     }
 
     // Field `allowedResources` errors
-    if (path[1] === 'allowedResources') {
+    if (prop.startsWith('allowedResources')) {
       if (path.length > 3) {
         const error = details.message.replace(/".+?"/, `"${context.key}"`)
         return {
@@ -330,10 +329,7 @@ const validateFields = function (
       if (type === 'array.max') {
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.allowedResources.TOO_MANY_ITEMS(
-            field.id,
-            MAX_ALLOWED_RESOURCES
-          )
+          message: errorMessages.field.allowedResources.TOO_MANY_ITEMS(field.id)
         }
       }
 

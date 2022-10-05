@@ -1,4 +1,5 @@
 import { MAX_FIELD_SETS, MAX_TABS, MIN_GROUPS } from '../../utils/editor-layout'
+import { MAX_ALLOWED_RESOURCES, MAX_RESOURCE_LINKS } from '../../utils/resource-links'
 
 const errors = {
   contentType: {
@@ -14,8 +15,8 @@ const errors = {
     DELETE_DISPLAY_FIELD: (displayField, ctId) => {
       return `Cannot delete field "${displayField}" on content type "${ctId}" because it is set as the display field`
     },
-    TOO_MANY_RESOURCE_LINKS: (id, maxResourceLinks) => {
-      return `Content type "${id}" cannot have more than ${maxResourceLinks} resource link fields.`
+    TOO_MANY_RESOURCE_LINKS: (id) => {
+      return `Content type "${id}" cannot have more than ${MAX_RESOURCE_LINKS} resource link fields.`
     }
   },
   field: {
@@ -74,7 +75,7 @@ const errors = {
     },
     allowedResources: {
       DUPLICATE_SOURCE: (fieldId, source) => {
-        return `Allowed resources on the field "${fieldId}" contain duplicate source "${source}".`
+        return `Allowed resources on the field "${fieldId}" contains duplicate source "${source}".`
       },
       INVALID_RESOURCE: (fieldId, index, actualType) => {
         return `Allowed resource at index ${index} on the field "${fieldId}" expected to be "object", but got "${actualType}".`
@@ -85,8 +86,8 @@ const errors = {
       TOO_FEW_ITEMS: (fieldId) => {
         return `Allowed resources on the field "${fieldId}" must not be empty.`
       },
-      TOO_MANY_ITEMS: (fieldId, max) => {
-        return `Allowed resources on the field "${fieldId}" must have at most ${max} items.`
+      TOO_MANY_ITEMS: (fieldId) => {
+        return `Allowed resources on the field "${fieldId}" must have at most ${MAX_ALLOWED_RESOURCES} items.`
       }
     },
     defaultValue: {
