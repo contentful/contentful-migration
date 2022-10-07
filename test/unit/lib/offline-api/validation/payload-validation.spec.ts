@@ -91,7 +91,7 @@ describe('payload validation', function () {
         lunch.createField('invalid').type('Invalid').name('invalid')
       }, [])
 
-      const valid = `["Symbol", "Text", "Integer", "Number", "Date", "Boolean", "Object", "Link", "Array", "Location", "RichText"]`
+      const valid = `["Symbol", "Text", "Integer", "Number", "Date", "Boolean", "Object", "Link", "Array", "Location", "RichText", "ResourceLink"]`
       expect(errors).to.eql([
         [
           {

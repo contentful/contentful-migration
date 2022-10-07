@@ -36,6 +36,7 @@ const assignFieldAnnotations = require('../../examples/43-assign-field-annotatio
 const clearFieldAnnotations = require('../../examples/44-clear-field-annotations')
 const clearContentTypeAnnotations = require('../../examples/45-clear-content-type-annotations')
 const canSetDisplayFieldBeforeAnnotations = require('../../examples/46-can-set-display-field-before-annotations')
+const createResourceLinkFields = require('../../examples/47-create-resource-link-fields')
 
 const { createMigrationParser } = require('../../built/lib/migration-parser')
 const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget')
@@ -1184,5 +1185,26 @@ describe('the migration', function () {
         ]
       }
     })
+  })
+
+  it('creates resource links', async function () {
+    const allowedResources = [
+      {
+        type: 'Contentful:Entry',
+        source: 'crn:contentful:::content:spaces/another-space',
+        contentTypes: ['contentType1', 'contentType2', 'contentType3']
+      }
+    ]
+
+    await migrator(createResourceLinkFields)
+    const ct = await request({
+      method: 'GET',
+      url: '/content_types/contentTypeWithResourceLinks'
+    })
+
+    expect(ct.fields[0].type).to.eql('ResourceLink')
+    expect(ct.fields[0].allowedResources).to.eql(allowedResources)
+    expect(ct.fields[1].items.type).to.eql('ResourceLink')
+    expect(ct.fields[1].allowedResources).to.eql(allowedResources)
   })
 })

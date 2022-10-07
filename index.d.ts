@@ -40,6 +40,7 @@ type FieldType =
   | 'RichText'
   | 'Array'
   | 'Link'
+  | 'ResourceLink'
 
 export interface IFieldOptions {
   newId?: string
@@ -54,6 +55,8 @@ export interface IFieldOptions {
 
   /** (required for type 'Link') – Type of the referenced entry. Can take the same values as the ones listed for type above. */
   linkType?: 'Asset' | 'Entry'
+  /** (required for type 'ResourceLink') - Defines which resources can be linked through the field. */
+  allowedResources?: AllowedResource[]
   /** Sets the field as required. */
   required?: boolean
   /** Validations for the field. */
@@ -84,6 +87,8 @@ export interface Field {
   items(items: IFieldOptions): Field
   /** (required for type 'Link') – Type of the referenced entry. Can take the same values as the ones listed for type above. */
   linkType(type: 'Asset' | 'Entry'): Field
+  /** (required for type 'ResourceLink') - Defines which resources can be linked through the field. */
+  allowedResources(allowedResources: AllowedResource[]): Field
   /** Validations for the field. */
   validations(validations: Array<IValidation>): Field
 
@@ -151,6 +156,12 @@ export interface IValidation {
 
   /** Other validations */
   [validation: string]: any
+}
+
+export interface AllowedResource {
+  type: 'Contentful:Entry'
+  source: string
+  contentTypes: string[]
 }
 
 export type WidgetSettingsValue = number | boolean | string | undefined

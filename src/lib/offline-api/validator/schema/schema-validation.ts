@@ -292,6 +292,58 @@ const validateFields = function (
       }
     }
 
+    // Field `allowedResources` errors
+    if (prop.startsWith('allowedResources')) {
+      if (path.length > 3) {
+        const error = details.message.replace(/".+?"/, `"${context.key}"`)
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.allowedResources.INVALID_RESOURCE_PROPERTY(
+            field.id,
+            path[2],
+            error
+          )
+        }
+      }
+
+      if (type === 'object.base') {
+        const actualType = kindOf(reach(field, prop))
+
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.allowedResources.INVALID_RESOURCE(
+            field.id,
+            context.key,
+            actualType
+          )
+        }
+      }
+
+      if (type === 'array.min') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.allowedResources.TOO_FEW_ITEMS(field.id)
+        }
+      }
+
+      if (type === 'array.max') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.allowedResources.TOO_MANY_ITEMS(field.id)
+        }
+      }
+
+      if (type === 'array.unique') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.allowedResources.DUPLICATE_SOURCE(
+            field.id,
+            context.value.source
+          )
+        }
+      }
+    }
+
     if (type === 'any.required') {
       if (context.isRequiredDependency) {
         const dependentProp = context.dependsOn.key
