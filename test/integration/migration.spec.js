@@ -37,6 +37,7 @@ const clearFieldAnnotations = require('../../examples/44-clear-field-annotations
 const clearContentTypeAnnotations = require('../../examples/45-clear-content-type-annotations')
 const canSetDisplayFieldBeforeAnnotations = require('../../examples/46-can-set-display-field-before-annotations')
 const createResourceLinkFields = require('../../examples/47-create-resource-link-fields')
+const changeFieldControlOnEditorInterfaceWithEditorLayout = require('../../examples/50-change-field-control-on-editor-interface-with-editor-layout')
 
 const { createMigrationParser } = require('../../built/lib/migration-parser')
 const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget')
@@ -1003,6 +1004,22 @@ describe('the migration', function () {
         items: []
       }
     ])
+  })
+
+  it('adds new field and immediately change field control', async function () {
+    await migrator(changeFieldControlOnEditorInterfaceWithEditorLayout)
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    })
+
+    // We expect the newly created field to be present in the controls group
+    expect(
+      editorInterface.controls.some(({ fieldId }) => {
+        return fieldId === 'additionalField'
+      })
+    ).to.eql(true)
   })
 
   it('deletes editor layout and group controls', async function () {
