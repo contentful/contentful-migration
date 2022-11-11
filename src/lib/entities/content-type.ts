@@ -229,7 +229,7 @@ class EditorInterfaces {
     }
 
     // For existing editorInterfaces which use the editorLayout property, we need to check if the
-    // field is referenced, as the API requires every fieldId present in controls to also be
+    // field is referenced, as the API requires every fieldId present in the content type to also be
     // referenced in editorLayout.
     if (this._editorLayout?.length > 0) {
       const fieldIdIsNotPresentInExistingEditorLayout = !findEditorLayoutItem(
