@@ -92,7 +92,7 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-standard": "^5.0.0",
     "husky": "^7.0.4",
-    "lint-staged": "^12.3.4",
+    "lint-staged": "^13.0.3",
     "mocha": "^7.1.1",
     "nixt": "^0.5.1",
     "nock": "^13.0.0",
