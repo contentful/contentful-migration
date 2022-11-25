@@ -8,6 +8,7 @@ export type RunMigrationConfig = {
   rawProxy?: boolean
   yes?: boolean
   retryLimit?: number
+  requestBatchSize?: number
 } & ({ filePath: string } | { migrationFunction: MigrationFunction })
 
 export function runMigration(config: RunMigrationConfig): Promise<any>
@@ -639,6 +640,9 @@ export interface ClientConfig {
   environmentId?: string
   proxy?: string
   rawProxy?: boolean
+  requestBatchSize?: number
+  headers?: Record<string, unknown>
+  retryLimit?: number
 }
 
 export type MakeRequest = (requestConfig: axios.AxiosRequestConfig) => axios.AxiosResponse['data']

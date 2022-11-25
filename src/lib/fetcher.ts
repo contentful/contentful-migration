@@ -54,7 +54,11 @@ export default class Fetcher implements APIFetcher {
     const ids: string[] = _.uniq(
       intentList
         .getIntents()
-        .filter((intent) => (!intent.isEditorInterfaceIntent() || intent.requiresContentType()) && !intent.isTagIntent())
+        .filter(
+          (intent) =>
+            (!intent.isEditorInterfaceIntent() || intent.requiresContentType()) &&
+            !intent.isTagIntent()
+        )
         .reduce((ids, intent) => {
           const intentIds = intent.getRelatedContentTypeIds()
           return ids.concat(intentIds)

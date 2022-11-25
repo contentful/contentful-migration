@@ -1,21 +1,11 @@
 import * as path from 'path'
 import * as os from 'os'
 import { v4 as uuidv4 } from 'uuid'
+import type { ClientConfig } from '../../../index'
 
 // TODO: I'm ugly, maybe change me
 const homedir = process.env.NODE_ENV === 'test' ? '/tmp' : os.homedir()
 const configPath = path.resolve(homedir, '.contentfulrc.json')
-
-interface ClientConfig {
-  accessToken?: string
-  spaceId?: string
-  environmentId?: string
-  proxy?: string
-  rawProxy?: boolean
-  requestBatchSize?: number
-  headers?: Record<string, unknown>
-  retryLimit?: number
-}
 
 function getFileConfig(): ClientConfig {
   try {
