@@ -2,6 +2,8 @@ import Intent from './base-intent'
 import { FieldMoveAction } from '../action/field-move'
 import { PlanMessage } from '../interfaces/plan-message'
 import chalk from 'chalk'
+// import {EditorLayoutMoveFieldGroupAction} from "../action/editor-layout/editor-layout-move-field";
+// import {EditorLayoutFieldMovementDirection} from "../entities/content-type";
 
 export default class FieldMoveIntent extends Intent {
   isFieldMove() {
@@ -45,6 +47,12 @@ export default class FieldMoveIntent extends Intent {
         this.getDirection(),
         this.getPivotId()
       )
+      // new EditorLayoutMoveFieldGroupAction(
+      //     this.getContentTypeId(),
+      //     this.getFieldId(),
+      //     this.getDirection() as EditorLayoutFieldMovementDirection,
+      //     this.getPivotId()
+      // )
     ]
   }
 

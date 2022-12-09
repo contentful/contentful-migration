@@ -5,6 +5,7 @@ import { ContentTypePublishAction } from '../action/content-type-publish'
 import { EntryFieldPurgeAction } from '../action/entry-field-purge'
 import { PlanMessage } from '../interfaces/plan-message'
 import chalk from 'chalk'
+import { EditorLayoutDeleteFieldAction } from '../action/editor-layout/editor-layout-delete-field'
 
 export default class FieldDeleteIntent extends Intent {
   isFieldDelete() {
@@ -30,6 +31,8 @@ export default class FieldDeleteIntent extends Intent {
       new ContentTypeSaveAction(contentTypeId),
       new ContentTypePublishAction(contentTypeId),
       new FieldUpdateAction(contentTypeId, fieldId, { deleted: true }),
+      // Updating editor Layout
+      new EditorLayoutDeleteFieldAction(contentTypeId, fieldId),
       new EntryFieldPurgeAction(contentTypeId, fieldId)
     ]
   }

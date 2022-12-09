@@ -39,6 +39,7 @@ const canSetDisplayFieldBeforeAnnotations = require('../../examples/46-can-set-d
 const createResourceLinkFields = require('../../examples/47-create-resource-link-fields')
 const changeFieldControlOnEditorInterfaceWithEditorLayout = require('../../examples/50-change-field-control-on-editor-interface-with-editor-layout')
 const moveFieldOnContentTypeWithEditorLayout = require('../../examples/51-move-field-on-content-type-with-editor-layout')
+const deleteFieldOnContentTypeWithEditorLayout = require('../../examples/52-delete-field-in-content-type-with-editor-layout')
 
 const { createMigrationParser } = require('../../built/lib/migration-parser')
 const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget')
@@ -1035,6 +1036,19 @@ describe('the migration', function () {
     // Note that this is not testing moving of fields on editorLayout which currently still breaks
     // for newly created fields and needs a fix.
     expect(contentType.fields[2].id).to.eql('anotherAdditionalField')
+  })
+
+  it('deletes field and immediately can move another field on editorLayout', async function () {
+    await migrator(deleteFieldOnContentTypeWithEditorLayout)
+
+    const contentType = await request({
+      method: 'GET',
+      url: '/content_types/page'
+    })
+
+    // anotherAdditionalField should be second last in the list, right before 'additionalField'
+    expect(contentType.fields[2].id).to.eql('anotherAdditionalField')
+    expect(contentType.fields.find((field) => field.id === 'moreAdditionalField')).to.eql(undefined)
   })
 
   it('deletes editor layout and group controls', async function () {
