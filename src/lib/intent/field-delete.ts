@@ -31,9 +31,9 @@ export default class FieldDeleteIntent extends Intent {
       new ContentTypeSaveAction(contentTypeId),
       new ContentTypePublishAction(contentTypeId),
       new FieldUpdateAction(contentTypeId, fieldId, { deleted: true }),
+      new EntryFieldPurgeAction(contentTypeId, fieldId),
       // Updating editor Layout
-      new EditorLayoutDeleteFieldAction(contentTypeId, fieldId),
-      new EntryFieldPurgeAction(contentTypeId, fieldId)
+      new EditorLayoutDeleteFieldAction(contentTypeId, fieldId)
     ]
   }
 

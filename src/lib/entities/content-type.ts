@@ -422,14 +422,26 @@ class EditorInterfaces {
 
   deleteFieldFromEditorLayout(fieldId: string) {
     if (this._editorLayout?.length > 0) {
-      let { path, item } = findEditorLayoutItem(
+      // find the field and its parent (sourceGroup) within editorLayout
+      let fieldItem: FieldItem
+      const { item: parentItem } = findEditorLayoutItem(
         this._editorLayout,
-        (editorLayoutItem) => isFieldItem(editorLayoutItem) && editorLayoutItem.fieldId === fieldId
-      )
-      console.log(path, item)
-      if (item) {
-        console.log('deleting..')
-        console.log(this._editorLayout)
+        (item) =>
+          isFieldGroupItem(item) &&
+          Boolean(
+            item.items.find((item) => {
+              if (isTargetFieldItem(item, fieldId)) {
+                fieldItem = item
+                return true
+              }
+              return false
+            })
+          )
+      ) as { item: FieldGroupItem | undefined }
+
+      // remove field item from original group
+      if (parentItem) {
+        pull(parentItem.items, fieldItem)
       }
     }
   }
