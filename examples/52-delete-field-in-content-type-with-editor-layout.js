@@ -1,17 +1,8 @@
 module.exports = function (migration) {
-  const contentTypeWithEditorLayout = migration.editContentType('page')
+  const contentTypeWithEditorLayout1 = migration.editContentType('page')
 
-  contentTypeWithEditorLayout
-    .createField('fieldToDelete')
-    .type('Text')
-    .name('fieldToDelete')
-    .localized(true)
-    .validations([{ size: { max: 3 } }])
+  contentTypeWithEditorLayout1.deleteField('anotherAdditionalField')
 
-  contentTypeWithEditorLayout.deleteField('fieldToDelete')
-
-  const editorLayout = contentTypeWithEditorLayout.editEditorLayout()
-  editorLayout.changeFieldGroupControl('seo', 'builtin', 'fieldset', {
-    helpText: 'Search all related fields'
-  })
+  const editorLayout = contentTypeWithEditorLayout1.editEditorLayout()
+  editorLayout.createFieldGroup('uploads').name('Uploads')
 }

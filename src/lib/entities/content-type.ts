@@ -25,7 +25,6 @@ import {
   FieldGroupItem,
   FieldItem
 } from '../utils/editor-layout'
-import { EditorLayoutItem } from 'contentful-management/dist/typings/export-types'
 import { AnnotationLink } from '../interfaces/annotation'
 
 function prune(obj: any) {
@@ -227,25 +226,6 @@ class EditorInterfaces {
       control.fieldId = fieldId
       this._controls.push(control)
     }
-
-    // For existing editorInterfaces which use the editorLayout property, we need to check if the
-    // field is referenced, as the API requires every fieldId present in the content type to also be
-    // referenced in editorLayout.
-    // if (this._editorLayout?.length > 0) {
-    //   const fieldIdIsNotPresentInExistingEditorLayout = !findEditorLayoutItem(
-    //     this._editorLayout,
-    //     (editorLayoutItem) => isFieldItem(editorLayoutItem) && editorLayoutItem.fieldId === fieldId
-    //   )
-    //
-    //   if (fieldIdIsNotPresentInExistingEditorLayout) {
-    //     // Add field id to the first group as default
-    //     // This is not ideal, as it is implicit unexpected behavior, but will prevent migrations
-    //     // from failing completely
-    //     this._editorLayout[0].items.push({
-    //       fieldId
-    //     })
-    //   }
-    // }
 
     control.widgetId = widgetId
 
@@ -506,15 +486,22 @@ class EditorInterfaces {
   }
 
   updateFieldIdInEditorLayout(oldFieldId: string, newFieldId: string) {
-    console.log(oldFieldId, newFieldId)
-    //   if (this._editorLayout?.length > 0) {
-    //     let {path, item} = findEditorLayoutItem(this._editorLayout,
-    //         (editorLayoutItem) => isFieldItem(editorLayoutItem) && editorLayoutItem.fieldId === oldFieldId
-    //     )
-    //     if (item) {
-    //       this._editorLayout[item.path].fieldId = newFieldId
-    //     }
-    //   }
+    if (this._editorLayout?.length > 0) {
+      findEditorLayoutItem(
+        this._editorLayout,
+        (item) =>
+          isFieldGroupItem(item) &&
+          Boolean(
+            item.items.find((item) => {
+              if (isTargetFieldItem(item, oldFieldId)) {
+                item.fieldId = newFieldId
+                return true
+              }
+              return false
+            })
+          )
+      )
+    }
   }
 
   deleteGroupControl(fieldGroupId: string) {
@@ -661,7 +648,7 @@ class EditorInterfaces {
       result.groupControls = this._groupControls
     }
 
-    return result
+    return cloneDeep(result)
   }
 }
 

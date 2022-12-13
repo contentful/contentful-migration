@@ -3,7 +3,6 @@ import { FieldCreateAction } from '../action/field-create'
 import { PlanMessage } from '../interfaces/plan-message'
 import chalk from 'chalk'
 import { EditorLayoutCreateFieldAction } from '../action/editor-layout/editor-layout-create-field'
-// import {SaveEditorInterfaceAction} from "../action/editorinterface-save";
 
 export default class FieldCreateIntent extends Intent {
   isFieldCreate() {

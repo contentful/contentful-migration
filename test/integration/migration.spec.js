@@ -40,6 +40,7 @@ const createResourceLinkFields = require('../../examples/47-create-resource-link
 const changeFieldControlOnEditorInterfaceWithEditorLayout = require('../../examples/50-change-field-control-on-editor-interface-with-editor-layout')
 const moveFieldOnContentTypeWithEditorLayout = require('../../examples/51-move-field-on-content-type-with-editor-layout')
 const deleteFieldOnContentTypeWithEditorLayout = require('../../examples/52-delete-field-in-content-type-with-editor-layout')
+const renameFieldOnContentTypeWithEditorLayout = require('../../examples/53-rename-field-in-content-type-with-editor-layout')
 
 const { createMigrationParser } = require('../../built/lib/migration-parser')
 const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget')
@@ -1047,8 +1048,25 @@ describe('the migration', function () {
     })
 
     // anotherAdditionalField should be second last in the list, right before 'additionalField'
-    expect(contentType.fields[2].id).to.eql('anotherAdditionalField')
-    expect(contentType.fields.find((field) => field.id === 'moreAdditionalField')).to.eql(undefined)
+    expect(contentType.fields.length).to.eql(3)
+    expect(
+      !contentType.fields.find((field) => {
+        return field.id === 'anotherAdditionalField'
+      })
+    ).to.eql(true)
+  })
+
+  it('renames field and immediately can move another field on editorLayout', async function () {
+    await migrator(renameFieldOnContentTypeWithEditorLayout)
+
+    const contentType = await request({
+      method: 'GET',
+      url: '/content_types/page'
+    })
+
+    // additionalField should have the new id 'renamedField'
+    expect(contentType.fields.find((field) => field.id === 'additionalField')).to.eql(undefined)
+    expect(!!contentType.fields.find((field) => field.id === 'renamedField')).to.eql(true)
   })
 
   it('deletes editor layout and group controls', async function () {

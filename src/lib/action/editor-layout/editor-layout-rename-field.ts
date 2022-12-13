@@ -1,14 +1,17 @@
 import { EditorInterfaces } from '../../entities/content-type'
 import { EntityAction, EntityType } from '../action'
 
-class EditorLayoutUpdateFieldAction extends EntityAction {
+class EditorLayoutRenameFieldAction extends EntityAction {
   private readonly contentTypeId: string
-  private readonly fieldId: string
+  private readonly oldFieldId: string
 
-  constructor(contentTypeId: string, fieldId: string) {
+  private readonly newFieldId: string
+
+  constructor(contentTypeId: string, oldFieldId: string, newFieldId: string) {
     super()
     this.contentTypeId = contentTypeId
-    this.fieldId = fieldId
+    this.oldFieldId = oldFieldId
+    this.newFieldId = newFieldId
   }
 
   getEntityType(): EntityType {
@@ -20,8 +23,8 @@ class EditorLayoutUpdateFieldAction extends EntityAction {
   }
 
   async applyTo(editorInterfaces: EditorInterfaces) {
-    await editorInterfaces.updateFieldIdInEditorLayout(this.fieldId, this.fieldId)
+    await editorInterfaces.updateFieldIdInEditorLayout(this.oldFieldId, this.newFieldId)
   }
 }
 
-export { EditorLayoutUpdateFieldAction }
+export { EditorLayoutRenameFieldAction }
