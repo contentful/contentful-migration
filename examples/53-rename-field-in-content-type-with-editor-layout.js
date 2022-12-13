@@ -1,8 +1,9 @@
 module.exports = function (migration) {
-  const contentTypeWithEditorLayout2 = migration.editContentType('page')
+  const contentTypeWithEditorLayout = migration.editContentType('page')
 
-  contentTypeWithEditorLayout2.changeFieldId('additionalField', 'renamedField')
+  contentTypeWithEditorLayout.changeFieldId('additionalField', 'renamedField')
 
-  const editorLayout = contentTypeWithEditorLayout2.editEditorLayout()
-  editorLayout.createFieldGroup('downloads').name('Downloads')
+  // Making sure the new field id was added it to EditorLayouts
+  const editorLayout = contentTypeWithEditorLayout.editEditorLayout()
+  editorLayout.moveField('renamedField').beforeField('title')
 }

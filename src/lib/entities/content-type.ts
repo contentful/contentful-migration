@@ -367,9 +367,8 @@ class EditorInterfaces {
 
   createFieldInEditorLayout(fieldId: string) {
     if (this._editorLayout?.length > 0) {
-      let fieldItem = findEditorLayoutItem(
-        this._editorLayout,
-        (editorLayoutItem) => isFieldItem(editorLayoutItem) && editorLayoutItem.fieldId === fieldId
+      let fieldItem = findEditorLayoutItem(this._editorLayout, (editorLayoutItem) =>
+        isTargetFieldItem(editorLayoutItem, fieldId)
       )
       if (!fieldItem) {
         this._editorLayout[0].items.push({ fieldId })
@@ -487,20 +486,12 @@ class EditorInterfaces {
 
   updateFieldIdInEditorLayout(oldFieldId: string, newFieldId: string) {
     if (this._editorLayout?.length > 0) {
-      findEditorLayoutItem(
-        this._editorLayout,
-        (item) =>
-          isFieldGroupItem(item) &&
-          Boolean(
-            item.items.find((item) => {
-              if (isTargetFieldItem(item, oldFieldId)) {
-                item.fieldId = newFieldId
-                return true
-              }
-              return false
-            })
-          )
-      )
+      let { item: fieldItem } = findEditorLayoutItem(this._editorLayout, (editorLayoutItem) =>
+        isTargetFieldItem(editorLayoutItem, oldFieldId)
+      ) as { item: FieldItem | undefined }
+      if (!!fieldItem) {
+        fieldItem.fieldId = newFieldId
+      }
     }
   }
 

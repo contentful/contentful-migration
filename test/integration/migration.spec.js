@@ -1025,7 +1025,7 @@ describe('the migration', function () {
     ).to.eql(true)
   })
 
-  it('adds new field and immediately moves it on contentType with editorLayout', async function () {
+  it('adds new field and immediately can move it on editorLayout', async function () {
     await migrator(moveFieldOnContentTypeWithEditorLayout)
 
     const contentType = await request({
@@ -1033,13 +1033,31 @@ describe('the migration', function () {
       url: '/content_types/page'
     })
 
-    // anotherAdditionalField should be second last in the list, right before 'additionalField'
-    // Note that this is not testing moving of fields on editorLayout which currently still breaks
-    // for newly created fields and needs a fix.
-    expect(contentType.fields[2].id).to.eql('anotherAdditionalField')
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    })
+
+    // We expect that the newly created field is present on the Content Type
+    expect(
+      !!contentType.fields.find((field) => {
+        return field.id === 'anotherAdditionalField'
+      })
+    ).to.eql(true)
+
+    // We expect the newly created field to be present in the EditorLayout first group
+    expect(
+      editorInterface.editorLayout[0].items.some(({ fieldId }) => {
+        return fieldId === 'anotherAdditionalField'
+      })
+    ).to.eql(true)
+
+    // anotherAdditionalField should be second last, right before 'additionalField'
+    // In the Editor Layout Content fieldGroup list
+    expect(editorInterface.editorLayout[0].items[2].fieldId).to.eql('anotherAdditionalField')
   })
 
-  it('deletes field and immediately can move another field on editorLayout', async function () {
+  it('deletes field and immediately can do any action on editorLayout', async function () {
     await migrator(deleteFieldOnContentTypeWithEditorLayout)
 
     const contentType = await request({
@@ -1056,7 +1074,7 @@ describe('the migration', function () {
     ).to.eql(true)
   })
 
-  it('renames field and immediately can move another field on editorLayout', async function () {
+  it('renames field and immediately can move it on editorLayout', async function () {
     await migrator(renameFieldOnContentTypeWithEditorLayout)
 
     const contentType = await request({
@@ -1064,9 +1082,17 @@ describe('the migration', function () {
       url: '/content_types/page'
     })
 
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    })
+
     // additionalField should have the new id 'renamedField'
     expect(contentType.fields.find((field) => field.id === 'additionalField')).to.eql(undefined)
     expect(!!contentType.fields.find((field) => field.id === 'renamedField')).to.eql(true)
+
+    // renamedField is now present before the field title which is the second position
+    expect(editorInterface.editorLayout[0].items[1].fieldId).to.eql('renamedField')
   })
 
   it('deletes editor layout and group controls', async function () {

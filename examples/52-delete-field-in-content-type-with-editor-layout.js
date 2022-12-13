@@ -1,8 +1,8 @@
 module.exports = function (migration) {
-  const contentTypeWithEditorLayout1 = migration.editContentType('page')
+  const contentTypeWithEditorLayout = migration.editContentType('page')
 
-  contentTypeWithEditorLayout1.deleteField('anotherAdditionalField')
+  contentTypeWithEditorLayout.deleteField('anotherAdditionalField')
 
-  const editorLayout = contentTypeWithEditorLayout1.editEditorLayout()
+  const editorLayout = contentTypeWithEditorLayout.editEditorLayout()
   editorLayout.createFieldGroup('uploads').name('Uploads')
 }
