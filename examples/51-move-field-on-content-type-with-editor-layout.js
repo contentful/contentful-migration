@@ -8,5 +8,7 @@ module.exports = function (migration) {
     .localized(true)
     .validations([{ size: { max: 3 } }])
 
-  contentTypeWithEditorLayout.moveField('anotherAdditionalField').beforeField('additionalField')
+  // Making sure the creation of a field added it to EditorLayouts
+  const editorLayout = contentTypeWithEditorLayout.editEditorLayout()
+  editorLayout.moveField('anotherAdditionalField').beforeField('additionalField')
 }

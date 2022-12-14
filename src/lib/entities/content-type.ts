@@ -25,7 +25,6 @@ import {
   FieldGroupItem,
   FieldItem
 } from '../utils/editor-layout'
-import { EditorLayoutItem } from 'contentful-management/dist/typings/export-types'
 import { AnnotationLink } from '../interfaces/annotation'
 
 function prune(obj: any) {
@@ -228,25 +227,6 @@ class EditorInterfaces {
       this._controls.push(control)
     }
 
-    // For existing editorInterfaces which use the editorLayout property, we need to check if the
-    // field is referenced, as the API requires every fieldId present in the content type to also be
-    // referenced in editorLayout.
-    if (this._editorLayout?.length > 0) {
-      const fieldIdIsNotPresentInExistingEditorLayout = !findEditorLayoutItem(
-        this._editorLayout,
-        (editorLayoutItem) => isFieldItem(editorLayoutItem) && editorLayoutItem.fieldId === fieldId
-      )
-
-      if (fieldIdIsNotPresentInExistingEditorLayout) {
-        // Add field id to the first group as default
-        // This is not ideal, as it is implicit unexpected behavior, but will prevent migrations
-        // from failing completely
-        this._editorLayout[0].items.push({
-          fieldId
-        })
-      }
-    }
-
     control.widgetId = widgetId
 
     if (settings) {
@@ -385,6 +365,17 @@ class EditorInterfaces {
     }
   }
 
+  createFieldInEditorLayout(fieldId: string) {
+    if (this._editorLayout?.length > 0) {
+      let fieldItem = findEditorLayoutItem(this._editorLayout, (editorLayoutItem) =>
+        isTargetFieldItem(editorLayoutItem, fieldId)
+      )
+      if (!fieldItem) {
+        this._editorLayout[0].items.push({ fieldId })
+      }
+    }
+  }
+
   deleteEditorLayoutFieldGroup(fieldGroupId: string) {
     const fieldGroup = findFieldGroup(this._editorLayout, fieldGroupId)
     if (!fieldGroup) {
@@ -406,6 +397,32 @@ class EditorInterfaces {
 
       return [...prev.slice(0, groupIndex), ...group.items, ...prev.slice(groupIndex + 1)]
     })
+  }
+
+  deleteFieldFromEditorLayout(fieldId: string) {
+    if (this._editorLayout?.length > 0) {
+      // find the field and its parent (sourceGroup) within editorLayout
+      let fieldItem: FieldItem
+      const { item: parentItem } = findEditorLayoutItem(
+        this._editorLayout,
+        (item) =>
+          isFieldGroupItem(item) &&
+          Boolean(
+            item.items.find((item) => {
+              if (isTargetFieldItem(item, fieldId)) {
+                fieldItem = item
+                return true
+              }
+              return false
+            })
+          )
+      ) as { item: FieldGroupItem | undefined }
+
+      // remove field item from original group
+      if (parentItem) {
+        pull(parentItem.items, fieldItem)
+      }
+    }
   }
 
   changeFieldGroupId(fieldGroupId: string, newFieldGroupId: string) {
@@ -464,6 +481,17 @@ class EditorInterfaces {
         widgetNamespace: groupControl.widgetNamespace,
         settings: groupControl.settings ?? {}
       })
+    }
+  }
+
+  updateFieldIdInEditorLayout(oldFieldId: string, newFieldId: string) {
+    if (this._editorLayout?.length > 0) {
+      let { item: fieldItem } = findEditorLayoutItem(this._editorLayout, (editorLayoutItem) =>
+        isTargetFieldItem(editorLayoutItem, oldFieldId)
+      ) as { item: FieldItem | undefined }
+      if (!!fieldItem) {
+        fieldItem.fieldId = newFieldId
+      }
     }
   }
 
@@ -611,7 +639,7 @@ class EditorInterfaces {
       result.groupControls = this._groupControls
     }
 
-    return result
+    return cloneDeep(result)
   }
 }
 
