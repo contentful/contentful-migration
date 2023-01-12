@@ -62,7 +62,7 @@ describe('payload validation (dependencies)', function () {
           {
             type: 'InvalidPayload',
             message:
-              'The property "items.type" on the field "mainCourse" must be one of ["Symbol", "Link"].'
+              'The property "items.type" on the field "mainCourse" must be one of ["Symbol", "Link", "ResourceLink"].'
           }
         ]
       ])

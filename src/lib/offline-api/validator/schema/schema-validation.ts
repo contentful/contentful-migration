@@ -1,6 +1,6 @@
 import * as Joi from 'joi'
 import * as _ from 'lodash'
-import { reach } from 'hoek'
+import { reach } from '@hapi/hoek'
 import kindOf from 'kind-of'
 import errorMessages from '../errors'
 import { PayloadValidationError } from '../../../interfaces/errors'
@@ -56,14 +56,21 @@ const validateContentType = function (contentType: ContentType): PayloadValidati
   })
 }
 
-const validateEditorInterface = function (editorInterface: EditorInterfaces): PayloadValidationError[] {
+const validateEditorInterface = function (
+  editorInterface: EditorInterfaces
+): PayloadValidationError[] {
   const groupControls = editorInterface.getGroupControls() || []
   const tabsIds = groupControls
-    .filter(control => control.widgetNamespace === 'builtin' && control.widgetId === 'topLevelTab')
-    .map(control => control.groupId)
-  const validateResult = createEditorLayoutSchema(tabsIds).validate(editorInterface.getEditorLayout(), {
-    abortEarly: false
-  })
+    .filter(
+      (control) => control.widgetNamespace === 'builtin' && control.widgetId === 'topLevelTab'
+    )
+    .map((control) => control.groupId)
+  const validateResult = createEditorLayoutSchema(tabsIds).validate(
+    editorInterface.getEditorLayout(),
+    {
+      abortEarly: false
+    }
+  )
 
   const { error } = validateResult
 
@@ -282,6 +289,58 @@ const validateFields = function (
           context.key,
           field.type
         )
+      }
+    }
+
+    // Field `allowedResources` errors
+    if (prop.startsWith('allowedResources')) {
+      if (path.length > 3) {
+        const error = details.message.replace(/".+?"/, `"${context.key}"`)
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.allowedResources.INVALID_RESOURCE_PROPERTY(
+            field.id,
+            path[2],
+            error
+          )
+        }
+      }
+
+      if (type === 'object.base') {
+        const actualType = kindOf(reach(field, prop))
+
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.allowedResources.INVALID_RESOURCE(
+            field.id,
+            context.key,
+            actualType
+          )
+        }
+      }
+
+      if (type === 'array.min') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.allowedResources.TOO_FEW_ITEMS(field.id)
+        }
+      }
+
+      if (type === 'array.max') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.allowedResources.TOO_MANY_ITEMS(field.id)
+        }
+      }
+
+      if (type === 'array.unique') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.allowedResources.DUPLICATE_SOURCE(
+            field.id,
+            context.value.source
+          )
+        }
       }
     }
 

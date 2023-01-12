@@ -2,6 +2,7 @@ import Intent from './base-intent'
 import { FieldCreateAction } from '../action/field-create'
 import { PlanMessage } from '../interfaces/plan-message'
 import chalk from 'chalk'
+import { EditorLayoutCreateFieldAction } from '../action/editor-layout/editor-layout-create-field'
 
 export default class FieldCreateIntent extends Intent {
   isFieldCreate() {
@@ -13,6 +14,7 @@ export default class FieldCreateIntent extends Intent {
     return (
       (other.isContentTypeUpdate() ||
         other.isContentTypeCreate() ||
+        other.isContentTypeAnnotate() ||
         other.isFieldCreate() ||
         other.isFieldUpdate() ||
         other.isFieldMove()) &&
@@ -25,7 +27,10 @@ export default class FieldCreateIntent extends Intent {
   }
 
   toActions() {
-    return [new FieldCreateAction(this.getContentTypeId(), this.payload.fieldId)]
+    return [
+      new FieldCreateAction(this.getContentTypeId(), this.getFieldId()),
+      new EditorLayoutCreateFieldAction(this.getContentTypeId(), this.getFieldId())
+    ]
   }
 
   toPlanMessage(): PlanMessage {
