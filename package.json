@@ -103,7 +103,7 @@
     "sinon": "^14.0.1",
     "sinon-chai": "^3.5.0",
     "source-map-support": "^0.5.16",
-    "strip-ansi": "^6.0.0",
+    "strip-ansi": "^7.0.1",
     "travis-deploy-once": "^5.0.11",
     "ts-node": "^10.0.0",
     "tslint": "^6.1.1",
