@@ -19,6 +19,7 @@ import APITag, { TagVisibility } from '../interfaces/api-tag'
 import Link from '../entities/link'
 import { EditorInterfaceSchemaValidator } from './validator/editor-interface'
 import FieldGroupsCountValidator from './validator/field-groups-count'
+import ResourceLinksValidator from './validator/resource-links'
 
 interface RequestBatch {
   intent: Intent
@@ -220,7 +221,8 @@ class OfflineAPI {
       new DisplayFieldValidator(),
       new SchemaValidator(),
       new TypeChangeValidator(),
-      new AnnotationValidator()
+      new AnnotationValidator(),
+      new ResourceLinksValidator()
     )
 
     this.editorInterfaceValidators.push(

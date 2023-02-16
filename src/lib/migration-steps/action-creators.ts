@@ -13,8 +13,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: { contentTypeId: id }
@@ -26,8 +26,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -44,8 +44,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -59,8 +59,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: { contentTypeId: id }
@@ -77,8 +77,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -92,8 +92,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -111,8 +111,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${entryTransformationToType.sourceContentType}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -134,8 +134,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -160,8 +160,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -178,8 +178,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -195,8 +195,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -216,8 +216,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -235,8 +235,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -250,8 +250,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -268,8 +268,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -290,8 +290,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -317,8 +317,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -342,8 +342,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -360,8 +360,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -379,8 +379,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -402,8 +402,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -424,8 +424,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -445,8 +445,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -466,8 +466,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -487,8 +487,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -509,8 +509,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -534,8 +534,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -560,8 +560,8 @@ const actionCreators = {
           contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
           fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -584,8 +584,8 @@ const actionCreators = {
           contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
           fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -610,8 +610,8 @@ const actionCreators = {
           contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
           fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -634,8 +634,8 @@ const actionCreators = {
           contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
           fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -659,8 +659,8 @@ const actionCreators = {
           contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
           fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -682,8 +682,8 @@ const actionCreators = {
           contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
           fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -705,8 +705,8 @@ const actionCreators = {
         meta: {
           tagInstanceId: `tag/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: { tagId: id, tagVisibility: visibility }
@@ -718,8 +718,8 @@ const actionCreators = {
         meta: {
           tagInstanceId: `tag/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -736,8 +736,8 @@ const actionCreators = {
         meta: {
           tagInstanceId: `tag/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: { tagId: id }

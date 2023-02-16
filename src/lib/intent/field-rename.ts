@@ -9,6 +9,7 @@ import { ContentTypePublishAction } from '../action/content-type-publish'
 import { FieldUpdateAction } from '../action/field-update'
 import { PlanMessage } from '../interfaces/plan-message'
 import chalk from 'chalk'
+import { EditorLayoutRenameFieldAction } from '../action/editor-layout/editor-layout-rename-field'
 
 export default class FieldRenameIntent extends Intent {
   isFieldRename() {
@@ -49,6 +50,8 @@ export default class FieldRenameIntent extends Intent {
       new CopyEditorInterfaceAction(ctId, this.getFieldId(), this.getNewId()),
 
       new ResetEditorInterfaceAction(ctId, this.getFieldId()),
+
+      new EditorLayoutRenameFieldAction(ctId, this.getFieldId(), this.getNewId()),
 
       new SaveEditorInterfaceAction(ctId),
 

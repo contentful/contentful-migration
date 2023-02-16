@@ -35,6 +35,12 @@ const assignContentTypeAnnotations = require('../../examples/42-assign-content-t
 const assignFieldAnnotations = require('../../examples/43-assign-field-annotations')
 const clearFieldAnnotations = require('../../examples/44-clear-field-annotations')
 const clearContentTypeAnnotations = require('../../examples/45-clear-content-type-annotations')
+const canSetDisplayFieldBeforeAnnotations = require('../../examples/46-can-set-display-field-before-annotations')
+const createResourceLinkFields = require('../../examples/47-create-resource-link-fields')
+const changeFieldControlOnEditorInterfaceWithEditorLayout = require('../../examples/50-change-field-control-on-editor-interface-with-editor-layout')
+const moveFieldOnContentTypeWithEditorLayout = require('../../examples/51-move-field-on-content-type-with-editor-layout')
+const deleteFieldOnContentTypeWithEditorLayout = require('../../examples/52-delete-field-in-content-type-with-editor-layout')
+const renameFieldOnContentTypeWithEditorLayout = require('../../examples/53-rename-field-in-content-type-with-editor-layout')
 
 const { createMigrationParser } = require('../../built/lib/migration-parser')
 const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget')
@@ -1003,6 +1009,92 @@ describe('the migration', function () {
     ])
   })
 
+  it('adds new field and immediately change field control', async function () {
+    await migrator(changeFieldControlOnEditorInterfaceWithEditorLayout)
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    })
+
+    // We expect the newly created field to be present in the controls group
+    expect(
+      editorInterface.controls.some(({ fieldId }) => {
+        return fieldId === 'additionalField'
+      })
+    ).to.eql(true)
+  })
+
+  it('adds new field and immediately can move it on editorLayout', async function () {
+    await migrator(moveFieldOnContentTypeWithEditorLayout)
+
+    const contentType = await request({
+      method: 'GET',
+      url: '/content_types/page'
+    })
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    })
+
+    // We expect that the newly created field is present on the Content Type
+    expect(
+      !!contentType.fields.find((field) => {
+        return field.id === 'anotherAdditionalField'
+      })
+    ).to.eql(true)
+
+    // We expect the newly created field to be present in the EditorLayout first group
+    expect(
+      editorInterface.editorLayout[0].items.some(({ fieldId }) => {
+        return fieldId === 'anotherAdditionalField'
+      })
+    ).to.eql(true)
+
+    // anotherAdditionalField should be second last, right before 'additionalField'
+    // In the Editor Layout Content fieldGroup list
+    expect(editorInterface.editorLayout[0].items[2].fieldId).to.eql('anotherAdditionalField')
+  })
+
+  it('deletes field and immediately can do any action on editorLayout', async function () {
+    await migrator(deleteFieldOnContentTypeWithEditorLayout)
+
+    const contentType = await request({
+      method: 'GET',
+      url: '/content_types/page'
+    })
+
+    // anotherAdditionalField should be second last in the list, right before 'additionalField'
+    expect(contentType.fields.length).to.eql(3)
+    expect(
+      !contentType.fields.find((field) => {
+        return field.id === 'anotherAdditionalField'
+      })
+    ).to.eql(true)
+  })
+
+  it('renames field and immediately can move it on editorLayout', async function () {
+    await migrator(renameFieldOnContentTypeWithEditorLayout)
+
+    const contentType = await request({
+      method: 'GET',
+      url: '/content_types/page'
+    })
+
+    const editorInterface = await request({
+      method: 'GET',
+      url: '/content_types/page/editor_interface'
+    })
+
+    // additionalField should have the new id 'renamedField'
+    expect(contentType.fields.find((field) => field.id === 'additionalField')).to.eql(undefined)
+    expect(!!contentType.fields.find((field) => field.id === 'renamedField')).to.eql(true)
+
+    // renamedField is now present before the field title which is the second position
+    expect(editorInterface.editorLayout[0].items[1].fieldId).to.eql('renamedField')
+  })
+
   it('deletes editor layout and group controls', async function () {
     await migrator(deleteEditorLayout)
 
@@ -1160,5 +1252,49 @@ describe('the migration', function () {
     })
 
     expect(ct.metadata).to.be.undefined()
+  })
+
+  it('can set displayField before annotations', async function () {
+    await migrator(canSetDisplayFieldBeforeAnnotations)
+    const ct = await request({
+      method: 'GET',
+      url: '/content_types/annotatedWithDisplayField'
+    })
+
+    expect(ct.displayField).to.eql('name')
+    expect(ct.metadata).to.eql({
+      annotations: {
+        ContentType: [
+          {
+            sys: {
+              id: 'Contentful:AggregateRoot',
+              type: 'Link',
+              linkType: 'Annotation'
+            }
+          }
+        ]
+      }
+    })
+  })
+
+  it('creates resource links', async function () {
+    const allowedResources = [
+      {
+        type: 'Contentful:Entry',
+        source: 'crn:contentful:::content:spaces/another-space',
+        contentTypes: ['contentType1', 'contentType2', 'contentType3']
+      }
+    ]
+
+    await migrator(createResourceLinkFields)
+    const ct = await request({
+      method: 'GET',
+      url: '/content_types/contentTypeWithResourceLinks'
+    })
+
+    expect(ct.fields[0].type).to.eql('ResourceLink')
+    expect(ct.fields[0].allowedResources).to.eql(allowedResources)
+    expect(ct.fields[1].items.type).to.eql('ResourceLink')
+    expect(ct.fields[1].allowedResources).to.eql(allowedResources)
   })
 })

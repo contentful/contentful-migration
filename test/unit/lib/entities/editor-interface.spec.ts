@@ -159,6 +159,126 @@ describe('EditorInterfaces', () => {
         widgetNamespace: 'extension'
       }
     ])
+
+    expect(editorInterface.getEditorLayout()).to.eql(undefined)
+  })
+
+  it('adds field id to editorLayout on field control namespace update for interfaces with editorLayout', () => {
+    const control = {
+      fieldId: 'name',
+      widgetNamespace: 'builtin',
+      widgetId: 'singleLine',
+      settings: {
+        my: 'setting'
+      }
+    }
+
+    const editorInterface = makeEditorInterface({
+      controls: [control as APIEditorInterfaceControl],
+      editorLayout: [
+        {
+          groupId: 'tab',
+          items: [
+            { fieldId: 'a' },
+            { groupId: 'fieldSet', items: [{ fieldId: 'b' }, { fieldId: 'c' }] },
+            { fieldId: 'd' }
+          ]
+        }
+      ]
+    })
+
+    editorInterface.createFieldInEditorLayout(control.fieldId)
+
+    expect(editorInterface.getEditorLayout()[0].items.length).to.eql(4)
+    expect(editorInterface.getEditorLayout()[0].items[3]).to.eql({ fieldId: control.fieldId })
+  })
+
+  it('will not add duplicate field id to editorLayout if id already exists', () => {
+    const control = {
+      fieldId: 'c',
+      widgetNamespace: 'builtin',
+      widgetId: 'singleLine',
+      settings: {
+        my: 'setting'
+      }
+    }
+
+    const editorInterface = makeEditorInterface({
+      controls: [control as APIEditorInterfaceControl],
+      editorLayout: [
+        {
+          groupId: 'tab',
+          items: [
+            { fieldId: 'a' },
+            { groupId: 'fieldSet', items: [{ fieldId: 'b' }, { fieldId: 'c' }] },
+            { fieldId: 'd' }
+          ]
+        }
+      ]
+    })
+
+    editorInterface.createFieldInEditorLayout(control.fieldId)
+
+    expect(editorInterface.getEditorLayout()[0].items.length).to.eql(3)
+  })
+
+  it('will delete field id from editor layout if id already exists', () => {
+    const control = {
+      fieldId: 'c',
+      widgetNamespace: 'builtin',
+      widgetId: 'singleLine',
+      settings: {
+        my: 'setting'
+      }
+    }
+
+    const editorInterface = makeEditorInterface({
+      controls: [control as APIEditorInterfaceControl],
+      editorLayout: [
+        {
+          groupId: 'tab',
+          items: [
+            { fieldId: 'a' },
+            { groupId: 'fieldSet', items: [{ fieldId: 'b' }, { fieldId: 'c' }] },
+            { fieldId: 'd' }
+          ]
+        }
+      ]
+    })
+
+    editorInterface.deleteFieldFromEditorLayout('a')
+
+    expect(editorInterface.getEditorLayout()[0].items.length).to.eql(2)
+  })
+
+  it('will update field id in editor layout if id already exists', () => {
+    const control = {
+      fieldId: 'c',
+      widgetNamespace: 'builtin',
+      widgetId: 'singleLine',
+      settings: {
+        my: 'setting'
+      }
+    }
+
+    const editorInterface = makeEditorInterface({
+      controls: [control as APIEditorInterfaceControl],
+      editorLayout: [
+        {
+          groupId: 'tab',
+          items: [
+            { fieldId: 'a' },
+            { groupId: 'fieldSet', items: [{ fieldId: 'b' }, { fieldId: 'c' }] },
+            { fieldId: 'd' }
+          ]
+        }
+      ]
+    })
+
+    editorInterface.updateFieldIdInEditorLayout('a', 'u')
+
+    expect(editorInterface.getEditorLayout()[0].items.length).to.eql(3)
+    expect(editorInterface.getEditorLayout()[0].items[0]).to.eql({ fieldId: 'u' })
   })
 
   it('configures editor', () => {
