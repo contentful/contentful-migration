@@ -34,15 +34,13 @@ describe('Config', function () {
     expect(config.accessToken).to.eql('cmaToken')
   })
 
-  // This behavior may be adjusted in the future as some tools which wrap contentful-migration use
-  // managementToken instead of cmaToken and we may want it to be picked up to ensure compatibility
-  it('does not pick up managementToken even if no cmaToken is provided', function () {
+  it('picks up managementToken if no cmaToken is provided', function () {
     writeFileSync(
       resolve('/tmp', '.contentfulrc.json'),
       JSON.stringify({ managementToken: 'managementToken' })
     )
     const config = getConfig({})
-    expect(config.accessToken).to.eql(undefined)
+    expect(config.accessToken).to.eql('managementToken')
   })
 
   it('prefers env config over contentfulrc.json', function () {
