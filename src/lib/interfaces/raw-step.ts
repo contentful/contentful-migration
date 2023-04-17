@@ -6,7 +6,11 @@ import TransformEntryToType from './entry-transform-to-type'
 import { SidebarWidgetNamespace, SidebarWidgetSettings } from '../action/sidebarwidget'
 import { EntryEditorNamespace, EntryEditorSettings } from '../action/entryeditor-configure'
 import { EntryEditor } from '../action/entryeditors-configure'
-import { APIEditorInterfaceGroupControl, APIEditorLayoutFieldGroupItem } from './content-type'
+import {
+  APIEditorInterfaceGroupControl,
+  APIEditorInterfaces,
+  APIEditorLayoutFieldGroupItem
+} from './content-type'
 import { AnnotationId } from './annotation'
 
 interface RawStep {
@@ -36,6 +40,7 @@ interface RawStepPayload {
   derivation?: EntryDerive
   movement?: Movement
   entryTransformationToType?: TransformEntryToType
+  editorInterfaces?: Omit<APIEditorInterfaces, 'sys'>
   editorInterfaceCopy?: EditorInterfaceCopy
   editorInterfaceReset?: EditorInterfaceReset
   editorInterface?: EditorInterfaceInfo

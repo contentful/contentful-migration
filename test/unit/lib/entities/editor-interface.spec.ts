@@ -575,5 +575,157 @@ describe('EditorInterfaces', () => {
         }
       ])
     })
+
+    it('updates all editor interfaces', () => {
+      const editorInterfaces = makeEditorInterface({
+        controls: [
+          {
+            fieldId: 'name',
+            widgetId: 'singleLine',
+            widgetNamespace: 'builtin'
+          },
+          {
+            fieldId: 'officialLanguages',
+            settings: {
+              helpText: 'provide a language from the list'
+            },
+            widgetId: 'listInput',
+            widgetNamespace: 'builtin'
+          }
+        ]
+      })
+
+      editorInterfaces.updateAllEditorInterfaces({
+        sidebar: [
+          {
+            widgetId: 'content-preview-widget',
+            widgetNamespace: 'sidebar-builtin'
+          },
+          {
+            disabled: true,
+            widgetId: 'incoming-links-widget',
+            widgetNamespace: 'sidebar-builtin'
+          }
+        ],
+        controls: [
+          {
+            fieldId: 'name',
+            widgetId: 'singleLine',
+            widgetNamespace: 'builtin'
+          },
+          {
+            fieldId: 'officialLanguages',
+            settings: {
+              helpText: 'changed helpText'
+            },
+            widgetId: 'checkbox',
+            widgetNamespace: 'builtin'
+          }
+        ]
+      })
+
+      const fieldControls = editorInterfaces.getControls()
+      const sidebar = editorInterfaces.getSidebar()
+
+      expect(fieldControls.length).to.eql(2)
+      expect(fieldControls).to.eql([
+        {
+          fieldId: 'name',
+          widgetId: 'singleLine',
+          widgetNamespace: 'builtin'
+        },
+        {
+          fieldId: 'officialLanguages',
+          settings: {
+            helpText: 'changed helpText'
+          },
+          widgetId: 'checkbox',
+          widgetNamespace: 'builtin'
+        }
+      ])
+      expect(sidebar?.length).to.eql(2)
+      expect(sidebar).to.eql([
+        {
+          widgetId: 'content-preview-widget',
+          widgetNamespace: 'sidebar-builtin'
+        },
+        {
+          disabled: true,
+          widgetId: 'incoming-links-widget',
+          widgetNamespace: 'sidebar-builtin'
+        }
+      ])
+    })
+
+    it('update all editor interfaces: preserves editor interfaces that are not provided in the payload', () => {
+      const editorInterfaces = makeEditorInterface({
+        sidebar: [
+          {
+            widgetId: 'content-preview-widget',
+            widgetNamespace: 'sidebar-builtin'
+          },
+          {
+            disabled: true,
+            widgetId: 'incoming-links-widget',
+            widgetNamespace: 'sidebar-builtin'
+          }
+        ],
+        controls: [
+          {
+            fieldId: 'name',
+            widgetId: 'singleLine',
+            widgetNamespace: 'builtin'
+          },
+          {
+            fieldId: 'officialLanguages',
+            settings: {
+              helpText: 'changed helpText'
+            },
+            widgetId: 'checkbox',
+            widgetNamespace: 'builtin'
+          }
+        ]
+      })
+
+      editorInterfaces.updateAllEditorInterfaces({
+        controls: [
+          {
+            fieldId: 'officialLanguages',
+            settings: {
+              helpText: 'provide a language from the list'
+            },
+            widgetId: 'listInput',
+            widgetNamespace: 'builtin'
+          }
+        ]
+      })
+
+      const fieldControls = editorInterfaces.getControls()
+      const sidebar = editorInterfaces.getSidebar()
+
+      expect(fieldControls.length).to.eql(1)
+      expect(fieldControls).to.eql([
+        {
+          fieldId: 'officialLanguages',
+          settings: {
+            helpText: 'provide a language from the list'
+          },
+          widgetId: 'listInput',
+          widgetNamespace: 'builtin'
+        }
+      ])
+      expect(sidebar?.length).to.eql(2)
+      expect(sidebar).to.eql([
+        {
+          widgetId: 'content-preview-widget',
+          widgetNamespace: 'sidebar-builtin'
+        },
+        {
+          disabled: true,
+          widgetId: 'incoming-links-widget',
+          widgetNamespace: 'sidebar-builtin'
+        }
+      ])
+    })
   })
 })

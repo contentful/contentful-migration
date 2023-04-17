@@ -241,6 +241,32 @@ class EditorInterfaces {
     }
   }
 
+  updateAllEditorInterfaces(editorInterfaces: Omit<APIEditorInterfaces, 'sys'>) {
+    if (editorInterfaces.controls) {
+      this._controls = editorInterfaces.controls
+    }
+
+    if (editorInterfaces.sidebar) {
+      this._sidebar = editorInterfaces.sidebar
+    }
+
+    if (editorInterfaces.editor) {
+      this._editor = editorInterfaces.editor
+    }
+
+    if (editorInterfaces.editors) {
+      this._editors = editorInterfaces.editors
+    }
+
+    if (editorInterfaces.editorLayout) {
+      this._editorLayout = editorInterfaces.editorLayout
+    }
+
+    if (editorInterfaces.groupControls) {
+      this._groupControls = editorInterfaces.groupControls
+    }
+  }
+
   addSidebarWidget(
     widgetId: string,
     widgetNamespace: APISidebarWidgetNamespace,

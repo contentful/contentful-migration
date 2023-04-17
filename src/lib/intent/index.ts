@@ -12,6 +12,7 @@ import ContentTypeDeleteIntent from './content-type-delete'
 import EntryDeriveIntent from './entry-derive'
 import EntryTransformToTypeIntent from './entry-transform-to-type'
 import EditorInterfaceUpdateIntent from './editorinterface-update'
+import EditorInterfaceUpdateAllIntent from './editor-interface-update-all'
 import EditorInterfaceCopyIntent from './editorinterface-copy'
 import EditorInterfaceResetIntent from './editorinterface-reset'
 import SidebarWidgetAddIntent from './sidebarwidget-add'
@@ -53,6 +54,7 @@ export {
   EntryDeriveIntent as EntryDerive,
   EntryTransformToTypeIntent as EntryTransformToType,
   EditorInterfaceUpdateIntent as EditorInterfaceUpdate,
+  EditorInterfaceUpdateAllIntent as EditorInterfaceUpdateAll,
   EditorInterfaceCopyIntent as EditorInterfaceCopy,
   EditorInterfaceResetIntent as EditorInterfaceReset,
   SidebarWidgetAddIntent as SidebarWidgetAdd,

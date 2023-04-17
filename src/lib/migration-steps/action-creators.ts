@@ -1,6 +1,7 @@
 import * as Intents from '../intent/index'
 import { TagVisibility } from '../interfaces/api-tag'
 import ContentTransform from '../interfaces/content-transform'
+import { APIEditorInterfaces } from '../interfaces/content-type'
 import EntryDerive from '../interfaces/entry-derive'
 import EntrySetTags from '../interfaces/entry-set-tags'
 import TransformEntryToType from '../interfaces/entry-transform-to-type'
@@ -35,6 +36,27 @@ const actionCreators = {
           props: {
             [property]: value
           }
+        }
+      })
+    },
+    updateAllEditorInterfaces: (
+      contentTypeId: string,
+      instanceId: string,
+      callsite,
+      editorInterfaces: Omit<APIEditorInterfaces, 'sys'>
+    ): Intents.EditorInterfaceUpdateAll => {
+      return new Intents.EditorInterfaceUpdateAll({
+        type: 'contentType/update',
+        meta: {
+          contentTypeInstanceId: `contentType/${contentTypeId}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: contentTypeId,
+          editorInterfaces
         }
       })
     },

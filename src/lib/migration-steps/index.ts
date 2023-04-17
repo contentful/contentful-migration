@@ -13,7 +13,7 @@ import EntrySetTags from '../interfaces/entry-set-tags'
 import TransformEntryToType from '../interfaces/entry-transform-to-type'
 import { ClientConfig } from '../../bin/lib/config'
 import { deprecatedMethod } from '../utils/deprecated'
-import { APIEditorInterfaceSettings } from '../interfaces/content-type'
+import { APIEditorInterfaces, APIEditorInterfaceSettings } from '../interfaces/content-type'
 
 const createInstanceIdManager = () => {
   const instanceCounts = {}
@@ -467,6 +467,21 @@ class ContentType extends DispatchProxy {
         settings
       )
     )
+    return this
+  }
+
+  updateAllEditorInterfaces(editorInterfaces: Omit<APIEditorInterfaces, 'sys'>) {
+    const callsite = getFirstExternalCaller()
+
+    this.dispatch(
+      actionCreators.contentType.updateAllEditorInterfaces(
+        this.id,
+        this.instanceId,
+        callsite,
+        editorInterfaces
+      )
+    )
+
     return this
   }
 
