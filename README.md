@@ -285,10 +285,10 @@ The transform function is expected to return an object with the desired target f
 - **`contentType : string`** _(required)_ – Content type ID
 - **`from : array`** _(required)_ – Array of the source field IDs
 - **`to : array`** _(required)_ – Array of the target field IDs
-- **`transformEntryForLocale : function (fields, locale): object`** _(required)_ – Transformation function to be applied.
+- **`transformEntryForLocale : function (fields, locale, {id}): object`** _(required)_ – Transformation function to be applied.
   - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `fields == {myField: {'en-US': 'my field value'}}`)
   - `locale` one of the locales in the space being transformed
-    
+  - `id` id of the current entry in scope  
     The return value must be an object with the same keys as specified in `to`. Their values will be written to the respective entry fields for the current locale (i.e. `{nameField: 'myNewValue'}`). If it returns `undefined`, this the values for this locale on the entry will be left untouched.
 - **`shouldPublish : bool | 'preserve'`** _(optional)_ – Flag that specifies publishing of target entries, `preserve` will keep current states of the source entries (default `'preserve'`)
 
@@ -299,7 +299,7 @@ migration.transformEntries({
   contentType: 'newsArticle',
   from: ['author', 'authorCity'],
   to: ['byline'],
-  transformEntryForLocale: function (fromFields, currentLocale) {
+  transformEntryForLocale: function (fromFields, currentLocale, { id }) {
     if (currentLocale === 'de-DE') {
       return
     }
@@ -333,10 +333,11 @@ The derive function is expected to return an object with the desired target fiel
 
   - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `fields == {myField: {'en-US': 'my field value'}}`)
 
-- **`deriveEntryForLocale : function (fields, locale): object`** _(required)_ – Function that generates the field values for the derived entry.
+- **`deriveEntryForLocale : function (fields, locale, {id}): object`** _(required)_ – Function that generates the field values for the derived entry.
 
   - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `fields == {myField: {'en-US': 'my field value'}}`)
   - `locale` one of the locales in the space being transformed
+  - `id` id of the current entry in scope
 
   The return value must be an object with the same keys as specified in `derivedFields`. Their values will be written to the respective new entry fields for the current locale (i.e. `{nameField: 'myNewValue'}`)
 
@@ -355,7 +356,7 @@ migration.deriveLinkedEntries({
     return fromFields.owner['en-US'].toLowerCase().replace(' ', '-')
   },
   shouldPublish: true,
-  deriveEntryForLocale: async (inputFields, locale) => {
+  deriveEntryForLocale: async (inputFields, locale, { id }) => {
     if (locale !== 'en-US') {
       return
     }
@@ -383,10 +384,11 @@ For the given (source) content type, transforms all its entries according to the
 - **`shouldPublish : bool | 'preserve'`** _(optional)_ – Flag that specifies publishing of target entries, `preserve` will keep current states of the source entries (default `false`)
 - **`updateReferences : bool`** _(optional)_ – Flag that specifies if linking entries should be updated with target entries (default `false`). Note that this flag does not support Rich Text Fields references.
 - **`removeOldEntries : bool`** _(optional)_ – Flag that specifies if source entries should be deleted (default `false`)
-- **`transformEntryForLocale : function (fields, locale): object`** _(required)_ – Transformation function to be applied.
+- **`transformEntryForLocale : function (fields, locale, {id}): object`** _(required)_ – Transformation function to be applied.
 
   - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `fields == {myField: {'en-US': 'my field value'}}`)
   - `locale` one of the locales in the space being transformed
+  - `id` id of the current entry in scope
 
   The return value must be an object with the same keys as specified in the `targetContentType`. Their values will be written to the respective entry fields for the current locale (i.e. `{nameField: 'myNewValue'}`). If it returns `undefined`, this the values for this locale on the entry will be left untouched.
 
@@ -406,7 +408,7 @@ migration.transformEntriesToType({
     const value = fields.woofs['en-US'].toString()
     return MurmurHash3(value).result().toString()
   },
-  transformEntryForLocale: function (fromFields, currentLocale) {
+  transformEntryForLocale: function (fromFields, currentLocale, { id }) {
     return {
       woofs: `copy - ${fromFields.woofs[currentLocale]}`
     }

@@ -33,7 +33,9 @@ class EntryTransformAction extends APIAction {
       for (const locale of locales) {
         let outputsForCurrentLocale
         try {
-          outputsForCurrentLocale = await this.transformEntryForLocale(inputs, locale)
+          outputsForCurrentLocale = await this.transformEntryForLocale(inputs, locale, {
+            id: entry.id
+          })
         } catch (err) {
           await api.recordRuntimeError(err)
           continue
