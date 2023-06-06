@@ -213,4 +213,49 @@ describe('Entry Action', function () {
     return shouldPublishTest('preserve', 2, 1, true)
     return shouldPublishTest('preserve', 3, 1, true)
   })
+
+  it('provides entry id', async function () {
+    const ids = []
+
+    const transformation = (fields, locale, { id }) => {
+      ids.push(id)
+      return {
+        name: fields.name[locale] + '!'
+      }
+    }
+
+    const action = new EntryTransformAction('dog', ['name'], transformation)
+    const entries = [
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'Putin'
+            }
+          }
+        })
+      ),
+      new Entry(
+        makeApiEntry({
+          id: '123',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'Trump'
+            }
+          }
+        })
+      )
+    ]
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US'] })
+    await api.startRecordingRequests(null)
+
+    await action.applyTo(api)
+    await api.stopRecordingRequests()
+    expect(ids).to.eql(['246', '123'])
+  })
 })

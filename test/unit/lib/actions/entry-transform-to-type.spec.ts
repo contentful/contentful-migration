@@ -523,4 +523,41 @@ describe('Transform Entry to Type Action', function () {
     expect(passedObject).to.have.property('name')
     expect(passedObject).to.have.property('other')
   })
+
+  it('provides entry id', async function () {
+    const ids = []
+
+    const transformation: TransformEntryToType = {
+      sourceContentType: 'dog',
+      targetContentType: 'copycat',
+      from: ['name'],
+      identityKey: async (fields) => fields.name['en-US'].toString(),
+      transformEntryForLocale: async (fields, locale, { id }) => {
+        ids.push(id)
+        return { name: 'x' + fields['name'][locale] }
+      }
+    }
+
+    const action = new EntryTransformToTypeAction(transformation)
+    const entries = [
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'bob'
+            }
+          }
+        })
+      )
+    ]
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US'] })
+    await api.startRecordingRequests(null)
+
+    await action.applyTo(api)
+    await api.stopRecordingRequests()
+    expect(ids).to.eql(['246'])
+  })
 })

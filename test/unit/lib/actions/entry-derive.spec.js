@@ -438,4 +438,65 @@ describe('Entry Derive', function () {
       batches[0].requests[0].data.sys.id
     ) // id of linked object is same as id of target object
   })
+
+  it('provides entry id', async function () {
+    const ids = []
+    const action = new EntryDeriveAction('dog', {
+      derivedContentType: 'owner',
+      from: ['owner'],
+      toReferenceField: 'ownerRef',
+      derivedFields: ['firstName', 'lastName'],
+      identityKey: async (fromFields) => {
+        return fromFields.owner['en-US'].toLowerCase().replace(' ', '-')
+      },
+      shouldPublish: true,
+      deriveEntryForLocale: async (inputFields, locale, { id }) => {
+        ids.push(id)
+        const [firstName, lastName] = inputFields.owner[locale].split(' ')
+        return {
+          firstName,
+          lastName
+        }
+      }
+    })
+
+    const contentTypes = new Map()
+    contentTypes.set(
+      'dog',
+      new ContentType({
+        sys: {
+          id: 'dog'
+        },
+        fields: [
+          {
+            name: 'ownerRef',
+            id: 'ownerRef',
+            type: 'Symbol'
+          }
+        ]
+      })
+    )
+
+    const entries = [
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            owner: {
+              'en-US': 'john doe'
+            }
+          }
+        })
+      )
+    ]
+
+    const api = new OfflineApi({ contentTypes, entries, locales: ['en-US'] })
+    api.startRecordingRequests(null)
+    await action.applyTo(api)
+    api.stopRecordingRequests()
+
+    expect(ids).to.eql(['246'])
+  })
 })
