@@ -53,7 +53,7 @@ const recorder = record('contentful-migration-integration')
 before(recorder.before)
 after(recorder.after)
 
-const ENVIRONMENT_ID = 'env-integration'
+const ENVIRONMENT_ID = 'env-integration' + Date.now()
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID
 
