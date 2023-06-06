@@ -30,6 +30,7 @@
     "test:watch": "npm run test:unit -- --watch",
     "test:unit": "NODE_ENV=test mocha --require test/setup-unit.js --recursive 'test/unit/**/**/*.spec.{js,ts}'",
     "test:integration": "NODE_ENV=test mocha --require test/integration/setup.js 'test/integration/**/*.spec.js'",
+    "posttest": "node test/teardown.js",
     "test:e2e": "NODE_ENV=test mocha 'test/end-to-end/**/*.spec.js'",
     "test:typescript-declaration": "tsc --strict --noEmit index.d.ts",
     "lint": "eslint 'examples/**/*.js' 'test/**/*.js' 'src/**/*.js' && tslint --project tsconfig-dev.json --config tslint.json -e '**/*.js'",
