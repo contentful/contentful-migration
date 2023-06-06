@@ -1,4 +1,0 @@
---require test/setup
---require source-map-support/register
---check-leaks
---timeout 5000
