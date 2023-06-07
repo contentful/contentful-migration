@@ -13,7 +13,11 @@ class EntryDeriveAction extends APIAction {
   private fromFields: string[]
   private referenceField: string
   private derivedContentType: string
-  private deriveEntryForLocale: (inputFields: any, locale: string) => Promise<any>
+  private deriveEntryForLocale: (
+    inputFields: any,
+    locale: string,
+    { id }: { id: string }
+  ) => Promise<any>
   private identityKey: (fromFields: any) => Promise<string>
   private shouldPublish: boolean | 'preserve'
 
@@ -46,7 +50,9 @@ class EntryDeriveAction extends APIAction {
       for (const locale of locales) {
         let outputsForCurrentLocale
         try {
-          outputsForCurrentLocale = await this.deriveEntryForLocale(inputs, locale)
+          outputsForCurrentLocale = await this.deriveEntryForLocale(inputs, locale, {
+            id: entry.id
+          })
         } catch (err) {
           await api.recordRuntimeError(err)
           continue

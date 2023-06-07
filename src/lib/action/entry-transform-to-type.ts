@@ -9,7 +9,11 @@ class EntryTransformToTypeAction extends APIAction {
   private fromFields?: string[]
   private sourceContentTypeId: string
   private targetContentTypeId: string
-  private transformEntryForLocale: (inputFields: any, locale: string) => Promise<any>
+  private transformEntryForLocale: (
+    inputFields: any,
+    locale: string,
+    { id }: { id: string }
+  ) => Promise<any>
   private identityKey: (fromFields: any) => Promise<string>
   private shouldPublish: boolean | 'preserve'
   private removeOldEntries: boolean
@@ -47,7 +51,9 @@ class EntryTransformToTypeAction extends APIAction {
       for (const locale of locales) {
         let outputsForCurrentLocale
         try {
-          outputsForCurrentLocale = await this.transformEntryForLocale(inputs, locale)
+          outputsForCurrentLocale = await this.transformEntryForLocale(inputs, locale, {
+            id: entry.id
+          })
         } catch (err) {
           await api.recordRuntimeError(err)
           continue
