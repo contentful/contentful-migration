@@ -306,7 +306,7 @@ const validateFields = function (
         const error = details.message.replace(/".+?"/, `"${context.key}"`)
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.allowedResources.INVALID_RESOURCE_PROPERTY(
+          message: errorMessages.allowedResources.INVALID_RESOURCE_PROPERTY(
             field.id,
             path[2],
             error
@@ -319,7 +319,7 @@ const validateFields = function (
 
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.allowedResources.INVALID_RESOURCE(
+          message: errorMessages.allowedResources.INVALID_RESOURCE(
             field.id,
             context.key,
             actualType
@@ -330,21 +330,21 @@ const validateFields = function (
       if (type === 'array.min') {
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.allowedResources.TOO_FEW_ITEMS(field.id, 'allowedResources')
+          message: errorMessages.allowedResources.TOO_FEW_ITEMS(field.id, 'allowedResources')
         }
       }
 
       if (type === 'array.max') {
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.allowedResources.TOO_MANY_ITEMS(field.id, 'allowedResources')
+          message: errorMessages.allowedResources.TOO_MANY_ITEMS(field.id, 'allowedResources')
         }
       }
 
       if (type === 'array.unique') {
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.allowedResources.DUPLICATE_SOURCE(
+          message: errorMessages.allowedResources.DUPLICATE_SOURCE(
             field.id,
             context.value.source,
             'allowedResources'
@@ -355,21 +355,21 @@ const validateFields = function (
       if (type === 'array.min') {
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.allowedResources.TOO_FEW_ITEMS(field.id, prop)
+          message: errorMessages.allowedResources.TOO_FEW_ITEMS(field.id, prop)
         }
       }
 
       if (type === 'array.max') {
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.allowedResources.TOO_MANY_ITEMS(field.id, prop)
+          message: errorMessages.allowedResources.TOO_MANY_ITEMS(field.id, prop)
         }
       }
 
       if (type === 'array.unique') {
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.allowedResources.DUPLICATE_SOURCE(
+          message: errorMessages.allowedResources.DUPLICATE_SOURCE(
             field.id,
             context.value.source,
             prop
@@ -383,11 +383,7 @@ const validateFields = function (
 
       return {
         type: 'InvalidPayload',
-        message: errorMessages.field.allowedResources.INVALID_RESOURCE_PROPERTY(
-          field.id,
-          path[6],
-          error
-        )
+        message: errorMessages.allowedResources.INVALID_RESOURCE_PROPERTY(field.id, path[6], error)
       }
     }
 

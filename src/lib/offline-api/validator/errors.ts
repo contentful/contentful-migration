@@ -73,23 +73,6 @@ const errors = {
         return `"${propName}" validation expected to be "${expectedType}", but got "${actualType}"`
       }
     },
-    allowedResources: {
-      DUPLICATE_SOURCE: (fieldId, source, prop) => {
-        return `The property "${prop}" on the field "${fieldId}" contains duplicate source "${source}".`
-      },
-      INVALID_RESOURCE: (fieldId, index, actualType) => {
-        return `Allowed resource at index ${index} on the field "${fieldId}" expected to be "object", but got "${actualType}".`
-      },
-      INVALID_RESOURCE_PROPERTY: (fieldId, index, error) => {
-        return `Allowed resource at index ${index} on the field "${fieldId}" has an invalid property: ${error}.`
-      },
-      TOO_FEW_ITEMS: (fieldId, prop) => {
-        return `The property "${prop}" on the field "${fieldId}" must not be empty.`
-      },
-      TOO_MANY_ITEMS: (fieldId, prop) => {
-        return `The property "${prop}" on the field "${fieldId}" must have at most ${MAX_ALLOWED_RESOURCES} items.`
-      }
-    },
     defaultValue: {
       TYPE_MISMATCH: (fieldId, valueType, locale, fieldType) => {
         return `Cannot set default value of type "${valueType}" for locale "${locale}" on field "${fieldId}". The default value must match the field type "${fieldType}".`
@@ -140,6 +123,23 @@ const errors = {
   tag: {
     REQUIRED_PROPERTY: (path) => {
       return `The property "${path}" is required on a tag.`
+    }
+  },
+  allowedResources: {
+    DUPLICATE_SOURCE: (fieldId, source, prop) => {
+      return `The property "${prop}" on the field "${fieldId}" contains duplicate source "${source}".`
+    },
+    INVALID_RESOURCE: (fieldId, index, actualType) => {
+      return `Allowed resource at index ${index} on the field "${fieldId}" expected to be "object", but got "${actualType}".`
+    },
+    INVALID_RESOURCE_PROPERTY: (fieldId, index, error) => {
+      return `Allowed resource at index ${index} on the field "${fieldId}" has an invalid property: ${error}.`
+    },
+    TOO_FEW_ITEMS: (fieldId, prop) => {
+      return `The property "${prop}" on the field "${fieldId}" must not be empty.`
+    },
+    TOO_MANY_ITEMS: (fieldId, prop) => {
+      return `The property "${prop}" on the field "${fieldId}" must have at most ${MAX_ALLOWED_RESOURCES} items.`
     }
   }
 }
