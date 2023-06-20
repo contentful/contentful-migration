@@ -6,9 +6,9 @@ export const RICH_TEXT_RESOURCE_LINK_NODES = ['embedded-resource-block']
 export const isResourceLink = (field) =>
   field.type === 'ResourceLink' || (field.type === 'Array' && field.items?.type === 'ResourceLink')
 
-export const getEnabledResourceLinkNodes = (field): string[] | undefined => {
+export const getEnabledResourceLinkNodes = (field): string[] => {
   if (field.type !== 'RichText' || !Array.isArray(field.validations)) {
-    return undefined
+    return []
   }
 
   for (const { enabledNodeTypes } of field.validations) {
@@ -16,4 +16,6 @@ export const getEnabledResourceLinkNodes = (field): string[] | undefined => {
       return RICH_TEXT_RESOURCE_LINK_NODES.filter((nodeType) => enabledNodeTypes.includes(nodeType))
     }
   }
+
+  return []
 }

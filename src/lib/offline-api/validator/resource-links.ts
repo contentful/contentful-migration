@@ -16,7 +16,7 @@ export default class ResourceLinksValidator implements ContentTypePayloadValidat
 
     const fields = contentType.fields.toRaw()
     const resourceLinkCount = fields.filter(
-      (field) => isResourceLink(field) || getEnabledResourceLinkNodes(field)?.length
+      (field) => isResourceLink(field) || getEnabledResourceLinkNodes(field).length
     ).length
 
     if (resourceLinkCount > MAX_RESOURCE_LINKS) {
@@ -40,7 +40,7 @@ export default class ResourceLinksValidator implements ContentTypePayloadValidat
       }
 
       const enabledResourceLinkNodes = getEnabledResourceLinkNodes(field)
-      if (Array.isArray(enabledResourceLinkNodes) && enabledResourceLinkNodes.length > 0) {
+      if (enabledResourceLinkNodes.length > 0) {
         const nodesValidation = field.validations?.find(
           ({ nodes }) => nodes && typeof nodes === 'object'
         )
