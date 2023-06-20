@@ -266,4 +266,71 @@ describe('apply content-type migration examples', function () {
         })
       )
   })
+
+  it('applies 54-create-rich-text-field-with-resource-link-embeds', function (done) {
+    const allowedResources = [
+      {
+        type: 'Contentful:Entry',
+        source: 'crn:contentful:::content:spaces/another-space',
+        contentTypes: ['contentType1', 'contentType2', 'contentType3']
+      }
+    ]
+
+    const validations = [
+      {
+        enabledNodeTypes: [
+          'heading-1',
+          'heading-2',
+          'heading-3',
+          'heading-4',
+          'heading-5',
+          'heading-6',
+          'ordered-list',
+          'unordered-list',
+          'hr',
+          'blockquote',
+          'table',
+          'hyperlink',
+          'embedded-resource-block'
+        ]
+      },
+      {
+        nodes: {
+          'embedded-resource-block': {
+            validations: [],
+            allowedResources: [allowedResources]
+          }
+        }
+      }
+    ]
+
+    cli()
+      .run(
+        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/54-create-rich-text-field-with-resource-link-embeds.js`
+      )
+      .on(/\? Do you want to apply the migration \(Y\/n\)/)
+      .respond('Y\n')
+      .expect(assert.plans.contentType.create('contentTypeRichTextField'))
+      .expect(
+        assert.plans.field.create('richText', {
+          name: 'richText',
+          type: 'RichText',
+          validations
+        })
+      )
+      .expect(assert.plans.actions.apply())
+      .end(
+        co(function* () {
+          const contentType = yield getDevContentType(
+            SOURCE_TEST_SPACE,
+            environmentId,
+            'contentTypeRichTextField'
+          )
+          expect(contentType.fields.length).to.eql(1)
+          expect(contentType.fields[0].type).to.eql('RichText')
+          expect(contentType.fields[0].validations).to.eql(validations)
+          done()
+        })
+      )
+  })
 })
