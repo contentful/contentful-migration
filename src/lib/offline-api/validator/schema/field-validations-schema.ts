@@ -1,4 +1,5 @@
 import * as Joi from 'joi'
+import { allowedResourcesSchema } from './allowed-resources-schema'
 
 const validation = (name, constraint) =>
   Joi.object({
@@ -61,6 +62,10 @@ const nodes = validation(
     'embedded-entry-block': Joi.array(),
     'embedded-entry-inline': Joi.array(),
     'embedded-asset-block': Joi.array(),
+    'embedded-resource-block': Joi.object({
+      validations: Joi.array().items(size),
+      allowedResources: allowedResourcesSchema
+    }),
     'entry-hyperlink': Joi.array(),
     'asset-hyperlink': Joi.array(),
     hyperlink: Joi.array()
@@ -69,7 +74,9 @@ const nodes = validation(
 
 const enabledMarks = validation(
   'enabledMarks',
-  Joi.array().items(Joi.string().valid('bold', 'italic', 'code', 'underline', 'superscript', 'subscript'))
+  Joi.array().items(
+    Joi.string().valid('bold', 'italic', 'code', 'underline', 'superscript', 'subscript')
+  )
 )
 
 const enabledNodeTypes = validation(
@@ -89,6 +96,7 @@ const enabledNodeTypes = validation(
       'table',
       'embedded-entry-block',
       'embedded-asset-block',
+      'embedded-resource-block',
       'hyperlink',
       'entry-hyperlink',
       'asset-hyperlink',
