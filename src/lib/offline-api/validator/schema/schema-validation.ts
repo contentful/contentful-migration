@@ -141,14 +141,22 @@ const unknownCombinationError = function ({ path, keys }): SimplifiedValidationE
 //   context: { child: 'foo', key: 'foo' }
 // }]
 const combineErrors = function (
-  fieldValidationsErrors: SimplifiedValidationError[]
+  fieldValidationsError: Joi.ValidationErrorItem
 ): SimplifiedValidationError[] {
+  const fieldValidationsErrors = fieldValidationsError.context.details
+
   const byItemPath: _.Dictionary<SimplifiedValidationError[]> = _.groupBy(
     fieldValidationsErrors,
     ({ path }) => {
       return path.slice(0, -1).join('.')
     }
   )
+
+  // Remove object.unknown error for alternatives.match field validation if there are deeper nested validation errors
+  if (fieldValidationsError.type === 'alternatives.match' && Object.keys(byItemPath).length > 1) {
+    const alternativesMatchErrorPath = fieldValidationsError.path.join('.')
+    delete byItemPath[alternativesMatchErrorPath]
+  }
 
   const pathErrorTuples: [string, SimplifiedValidationError[]][] = _.entries(byItemPath)
 
@@ -200,7 +208,7 @@ const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): Simplifie
     const isUnknownValidationsProp = errorDetails.every(({ type }) => type === 'object.unknown')
 
     if (isUnknownValidationsProp) {
-      const combinedErrors = combineErrors(errorDetails)
+      const combinedErrors = combineErrors(fieldValidationsError)
 
       allErrors = [...allErrors, ...combinedErrors]
       continue
@@ -322,14 +330,14 @@ const validateFields = function (
       if (type === 'array.min') {
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.allowedResources.TOO_FEW_ITEMS(field.id)
+          message: errorMessages.field.allowedResources.TOO_FEW_ITEMS(field.id, 'allowedResources')
         }
       }
 
       if (type === 'array.max') {
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.allowedResources.TOO_MANY_ITEMS(field.id)
+          message: errorMessages.field.allowedResources.TOO_MANY_ITEMS(field.id, 'allowedResources')
         }
       }
 
@@ -338,9 +346,48 @@ const validateFields = function (
           type: 'InvalidPayload',
           message: errorMessages.field.allowedResources.DUPLICATE_SOURCE(
             field.id,
-            context.value.source
+            context.value.source,
+            'allowedResources'
           )
         }
+      }
+    } else if (path.slice(-2).includes('allowedResources')) {
+      if (type === 'array.min') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.allowedResources.TOO_FEW_ITEMS(field.id, prop)
+        }
+      }
+
+      if (type === 'array.max') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.allowedResources.TOO_MANY_ITEMS(field.id, prop)
+        }
+      }
+
+      if (type === 'array.unique') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.allowedResources.DUPLICATE_SOURCE(
+            field.id,
+            context.value.source,
+            prop
+          )
+        }
+      }
+    } else if (
+      ['validations', 'nodes', 'allowedResources'].every((pathItem) => path.includes(pathItem))
+    ) {
+      const error = details.message.replace(/".+?"/, `"${context.key}"`)
+
+      return {
+        type: 'InvalidPayload',
+        message: errorMessages.field.allowedResources.INVALID_RESOURCE_PROPERTY(
+          field.id,
+          path[6],
+          error
+        )
       }
     }
 

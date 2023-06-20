@@ -74,8 +74,8 @@ const errors = {
       }
     },
     allowedResources: {
-      DUPLICATE_SOURCE: (fieldId, source) => {
-        return `Allowed resources on the field "${fieldId}" contains duplicate source "${source}".`
+      DUPLICATE_SOURCE: (fieldId, source, prop) => {
+        return `The property "${prop}" on the field "${fieldId}" contains duplicate source "${source}".`
       },
       INVALID_RESOURCE: (fieldId, index, actualType) => {
         return `Allowed resource at index ${index} on the field "${fieldId}" expected to be "object", but got "${actualType}".`
@@ -83,11 +83,11 @@ const errors = {
       INVALID_RESOURCE_PROPERTY: (fieldId, index, error) => {
         return `Allowed resource at index ${index} on the field "${fieldId}" has an invalid property: ${error}.`
       },
-      TOO_FEW_ITEMS: (fieldId) => {
-        return `Allowed resources on the field "${fieldId}" must not be empty.`
+      TOO_FEW_ITEMS: (fieldId, prop) => {
+        return `The property "${prop}" on the field "${fieldId}" must not be empty.`
       },
-      TOO_MANY_ITEMS: (fieldId) => {
-        return `Allowed resources on the field "${fieldId}" must have at most ${MAX_ALLOWED_RESOURCES} items.`
+      TOO_MANY_ITEMS: (fieldId, prop) => {
+        return `The property "${prop}" on the field "${fieldId}" must have at most ${MAX_ALLOWED_RESOURCES} items.`
       }
     },
     defaultValue: {
