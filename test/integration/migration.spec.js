@@ -41,6 +41,7 @@ const changeFieldControlOnEditorInterfaceWithEditorLayout = require('../../examp
 const moveFieldOnContentTypeWithEditorLayout = require('../../examples/51-move-field-on-content-type-with-editor-layout')
 const deleteFieldOnContentTypeWithEditorLayout = require('../../examples/52-delete-field-in-content-type-with-editor-layout')
 const renameFieldOnContentTypeWithEditorLayout = require('../../examples/53-rename-field-in-content-type-with-editor-layout')
+const createRichTextFieldWithResourceLinkEmbeds = require('../../examples/54-create-rich-text-field-with-resource-link-embeds')
 
 const { createMigrationParser } = require('../../built/lib/migration-parser')
 const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget')
@@ -1296,5 +1297,27 @@ describe('the migration', function () {
     expect(ct.fields[0].allowedResources).to.eql(allowedResources)
     expect(ct.fields[1].items.type).to.eql('ResourceLink')
     expect(ct.fields[1].allowedResources).to.eql(allowedResources)
+  })
+
+  it('creates RichText fields with resource link blocks', async function () {
+    const allowedResources = [
+      {
+        type: 'Contentful:Entry',
+        source: 'crn:contentful:::content:spaces/another-space',
+        contentTypes: ['contentType1', 'contentType2', 'contentType3']
+      }
+    ]
+
+    await migrator(createRichTextFieldWithResourceLinkEmbeds)
+    const ct = await request({
+      method: 'GET',
+      url: '/content_types/contentTypeRichTextField'
+    })
+
+    expect(ct.fields[0].type).to.eql('RichText')
+    expect(ct.fields[0].validations[0].enabledNodeTypes).to.include('embedded-resource-block')
+    expect(ct.fields[0].validations[1].nodes['embedded-resource-block'].allowedResources).to.eql(
+      allowedResources
+    )
   })
 })
