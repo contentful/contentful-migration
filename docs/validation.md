@@ -504,7 +504,7 @@ author
   ])
 ```
 
-## field.allowedResources.DUPLICATE_SOURCE
+## allowedResources.DUPLICATE_SOURCE
 
 When trying to set the same space multiple times in one `allowedResources` property.
 
@@ -527,7 +527,7 @@ author
   ])
 ```
 
-## field.allowedResources.INVALID_RESOURCE
+## allowedResources.INVALID_RESOURCE
 
 When trying to set an allowed resource that is not an object.
 
@@ -541,7 +541,7 @@ author
   .allowedResources(['crn:contentful:::content:spaces/books'])
 ```
 
-## field.allowedResources.INVALID_RESOURCE_PROPERTY
+## allowedResources.INVALID_RESOURCE_PROPERTY
 
 When trying to set an allowed resource where a property of an allowed resource is missing, unexpected, or has the wrong format.
 
@@ -560,7 +560,7 @@ author
   ])
 ```
 
-## field.allowedResources.TOO_FEW_ITEMS
+## allowedResources.TOO_FEW_ITEMS
 
 When trying to set an empty list of allowed resources.
 
@@ -570,7 +570,7 @@ When trying to set an empty list of allowed resources.
 author.createField('works').name('Works').type('ResourceLink').allowedResources([])
 ```
 
-## field.allowedResources.TOO_MANY_ITEMS
+## allowedResources.TOO_MANY_ITEMS
 
 When trying to set more than 3 allowed resources on a field.
 

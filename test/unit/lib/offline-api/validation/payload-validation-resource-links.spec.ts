@@ -119,7 +119,7 @@ describe('payload validation (dependencies)', function () {
         [
           {
             type: 'InvalidPayload',
-            message: 'Allowed resources on the field "mainCourse" must not be empty.'
+            message: 'The property "allowedResources" on the field "mainCourse" must not be empty.'
           }
         ]
       ])
@@ -157,7 +157,8 @@ describe('payload validation (dependencies)', function () {
         [
           {
             type: 'InvalidPayload',
-            message: 'Allowed resources on the field "mainCourse" must have at most 3 items.'
+            message:
+              'The property "allowedResources" on the field "mainCourse" must have at most 3 items.'
           }
         ]
       ])
@@ -270,7 +271,7 @@ describe('payload validation (dependencies)', function () {
         [
           {
             message:
-              'Allowed resources on the field "mainCourse" contains duplicate source "crn:contentful:::content:spaces/cooking-space".',
+              'The property "allowedResources" on the field "mainCourse" contains duplicate source "crn:contentful:::content:spaces/cooking-space".',
             type: 'InvalidPayload'
           }
         ]

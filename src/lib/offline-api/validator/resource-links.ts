@@ -1,7 +1,11 @@
 import { ApiHook } from '../'
 import { ContentTypePayloadValidator } from './content-type'
 import { InvalidActionError, PayloadValidationError } from '../../interfaces/errors'
-import { isResourceLink, MAX_RESOURCE_LINKS } from '../../utils/resource-links'
+import {
+  getEnabledResourceLinkNodes,
+  isResourceLink,
+  MAX_RESOURCE_LINKS
+} from '../../utils/resource-links'
 import errorMessages from './errors'
 
 export default class ResourceLinksValidator implements ContentTypePayloadValidator {
@@ -11,7 +15,9 @@ export default class ResourceLinksValidator implements ContentTypePayloadValidat
     const errors: (InvalidActionError | PayloadValidationError)[] = []
 
     const fields = contentType.fields.toRaw()
-    const resourceLinkCount = fields.filter(isResourceLink).length
+    const resourceLinkCount = fields.filter(
+      (field) => isResourceLink(field) || getEnabledResourceLinkNodes(field).length
+    ).length
 
     if (resourceLinkCount > MAX_RESOURCE_LINKS) {
       errors.push({
@@ -31,6 +37,39 @@ export default class ResourceLinksValidator implements ContentTypePayloadValidat
             'ResourceLink'
           )
         })
+      }
+
+      const enabledResourceLinkNodes = getEnabledResourceLinkNodes(field)
+      if (enabledResourceLinkNodes.length > 0) {
+        const nodesValidation = field.validations?.find(
+          ({ nodes }) => nodes && typeof nodes === 'object'
+        )
+
+        if (!nodesValidation) {
+          errors.push({
+            type: 'InvalidPayload',
+            message: errorMessages.field.REQUIRED_DEPENDENT_PROPERTY(
+              'validations[].nodes',
+              field.id,
+              'type',
+              'RichText'
+            )
+          })
+        } else {
+          for (const nodeType of enabledResourceLinkNodes) {
+            if (!nodesValidation.nodes[nodeType]?.allowedResources) {
+              errors.push({
+                type: 'InvalidPayload',
+                message: errorMessages.field.REQUIRED_DEPENDENT_PROPERTY(
+                  `validations[].nodes.${nodeType}.allowedResources`,
+                  field.id,
+                  'validations[].enabledNodeTypes[]',
+                  nodeType
+                )
+              })
+            }
+          }
+        }
       }
 
       if (!isResourceLink(field) && field.allowedResources) {

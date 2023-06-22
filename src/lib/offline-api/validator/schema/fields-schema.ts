@@ -1,6 +1,6 @@
 import * as Joi from 'joi'
 import fieldValidations from './field-validations-schema'
-import { MAX_ALLOWED_RESOURCES } from '../../../utils/resource-links'
+import { allowedResourcesSchema } from './allowed-resources-schema'
 
 export function createFieldsSchema(locales: string[]) {
   const fieldSchema = Joi.object().keys({
@@ -42,17 +42,7 @@ export function createFieldsSchema(locales: string[]) {
     localized: Joi.boolean(),
     required: Joi.boolean(),
     validations: Joi.array().unique().items(fieldValidations),
-    allowedResources: Joi.array()
-      .min(1)
-      .max(MAX_ALLOWED_RESOURCES)
-      .unique('source')
-      .items(
-        Joi.object({
-          type: Joi.string().valid('Contentful:Entry'),
-          source: Joi.string(),
-          contentTypes: Joi.array().min(1).items(Joi.string())
-        })
-      ),
+    allowedResources: allowedResourcesSchema,
     defaultValue: Joi.object()
       .strict()
       .pattern(

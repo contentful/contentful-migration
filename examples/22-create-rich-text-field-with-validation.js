@@ -1,6 +1,8 @@
 // Example of setting `validations` for rich text fields of a content type.
 module.exports = function (migration) {
-  const myRichTextCT = migration.createContentType('myContentTypeWithRichText').name('MyContentTypeWithRichText');
+  const myRichTextCT = migration
+    .createContentType('myContentTypeWithRichText')
+    .name('MyContentTypeWithRichText')
   myRichTextCT
     .createField('richText')
     .name('Text')
@@ -31,7 +33,17 @@ module.exports = function (migration) {
               linkContentType: ['parent'],
               message: 'we only accept parent'
             }
-          ]
+          ],
+          'embedded-resource-block': {
+            validations: [],
+            allowedResources: [
+              {
+                type: 'Contentful:Entry',
+                source: 'crn:contentful:::content:spaces/another-space',
+                contentTypes: ['contentType1', 'contentType2', 'contentType3']
+              }
+            ]
+          }
         }
       },
       {
@@ -50,10 +62,11 @@ module.exports = function (migration) {
           'hyperlink',
           'entry-hyperlink',
           'asset-hyperlink',
-          'embedded-entry-inline'
+          'embedded-entry-inline',
+          'embedded-resource-block'
         ],
         message:
-          'Only heading 1, heading 2, heading 3, heading 4, heading 5, ordered list, unordered list, horizontal rule, quote, block entry, asset, link to Url, link to entry, link to asset, and inline entry nodes are allowed'
+          'Only heading 1, heading 2, heading 3, heading 4, heading 5, ordered list, unordered list, horizontal rule, quote, block entry, block embedded resource, asset, link to Url, link to entry, link to asset, and inline entry nodes are allowed'
       }
-    ]);
-};
+    ])
+}
