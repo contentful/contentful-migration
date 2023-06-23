@@ -208,7 +208,7 @@ export interface IFieldGroupWidgetSettings {
 }
 
 export interface IEntryEditor {
-  widgetNamespace: 'builtin' | 'extension' | 'app',
+  widgetNamespace: 'editor-builtin' | 'builtin' | 'extension' | 'app',
   widgetId: string,
   settings?: IEditorInterfaceOptions
 }
@@ -251,7 +251,7 @@ export interface ContentType {
    * @param settings Widget settings
    */
   configureEntryEditor(
-    widgetNamespace: 'builtin' | 'extension' | 'app',
+    widgetNamespace: 'editor-builtin' | 'builtin' | 'extension' | 'app',
     widgetId: string,
     settings?: IEditorInterfaceOptions
   ): void
