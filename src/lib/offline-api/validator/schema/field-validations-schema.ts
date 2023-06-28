@@ -4,7 +4,7 @@ import { allowedResourcesSchema } from './allowed-resources-schema'
 const validation = (name, constraint) =>
   Joi.object({
     [name]: constraint,
-    message: Joi.string()
+    message: Joi.string().allow(null)
   })
 
 const range = (type) =>
