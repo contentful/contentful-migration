@@ -10,13 +10,19 @@ const configPath = path.resolve(homedir, '.contentfulrc.json')
 function getFileConfig(): ClientConfig {
   try {
     const config = require(configPath)
+    let clientConfig: ClientConfig = {}
+
+    if (config.host) {
+      clientConfig.host = config.host
+    }
     if (config.cmaToken) {
-      return { accessToken: config.cmaToken }
+      clientConfig.accessToken = config.cmaToken
     }
     if (config.managementToken) {
-      return { accessToken: config.managementToken }
+      clientConfig.accessToken = config.managementToken
     }
-    return {}
+
+    return clientConfig
   } catch (e) {
     return {}
   }
