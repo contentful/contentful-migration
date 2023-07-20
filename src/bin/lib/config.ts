@@ -15,11 +15,11 @@ function getFileConfig(): ClientConfig {
     if (config.host) {
       clientConfig.host = config.host
     }
-    if (config.cmaToken) {
-      clientConfig.accessToken = config.cmaToken
-    }
     if (config.managementToken) {
       clientConfig.accessToken = config.managementToken
+    }
+    if (config.cmaToken) {
+      clientConfig.accessToken = config.cmaToken
     }
 
     return clientConfig
