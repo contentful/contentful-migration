@@ -541,7 +541,7 @@ Creates a field with provided `id`.
   - `Array` (requires `items`)
   - `Link` (requires `linkType`)
   - `ResourceLink` (requires `allowedResources`)
-- **`items : Object`** _(required for type 'Array')_ – Defines the items of an Array field.
+- **`items : Object`** _(required for type `Array`)_ – Defines the items of an Array field.
   Example:
 
   ```javascript
@@ -554,9 +554,9 @@ Creates a field with provided `id`.
   }
   ```
 
-- **`linkType : string`** _(required for type 'Link')_ – Type of the referenced entry.
-  Can take the same values as the ones listed for `type` above.
-- **`allowedResources`** _(required for type 'ResourceLink')_ - Defines which resources can be linked through the field.
+- **`linkType : string`** _(required for type `Link`)_ – Type of the referenced entry.
+  Value must be either `Asset` or `Entry`.
+- **`allowedResources`** _(required for type `ResourceLink`)_ - Defines which resources can be linked through the field.
 - **`required : boolean`** – Sets the field as required.
 - **`validations : Array`** – Validations for the field.
   Example:
