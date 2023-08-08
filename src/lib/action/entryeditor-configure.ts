@@ -12,7 +12,12 @@ class EntryEditorConfigureAction extends EntityAction {
   protected widgetNamespace?: EntryEditorNamespace
   protected settings?: EntryEditorSettings
 
-  constructor (contentTypeId: string, widgetNamespace: EntryEditorNamespace, widgetId: string, settings: EntryEditorSettings) {
+  constructor(
+    contentTypeId: string,
+    widgetNamespace: EntryEditorNamespace,
+    widgetId: string,
+    settings: EntryEditorSettings
+  ) {
     super()
     this.contentTypeId = contentTypeId
     this.widgetId = widgetId
@@ -20,15 +25,15 @@ class EntryEditorConfigureAction extends EntityAction {
     this.settings = settings
   }
 
-  getEntityType (): EntityType {
+  getEntityType(): EntityType {
     return EntityType.EditorInterface
   }
 
-  getEntityId (): string {
+  getEntityId(): string {
     return this.contentTypeId
   }
 
-  async applyTo (editorInterfaces: EditorInterfaces) {
+  async applyTo(editorInterfaces: EditorInterfaces) {
     editorInterfaces.setEditor({
       widgetId: this.widgetId,
       widgetNamespace: this.widgetNamespace,

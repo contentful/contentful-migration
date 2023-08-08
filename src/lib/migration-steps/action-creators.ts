@@ -13,8 +13,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: { contentTypeId: id }
@@ -26,8 +26,8 @@ const actionCreators = {
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -38,333 +38,675 @@ const actionCreators = {
         }
       })
     },
+    setAnnotations: (id, instanceId, callsite, annotationIds): Intents.ContentTypeAnnotate =>
+      new Intents.ContentTypeAnnotate({
+        type: 'contentType/update',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: id,
+          annotations: annotationIds
+        }
+      }),
     delete: (id, instanceId, callsite): Intents.ContentTypeDelete => {
       return new Intents.ContentTypeDelete({
         type: 'contentType/delete',
         meta: {
           contentTypeInstanceId: `contentType/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: { contentTypeId: id }
       })
     },
-    transformEntries: (id, instanceId, transformation: ContentTransform, callsite): Intents.EntryTransform => new Intents.EntryTransform({
-      type: 'contentType/transformEntries',
-      meta: {
-        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
+    transformEntries: (
+      id,
+      instanceId,
+      transformation: ContentTransform,
+      callsite
+    ): Intents.EntryTransform =>
+      new Intents.EntryTransform({
+        type: 'contentType/transformEntries',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          transformation,
+          contentTypeId: id
         }
-      },
-      payload: {
-        transformation,
-        contentTypeId: id
-      }
-    }),
-    deriveLinkedEntries: (id, instanceId, derivation: EntryDerive, callsite): Intents.EntryDerive => new Intents.EntryDerive({
-      type: 'contentType/deriveEntries',
-      meta: {
-        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
+      }),
+    deriveLinkedEntries: (id, instanceId, derivation: EntryDerive, callsite): Intents.EntryDerive =>
+      new Intents.EntryDerive({
+        type: 'contentType/deriveEntries',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          derivation,
+          contentTypeId: id
         }
-      },
-      payload: {
-        derivation,
-        contentTypeId: id
-      }
-    }),
-    transformEntriesToType: (instanceId: number, entryTransformationToType: TransformEntryToType, callsite): Intents.EntryTransformToType => new Intents.EntryTransformToType({
-      type: 'contentType/transformEntriesToType',
-      meta: {
-        contentTypeInstanceId: `contentType/${entryTransformationToType.sourceContentType}/${instanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
+      }),
+    transformEntriesToType: (
+      instanceId: number,
+      entryTransformationToType: TransformEntryToType,
+      callsite
+    ): Intents.EntryTransformToType =>
+      new Intents.EntryTransformToType({
+        type: 'contentType/transformEntriesToType',
+        meta: {
+          contentTypeInstanceId: `contentType/${entryTransformationToType.sourceContentType}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          entryTransformationToType,
+          contentTypeId: entryTransformationToType.sourceContentType
         }
-      },
-      payload: {
-        entryTransformationToType,
-        contentTypeId: entryTransformationToType.sourceContentType
-      }
-    }),
-    changeEditorInterface: (id, instanceId, callsite, fieldId, widgetId, settings = {}, widgetNamespace?): Intents.EditorInterfaceUpdate => new Intents.EditorInterfaceUpdate({
-      type: 'contentType/changeEditorInterface',
-      meta: {
-        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
+      }),
+    changeEditorInterface: (
+      id,
+      instanceId,
+      callsite,
+      fieldId,
+      widgetId,
+      settings = {},
+      widgetNamespace?
+    ): Intents.EditorInterfaceUpdate =>
+      new Intents.EditorInterfaceUpdate({
+        type: 'contentType/changeEditorInterface',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: id,
+          editorInterface: {
+            fieldId,
+            widgetId,
+            settings,
+            widgetNamespace
+          }
         }
-      },
-      payload: {
-        contentTypeId: id,
-        editorInterface: {
+      }),
+    copyEditorInterface: (
+      id,
+      instanceId,
+      callsite,
+      sourceFieldId,
+      destinationFieldId
+    ): Intents.EditorInterfaceCopy =>
+      new Intents.EditorInterfaceCopy({
+        type: 'contentType/copyEditorInterface',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: id,
+          editorInterfaceCopy: {
+            source: sourceFieldId,
+            destination: destinationFieldId
+          }
+        }
+      }),
+    resetEditorInterface: (id, instanceId, callsite, fieldId): Intents.EditorInterfaceReset =>
+      new Intents.EditorInterfaceReset({
+        type: 'contentType/resetEditorInterface',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: id,
+          editorInterfaceReset: {
+            fieldId
+          }
+        }
+      }),
+    resetEntryEditor: (id, instanceId, callsite): Intents.EntryEditorResetToDefault =>
+      new Intents.EntryEditorResetToDefault({
+        type: 'contentType/resetEntryEditor',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: id
+        }
+      }),
+    configureEntryEditor: (
+      id,
+      instanceId,
+      callsite,
+      widgetNamespace,
+      widgetId,
+      settings
+    ): Intents.EntryEditorConfigure =>
+      new Intents.EntryEditorConfigure({
+        type: 'contentType/configureEntryEditor',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: id,
+          entryEditor: {
+            widgetId,
+            widgetNamespace,
+            settings
+          }
+        }
+      }),
+    configureEntryEditors: (id, instanceId, callsite, editors): Intents.EntryEditorsConfigure =>
+      new Intents.EntryEditorsConfigure({
+        type: 'contentType/configureEntryEditors',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: id,
+          entryEditors: editors
+        }
+      }),
+    createEditorLayout: (id, instanceId, callsite): Intents.EditorLayoutCreate =>
+      new Intents.EditorLayoutCreate({
+        type: 'contentType/createEditorLayout',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: id
+        }
+      }),
+    deleteEditorLayout: (
+      contentTypeId: string,
+      contentTypeInstanceId: string,
+      callsite
+    ): Intents.EditorLayoutDelete =>
+      new Intents.EditorLayoutDelete({
+        type: 'contentType/deleteEditorLayout',
+        meta: {
+          contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId
+        }
+      }),
+    addSidebarWidget: (
+      id,
+      instanceId,
+      callsite,
+      widgetId,
+      widgetNamespace,
+      insertBeforeWidgetId,
+      settings = {}
+    ): Intents.SidebarWidgetAdd =>
+      new Intents.SidebarWidgetAdd({
+        type: 'contentType/addSidebarWidget',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: id,
+          sidebarWidget: {
+            widgetId,
+            widgetNamespace,
+            settings,
+            insertBeforeWidgetId
+          }
+        }
+      }),
+    updateSidebarWidget: (
+      id,
+      instanceId,
+      callsite,
+      widgetId,
+      widgetNamespace,
+      settings = {}
+    ): Intents.SidebarWidgetUpdate =>
+      new Intents.SidebarWidgetUpdate({
+        type: 'contentType/updateSidebarWidget',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: id,
+          sidebarWidget: {
+            widgetId,
+            settings,
+            widgetNamespace
+          }
+        }
+      }),
+    removeSidebarWidget: (
+      id,
+      instanceId,
+      callsite,
+      widgetId,
+      widgetNamespace
+    ): Intents.SidebarWidgetRemove =>
+      new Intents.SidebarWidgetRemove({
+        type: 'contentType/removeSidebarWidget',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: id,
+          sidebarWidget: {
+            widgetId,
+            widgetNamespace
+          }
+        }
+      }),
+    resetSidebarToDefault: (id, instanceId, callsite): Intents.SidebarResetToDefault =>
+      new Intents.SidebarResetToDefault({
+        type: 'contentType/resetSidebarToDefault',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: id
+        }
+      }),
+    setTagsForEntries: (
+      id,
+      instanceId,
+      entryTransformationForTags: EntrySetTags,
+      callsite
+    ): Intents.EntrySetTags =>
+      new Intents.EntrySetTags({
+        type: 'contentType/setTagsForEntries',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          entryTransformationForTags,
+          contentTypeId: id
+        }
+      })
+  },
+  editorLayout: {
+    changeFieldGroupControl: (
+      contentTypeId,
+      contentTypeInstanceId,
+      fieldGroupId,
+      callsite,
+      groupControl
+    ): Intents.EditorLayoutChangeFieldGroupControl =>
+      new Intents.EditorLayoutChangeFieldGroupControl({
+        type: 'contentType/updateGroupControl',
+        meta: {
+          contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId,
+          fieldGroupId,
+          groupControl
+        }
+      }),
+    createFieldGroup: (
+      id,
+      instanceId,
+      callsite,
+      fieldGroupId,
+      parentId = undefined
+    ): Intents.EditorLayoutCreateFieldGroup =>
+      new Intents.EditorLayoutCreateFieldGroup({
+        type: 'contentType/createEditorLayoutFieldGroup',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: id,
+          fieldGroupId,
+          parentFieldGroupId: parentId
+        }
+      }),
+    deleteEditorLayoutFieldGroup: (
+      id,
+      instanceId,
+      callsite,
+      fieldGroupId
+    ): Intents.EditorLayoutDeleteFieldGroup =>
+      new Intents.EditorLayoutDeleteFieldGroup({
+        type: 'contentType/deleteEditorLayoutFieldGroup',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: id,
+          fieldGroupId
+        }
+      }),
+    changeFieldGroupId: (
+      contentTypeId: string,
+      contentTypeInstanceId: string,
+      fieldGroupId: string,
+      newFieldGroupId: string,
+      callsite
+    ): Intents.EditorLayoutChangeFieldGroupId =>
+      new Intents.EditorLayoutChangeFieldGroupId({
+        type: 'contentType/changeEditorLayoutFieldGroupId',
+        meta: {
+          contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId,
+          fieldGroupId,
+          newFieldGroupId
+        }
+      }),
+    callInvalidEditorLayoutMethod: (
+      contentTypeId,
+      contentTypeInstanceId,
+      callsite,
+      invalidMethod
+    ): Intents.EditorLayoutInvalidMethod =>
+      new Intents.EditorLayoutInvalidMethod({
+        type: 'contentType/callInvalidEditorLayoutMethod',
+        meta: {
+          contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId,
+          invalidMethod
+        }
+      }),
+    updateFieldGroup: (
+      contentTypeId,
+      contentTypeInstanceId,
+      fieldGroupId,
+      callsite,
+      property,
+      value
+    ): Intents.EditorLayoutUpdateFieldGroup =>
+      new Intents.EditorLayoutUpdateFieldGroup({
+        type: 'contentType/updateEditorLayoutFieldGroup',
+        meta: {
+          contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId,
+          fieldGroupId,
+          fieldGroupProps: {
+            [property]: value
+          }
+        }
+      }),
+    moveField: (
+      contentTypeId,
+      contentTypeInstanceId,
+      fieldId,
+      fieldGroupId,
+      movement,
+      callsite
+    ): Intents.EditorLayoutMoveField =>
+      new Intents.EditorLayoutMoveField({
+        type: 'contentType/moveFieldInEditorLayout',
+        meta: {
+          contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId,
           fieldId,
-          widgetId,
-          settings,
-          widgetNamespace
+          fieldGroupId,
+          movement
         }
-      }
-    }),
-    copyEditorInterface: (id, instanceId, callsite, sourceFieldId, destinationFieldId): Intents.EditorInterfaceCopy => new Intents.EditorInterfaceCopy({
-      type: 'contentType/copyEditorInterface',
-      meta: {
-        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
-        }
-      },
-      payload: {
-        contentTypeId: id,
-        editorInterfaceCopy: {
-          source: sourceFieldId,
-          destination: destinationFieldId
-        }
-      }
-    }),
-    resetEditorInterface: (id, instanceId, callsite, fieldId): Intents.EditorInterfaceReset => new Intents.EditorInterfaceReset({
-      type: 'contentType/resetEditorInterface',
-      meta: {
-        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
-        }
-      },
-      payload: {
-        contentTypeId: id,
-        editorInterfaceReset: {
-          fieldId
-        }
-      }
-    }),
-    resetEntryEditor: (id, instanceId, callsite): Intents.EntryEditorResetToDefault => new Intents.EntryEditorResetToDefault({
-      type: 'contentType/resetEntryEditor',
-      meta: {
-        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
-        }
-      },
-      payload: {
-        contentTypeId: id
-      }
-    }),
-    configureEntryEditor: (id, instanceId, callsite, widgetNamespace, widgetId, settings): Intents.EntryEditorConfigure => new Intents.EntryEditorConfigure({
-      type: 'contentType/configureEntryEditor',
-      meta: {
-        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
-        }
-      },
-      payload: {
-        contentTypeId: id,
-        entryEditor: {
-          widgetId,
-          widgetNamespace,
-          settings
-        }
-      }
-    }),
-    configureEntryEditors: (id, instanceId, callsite, editors): Intents.EntryEditorsConfigure => new Intents.EntryEditorsConfigure({
-      type: 'contentType/configureEntryEditors',
-      meta: {
-        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
-        }
-      },
-      payload: {
-        contentTypeId: id,
-        entryEditors: editors
-      }
-    }),
-    addSidebarWidget: (id, instanceId, callsite, widgetId, widgetNamespace, insertBeforeWidgetId, settings = {}): Intents.SidebarWidgetAdd => new Intents.SidebarWidgetAdd({
-      type: 'contentType/addSidebarWidget',
-      meta: {
-        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
-        }
-      },
-      payload: {
-        contentTypeId: id,
-        sidebarWidget: {
-          widgetId,
-          widgetNamespace,
-          settings,
-          insertBeforeWidgetId
-        }
-      }
-    }),
-    updateSidebarWidget: (id, instanceId, callsite, widgetId, widgetNamespace, settings = {}): Intents.SidebarWidgetUpdate => new Intents.SidebarWidgetUpdate({
-      type: 'contentType/updateSidebarWidget',
-      meta: {
-        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
-        }
-      },
-      payload: {
-        contentTypeId: id,
-        sidebarWidget: {
-          widgetId,
-          settings,
-          widgetNamespace
-        }
-      }
-    }),
-    removeSidebarWidget: (id, instanceId, callsite, widgetId, widgetNamespace): Intents.SidebarWidgetRemove => new Intents.SidebarWidgetRemove({
-      type: 'contentType/removeSidebarWidget',
-      meta: {
-        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
-        }
-      },
-      payload: {
-        contentTypeId: id,
-        sidebarWidget: {
-          widgetId,
-          widgetNamespace
-        }
-      }
-    }),
-    resetSidebarToDefault: (id, instanceId, callsite): Intents.SidebarResetToDefault => new Intents.SidebarResetToDefault({
-      type: 'contentType/resetSidebarToDefault',
-      meta: {
-        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
-        }
-      },
-      payload: {
-        contentTypeId: id
-      }
-    }),
-    setTagsForEntries: (id, instanceId, entryTransformationForTags: EntrySetTags, callsite): Intents.EntrySetTags => new Intents.EntrySetTags({
-      type: 'contentType/setTagsForEntries',
-      meta: {
-        contentTypeInstanceId: `contentType/${id}/${instanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
-        }
-      },
-      payload: {
-        entryTransformationForTags,
-        contentTypeId: id
-      }
-    })
+      })
   },
   field: {
-    create: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite): Intents.FieldCreate => new Intents.FieldCreate({
-      type: 'field/create',
-      meta: {
-        contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
-        fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
+    create: (
+      contentTypeId,
+      contentTypeInstanceId,
+      fieldId,
+      fieldInstanceId,
+      callsite
+    ): Intents.FieldCreate =>
+      new Intents.FieldCreate({
+        type: 'field/create',
+        meta: {
+          contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+          fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId,
+          fieldId
         }
-      },
-      payload: {
-        contentTypeId,
-        fieldId
-      }
-    }),
-    update: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, property, value): Intents.FieldUpdate => new Intents.FieldUpdate({
-      type: 'field/update',
-      meta: {
-        contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
-        fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
+      }),
+    update: (
+      contentTypeId,
+      contentTypeInstanceId,
+      fieldId,
+      fieldInstanceId,
+      callsite,
+      property,
+      value
+    ): Intents.FieldUpdate =>
+      new Intents.FieldUpdate({
+        type: 'field/update',
+        meta: {
+          contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+          fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId,
+          fieldId,
+          props: {
+            [property]: value
+          }
         }
-      },
-      payload: {
-        contentTypeId,
-        fieldId,
-        props: {
-          [property]: value
+      }),
+    move: (
+      contentTypeId,
+      contentTypeInstanceId,
+      fieldId,
+      fieldInstanceId,
+      callsite,
+      movement
+    ): Intents.FieldMove =>
+      new Intents.FieldMove({
+        type: 'field/move',
+        meta: {
+          contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+          fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId,
+          fieldId,
+          movement
         }
-      }
-    }),
-    move: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, movement): Intents.FieldMove => new Intents.FieldMove({
-      type: 'field/move',
-      meta: {
-        contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
-        fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
+      }),
+    rename: (
+      contentTypeId,
+      contentTypeInstanceId,
+      fieldId,
+      fieldInstanceId,
+      callsite,
+      value
+    ): Intents.FieldRename =>
+      new Intents.FieldRename({
+        type: 'field/rename',
+        meta: {
+          contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+          fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId,
+          fieldId,
+          props: {
+            newId: value
+          }
         }
-      },
-      payload: {
-        contentTypeId,
-        fieldId,
-        movement
-      }
-    }),
-    rename: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite, value): Intents.FieldRename => new Intents.FieldRename({
-      type: 'field/rename',
-      meta: {
-        contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
-        fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
+      }),
+    delete: (
+      contentTypeId,
+      contentTypeInstanceId,
+      fieldId,
+      fieldInstanceId,
+      callsite
+    ): Intents.FieldDelete =>
+      new Intents.FieldDelete({
+        type: 'field/delete',
+        meta: {
+          contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+          fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId,
+          fieldId
         }
-      },
-      payload: {
-        contentTypeId,
-        fieldId,
-        props: {
-          'newId': value
+      }),
+    setAnnotations: (
+      contentTypeId,
+      contentTypeInstanceId,
+      fieldId,
+      fieldInstanceId,
+      callsite,
+      annotationIds
+    ): Intents.FieldAnnotate =>
+      new Intents.FieldAnnotate({
+        type: 'field/annotate',
+        meta: {
+          contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+          fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId,
+          fieldId,
+          annotations: annotationIds
         }
-      }
-    }),
-    delete: (contentTypeId, contentTypeInstanceId, fieldId, fieldInstanceId, callsite): Intents.FieldDelete => new Intents.FieldDelete({
-      type: 'field/delete',
-      meta: {
-        contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
-        fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
-        callsite: {
-          file: callsite.getFileName(),
-          line: callsite.getLineNumber()
-        }
-      },
-      payload: {
-        contentTypeId,
-        fieldId
-      }
-    })
+      })
   },
   tag: {
-    create: (id, instanceId, callsite, visibility: TagVisibility = 'private'): Intents.TagCreate => {
+    create: (
+      id,
+      instanceId,
+      callsite,
+      visibility: TagVisibility = 'private'
+    ): Intents.TagCreate => {
       return new Intents.TagCreate({
         type: 'tag/create',
         meta: {
           tagInstanceId: `tag/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: { tagId: id, tagVisibility: visibility }
@@ -376,8 +718,8 @@ const actionCreators = {
         meta: {
           tagInstanceId: `tag/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: {
@@ -394,8 +736,8 @@ const actionCreators = {
         meta: {
           tagInstanceId: `tag/${id}/${instanceId}`,
           callsite: {
-            file: callsite.getFileName(),
-            line: callsite.getLineNumber()
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
           }
         },
         payload: { tagId: id }

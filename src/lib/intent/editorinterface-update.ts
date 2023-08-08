@@ -5,30 +5,28 @@ import chalk from 'chalk'
 import { SaveEditorInterfaceAction } from '../action/editorinterface-save'
 
 export default class EditorInterfaceUpdateIntent extends Intent {
-  isEditorInterfaceUpdate () {
+  isEditorInterfaceUpdate() {
     return true
   }
-  isEditorInterfaceIntent () {
+  isEditorInterfaceIntent() {
     return true
   }
-  isGroupable () {
+  isGroupable() {
     return true
   }
-  groupsWith (other: Intent): boolean {
-    return other.isGroupable()
-      && other.isEditorInterfaceIntent()
-      && this.isSameContentType(other)
+  groupsWith(other: Intent): boolean {
+    return other.isGroupable() && other.isEditorInterfaceIntent() && this.isSameContentType(other)
   }
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return false
   }
-  shouldSave (): boolean {
+  shouldSave(): boolean {
     return false
   }
-  shouldPublish (): boolean {
+  shouldPublish(): boolean {
     return false
   }
-  toActions () {
+  toActions() {
     return [
       new UpdateEditorInterfaceAction(
         this.payload.contentTypeId,
@@ -40,17 +38,15 @@ export default class EditorInterfaceUpdateIntent extends Intent {
       new SaveEditorInterfaceAction(this.payload.contentTypeId)
     ]
   }
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     const { widgetId, fieldId, settings, widgetNamespace } = this.payload.editorInterface
-    let createDetails = [
-      chalk`{italic widgetId}: "${widgetId}"`
-    ]
+    let createDetails = [chalk`{italic widgetId}: "${widgetId}"`]
 
     if (widgetNamespace) {
       createDetails = [...createDetails, chalk`{italic widgetNamespace}: "${widgetNamespace}"`]
     }
 
-    Object.keys(settings).forEach(settingName =>
+    Object.keys(settings).forEach((settingName) =>
       createDetails.push(chalk`{italic ${settingName}}: "${settings[settingName].toString()}"`)
     )
 

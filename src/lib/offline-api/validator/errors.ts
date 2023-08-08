@@ -1,3 +1,6 @@
+import { MAX_FIELD_SETS, MAX_TABS, MIN_GROUPS } from '../../utils/editor-layout'
+import { MAX_ALLOWED_RESOURCES, MAX_RESOURCE_LINKS } from '../../utils/resource-links'
+
 const errors = {
   contentType: {
     REQUIRED_PROPERTY: (path) => {
@@ -11,6 +14,9 @@ const errors = {
     },
     DELETE_DISPLAY_FIELD: (displayField, ctId) => {
       return `Cannot delete field "${displayField}" on content type "${ctId}" because it is set as the display field`
+    },
+    TOO_MANY_RESOURCE_LINK_FIELDS: (id) => {
+      return `Content type "${id}" cannot have more than ${MAX_RESOURCE_LINKS} resource link fields.`
     }
   },
   field: {
@@ -46,7 +52,9 @@ const errors = {
     },
     validations: {
       DUPLICATED_VALIDATION: (duplicatedValue) => {
-        return `A field can't have duplicates in the validations array. Duplicate: "${JSON.stringify(duplicatedValue)}"`
+        return `A field can't have duplicates in the validations array. Duplicate: "${JSON.stringify(
+          duplicatedValue
+        )}"`
       },
       INVALID_VALIDATION_PROPERTY: (propName) => {
         return `A field can't have "${propName}" as a validation.`
@@ -84,6 +92,26 @@ const errors = {
       }
     }
   },
+  editorLayout: {
+    TOO_MANY_TABS: () => {
+      return `Editor layout cannot have more than ${MAX_TABS} tabs`
+    },
+    TAB_CONTROL_INVALID: (groupId) => {
+      return `Editor layout tab "${groupId}" requires a "topLevelTab" widget group control`
+    },
+    FIELD_SET_CONTROL_INVALID: (groupId) => {
+      return `Editor layout field set "${groupId}" cannot have a "topLevelTab" widget group control`
+    },
+    FIELD_GROUP_LEVEL_TOO_DEEP: () => {
+      return 'Editor layout cannot have more than 2 levels of depth'
+    },
+    TOO_FEW_FIELD_GROUPS: () => {
+      return `Editor layout cannot have less than ${MIN_GROUPS} groups`
+    },
+    TOO_MANY_FIELD_SETS: () => {
+      return `Editor layout cannot have more than ${MAX_FIELD_SETS} field sets`
+    }
+  },
   entry: {
     REQUIRED_PROPERTY: (path) => {
       return `The property "${path}" is required on an entry.`
@@ -95,6 +123,23 @@ const errors = {
   tag: {
     REQUIRED_PROPERTY: (path) => {
       return `The property "${path}" is required on a tag.`
+    }
+  },
+  allowedResources: {
+    DUPLICATE_SOURCE: (fieldId, source, prop) => {
+      return `The property "${prop}" on the field "${fieldId}" contains duplicate source "${source}".`
+    },
+    INVALID_RESOURCE: (fieldId, index, actualType) => {
+      return `Allowed resource at index ${index} on the field "${fieldId}" expected to be "object", but got "${actualType}".`
+    },
+    INVALID_RESOURCE_PROPERTY: (fieldId, index, error) => {
+      return `Allowed resource at index ${index} on the field "${fieldId}" has an invalid property: ${error}.`
+    },
+    TOO_FEW_ITEMS: (fieldId, prop) => {
+      return `The property "${prop}" on the field "${fieldId}" must not be empty.`
+    },
+    TOO_MANY_ITEMS: (fieldId, prop) => {
+      return `The property "${prop}" on the field "${fieldId}" must have at most ${MAX_ALLOWED_RESOURCES} items.`
     }
   }
 }

@@ -5,13 +5,13 @@ import { validateTag } from './schema/schema-validation'
 
 interface TagPayloadValidator {
   hooks: ApiHook[]
-  validate (tag: Tag, savedTag?: Tag): (InvalidActionError | PayloadValidationError)[]
+  validate(tag: Tag, savedTag?: Tag): (InvalidActionError | PayloadValidationError)[]
 }
 
 export class TagSchemaValidator implements TagPayloadValidator {
   public hooks = [ApiHook.SaveTag]
 
-  public validate (tag: Tag): PayloadValidationError[] {
+  public validate(tag: Tag): PayloadValidationError[] {
     const tagErrors = validateTag(tag)
     return tagErrors
   }

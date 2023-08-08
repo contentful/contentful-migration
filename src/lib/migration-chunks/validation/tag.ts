@@ -13,7 +13,7 @@ interface ValidationContext {
 }
 
 interface TagValidation {
-  validate (intent: Intent, context: ValidationContext): string | string[]
+  validate(intent: Intent, context: ValidationContext): string | string[]
 }
 
 const checkTagId = (tagId, context) => {
@@ -24,7 +24,7 @@ const checkTagId = (tagId, context) => {
 }
 
 class DuplicateCreate implements TagValidation {
-  validate (intent: Intent, context: ValidationContext) {
+  validate(intent: Intent, context: ValidationContext) {
     if (!intent.isTagCreate()) {
       return
     }
@@ -40,7 +40,7 @@ class DuplicateCreate implements TagValidation {
 }
 
 class EditBeforeCreates implements TagValidation {
-  validate (intent: Intent, context: ValidationContext) {
+  validate(intent: Intent, context: ValidationContext) {
     const isRelevant = intent.isTagUpdate()
 
     if (!isRelevant) {
@@ -61,7 +61,7 @@ class EditBeforeCreates implements TagValidation {
 }
 
 class NonExistingEdits implements TagValidation {
-  validate (intent: Intent, context: ValidationContext) {
+  validate(intent: Intent, context: ValidationContext) {
     const isRelevant = intent.isTagUpdate()
 
     if (!isRelevant) {
@@ -87,7 +87,7 @@ class NonExistingEdits implements TagValidation {
 
 class AlreadyExistingIdCreates implements TagValidation {
   message = tagErrors.create.TAG_ALREADY_EXISTS
-  validate (intent: Intent, context: ValidationContext) {
+  validate(intent: Intent, context: ValidationContext) {
     if (!intent.isTagCreate()) {
       return
     }
@@ -104,14 +104,14 @@ class AlreadyExistingIdCreates implements TagValidation {
 
 class AlreadyExistingNameUpdates implements TagValidation {
   message = tagErrors.update.TAG_NAME_ALREADY_EXISTS
-  validate (intent: Intent, context: ValidationContext) {
+  validate(intent: Intent, context: ValidationContext) {
     if (!intent.isTagUpdate()) {
       return
     }
 
     const tagName = intent.toRaw().payload.props.name
 
-    if (!context.remoteTags.find(tag => tag.name === tagName)) {
+    if (!context.remoteTags.find((tag) => tag.name === tagName)) {
       return
     }
 
@@ -120,7 +120,7 @@ class AlreadyExistingNameUpdates implements TagValidation {
 }
 
 class NonExistingDeletes implements TagValidation {
-  validate (intent: Intent, context: ValidationContext) {
+  validate(intent: Intent, context: ValidationContext) {
     if (!intent.isTagDelete()) {
       return
     }
@@ -136,7 +136,7 @@ class NonExistingDeletes implements TagValidation {
 }
 
 class DuplicateDeletes implements TagValidation {
-  validate (intent: Intent, context: ValidationContext) {
+  validate(intent: Intent, context: ValidationContext) {
     if (!intent.isTagDelete()) {
       return
     }
@@ -152,7 +152,7 @@ class DuplicateDeletes implements TagValidation {
 }
 
 class EditsAfterDeletes implements TagValidation {
-  validate (intent: Intent, context: ValidationContext) {
+  validate(intent: Intent, context: ValidationContext) {
     const isRelevant = intent.isTagUpdate()
 
     if (!isRelevant) {
@@ -185,7 +185,9 @@ const checks: TagValidation[] = [
 
 export default function (intents: Intent[], tags: Tag[]): InvalidActionError[] {
   const remote = tags.map((tag) => tag.id)
-  const toBeCreated = intents.filter((intent) => intent.isTagCreate()).map((intent) => intent.getTagId())
+  const toBeCreated = intents
+    .filter((intent) => intent.isTagCreate())
+    .map((intent) => intent.getTagId())
 
   let context = {
     remote: new Set(remote), // all currently (in the current iteration step) existing tags

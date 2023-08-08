@@ -2,34 +2,27 @@ import errors from './errors'
 import ValidationError from '../../interfaces/errors'
 import { Intent } from '../../interfaces/intent'
 import { ContentType } from '../../entities/content-type'
+import { FieldsContext, invalidActionError } from './index'
 
 const fieldErrors = errors.field
 const deriveErrors = errors.entry.derivation
 const transformErrors = errors.entry.transformation
 
-const invalidActionError = (message, intent) => {
-  return {
-    type: 'InvalidAction',
-    message: message,
-    details: { intent }
-  }
-}
-
 const RELATIVE_MOVEMENTS = ['afterField', 'beforeField']
 
-function fieldExists (validationContext, fieldId) {
+function fieldExists(validationContext, fieldId) {
   return validationContext.fieldSet.has(fieldId)
 }
 
-function fieldHasBeenRemoved (validationContext, fieldId) {
+function fieldHasBeenRemoved(validationContext, fieldId) {
   return validationContext.fieldRemovals.has(fieldId)
 }
 
-function fieldHasBeenMoved (validationContext, movementKey) {
+function fieldHasBeenMoved(validationContext, movementKey) {
   return validationContext.fieldMovements.has(movementKey)
 }
 
-function idHasBeenChangedBefore (validationContext, oldId) {
+function idHasBeenChangedBefore(validationContext, oldId) {
   return Array.from(validationContext.fieldIdChanges.values()).includes(oldId)
 }
 
@@ -44,10 +37,7 @@ const checks = {
     }
 
     if (exists) {
-      errors.push(invalidActionError(
-        fieldErrors.create.FIELD_ALREADY_CREATED(id),
-        intent
-      ))
+      errors.push(invalidActionError(fieldErrors.create.FIELD_ALREADY_CREATED(id), intent))
     }
 
     if (validationContext.fieldIdChanges.has(id)) {
@@ -63,22 +53,15 @@ const checks = {
     const changedId = validationContext.fieldIdChanges.get(id)
 
     if (!exists && removed) {
-      errors.push(invalidActionError(
-        fieldErrors.update.FIELD_ALREADY_DELETED(id),
-        intent
-      ))
+      errors.push(invalidActionError(fieldErrors.update.FIELD_ALREADY_DELETED(id), intent))
     }
 
     if (changedId) {
-      errors.push(invalidActionError(
-        fieldErrors.changeId.REFERENCE_TO_OLD_ID(id, changedId),
-        intent
-      ))
+      errors.push(
+        invalidActionError(fieldErrors.changeId.REFERENCE_TO_OLD_ID(id, changedId), intent)
+      )
     } else if (!exists && !removed) {
-      errors.push(invalidActionError(
-        fieldErrors.update.FIELD_DOES_NOT_EXIST(id),
-        intent
-      ))
+      errors.push(invalidActionError(fieldErrors.update.FIELD_DOES_NOT_EXIST(id), intent))
     }
   },
 
@@ -93,17 +76,11 @@ const checks = {
     }
 
     if (!exists && removed) {
-      errors.push(invalidActionError(
-        fieldErrors.delete.FIELD_ALREADY_DELETED(id),
-        intent
-      ))
+      errors.push(invalidActionError(fieldErrors.delete.FIELD_ALREADY_DELETED(id), intent))
     }
 
     if (!exists && !removed) {
-      errors.push(invalidActionError(
-        fieldErrors.delete.FIELD_DOES_NOT_EXIST(id),
-        intent
-      ))
+      errors.push(invalidActionError(fieldErrors.delete.FIELD_DOES_NOT_EXIST(id), intent))
     }
   },
 
@@ -123,39 +100,34 @@ const checks = {
       const direction = intent.getDirection() === 'afterField' ? 'after' : 'before'
 
       if (!pivotExists && !pivotRemoved) {
-        errors.push(invalidActionError(
-          fieldErrors.move.PIVOT_FIELD_DOES_NOT_EXIST(intent.getPivotId(), direction),
-          intent
-        ))
+        errors.push(
+          invalidActionError(
+            fieldErrors.move.PIVOT_FIELD_DOES_NOT_EXIST(intent.getPivotId(), direction),
+            intent
+          )
+        )
       }
 
       if (!pivotExists && pivotRemoved) {
-        errors.push(invalidActionError(
-          fieldErrors.move.PIVOT_FIELD_DELETED(intent.getPivotId(), direction),
-          intent
-        ))
+        errors.push(
+          invalidActionError(
+            fieldErrors.move.PIVOT_FIELD_DELETED(intent.getPivotId(), direction),
+            intent
+          )
+        )
       }
     }
 
     if (!exists && removed) {
-      errors.push(invalidActionError(
-        fieldErrors.move.FIELD_DELETED(id),
-        intent
-      ))
+      errors.push(invalidActionError(fieldErrors.move.FIELD_DELETED(id), intent))
     }
 
     if (!exists && !removed) {
-      errors.push(invalidActionError(
-        fieldErrors.move.FIELD_DOES_NOT_EXIST(id),
-        intent
-      ))
+      errors.push(invalidActionError(fieldErrors.move.FIELD_DOES_NOT_EXIST(id), intent))
     }
 
     if (moved) {
-      errors.push(invalidActionError(
-        fieldErrors.move.FIELD_ALREADY_MOVED(id),
-        intent
-      ))
+      errors.push(invalidActionError(fieldErrors.move.FIELD_ALREADY_MOVED(id), intent))
     }
   },
 
@@ -166,26 +138,18 @@ const checks = {
     const newId = intent.getNewId()
 
     if (idHasBeenChangedBefore(validationContext, oldId)) {
-      errors.push(invalidActionError(
-        fieldErrors.changeId.NO_MULTIPLE_ID_CHANGES(oldId),
-        intent
-      ))
+      errors.push(invalidActionError(fieldErrors.changeId.NO_MULTIPLE_ID_CHANGES(oldId), intent))
     }
 
     if (oldId === newId) {
-      errors.push(invalidActionError(
-        fieldErrors.changeId.ID_MUST_BE_DIFFERENT(oldId),
-        intent
-      ))
+      errors.push(invalidActionError(fieldErrors.changeId.ID_MUST_BE_DIFFERENT(oldId), intent))
     } else if (fieldExists(validationContext, newId)) {
-      errors.push(invalidActionError(
-        fieldErrors.changeId.ID_ALREADY_EXISTS(
-          oldId,
-          newId,
-          intent.getContentTypeId()
-        ),
-        intent
-      ))
+      errors.push(
+        invalidActionError(
+          fieldErrors.changeId.ID_ALREADY_EXISTS(oldId, newId, intent.getContentTypeId()),
+          intent
+        )
+      )
     }
     // remember this field's old id, so that we can check if it is erroneously used later on
     validationContext.fieldIdChanges.set(oldId, newId)
@@ -205,18 +169,29 @@ const checks = {
 
     const transformation = intent.toRaw().payload.transformation
 
-    const nonExistingSourceFields = transformation.from.filter((f) => !validationContext.fieldSet.has(f))
-    const nonExistingDestinationFields = transformation.to.filter((f) => !validationContext.fieldSet.has(f))
+    const nonExistingSourceFields = transformation.from.filter(
+      (f) => !validationContext.fieldSet.has(f)
+    )
+    const nonExistingDestinationFields = transformation.to.filter(
+      (f) => !validationContext.fieldSet.has(f)
+    )
 
     const nonExistingFields = nonExistingSourceFields.concat(nonExistingDestinationFields)
 
     if (nonExistingFields.length > 0) {
-      errors.push(wrapError(transformErrors.NON_EXISTING_FIELDS(intent.getContentTypeId(), nonExistingFields), intent))
+      errors.push(
+        wrapError(
+          transformErrors.NON_EXISTING_FIELDS(intent.getContentTypeId(), nonExistingFields),
+          intent
+        )
+      )
     }
   }
 }
 
-export default function (intents: Intent[], contentTypes: ContentType[] = []): ValidationError[] {
+export default function (intents: Intent[], contentTypes: ContentType[] = []): {
+  errors: ValidationError[], fieldsContext: FieldsContext
+} {
   const errors = []
   const contentTypeFields: { [key: string]: Set<string> } = contentTypes.reduce((acc, curr) => {
     const fieldIds = curr.fields.map((f) => f.id)
@@ -242,10 +217,12 @@ export default function (intents: Intent[], contentTypes: ContentType[] = []): V
 
       if (!contentTypeExists) {
         const type = intent.getRawType().split('/')[1]
-        errors.push(invalidActionError(
-          fieldErrors[type].CONTENT_TYPE_DOES_NOT_EXIST(fieldId, contentTypeId),
-          intent
-        ))
+        errors.push(
+          invalidActionError(
+            fieldErrors[type].CONTENT_TYPE_DOES_NOT_EXIST(fieldId, contentTypeId),
+            intent
+          )
+        )
         continue
       }
 
@@ -274,16 +251,36 @@ export default function (intents: Intent[], contentTypes: ContentType[] = []): V
 
       const nonExistingSourceFields = derivation.from.filter((f) => !fieldSet.has(f))
       const nonExistingToReferenceField = !fieldSet.has(derivation.toReferenceField)
-      const nonExistingDestinationFields = destinationFields ? derivation.derivedFields.filter((f) => !destinationFields.has(f)) : derivation.derivedFields
+      const nonExistingDestinationFields = destinationFields
+        ? derivation.derivedFields.filter((f) => !destinationFields.has(f))
+        : derivation.derivedFields
 
       if (nonExistingSourceFields.length > 0) {
-        errors.push(wrapError(deriveErrors.NON_EXISTING_SOURCE_FIELDS(sourceCT.id, nonExistingSourceFields), intent))
+        errors.push(
+          wrapError(
+            deriveErrors.NON_EXISTING_SOURCE_FIELDS(sourceCT.id, nonExistingSourceFields),
+            intent
+          )
+        )
       }
       if (nonExistingToReferenceField) {
-        errors.push(wrapError(deriveErrors.NON_EXISTING_REFERENCE_FIELD(sourceCT.id, derivation.toReferenceField), intent))
+        errors.push(
+          wrapError(
+            deriveErrors.NON_EXISTING_REFERENCE_FIELD(sourceCT.id, derivation.toReferenceField),
+            intent
+          )
+        )
       }
       if (nonExistingDestinationFields.length > 0) {
-        errors.push(wrapError(deriveErrors.NON_EXISTING_DESTINATION_FIELDS(destinationCT.id, nonExistingDestinationFields), intent))
+        errors.push(
+          wrapError(
+            deriveErrors.NON_EXISTING_DESTINATION_FIELDS(
+              destinationCT.id,
+              nonExistingDestinationFields
+            ),
+            intent
+          )
+        )
       }
     }
 
@@ -293,5 +290,12 @@ export default function (intents: Intent[], contentTypes: ContentType[] = []): V
     changedFieldIds[contentTypeId] = fieldIdChanges
   }
 
-  return errors
+  return {
+    errors, fieldsContext: {
+      contentTypeFields,
+      recentlyRemoved,
+      recentlyMoved,
+      changedFieldIds
+    }
+  }
 }

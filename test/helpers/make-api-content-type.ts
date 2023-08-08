@@ -22,6 +22,4 @@ const makeApiContentType = function (ct: SimpleCT) {
   }
 }
 
-export {
-  makeApiContentType as default
-}
+export { makeApiContentType as default }

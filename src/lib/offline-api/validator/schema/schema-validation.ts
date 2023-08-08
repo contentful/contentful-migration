@@ -1,14 +1,15 @@
 import * as Joi from 'joi'
 import * as _ from 'lodash'
-import { reach } from 'hoek'
+import { reach } from '@hapi/hoek'
 import kindOf from 'kind-of'
 import errorMessages from '../errors'
 import { PayloadValidationError } from '../../../interfaces/errors'
-import { ContentType } from '../../../entities/content-type'
+import { ContentType, EditorInterfaces } from '../../../entities/content-type'
 import { Tag } from '../../../entities/tag'
 import { contentTypeSchema, MAX_FIELDS } from './content-type-schema'
 import { tagSchema } from './tag-schema'
 import { createFieldsSchema } from './fields-schema'
+import { createEditorLayoutSchema } from './editor-layout-schema'
 
 interface SimplifiedValidationError {
   message: string
@@ -55,6 +56,56 @@ const validateContentType = function (contentType: ContentType): PayloadValidati
   })
 }
 
+const validateEditorInterface = function (
+  editorInterface: EditorInterfaces
+): PayloadValidationError[] {
+  const groupControls = editorInterface.getGroupControls() || []
+  const tabsIds = groupControls
+    .filter(
+      (control) => control.widgetNamespace === 'builtin' && control.widgetId === 'topLevelTab'
+    )
+    .map((control) => control.groupId)
+  const validateResult = createEditorLayoutSchema(tabsIds).validate(
+    editorInterface.getEditorLayout(),
+    {
+      abortEarly: false
+    }
+  )
+
+  const { error } = validateResult
+
+  if (!error) {
+    return []
+  }
+
+  return error.details.map((err): PayloadValidationError => {
+    if (err.type === 'array.max' && err.path.length === 0) {
+      return {
+        type: 'InvalidPayload',
+        message: errorMessages.editorLayout.TOO_MANY_TABS()
+      }
+    }
+    if (err.type === 'any.only') {
+      return {
+        type: 'InvalidPayload',
+        message: errorMessages.editorLayout.TAB_CONTROL_INVALID(err.context.value)
+      }
+    }
+    if (err.type === 'any.invalid') {
+      return {
+        type: 'InvalidPayload',
+        message: errorMessages.editorLayout.FIELD_SET_CONTROL_INVALID(err.context.value)
+      }
+    }
+    if (err.type === 'any.required') {
+      return {
+        type: 'InvalidPayload',
+        message: errorMessages.editorLayout.FIELD_GROUP_LEVEL_TOO_DEEP()
+      }
+    }
+  })
+}
+
 const validateTag = function (tag: Tag): PayloadValidationError[] {
   const { error } = tagSchema.validate(_.omit(tag.toApiTag(), ['sys']), {
     abortEarly: false
@@ -89,17 +140,33 @@ const unknownCombinationError = function ({ path, keys }): SimplifiedValidationE
 //   type: 'object.allowUnknown',
 //   context: { child: 'foo', key: 'foo' }
 // }]
-const combineErrors = function (fieldValidationsErrors: SimplifiedValidationError[]): SimplifiedValidationError[] {
-  const byItemPath: _.Dictionary<SimplifiedValidationError[]> = _.groupBy(fieldValidationsErrors, ({ path }) => {
-    return path.slice(0, -1).join('.')
-  })
+const combineErrors = function (
+  fieldValidationsError: Joi.ValidationErrorItem
+): SimplifiedValidationError[] {
+  const fieldValidationsErrors = fieldValidationsError.context.details
+
+  const byItemPath: _.Dictionary<SimplifiedValidationError[]> = _.groupBy(
+    fieldValidationsErrors,
+    ({ path }) => {
+      return path.slice(0, -1).join('.')
+    }
+  )
+
+  // Remove object.unknown error for alternatives.match field validation if there are deeper nested validation errors
+  if (fieldValidationsError.type === 'alternatives.match' && Object.keys(byItemPath).length > 1) {
+    const alternativesMatchErrorPath = fieldValidationsError.path.join('.')
+    delete byItemPath[alternativesMatchErrorPath]
+  }
 
   const pathErrorTuples: [string, SimplifiedValidationError[]][] = _.entries(byItemPath)
 
-  const uniqPropErrorsByPath: [string, SimplifiedValidationError[]][] = _.map(pathErrorTuples, ([path, itemErrors]): [string, SimplifiedValidationError[]] => {
-    const uniqErrors: SimplifiedValidationError[] = _.uniqBy(itemErrors, 'context.key')
-    return [path, uniqErrors]
-  })
+  const uniqPropErrorsByPath: [string, SimplifiedValidationError[]][] = _.map(
+    pathErrorTuples,
+    ([path, itemErrors]): [string, SimplifiedValidationError[]] => {
+      const uniqErrors: SimplifiedValidationError[] = _.uniqBy(itemErrors, 'context.key')
+      return [path, uniqErrors]
+    }
+  )
 
   return uniqPropErrorsByPath.map(([path, errors]) => {
     const keys = errors.map((error) => reach(error, 'context.key'))
@@ -141,21 +208,25 @@ const cleanNoiseFromJoiErrors = function (error: Joi.ValidationError): Simplifie
     const isUnknownValidationsProp = errorDetails.every(({ type }) => type === 'object.unknown')
 
     if (isUnknownValidationsProp) {
-      const combinedErrors = combineErrors(errorDetails)
+      const combinedErrors = combineErrors(fieldValidationsError)
 
       allErrors = [...allErrors, ...combinedErrors]
       continue
     }
 
-    const remainingFieldValidationsErrors = errorDetails.filter(({ type }) => type !== 'object.unknown')
+    const remainingFieldValidationsErrors = errorDetails.filter(
+      ({ type }) => type !== 'object.unknown'
+    )
     allErrors = [...allErrors, ...remainingFieldValidationsErrors]
-
   }
 
   return allErrors
 }
 
-const validateFields = function (contentType: ContentType, locales: string[]): PayloadValidationError[] {
+const validateFields = function (
+  contentType: ContentType,
+  locales: string[]
+): PayloadValidationError[] {
   const fields = contentType.fields.toRaw()
   const validateResult = createFieldsSchema(locales).validate(fields, {
     abortEarly: false
@@ -178,7 +249,6 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
     const prop = fieldNames.join('.')
     const field = fields[index]
     if (prop.startsWith('defaultValue')) {
-
       if (type === 'object.unknown') {
         return {
           type: 'InvalidPayload',
@@ -187,28 +257,133 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
       }
 
       if (type === 'any.unknown') {
-
         if (field.type === 'Array') {
           return {
             type: 'InvalidPayload',
-            message: errorMessages.field.defaultValue.UNSUPPORTED_ARRAY_ITEMS_TYPE(field.id, path[1], field.items.type)
+            message: errorMessages.field.defaultValue.UNSUPPORTED_ARRAY_ITEMS_TYPE(
+              field.id,
+              path[1],
+              field.items.type
+            )
           }
         }
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.defaultValue.UNSUPPORTED_FIELD_TYPE(field.id, path[1], field.type)
+          message: errorMessages.field.defaultValue.UNSUPPORTED_FIELD_TYPE(
+            field.id,
+            path[1],
+            field.type
+          )
         }
       }
 
       if (field.type === 'Date') {
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.defaultValue.DATE_TYPE_MISMATCH(field.id, kindOf(context.value), context.value, context.key, field.type)
+          message: errorMessages.field.defaultValue.DATE_TYPE_MISMATCH(
+            field.id,
+            kindOf(context.value),
+            context.value,
+            context.key,
+            field.type
+          )
         }
       }
       return {
         type: 'InvalidPayload',
-        message: errorMessages.field.defaultValue.TYPE_MISMATCH(field.id, kindOf(context.value), context.key, field.type)
+        message: errorMessages.field.defaultValue.TYPE_MISMATCH(
+          field.id,
+          kindOf(context.value),
+          context.key,
+          field.type
+        )
+      }
+    }
+
+    // Field `allowedResources` errors
+    if (prop.startsWith('allowedResources')) {
+      if (path.length > 3) {
+        const error = details.message.replace(/".+?"/, `"${context.key}"`)
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.allowedResources.INVALID_RESOURCE_PROPERTY(
+            field.id,
+            path[2],
+            error
+          )
+        }
+      }
+
+      if (type === 'object.base') {
+        const actualType = kindOf(reach(field, prop))
+
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.allowedResources.INVALID_RESOURCE(
+            field.id,
+            context.key,
+            actualType
+          )
+        }
+      }
+
+      if (type === 'array.min') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.allowedResources.TOO_FEW_ITEMS(field.id, 'allowedResources')
+        }
+      }
+
+      if (type === 'array.max') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.allowedResources.TOO_MANY_ITEMS(field.id, 'allowedResources')
+        }
+      }
+
+      if (type === 'array.unique') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.allowedResources.DUPLICATE_SOURCE(
+            field.id,
+            context.value.source,
+            'allowedResources'
+          )
+        }
+      }
+    } else if (path.slice(-2).includes('allowedResources')) {
+      if (type === 'array.min') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.allowedResources.TOO_FEW_ITEMS(field.id, prop)
+        }
+      }
+
+      if (type === 'array.max') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.allowedResources.TOO_MANY_ITEMS(field.id, prop)
+        }
+      }
+
+      if (type === 'array.unique') {
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.allowedResources.DUPLICATE_SOURCE(
+            field.id,
+            context.value.source,
+            prop
+          )
+        }
+      }
+    } else if (
+      ['validations', 'nodes', 'allowedResources'].every((pathItem) => path.includes(pathItem))
+    ) {
+      const error = details.message.replace(/".+?"/, `"${context.key}"`)
+
+      return {
+        type: 'InvalidPayload',
+        message: errorMessages.allowedResources.INVALID_RESOURCE_PROPERTY(field.id, path[6], error)
       }
     }
 
@@ -219,7 +394,12 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
 
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.REQUIRED_DEPENDENT_PROPERTY(prop, field.id, dependentProp, dependentValue)
+          message: errorMessages.field.REQUIRED_DEPENDENT_PROPERTY(
+            prop,
+            field.id,
+            dependentProp,
+            dependentValue
+          )
         }
       }
 
@@ -236,7 +416,12 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
 
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.FORBIDDEN_DEPENDENT_PROPERTY(prop, field.id, dependentProp, dependentValue)
+          message: errorMessages.field.FORBIDDEN_DEPENDENT_PROPERTY(
+            prop,
+            field.id,
+            dependentProp,
+            dependentValue
+          )
         }
       }
 
@@ -290,7 +475,9 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
       if (type === 'object.unknownCombination') {
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.validations.INVALID_VALIDATION_PROPERTY_COMBINATION(context.keys)
+          message: errorMessages.field.validations.INVALID_VALIDATION_PROPERTY_COMBINATION(
+            context.keys
+          )
         }
       }
 
@@ -300,15 +487,15 @@ const validateFields = function (contentType: ContentType, locales: string[]): P
 
         return {
           type: 'InvalidPayload',
-          message: errorMessages.field.validations.INVALID_VALIDATION_PARAMETER(context.key, expectedType, actualType)
+          message: errorMessages.field.validations.INVALID_VALIDATION_PARAMETER(
+            context.key,
+            expectedType,
+            actualType
+          )
         }
       }
     }
   })
 }
 
-export {
-  validateContentType,
-  validateFields,
-  validateTag
-}
+export { validateContentType, validateEditorInterface, validateFields, validateTag }

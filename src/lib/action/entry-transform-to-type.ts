@@ -9,13 +9,17 @@ class EntryTransformToTypeAction extends APIAction {
   private fromFields?: string[]
   private sourceContentTypeId: string
   private targetContentTypeId: string
-  private transformEntryForLocale: (inputFields: any, locale: string) => Promise<any>
+  private transformEntryForLocale: (
+    inputFields: any,
+    locale: string,
+    { id }: { id: string }
+  ) => Promise<any>
   private identityKey: (fromFields: any) => Promise<string>
   private shouldPublish: boolean | 'preserve'
   private removeOldEntries: boolean
   private updateReferences: boolean
 
-  constructor (entryTransformation: EntryTransformToType) {
+  constructor(entryTransformation: EntryTransformToType) {
     super()
     this.fromFields = entryTransformation.from
     this.sourceContentTypeId = entryTransformation.sourceContentType
@@ -27,7 +31,7 @@ class EntryTransformToTypeAction extends APIAction {
     this.transformEntryForLocale = entryTransformation.transformEntryForLocale
   }
 
-  async applyTo (api: OfflineAPI) {
+  async applyTo(api: OfflineAPI) {
     const entries: Entry[] = await api.getEntriesForContentType(this.sourceContentTypeId)
     const locales: string[] = await api.getLocalesForSpace()
 
@@ -47,7 +51,9 @@ class EntryTransformToTypeAction extends APIAction {
       for (const locale of locales) {
         let outputsForCurrentLocale
         try {
-          outputsForCurrentLocale = await this.transformEntryForLocale(inputs, locale)
+          outputsForCurrentLocale = await this.transformEntryForLocale(inputs, locale, {
+            id: entry.id
+          })
         } catch (err) {
           await api.recordRuntimeError(err)
           continue
@@ -86,10 +92,9 @@ class EntryTransformToTypeAction extends APIAction {
           targetEntry.setField(fieldId, {})
         }
 
-        for (const [locale, localizedValue] of _.entries((localizedField as object))) {
+        for (const [locale, localizedValue] of _.entries(localizedField as object)) {
           targetEntry.setFieldForLocale(fieldId, locale, localizedValue)
         }
-
       }
       await api.saveEntry(targetEntry.id)
       if (shouldPublishLocalChanges(this.shouldPublish, entry)) {
@@ -101,7 +106,9 @@ class EntryTransformToTypeAction extends APIAction {
         const links = await api.getLinks(entry.id, locales)
         for (const link of links) {
           if (!link.isInArray()) {
-            link.element.setFieldForLocale(link.field, link.locale,{ sys: { id: newEntryId, type: 'Link', linkType: 'Entry' } })
+            link.element.setFieldForLocale(link.field, link.locale, {
+              sys: { id: newEntryId, type: 'Link', linkType: 'Entry' }
+            })
           } else {
             link.element.replaceArrayLinkForLocale(link.field, link.locale, link.index, newEntryId)
           }

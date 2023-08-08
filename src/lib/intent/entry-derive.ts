@@ -4,38 +4,30 @@ import { PlanMessage } from '../interfaces/plan-message'
 import chalk from 'chalk'
 
 export default class EntryDeriveIntent extends Intent {
-  getRelatedContentTypeIds () {
-    return [
-      this.getContentTypeId(),
-      this.payload.derivation.derivedContentType
-    ]
+  getRelatedContentTypeIds() {
+    return [this.getContentTypeId(), this.payload.derivation.derivedContentType]
   }
-  isEntryDerive () {
+  isEntryDerive() {
     return true
   }
 
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return true
   }
 
-  groupsWith (): boolean {
+  groupsWith(): boolean {
     return false
   }
 
-  requiresAllTags () {
+  requiresAllTags() {
     return true
   }
 
-  toActions () {
-    return [
-      new EntryDeriveAction(
-        this.getContentTypeId(),
-        this.payload.derivation
-      )
-    ]
+  toActions() {
+    return [new EntryDeriveAction(this.getContentTypeId(), this.payload.derivation)]
   }
 
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     return {
       heading: chalk`Derive entries from {bold.yellow ${this.getContentTypeId()}}`,
       details: [
@@ -47,11 +39,11 @@ export default class EntryDeriveIntent extends Intent {
     }
   }
 
-  shouldSave () {
+  shouldSave() {
     return false
   }
 
-  shouldPublish () {
+  shouldPublish() {
     return false
   }
 }

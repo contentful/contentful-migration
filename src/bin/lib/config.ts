@@ -1,39 +1,48 @@
 import * as path from 'path'
 import * as os from 'os'
+import { v4 as uuidv4 } from 'uuid'
+import type { ClientConfig } from '../../../index'
 
 // TODO: I'm ugly, maybe change me
 const homedir = process.env.NODE_ENV === 'test' ? '/tmp' : os.homedir()
 const configPath = path.resolve(homedir, '.contentfulrc.json')
 
-interface ClientConfig {
-  accessToken?: string
-  spaceId?: string
-  environmentId?: string,
-  proxy?: string,
-  rawProxy?: boolean
-  requestBatchSize?: number
-  headers?: Record<string, unknown>
-}
-
-function getFileConfig (): ClientConfig {
+function getFileConfig(): ClientConfig {
   try {
     const config = require(configPath)
-    return config.cmaToken ?
-      { accessToken: config.cmaToken } :
-      {}
+    let clientConfig: ClientConfig = {}
+
+    if (config.host) {
+      clientConfig.host = config.host
+    }
+    if (config.managementToken) {
+      clientConfig.accessToken = config.managementToken
+    }
+    if (config.cmaToken) {
+      clientConfig.accessToken = config.cmaToken
+    }
+
+    return clientConfig
   } catch (e) {
     return {}
   }
 }
 
-function getEnvConfig (): ClientConfig {
+function getEnvConfig(): ClientConfig {
   const envKey = 'CONTENTFUL_MANAGEMENT_ACCESS_TOKEN'
-  return process.env[envKey] ?
-    { accessToken : process.env[envKey] } :
-    {}
+  return process.env[envKey] ? { accessToken: process.env[envKey] } : {}
 }
 
-function getArgvConfig ({ spaceId, environmentId = 'master', accessToken, proxy, rawProxy, requestBatchSize, headers }): ClientConfig {
+function getArgvConfig({
+  spaceId,
+  environmentId = 'master',
+  accessToken,
+  proxy,
+  rawProxy,
+  requestBatchSize,
+  headers,
+  retryLimit
+}): ClientConfig {
   const config = {
     spaceId,
     environmentId,
@@ -41,7 +50,12 @@ function getArgvConfig ({ spaceId, environmentId = 'master', accessToken, proxy,
     proxy,
     rawProxy,
     requestBatchSize,
-    headers
+    headers: addSequenceHeader(headers),
+    retryLimit
+  }
+
+  if (config.retryLimit && (config.retryLimit < 0 || config.retryLimit > 60)) {
+    throw new Error('retryLimit must be between 0 and 60')
   }
 
   if (!config.accessToken) {
@@ -63,7 +77,7 @@ function getArgvConfig ({ spaceId, environmentId = 'master', accessToken, proxy,
  * getHeadersConfig(['Accept: Any', 'X-Version: 1'])
  * // -> {Accept: 'Any', 'X-Version': '1'}
  */
-function getHeadersConfig (value?: string | string[]) {
+function getHeadersConfig(value?: string | string[]) {
   if (!value) {
     return {}
   }
@@ -90,7 +104,7 @@ function getHeadersConfig (value?: string | string[]) {
   }, {})
 }
 
-function getConfig (argv) {
+function getConfig(argv) {
   const fileConfig = getFileConfig()
   const envConfig = getEnvConfig()
   const argvConfig = getArgvConfig({
@@ -101,9 +115,22 @@ function getConfig (argv) {
   return Object.assign(fileConfig, envConfig, argvConfig)
 }
 
+/**
+ * Adds a sequence header to a header object
+ * @param {object} headers
+ */
+function addSequenceHeader(headers) {
+  if (typeof headers !== 'object') {
+    throw new Error('addSequence function expects an object as input')
+  }
+
+  return {
+    ...headers,
+    // Unique sequence header
+    'CF-Sequence': uuidv4()
+  }
+}
+
 export default getConfig
 
-export {
-  getConfig,
-  ClientConfig
-}
+export { getConfig, ClientConfig }

@@ -4,13 +4,10 @@ import EntryDerive from './entry-derive'
 import EntrySetTags from './entry-set-tags'
 import TransformEntryToType from './entry-transform-to-type'
 import { SidebarWidgetNamespace, SidebarWidgetSettings } from '../action/sidebarwidget'
-import {
-  EntryEditorNamespace,
-  EntryEditorSettings
-} from '../action/entryeditor-configure'
-import {
-  EntryEditor
-} from '../action/entryeditors-configure'
+import { EntryEditorNamespace, EntryEditorSettings } from '../action/entryeditor-configure'
+import { EntryEditor } from '../action/entryeditors-configure'
+import { APIEditorInterfaceGroupControl, APIEditorLayoutFieldGroupItem } from './content-type'
+import { AnnotationId } from './annotation'
 
 interface RawStep {
   type: string
@@ -21,6 +18,7 @@ interface RawStep {
 interface RawStepMeta {
   contentTypeInstanceId?: string
   fieldInstanceId?: string
+  fieldGroupInstanceId?: string
   tagInstanceId?: string
   callsite: CallSiteInfo
 }
@@ -44,9 +42,16 @@ interface RawStepPayload {
   sidebarWidget?: SidebarWidgetInfo
   entryEditor?: EntryEditorInfo
   entryEditors?: EntryEditor[]
+  invalidMethod?: string
+  fieldGroupId?: string
+  newFieldGroupId?: string
+  parentFieldGroupId?: string
+  fieldGroupProps?: Omit<APIEditorLayoutFieldGroupItem, 'groupId' | 'items'>
+  groupControl?: Omit<APIEditorInterfaceGroupControl, 'groupId'>
   tagId?: string
   tagVisibility?: TagVisibility
   entryTransformationForTags?: EntrySetTags
+  annotations?: AnnotationId[]
 }
 
 interface EditorInterfaceInfo {

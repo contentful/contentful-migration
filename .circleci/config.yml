@@ -1,14 +1,18 @@
-
 version: 2.1
+
+orbs:
+  vault: contentful/vault@1
+  node: circleci/node@5.1.0
+
 jobs:
   check:
     docker:
-      - image: circleci/node:14
+      - image: 'cimg/base:stable'
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: npm install
+      - node/install:
+          node-version: '18.15'
+      - node/install-packages
       - run:
           name: Lint
           command: |
@@ -18,56 +22,56 @@ jobs:
           command: |
             npm run build
       - run:
-          name: Check Delaration
+          name: Check Declaration
           command: |
-            npm run test-typescript-declaration
+            npm run test:typescript-declaration
   test-unit:
     docker:
-      - image: circleci/node:14
+      - image: 'cimg/base:stable'
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: npm install
+      - node/install:
+          node-version: '18.15'
+      - node/install-packages
       - run:
           name: Run Unit Tests
           command: |
-            npm run test-unit
-
+            npm run test:unit
   test-integration:
     docker:
-      - image: circleci/node:14
+      - image: 'cimg/base:stable'
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: npm install
+      - node/install:
+          node-version: '18.15'
+      - node/install-packages
       - run:
           name: Run Integration Tests
           command: |
-            npm run test-integration
-
+            npm run test:integration
   test-e2e:
     docker:
-      - image: circleci/node:14
+      - image: 'cimg/base:stable'
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: npm install
+      - node/install:
+          node-version: '18.15'
+      - node/install-packages
       - run:
           name: Run E2E Tests
           command: |
-            npm run test-e2e
-
+            npm run test:e2e
   release:
     docker:
-      - image: circleci/node:14
+      - image: 'cimg/base:stable'
     steps:
       - checkout
-      - run: npm install
+      - node/install:
+          node-version: '18.15'
+      - node/install-packages
+      - vault/get-secrets:
+          template-preset: 'semantic-release-ecosystem'
       - run: npm run semantic-release
-
 workflows:
   test-and-release:
     jobs:
@@ -76,7 +80,7 @@ workflows:
       - test-integration
       - test-e2e
       - release:
-          context: dev-workflows-release
+          context: vault
           requires:
             - check
             - test-unit

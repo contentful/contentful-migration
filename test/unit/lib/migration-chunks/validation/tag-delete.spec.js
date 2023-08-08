@@ -1,19 +1,25 @@
-'use strict';
+'use strict'
 
-const { expect } = require('chai');
-const validateChunks = require('./validate-chunks').default;
+const { expect } = require('chai')
+const validateChunks = require('./validate-chunks').default
 
 describe('tag delete validation', function () {
   describe('when deleting a tag twice', function () {
     it('returns an error', async function () {
-      const tags = [{
-        sys: { id: 'foo' }
-      }];
+      const tags = [
+        {
+          sys: { id: 'foo' }
+        }
+      ]
 
-      const errors = await validateChunks(function up (migration) {
-        migration.deleteTag('foo');
-        migration.deleteTag('foo');
-      }, [], tags);
+      const errors = await validateChunks(
+        function up(migration) {
+          migration.deleteTag('foo')
+          migration.deleteTag('foo')
+        },
+        [],
+        tags
+      )
 
       expect(errors).to.eql([
         {
@@ -31,29 +37,29 @@ describe('tag delete validation', function () {
             }
           }
         }
-      ]);
-    });
-  });
+      ])
+    })
+  })
 
   describe('when deleting several tags several times', function () {
     it('returns the right errors', async function () {
-      const tags = [
-        { sys: { id: 'foo' } },
-        { sys: { id: 'bar' } },
-        { sys: { id: 'baz' } }
-      ];
+      const tags = [{ sys: { id: 'foo' } }, { sys: { id: 'bar' } }, { sys: { id: 'baz' } }]
 
-      const errors = await validateChunks(function up (migration) {
-        migration.deleteTag('foo');
-        migration.deleteTag('bar');
-        migration.deleteTag('baz');
-        migration.deleteTag('foo');
-        migration.deleteTag('bar');
-        migration.deleteTag('baz');
-        migration.deleteTag('foo');
-        migration.deleteTag('bar');
-        migration.deleteTag('baz');
-      }, [], tags);
+      const errors = await validateChunks(
+        function up(migration) {
+          migration.deleteTag('foo')
+          migration.deleteTag('bar')
+          migration.deleteTag('baz')
+          migration.deleteTag('foo')
+          migration.deleteTag('bar')
+          migration.deleteTag('baz')
+          migration.deleteTag('foo')
+          migration.deleteTag('bar')
+          migration.deleteTag('baz')
+        },
+        [],
+        tags
+      )
 
       expect(errors).to.eql([
         {
@@ -146,21 +152,28 @@ describe('tag delete validation', function () {
             }
           }
         }
-      ]);
-    });
-  });
+      ])
+    })
+  })
 
   describe('when deleting a tag that does not exist', function () {
     it('returns an error', async function () {
-      const tags = [{
-        sys: { id: 'foo' }
-      }, {
-        sys: { id: 'bar' }
-      }];
+      const tags = [
+        {
+          sys: { id: 'foo' }
+        },
+        {
+          sys: { id: 'bar' }
+        }
+      ]
 
-      const errors = await validateChunks(function up (migration) {
-        migration.deleteTag('baz');
-      }, [], tags);
+      const errors = await validateChunks(
+        function up(migration) {
+          migration.deleteTag('baz')
+        },
+        [],
+        tags
+      )
 
       expect(errors).to.eql([
         {
@@ -178,20 +191,26 @@ describe('tag delete validation', function () {
             }
           }
         }
-      ]);
-    });
-  });
+      ])
+    })
+  })
 
   describe('when editing a tag that has been deleted earlier', function () {
     it('returns an error', async function () {
-      const tags = [{
-        sys: { id: 'foo' }
-      }];
+      const tags = [
+        {
+          sys: { id: 'foo' }
+        }
+      ]
 
-      const errors = await validateChunks(function up (migration) {
-        migration.deleteTag('foo');
-        migration.editTag('foo').name('another name');
-      }, [], tags);
+      const errors = await validateChunks(
+        function up(migration) {
+          migration.deleteTag('foo')
+          migration.editTag('foo').name('another name')
+        },
+        [],
+        tags
+      )
 
       expect(errors).to.eql([
         {
@@ -212,24 +231,31 @@ describe('tag delete validation', function () {
             }
           }
         }
-      ]);
-    });
+      ])
+    })
 
     it('returns an error also when several edits after several deletes', async function () {
-      const tags = [{
-        sys: { id: 'foo' },
-        name: 'tag name'
-      }, {
-        sys: { id: 'bar' }
-      }];
+      const tags = [
+        {
+          sys: { id: 'foo' },
+          name: 'tag name'
+        },
+        {
+          sys: { id: 'bar' }
+        }
+      ]
 
-      const errors = await validateChunks(function up (migration) {
-        migration.editTag('bar').name('confusedYet?');
-        migration.deleteTag('foo');
-        migration.editTag('foo').name('yet?');
-        migration.deleteTag('bar');
-        migration.editTag('bar').name('last name');
-      }, [], tags);
+      const errors = await validateChunks(
+        function up(migration) {
+          migration.editTag('bar').name('confusedYet?')
+          migration.deleteTag('foo')
+          migration.editTag('foo').name('yet?')
+          migration.deleteTag('bar')
+          migration.editTag('bar').name('last name')
+        },
+        [],
+        tags
+      )
 
       expect(errors).to.eql([
         {
@@ -268,7 +294,7 @@ describe('tag delete validation', function () {
             }
           }
         }
-      ]);
-    });
-  });
-});
+      ])
+    })
+  })
+})

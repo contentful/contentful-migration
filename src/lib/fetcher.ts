@@ -8,23 +8,22 @@ import Bluebird from 'bluebird'
 import APIFetcher from './interfaces/api-fetcher'
 
 export default class Fetcher implements APIFetcher {
-  constructor (private makeRequest: Function, private requestBatchSize: number = 100) {
-  }
+  constructor(private makeRequest: Function, private requestBatchSize: number = 100) {}
 
-  async getEntriesInIntents (intentList: IntentList): Promise<APIEntry[]> {
+  async getEntriesInIntents(intentList: IntentList): Promise<APIEntry[]> {
     const loadAllEntries = intentList.getIntents().some((intent) => intent.requiresAllEntries())
 
     const ids: string[] = _.uniq(
       intentList
         .getIntents()
         .filter(
-          intent =>
+          (intent) =>
             intent.isContentTransform() ||
             intent.isEntryDerive() ||
             intent.isEntryTransformToType() ||
             intent.isEntrySetTags()
         )
-        .map(intent => intent.getContentTypeId())
+        .map((intent) => intent.getContentTypeId())
     )
 
     if (!loadAllEntries && ids.length === 0) {
@@ -47,16 +46,23 @@ export default class Fetcher implements APIFetcher {
     return entries
   }
 
-  async getContentTypesInChunks (intentList: IntentList): Promise<APIContentType[]> {
+  async getContentTypesInChunks(intentList: IntentList): Promise<APIContentType[]> {
     // Excluding editor interface intents here since, API-wise, editor interfaces don't require
     // to know the full details about the associated content type.
+    // Editor interface intents that require the content type can implement IntentInterface.requiresContentType.
     // Also excluding tags here as they are independent of cts.
-    const ids: string[] = _.uniq(intentList.getIntents()
-      .filter((intent) => (!intent.isEditorInterfaceIntent() && !intent.isTagIntent()))
-      .reduce((ids, intent) => {
-        const intentIds = intent.getRelatedContentTypeIds()
-        return ids.concat(intentIds)
-      }, [])
+    const ids: string[] = _.uniq(
+      intentList
+        .getIntents()
+        .filter(
+          (intent) =>
+            (!intent.isEditorInterfaceIntent() || intent.requiresContentType()) &&
+            !intent.isTagIntent()
+        )
+        .reduce((ids, intent) => {
+          const intentIds = intent.getRelatedContentTypeIds()
+          return ids.concat(intentIds)
+        }, [])
     )
 
     if (ids.length === 0) {
@@ -72,12 +78,13 @@ export default class Fetcher implements APIFetcher {
     return contentTypes
   }
 
-  async getEditorInterfacesInIntents (intentList: IntentList): Promise<Map<string, APIEditorInterfaces>> {
+  async getEditorInterfacesInIntents(
+    intentList: IntentList
+  ): Promise<Map<string, APIEditorInterfaces>> {
     const contentTypeIds: string[] = _.uniq(
-      intentList.getIntents()
-        .filter((intent) => intent.isFieldRename() ||
-          intent.isEditorInterfaceIntent()
-        )
+      intentList
+        .getIntents()
+        .filter((intent) => intent.isFieldRename() || intent.isEditorInterfaceIntent())
         .reduce((ids, intent) => {
           const intentIds = intent.getRelatedContentTypeIds()
           return ids.concat(intentIds)
@@ -95,17 +102,22 @@ export default class Fetcher implements APIFetcher {
     return editorInterfaces
   }
 
-  async getLocalesForSpace (): Promise<string[]> {
+  async getLocalesForSpace(): Promise<string[]> {
     type Locale = { code: string }
     const locales = await this.fetchAllPaginatedItems<Locale>('/locales')
 
     return locales.map((i) => i.code)
   }
 
-  async checkContentTypesForDeletedCts (intentList: IntentList, contentTypes: ContentType[]): Promise<ContentType[]> {
-    const deletedCtIds: Set<string> = new Set(intentList.getIntents()
-      .filter((intent) => intent.isContentTypeDelete())
-      .map((intent) => intent.getContentTypeId())
+  async checkContentTypesForDeletedCts(
+    intentList: IntentList,
+    contentTypes: ContentType[]
+  ): Promise<ContentType[]> {
+    const deletedCtIds: Set<string> = new Set(
+      intentList
+        .getIntents()
+        .filter((intent) => intent.isContentTypeDelete())
+        .map((intent) => intent.getContentTypeId())
     )
 
     if (deletedCtIds.size === 0) {
@@ -129,16 +141,9 @@ export default class Fetcher implements APIFetcher {
     })
   }
 
-  async getTagsForEnvironment (intentList: IntentList): Promise<APITag[]> {
+  async getTagsForEnvironment(intentList: IntentList): Promise<APITag[]> {
     // Don't fetch tags if migration does not use any.
-    if (
-      !intentList
-        .getIntents()
-        .some(
-          (intent) =>
-            intent.requiresAllTags()
-        )
-    ) {
+    if (!intentList.getIntents().some((intent) => intent.requiresAllTags())) {
       return []
     }
 
@@ -146,7 +151,10 @@ export default class Fetcher implements APIFetcher {
     return tags
   }
 
-  private async fetchEditorInterface (id: string, editorInterfaces: Map<string, APIEditorInterfaces>) {
+  private async fetchEditorInterface(
+    id: string,
+    editorInterfaces: Map<string, APIEditorInterfaces>
+  ) {
     try {
       const response = await this.makeRequest({
         method: 'GET',
@@ -154,7 +162,8 @@ export default class Fetcher implements APIFetcher {
       })
       editorInterfaces.set(id, response)
     } catch (error) {
-      if (error.name === 'NotFound') {  // TODO: expose status codes and use that instead.
+      if (error.name === 'NotFound') {
+        // TODO: expose status codes and use that instead.
         // Initialize a default structure for newly created content types.
         editorInterfaces.set(id, {
           sys: {
@@ -168,7 +177,10 @@ export default class Fetcher implements APIFetcher {
     }
   }
 
-  private async fetchAllPaginatedItems<ResponseType> (url: string, params: { [key: string]: string } = {}): Promise<ResponseType[]> {
+  private async fetchAllPaginatedItems<ResponseType>(
+    url: string,
+    params: { [key: string]: string } = {}
+  ): Promise<ResponseType[]> {
     let entities: ResponseType[] = []
     let skip: number = 0
 
@@ -200,5 +212,4 @@ export default class Fetcher implements APIFetcher {
 
     return entities
   }
-
 }

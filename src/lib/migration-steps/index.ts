@@ -13,6 +13,7 @@ import EntrySetTags from '../interfaces/entry-set-tags'
 import TransformEntryToType from '../interfaces/entry-transform-to-type'
 import { ClientConfig } from '../../bin/lib/config'
 import { deprecatedMethod } from '../utils/deprecated'
+import { APIEditorInterfaceSettings } from '../interfaces/content-type'
 
 const createInstanceIdManager = () => {
   const instanceCounts = {}
@@ -21,7 +22,7 @@ const createInstanceIdManager = () => {
     getNew: (id): number => {
       let instanceId
 
-      if ((typeof instanceCounts[id]) === 'undefined') {
+      if (typeof instanceCounts[id] === 'undefined') {
         instanceId = 0
       } else {
         instanceId = instanceCounts[id] + 1
@@ -34,19 +35,233 @@ const createInstanceIdManager = () => {
   }
 }
 
-class Movement extends DispatchProxy { }
+class Movement extends DispatchProxy {}
 
 class Field extends DispatchProxy {
   public id: string
+  public contentType: ContentType
 
-  constructor (id, props = {}, { dispatchUpdate }) {
+  constructor(contentType, id, props = {}, { dispatchUpdate }) {
     super({ dispatchUpdate })
+    this.contentType = contentType
     this.id = id
 
     // Initialize from second argument
     Object.keys(props).forEach((propertyName) => {
       this[propertyName](props[propertyName])
     })
+  }
+
+  setAnnotations(annotationIds: string[]) {
+    const callsite = getFirstExternalCaller()
+    const fieldInstanceId = this.contentType.fieldInstanceIds.getNew(this.id)
+    this.contentType.dispatch(
+      actionCreators.field.setAnnotations(
+        this.contentType.id,
+        this.contentType.instanceId,
+        this.id,
+        fieldInstanceId,
+        callsite,
+        annotationIds
+      )
+    )
+
+    return this
+  }
+
+  clearAnnotations() {
+    const callsite = getFirstExternalCaller()
+    const fieldInstanceId = this.contentType.fieldInstanceIds.getNew(this.id)
+    this.contentType.dispatch(
+      actionCreators.field.setAnnotations(
+        this.contentType.id,
+        this.contentType.instanceId,
+        this.id,
+        fieldInstanceId,
+        callsite,
+        undefined
+      )
+    )
+    return this
+  }
+}
+
+class EditorLayout extends DispatchProxy {
+  private contentTypeId: string
+  private instanceId: string
+  public dispatch?(step: Intent): void
+
+  constructor(contentTypeId, instanceId, dispatch) {
+    super({
+      dispatchUpdate: (callsite, propertyName) => {
+        this.dispatch(
+          actionCreators.editorLayout.callInvalidEditorLayoutMethod(
+            this.contentTypeId,
+            this.instanceId,
+            callsite,
+            propertyName
+          )
+        )
+      }
+    })
+
+    this.contentTypeId = contentTypeId
+    this.instanceId = instanceId
+    this.dispatch = dispatch
+  }
+
+  createFieldGroup(fieldGroupId, init) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(
+      actionCreators.editorLayout.createFieldGroup(
+        this.contentTypeId,
+        this.instanceId,
+        callsite,
+        fieldGroupId
+      )
+    )
+
+    return this.editFieldGroup(fieldGroupId, init)
+  }
+
+  changeFieldGroupId(fieldGroupId: string, newFieldGroupId: string) {
+    const callsite = getFirstExternalCaller()
+    return this.dispatch(
+      actionCreators.editorLayout.changeFieldGroupId(
+        this.contentTypeId,
+        this.instanceId,
+        fieldGroupId,
+        newFieldGroupId,
+        callsite
+      )
+    )
+  }
+
+  editFieldGroup(fieldGroupId, init) {
+    const updateFieldGroup = actionCreators.editorLayout.updateFieldGroup.bind(
+      null,
+      this.contentTypeId,
+      this.instanceId,
+      fieldGroupId
+    )
+    return new EditorLayoutFieldGroup(
+      this.contentTypeId,
+      this.instanceId,
+      fieldGroupId,
+      this.dispatch,
+      init,
+      {
+        dispatchUpdate: (callsite, property, value) => {
+          return this.dispatch(updateFieldGroup(callsite, property, value))
+        }
+      }
+    )
+  }
+
+  moveField(fieldId, fieldGroupId) {
+    const movement = new Movement({
+      dispatchUpdate: (callsite, property, value) => {
+        const action = actionCreators.editorLayout.moveField(
+          this.contentTypeId,
+          this.instanceId,
+          fieldId,
+          fieldGroupId,
+          { direction: property, pivot: value },
+          callsite
+        )
+
+        this.dispatch(action)
+      }
+    })
+
+    return movement
+  }
+
+  deleteFieldGroup(fieldGroupId) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(
+      actionCreators.editorLayout.deleteEditorLayoutFieldGroup(
+        this.contentTypeId,
+        this.instanceId,
+        callsite,
+        fieldGroupId
+      )
+    )
+  }
+
+  changeFieldGroupControl(
+    fieldGroupId: string,
+    widgetNamespace: string,
+    widgetId: string,
+    settings?: APIEditorInterfaceSettings
+  ) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(
+      actionCreators.editorLayout.changeFieldGroupControl(
+        this.contentTypeId,
+        this.instanceId,
+        fieldGroupId,
+        callsite,
+        {
+          widgetId,
+          widgetNamespace,
+          settings
+        }
+      )
+    )
+  }
+}
+
+class EditorLayoutFieldGroup extends DispatchProxy {
+  private contentTypeId: string
+  private instanceId: string
+  private fieldGroupId: string
+  public dispatch?(step: Intent): void
+
+  constructor(contentTypeId, instanceId, fieldGroupId, dispatch, props = {}, { dispatchUpdate }) {
+    super({ dispatchUpdate })
+
+    this.contentTypeId = contentTypeId
+    this.instanceId = instanceId
+    this.fieldGroupId = fieldGroupId
+    this.dispatch = dispatch
+
+    // Initialize properties by delegating to dispatchUpdate
+    Object.keys(props).forEach((propertyName) => {
+      this[propertyName](props[propertyName])
+    })
+  }
+
+  createFieldGroup(fieldGroupId, init) {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(
+      actionCreators.editorLayout.createFieldGroup(
+        this.contentTypeId,
+        this.instanceId,
+        callsite,
+        fieldGroupId,
+        this.fieldGroupId
+      )
+    )
+
+    const updateFieldGroup = actionCreators.editorLayout.updateFieldGroup.bind(
+      null,
+      this.contentTypeId,
+      this.instanceId,
+      fieldGroupId
+    )
+    return new EditorLayoutFieldGroup(
+      this.contentTypeId,
+      this.instanceId,
+      fieldGroupId,
+      this.dispatch,
+      init,
+      {
+        dispatchUpdate: (callsite, property, value) => {
+          return this.dispatch(updateFieldGroup(callsite, property, value))
+        }
+      }
+    )
   }
 }
 
@@ -55,9 +270,11 @@ class ContentType extends DispatchProxy {
   public instanceId: string
   public fieldInstanceIds?
 
-  constructor (id, instanceId, props = {}, dispatch) {
+  constructor(id, instanceId, props = {}, dispatch) {
     const dispatchUpdate = (callsite, propertyName, propertyValue) => {
-      dispatch(actionCreators.contentType.update(id, instanceId, callsite, propertyName, propertyValue))
+      dispatch(
+        actionCreators.contentType.update(id, instanceId, callsite, propertyName, propertyValue)
+      )
     }
     super({ dispatchUpdate })
 
@@ -72,16 +289,42 @@ class ContentType extends DispatchProxy {
     })
   }
 
-  public dispatch? (step: Intent): void
+  public dispatch?(step: Intent): void
 
-  createField (id, init) {
+  setAnnotations(annotationIds: string[]) {
+    const callsite = getFirstExternalCaller()
+
+    this.dispatch(
+      actionCreators.contentType.setAnnotations(this.id, this.instanceId, callsite, annotationIds)
+    )
+    return this
+  }
+
+  clearAnnotations() {
+    const callsite = getFirstExternalCaller()
+
+    this.dispatch(
+      actionCreators.contentType.setAnnotations(this.id, this.instanceId, callsite, undefined)
+    )
+    return this
+  }
+
+  createField(id, init) {
     const callsite = getFirstExternalCaller()
     const fieldInstanceId = this.fieldInstanceIds.getNew(id)
 
-    this.dispatch(actionCreators.field.create(this.id, this.instanceId, id, fieldInstanceId, callsite))
+    this.dispatch(
+      actionCreators.field.create(this.id, this.instanceId, id, fieldInstanceId, callsite)
+    )
 
-    const updateField = actionCreators.field.update.bind(null, this.id, this.instanceId, id, fieldInstanceId)
-    const field = new Field(id, init, {
+    const updateField = actionCreators.field.update.bind(
+      null,
+      this.id,
+      this.instanceId,
+      id,
+      fieldInstanceId
+    )
+    const field = new Field(this, id, init, {
       dispatchUpdate: (callsite, property, value) => {
         return this.dispatch(updateField(callsite, property, value))
       }
@@ -90,11 +333,17 @@ class ContentType extends DispatchProxy {
     return field
   }
 
-  editField (id, init) {
+  editField(id, init) {
     const fieldInstanceId = this.fieldInstanceIds.getNew(id)
 
-    const updateField = actionCreators.field.update.bind(null, this.id, this.instanceId, id, fieldInstanceId)
-    const field = new Field(id, init, {
+    const updateField = actionCreators.field.update.bind(
+      null,
+      this.id,
+      this.instanceId,
+      id,
+      fieldInstanceId
+    )
+    const field = new Field(this, id, init, {
       dispatchUpdate: (callsite, property, value) => {
         return this.dispatch(updateField(callsite, property, value))
       }
@@ -103,7 +352,7 @@ class ContentType extends DispatchProxy {
     return field
   }
 
-  moveField (id) {
+  moveField(id) {
     const fieldInstanceId = this.fieldInstanceIds.getNew(id)
 
     const contentTypeId = this.id
@@ -127,162 +376,177 @@ class ContentType extends DispatchProxy {
     return movement
   }
 
-  deleteField (id) {
+  deleteField(id) {
     const callsite = getFirstExternalCaller()
     const fieldInstanceId = this.fieldInstanceIds.getNew(id)
 
-    this.dispatch(actionCreators.field.delete(this.id, this.instanceId, id, fieldInstanceId, callsite))
+    this.dispatch(
+      actionCreators.field.delete(this.id, this.instanceId, id, fieldInstanceId, callsite)
+    )
   }
 
-  changeFieldId (oldId, newId) {
+  changeFieldId(oldId, newId) {
     const callsite = getFirstExternalCaller()
     const fieldInstanceId = this.fieldInstanceIds.getNew(oldId)
-    this.dispatch(actionCreators.field.rename(
-      this.id,
-      this.instanceId,
-      oldId,
-      fieldInstanceId,
-      callsite,
-      newId
-    ))
+    this.dispatch(
+      actionCreators.field.rename(this.id, this.instanceId, oldId, fieldInstanceId, callsite, newId)
+    )
   }
 
-  changeFieldControl (fieldId, widgetNamespace, widgetId, settings) {
+  changeFieldControl(fieldId, widgetNamespace, widgetId, settings) {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.changeEditorInterface(
-      this.id,
-      this.instanceId,
-      callsite,
-      fieldId,
-      widgetId,
-      settings,
-      widgetNamespace
-    ))
+    this.dispatch(
+      actionCreators.contentType.changeEditorInterface(
+        this.id,
+        this.instanceId,
+        callsite,
+        fieldId,
+        widgetId,
+        settings,
+        widgetNamespace
+      )
+    )
     return this
   }
 
   /** deprecated, use changeFieldControl instead */
-  changeEditorInterface (fieldId, widgetId, settings, widgetNamespace) {
+  changeEditorInterface(fieldId, widgetId, settings, widgetNamespace) {
     deprecatedMethod('changeEditorInterface', 'changeFieldControl')
     return this.changeFieldControl(fieldId, widgetNamespace, widgetId, settings)
   }
 
-  copyFieldControl (sourceFieldId, destinationFieldId) {
+  copyFieldControl(sourceFieldId, destinationFieldId) {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.copyEditorInterface(
-      this.id,
-      this.instanceId,
-      callsite,
-      sourceFieldId,
-      destinationFieldId
-    ))
+    this.dispatch(
+      actionCreators.contentType.copyEditorInterface(
+        this.id,
+        this.instanceId,
+        callsite,
+        sourceFieldId,
+        destinationFieldId
+      )
+    )
     return this
   }
 
   /** deprecated, use copyFieldControl instead */
-  copyEditorInterface (sourceFieldId, destinationFieldId) {
+  copyEditorInterface(sourceFieldId, destinationFieldId) {
     deprecatedMethod('copyEditorInterface', 'copyFieldControl')
     return this.copyFieldControl(sourceFieldId, destinationFieldId)
   }
 
-  resetFieldControl (fieldId) {
+  resetFieldControl(fieldId) {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.resetEditorInterface(
-      this.id,
-      this.instanceId,
-      callsite,
-      fieldId
-    ))
+    this.dispatch(
+      actionCreators.contentType.resetEditorInterface(this.id, this.instanceId, callsite, fieldId)
+    )
     return this
   }
 
   /** deprecated, use resetFieldControl instead */
-  resetEditorInterface (fieldId) {
+  resetEditorInterface(fieldId) {
     deprecatedMethod('resetEditorInterface', 'resetFieldControl')
     return this.resetFieldControl(fieldId)
   }
 
-  resetEntryEditor () {
+  resetEntryEditor() {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.resetEntryEditor(
-      this.id,
-      this.instanceId,
-      callsite
-    ))
+    this.dispatch(actionCreators.contentType.resetEntryEditor(this.id, this.instanceId, callsite))
     return this
   }
 
-  configureEntryEditor (widgetNamespace, widgetId, settings?) {
+  configureEntryEditor(widgetNamespace, widgetId, settings?) {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.configureEntryEditor(
-      this.id,
-      this.instanceId,
-      callsite,
-      widgetNamespace,
-      widgetId,
-      settings
-    ))
+    this.dispatch(
+      actionCreators.contentType.configureEntryEditor(
+        this.id,
+        this.instanceId,
+        callsite,
+        widgetNamespace,
+        widgetId,
+        settings
+      )
+    )
     return this
   }
 
-  configureEntryEditors (editors) {
+  configureEntryEditors(editors) {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.configureEntryEditors(
-      this.id,
-      this.instanceId,
-      callsite,
-      editors
-    ))
+    this.dispatch(
+      actionCreators.contentType.configureEntryEditors(this.id, this.instanceId, callsite, editors)
+    )
     return this
   }
 
-  addSidebarWidget (widgetNamespace, widgetId, settings = {}, insertBeforeWidgetId = null) {
+  addSidebarWidget(widgetNamespace, widgetId, settings = {}, insertBeforeWidgetId = null) {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.addSidebarWidget(
-      this.id,
-      this.instanceId,
-      callsite,
-      widgetId,
-      widgetNamespace,
-      insertBeforeWidgetId,
-      settings
-    ))
+    this.dispatch(
+      actionCreators.contentType.addSidebarWidget(
+        this.id,
+        this.instanceId,
+        callsite,
+        widgetId,
+        widgetNamespace,
+        insertBeforeWidgetId,
+        settings
+      )
+    )
     return this
   }
 
-  updateSidebarWidget (widgetNamespace, widgetId, settings = {}) {
+  updateSidebarWidget(widgetNamespace, widgetId, settings = {}) {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.updateSidebarWidget(
-      this.id,
-      this.instanceId,
-      callsite,
-      widgetId,
-      widgetNamespace,
-      settings
-    ))
+    this.dispatch(
+      actionCreators.contentType.updateSidebarWidget(
+        this.id,
+        this.instanceId,
+        callsite,
+        widgetId,
+        widgetNamespace,
+        settings
+      )
+    )
     return this
   }
 
-  removeSidebarWidget (widgetNamespace, widgetId) {
+  removeSidebarWidget(widgetNamespace, widgetId) {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.removeSidebarWidget(
-      this.id,
-      this.instanceId,
-      callsite,
-      widgetId,
-      widgetNamespace
-    ))
+    this.dispatch(
+      actionCreators.contentType.removeSidebarWidget(
+        this.id,
+        this.instanceId,
+        callsite,
+        widgetId,
+        widgetNamespace
+      )
+    )
     return this
   }
 
-  resetSidebarToDefault () {
+  resetSidebarToDefault() {
     const callsite = getFirstExternalCaller()
-    this.dispatch(actionCreators.contentType.resetSidebarToDefault(
-      this.id,
-      this.instanceId,
-      callsite
-    ))
+    this.dispatch(
+      actionCreators.contentType.resetSidebarToDefault(this.id, this.instanceId, callsite)
+    )
     return this
+  }
+
+  createEditorLayout() {
+    const callsite = getFirstExternalCaller()
+    this.dispatch(actionCreators.contentType.createEditorLayout(this.id, this.instanceId, callsite))
+
+    return this.editEditorLayout()
+  }
+
+  editEditorLayout() {
+    return new EditorLayout(this.id, this.instanceId, this.dispatch)
+  }
+
+  deleteEditorLayout() {
+    const callsite = getFirstExternalCaller()
+    return this.dispatch(
+      actionCreators.contentType.deleteEditorLayout(this.id, this.instanceId, callsite)
+    )
   }
 }
 
@@ -290,7 +554,7 @@ class Tag extends DispatchProxy {
   public id: string
   public instanceId: string
 
-  constructor (id, instanceId, props = {}, dispatch) {
+  constructor(id, instanceId, props = {}, dispatch) {
     const dispatchUpdate = (callsite, propertyName, propertyValue) => {
       dispatch(actionCreators.tag.update(id, instanceId, callsite, propertyName, propertyValue))
     }
@@ -306,10 +570,14 @@ class Tag extends DispatchProxy {
     })
   }
 
-  public dispatch? (step: Intent): void
+  public dispatch?(step: Intent): void
 }
 
-export async function migration (migrationCreator: Function, makeRequest: Function, config: ClientConfig): Promise<Intent[]> {
+export async function migration(
+  migrationCreator: Function,
+  makeRequest: Function,
+  config: ClientConfig
+): Promise<Intent[]> {
   const actions: Intent[] = []
   const instanceIdManager = createInstanceIdManager()
 

@@ -9,11 +9,12 @@ module.exports = function (migration) {
     name: 'AssetTestName',
     linkType: 'Asset',
     validations: [
-      { 'assetImageDimensions': {
-        'width': {
-          'min': 1100
+      {
+        assetImageDimensions: {
+          width: {
+            min: 1100
+          }
         }
-      }
       }
     ]
   });

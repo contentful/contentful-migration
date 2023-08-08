@@ -5,35 +5,32 @@ import chalk from 'chalk'
 import { entries } from 'lodash'
 
 export default class ContentTypeUpdateIntent extends Intent {
-  isContentTypeUpdate () {
+  isContentTypeUpdate() {
     return true
   }
 
-  groupsWith (other: Intent): boolean {
+  groupsWith(other: Intent): boolean {
     const sameContentType = other.getContentTypeId() === this.getContentTypeId()
     return (
-      other.isContentTypeUpdate() ||
-      other.isContentTypeCreate() ||
-      other.isFieldCreate() ||
-      other.isFieldUpdate() ||
-      other.isFieldMove()
-   ) && sameContentType
+      (other.isContentTypeUpdate() ||
+        other.isContentTypeCreate() ||
+        other.isContentTypeAnnotate() ||
+        other.isFieldCreate() ||
+        other.isFieldUpdate() ||
+        other.isFieldMove()) &&
+      sameContentType
+    )
   }
 
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return false
   }
 
-  toActions () {
-    return [
-      new ContentTypeUpdateAction(
-        this.getContentTypeId(),
-        this.payload.props
-      )
-    ]
+  toActions() {
+    return [new ContentTypeUpdateAction(this.getContentTypeId(), this.payload.props)]
   }
 
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     const details = entries(this.payload.props).map(([key, value]) => {
       return chalk`{italic ${key}}: ${JSON.stringify(value)}`
     })

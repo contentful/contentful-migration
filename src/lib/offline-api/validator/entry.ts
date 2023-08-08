@@ -4,5 +4,5 @@ import { PayloadValidationError, InvalidActionError } from '../../interfaces/err
 
 export interface EntryValidator {
   hooks: ApiHook[]
-  validate (entry: Entry): (InvalidActionError | PayloadValidationError)[]
+  validate(entry: Entry): (InvalidActionError | PayloadValidationError)[]
 }

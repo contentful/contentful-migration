@@ -1,24 +1,29 @@
-'use strict';
+'use strict'
 
-const { expect } = require('chai');
-const _ = require('lodash');
-const assert = require('./assertions');
-const cli = require('./cli');
-const { createDevEnvironment, deleteDevEnvironment, getEntries, makeRequest } = require('../helpers/client');
-const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
+const { expect } = require('chai')
+const _ = require('lodash')
+const assert = require('./assertions')
+const cli = require('./cli')
+const {
+  createDevEnvironment,
+  deleteDevEnvironment,
+  getEntries,
+  makeRequest
+} = require('../helpers/client')
+const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID
 
-const uuid = require('uuid');
-const ENVIRONMENT_ID = uuid.v4();
+const uuid = require('uuid')
+const ENVIRONMENT_ID = uuid.v4()
 
 describe('apply content transformation', function () {
-  this.timeout(30000);
-  let environmentId;
-  let request;
+  this.timeout(30000)
+  let environmentId
+  let request
 
   before(async function () {
-    this.timeout(30000);
-    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID);
-    request = makeRequest.bind(null, SOURCE_TEST_SPACE, environmentId);
+    this.timeout(30000)
+    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
+    request = makeRequest.bind(null, SOURCE_TEST_SPACE, environmentId)
     await request({
       method: 'PUT',
       url: '/content_types/newsArticle',
@@ -42,8 +47,7 @@ describe('apply content transformation', function () {
           }
         ]
       }
-    });
-
+    })
 
     await request({
       method: 'PUT',
@@ -51,8 +55,7 @@ describe('apply content transformation', function () {
       headers: {
         'X-Contentful-Version': 1
       }
-    });
-
+    })
 
     await request({
       method: 'PUT',
@@ -61,8 +64,7 @@ describe('apply content transformation', function () {
         name: 'test',
         sys: { id: 'test' }
       }
-    });
-
+    })
 
     await request({
       method: 'PUT',
@@ -71,7 +73,7 @@ describe('apply content transformation', function () {
         name: 'old',
         sys: { id: 'old' }
       }
-    });
+    })
 
     await request({
       method: 'POST',
@@ -81,8 +83,8 @@ describe('apply content transformation', function () {
       },
       data: {
         fields: {
-          'author': { 'en-US': 'Jane Austen' },
-          'authorCity': { 'en-US': 'Steventon' }
+          author: { 'en-US': 'Jane Austen' },
+          authorCity: { 'en-US': 'Steventon' }
         },
         metadata: {
           tags: [
@@ -96,31 +98,37 @@ describe('apply content transformation', function () {
           ]
         }
       }
-    });
-  });
+    })
+  })
 
   after(async function () {
-    await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId);
-  });
+    await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId)
+  })
 
   it('aborts 12-transform-content', function (done) {
     cli()
-      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/12-transform-content.js`)
-      .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('n\n')
+      .run(
+        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/12-transform-content.js`
+      )
+      .on(/\? Do you want to apply the migration \(Y\/n\)/)
+      .respond('n\n')
       .expect(assert.plans.entriesTransform('newsArticle'))
       .expect(assert.plans.actions.abort())
-      .end(done);
-  });
+      .end(done)
+  })
 
   it('applies 12-transform-content', function (done) {
     cli()
-      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/12-transform-content.js`)
-      .on(/\? Do you want to apply the migration \(Y\/n\)/).respond('y\n')
+      .run(
+        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/12-transform-content.js`
+      )
+      .on(/\? Do you want to apply the migration \(Y\/n\)/)
+      .respond('y\n')
       .expect(assert.plans.actions.apply())
       .end(async function () {
-        const res = await getEntries(SOURCE_TEST_SPACE, environmentId, 'newsArticle');
-        const entriesWithoutSysAndMetadata = res.items.map(i => _.omit(i, ['sys', 'metadata']));
-        const metadata = res.items[0].metadata;
+        const res = await getEntries(SOURCE_TEST_SPACE, environmentId, 'newsArticle')
+        const entriesWithoutSysAndMetadata = res.items.map((i) => _.omit(i, ['sys', 'metadata']))
+        const metadata = res.items[0].metadata
         const expected = [
           {
             fields: {
@@ -129,17 +137,21 @@ describe('apply content transformation', function () {
               byline: { 'en-US': 'Jane Austen Steventon' }
             }
           }
-        ];
-        expect(entriesWithoutSysAndMetadata).to.eql(expected);
-        expect(metadata.tags.length).to.eql(1);
-        done();
-      });
-  });
+        ]
+        expect(entriesWithoutSysAndMetadata).to.eql(expected)
+        expect(metadata.tags.length).to.eql(1)
+        done()
+      })
+  })
 
   it('applies 14-transform-content-error', function (done) {
     cli()
-      .run(`--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/14-transform-content-error.js`)
-      .expect(assert.errors.entriesTransform('newsArticle', '1 errors while transforming this content.'))
-      .end(done);
-  });
-});
+      .run(
+        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/14-transform-content-error.js`
+      )
+      .expect(
+        assert.errors.entriesTransform('newsArticle', '1 errors while transforming this content.')
+      )
+      .end(done)
+  })
+})

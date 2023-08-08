@@ -1,3 +1,11 @@
+import { AnnotationLink } from './annotation'
+
+interface AllowedResource {
+  type: 'Contentful:Entry'
+  source: string
+  contentTypes: string[]
+}
+
 interface Field {
   id: string
   newId?: string
@@ -16,17 +24,26 @@ interface Field {
   validations?: any[]
   disabled?: boolean
   defaultValue?: { [locale: string]: any }
+  allowedResources?: AllowedResource[]
+}
+
+type ContentTypeMetadata = {
+  annotations?: {
+    ContentType?: AnnotationLink[]
+    ContentTypeField?: Record<string, AnnotationLink[]>
+  }
 }
 
 interface APIContentType {
   sys: {
-    id: string,
+    id: string
     version: number
-  },
-  fields: Field[],
-  name: string,
-  description?: string,
+  }
+  fields: Field[]
+  name: string
+  description?: string
   displayField?: string
+  metadata?: ContentTypeMetadata
 }
 
 type APIParameterValue = number | boolean | string
@@ -39,9 +56,16 @@ type APISidebarWidgetNamespace = 'sidebar-builtin' | 'extension' | 'app'
 type APIControlWidgetNamespace = 'builtin' | 'extension' | 'app'
 
 interface APIEditorInterfaceControl {
-  fieldId: string,
-  widgetId?: string,
-  widgetNamespace?: APIControlWidgetNamespace,
+  fieldId: string
+  widgetId?: string
+  widgetNamespace?: APIControlWidgetNamespace
+  settings?: APIEditorInterfaceSettings
+}
+
+interface APIEditorInterfaceGroupControl {
+  groupId: string
+  widgetId?: string
+  widgetNamespace?: string
   settings?: APIEditorInterfaceSettings
 }
 
@@ -50,26 +74,42 @@ interface APISidebarWidgetSettings {
 }
 
 interface APIEditorInterfaceSidebar {
-  widgetId: string,
-  widgetNamespace: APISidebarWidgetNamespace,
-  disabled?: boolean,
+  widgetId: string
+  widgetNamespace: APISidebarWidgetNamespace
+  disabled?: boolean
   settings?: APISidebarWidgetSettings
 }
 
 interface APIEditorIntefaceEditor {
-  widgetId: string,
-  widgetNamespace: APIControlWidgetNamespace,
+  widgetId: string
+  widgetNamespace: APIControlWidgetNamespace
   settings?: { [key: string]: APIParameterValue }
 }
+
+interface APIEditorLayoutFieldGroupItem {
+  groupId: string
+  name?: string
+  items: APIEditorLayoutItem[]
+}
+
+interface APIEditorLayoutFieldItem {
+  fieldId: string
+}
+
+type APIEditorLayoutItem = APIEditorLayoutFieldItem | APIEditorLayoutFieldGroupItem
+
+type APIEditorInterfaceEditorLayout = APIEditorLayoutFieldGroupItem[]
 
 interface APIEditorInterfaces {
   sys: {
     version: number
-  },
-  controls: APIEditorInterfaceControl[],
-  sidebar?: APIEditorInterfaceSidebar[],
+  }
+  controls: APIEditorInterfaceControl[]
+  sidebar?: APIEditorInterfaceSidebar[]
   editor?: APIEditorIntefaceEditor
   editors?: APIEditorIntefaceEditor[]
+  editorLayout?: APIEditorInterfaceEditorLayout
+  groupControls?: APIEditorInterfaceGroupControl[]
 }
 
 export {
@@ -78,10 +118,14 @@ export {
   Field,
   APIEditorInterfaces,
   APIEditorInterfaceControl,
+  APIEditorInterfaceGroupControl,
   APIEditorInterfaceSettings,
   APIEditorInterfaceSidebar,
   APIEditorIntefaceEditor,
+  APIEditorInterfaceEditorLayout,
+  APIEditorLayoutFieldGroupItem,
   APISidebarWidgetSettings,
   APIControlWidgetNamespace,
-  APISidebarWidgetNamespace
+  APISidebarWidgetNamespace,
+  ContentTypeMetadata
 }

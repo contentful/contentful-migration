@@ -1,33 +1,30 @@
-'use strict';
+'use strict'
 
-const { expect } = require('chai');
-const cli = require('./cli');
+const { expect } = require('chai')
+const cli = require('./cli')
 const {
   createDevEnvironment,
   deleteDevEnvironment,
   getDevEditorInterface
-} = require('../helpers/client');
+} = require('../helpers/client')
 
-const uuid = require('uuid');
-const ENVIRONMENT_ID = uuid.v4();
+const uuid = require('uuid')
+const ENVIRONMENT_ID = uuid.v4()
 
-const SOURCE_TEST_SPACE = process.env.CONTENTFUL_INTEGRATION_SOURCE_SPACE;
+const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID
 
 describe('apply entry extension migration examples', function () {
-  this.timeout(30000);
-  let environmentId;
+  this.timeout(30000)
+  let environmentId
 
   before(async () => {
-    this.timeout(30000);
-    environmentId = await createDevEnvironment(
-      SOURCE_TEST_SPACE,
-      ENVIRONMENT_ID
-    );
-  });
+    this.timeout(30000)
+    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
+  })
 
   after(async () => {
-    await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId);
-  });
+    await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId)
+  })
 
   it('migrates the editor with 25-configure-entry-editor.js', function (done) {
     cli()
@@ -41,18 +38,17 @@ describe('apply entry extension migration examples', function () {
           SOURCE_TEST_SPACE,
           environmentId,
           'customEntryEditor_v5'
-        );
-        const editor = editorInterfaces.editor;
-
+        )
+        const editor = editorInterfaces.editor
 
         expect(editor).to.eql({
           settings: {},
           widgetId: 'customEntryEditor_v5',
           widgetNamespace: 'extension'
-        });
-        done();
-      });
-  });
+        })
+        done()
+      })
+  })
 
   it('migrates the editor with 26-reset-entry-editor.js', function (done) {
     cli()
@@ -66,10 +62,10 @@ describe('apply entry extension migration examples', function () {
           SOURCE_TEST_SPACE,
           environmentId,
           'resetEntryEditor_v5'
-        );
-        const editor = editorInterfaces.editor;
-        expect(editor).to.eql(undefined);
-        done();
-      });
-  });
-});
+        )
+        const editor = editorInterfaces.editor
+        expect(editor).to.eql(undefined)
+        done()
+      })
+  })
+})

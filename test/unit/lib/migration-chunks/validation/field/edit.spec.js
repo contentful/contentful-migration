@@ -1,235 +1,254 @@
-'use strict';
+'use strict'
 
-const { expect } = require('chai');
-const Bluebird = require('bluebird');
+const { expect } = require('chai')
+const Bluebird = require('bluebird')
 
-const validateChunks = require('../validate-chunks').default;
+const validateChunks = require('../validate-chunks').default
 
 describe('field editing plan validation', function () {
   describe('when editing a field that does not exist', function () {
-    it('returns an error', Bluebird.coroutine(function * () {
-      const contentTypes = [];
-      const errors = yield validateChunks(function up (migration) {
-        const person = migration.createContentType('person', {
-          description: 'A content type for a person',
-          name: 'foo'
-        });
+    it(
+      'returns an error',
+      Bluebird.coroutine(function* () {
+        const contentTypes = []
+        const errors = yield validateChunks(function up(migration) {
+          const person = migration.createContentType('person', {
+            description: 'A content type for a person',
+            name: 'foo'
+          })
 
-        person.editField('name').name('foo').required(true);
-      }, contentTypes);
+          person.editField('name').name('foo').required(true)
+        }, contentTypes)
 
-      expect(errors).to.eql([
-        {
-          type: 'InvalidAction',
-          message: 'You cannot edit field "name" because it does not exist.',
-          details: {
-            step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/0'
-              },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'props': {
-                  'name': 'foo'
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'You cannot edit field "name" because it does not exist.',
+            details: {
+              step: {
+                type: 'field/update',
+                meta: {
+                  contentTypeInstanceId: 'contentType/person/0',
+                  fieldInstanceId: 'fields/name/0'
+                },
+                payload: {
+                  contentTypeId: 'person',
+                  fieldId: 'name',
+                  props: {
+                    name: 'foo'
+                  }
+                }
+              }
+            }
+          },
+          {
+            type: 'InvalidAction',
+            message: 'You cannot edit field "name" because it does not exist.',
+            details: {
+              step: {
+                type: 'field/update',
+                meta: {
+                  contentTypeInstanceId: 'contentType/person/0',
+                  fieldInstanceId: 'fields/name/0'
+                },
+                payload: {
+                  contentTypeId: 'person',
+                  fieldId: 'name',
+                  props: {
+                    required: true
+                  }
                 }
               }
             }
           }
-        },
-        {
-          type: 'InvalidAction',
-          message: 'You cannot edit field "name" because it does not exist.',
-          details: {
-            step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/0'
-              },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'props': {
-                  'required': true
-                }
-              }
-            }
-          }
-        }
-      ]);
-    }));
-  });
+        ])
+      })
+    )
+  })
 
   describe('when editing a field that was deleted', function () {
-    it('returns an error', Bluebird.coroutine(function * () {
-      const contentTypes = [];
-      const errors = yield validateChunks(function up (migration) {
-        const person = migration.createContentType('person', {
-          description: 'A content type for a person',
-          name: 'foo'
-        });
+    it(
+      'returns an error',
+      Bluebird.coroutine(function* () {
+        const contentTypes = []
+        const errors = yield validateChunks(function up(migration) {
+          const person = migration.createContentType('person', {
+            description: 'A content type for a person',
+            name: 'foo'
+          })
 
-        const nameField = person.createField('name').type('Symbol');
+          const nameField = person.createField('name').type('Symbol')
 
-        person.deleteField('name');
+          person.deleteField('name')
 
-        nameField.required(true);
-      }, contentTypes);
+          nameField.required(true)
+        }, contentTypes)
 
-      expect(errors).to.eql([
-        {
-          type: 'InvalidAction',
-          message: 'You cannot edit field "name" because it has already been deleted.',
-          details: {
-            step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/0'
-              },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'props': {
-                  'required': true
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message: 'You cannot edit field "name" because it has already been deleted.',
+            details: {
+              step: {
+                type: 'field/update',
+                meta: {
+                  contentTypeInstanceId: 'contentType/person/0',
+                  fieldInstanceId: 'fields/name/0'
+                },
+                payload: {
+                  contentTypeId: 'person',
+                  fieldId: 'name',
+                  props: {
+                    required: true
+                  }
                 }
               }
             }
           }
-        }
-      ]);
-    }));
-  });
+        ])
+      })
+    )
+  })
 
   describe('when editing a field on a content type that does not exist', function () {
-    it('returns an error', Bluebird.coroutine(function * () {
-      const contentTypes = [];
-      const errors = yield validateChunks(function up (migration) {
-        const person = migration.editContentType('person');
+    it(
+      'returns an error',
+      Bluebird.coroutine(function* () {
+        const contentTypes = []
+        const errors = yield validateChunks(function up(migration) {
+          const person = migration.editContentType('person')
 
-        person.editField('name').type('Symbol');
-      }, contentTypes);
+          person.editField('name').type('Symbol')
+        }, contentTypes)
 
-      expect(errors).to.eql([
-        {
-          type: 'InvalidAction',
-          message: 'You cannot edit field "name" on content type "person" because it does not exist.',
-          details: {
-            step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/0'
-              },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'props': {
-                  'type': 'Symbol'
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message:
+              'You cannot edit field "name" on content type "person" because it does not exist.',
+            details: {
+              step: {
+                type: 'field/update',
+                meta: {
+                  contentTypeInstanceId: 'contentType/person/0',
+                  fieldInstanceId: 'fields/name/0'
+                },
+                payload: {
+                  contentTypeId: 'person',
+                  fieldId: 'name',
+                  props: {
+                    type: 'Symbol'
+                  }
                 }
               }
             }
           }
-        }
-      ]);
-    }));
-  });
+        ])
+      })
+    )
+  })
 
   describe('when setting the same prop more than once in one chunk', function () {
-    it('returns an error', Bluebird.coroutine(function * () {
-      const contentTypes = [];
-      const errors = yield validateChunks(function up (migration) {
-        const person = migration.createContentType('person');
+    it(
+      'returns an error',
+      Bluebird.coroutine(function* () {
+        const contentTypes = []
+        const errors = yield validateChunks(function up(migration) {
+          const person = migration.createContentType('person')
 
-        person.createField('name').type('Symbol');
-        person.editField('name').required(false);
-        person.editField('name').localized(false);
-        person.editField('name').validations();
-        person.editField('name').required(true);
-        person.editField('name').type('Text');
-        person.editField('name').type('Number');
-      }, contentTypes);
+          person.createField('name').type('Symbol')
+          person.editField('name').required(false)
+          person.editField('name').localized(false)
+          person.editField('name').validations()
+          person.editField('name').required(true)
+          person.editField('name').type('Text')
+          person.editField('name').type('Number')
+        }, contentTypes)
 
-      expect(errors).to.eql([
-        {
-          type: 'InvalidAction',
-          message: 'You are setting the property "required" on field "name" more than once. Please set it only once.',
-          details: {
-            step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/4'
-              },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'props': {
-                  'required': true
+        expect(errors).to.eql([
+          {
+            type: 'InvalidAction',
+            message:
+              'You are setting the property "required" on field "name" more than once. Please set it only once.',
+            details: {
+              step: {
+                type: 'field/update',
+                meta: {
+                  contentTypeInstanceId: 'contentType/person/0',
+                  fieldInstanceId: 'fields/name/4'
+                },
+                payload: {
+                  contentTypeId: 'person',
+                  fieldId: 'name',
+                  props: {
+                    required: true
+                  }
+                }
+              }
+            }
+          },
+          {
+            type: 'InvalidAction',
+            message:
+              'You are setting the property "type" on field "name" more than once. Please set it only once.',
+            details: {
+              step: {
+                type: 'field/update',
+                meta: {
+                  contentTypeInstanceId: 'contentType/person/0',
+                  fieldInstanceId: 'fields/name/5'
+                },
+                payload: {
+                  contentTypeId: 'person',
+                  fieldId: 'name',
+                  props: {
+                    type: 'Text'
+                  }
+                }
+              }
+            }
+          },
+          {
+            type: 'InvalidAction',
+            message:
+              'You are setting the property "type" on field "name" more than once. Please set it only once.',
+            details: {
+              step: {
+                type: 'field/update',
+                meta: {
+                  contentTypeInstanceId: 'contentType/person/0',
+                  fieldInstanceId: 'fields/name/6'
+                },
+                payload: {
+                  contentTypeId: 'person',
+                  fieldId: 'name',
+                  props: {
+                    type: 'Number'
+                  }
                 }
               }
             }
           }
-        },
-        {
-          type: 'InvalidAction',
-          message: 'You are setting the property "type" on field "name" more than once. Please set it only once.',
-          details: {
-            step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/5'
-              },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'props': {
-                  'type': 'Text'
-                }
-              }
-            }
-          }
-        },
-        {
-          type: 'InvalidAction',
-          message: 'You are setting the property "type" on field "name" more than once. Please set it only once.',
-          details: {
-            step: {
-              'type': 'field/update',
-              'meta': {
-                'contentTypeInstanceId': 'contentType/person/0',
-                'fieldInstanceId': 'fields/name/6'
-              },
-              'payload': {
-                'contentTypeId': 'person',
-                'fieldId': 'name',
-                'props': {
-                  'type': 'Number'
-                }
-              }
-            }
-          }
-        }
-      ]);
-    }));
-  });
+        ])
+      })
+    )
+  })
 
   describe('when setting the same prop more than once but in separate chunks', function () {
-    it('does not return errors', Bluebird.coroutine(function * () {
-      const contentTypes = [];
-      const errors = yield validateChunks(function up (migration) {
-        const person = migration.createContentType('person');
+    it(
+      'does not return errors',
+      Bluebird.coroutine(function* () {
+        const contentTypes = []
+        const errors = yield validateChunks(function up(migration) {
+          const person = migration.createContentType('person')
 
-        person.createField('name').type('Symbol');
-        migration.createContentType('chunkSeparator');
-        person.editField('name').type('Text');
-      }, contentTypes);
+          person.createField('name').type('Symbol')
+          migration.createContentType('chunkSeparator')
+          person.editField('name').type('Text')
+        }, contentTypes)
 
-      expect(errors).to.eql([]);
-    }));
-  });
-});
+        expect(errors).to.eql([])
+      })
+    )
+  })
+})

@@ -25,37 +25,40 @@ class ParseResult {
   public stepsValidationErrors: ValidationError[] = []
   public payloadValidationErrors: InvalidActionError[] | ValidationError[] = []
 
-  hasValidationErrors () {
-    return this.batches.some(batch => batch.validationErrors.length > 0)
+  hasValidationErrors() {
+    return this.batches.some((batch) => batch.validationErrors.length > 0)
   }
 
-  hasRuntimeErrors () {
-    return this.batches.some(batch => batch.runtimeErrors.length > 0)
+  hasRuntimeErrors() {
+    return this.batches.some((batch) => batch.runtimeErrors.length > 0)
   }
 
-  hasStepsValidationErrors () {
+  hasStepsValidationErrors() {
     return this.stepsValidationErrors.length > 0
   }
 
-  hasPayloadValidationErrors () {
+  hasPayloadValidationErrors() {
     return this.payloadValidationErrors.length > 0
   }
 
-  getRuntimeErrors () {
+  getRuntimeErrors() {
     return this.batches.reduce((errors, batch) => {
       return errors.concat(batch.runtimeErrors)
     }, [])
   }
 
-  getValidationErrors () {
+  getValidationErrors() {
     return this.batches.reduce((errors, batch) => {
       return errors.concat(batch.validationErrors)
     }, [])
   }
 }
 
-const createMigrationParser = function (makeRequest: Function, config: ClientConfig): (migrationCreator: (migration: any) => any) => Promise<ParseResult> {
-  return async function migration (migrationCreator) {
+const createMigrationParser = function (
+  makeRequest: Function,
+  config: ClientConfig
+): (migrationCreator: (migration: any) => any) => Promise<ParseResult> {
+  return async function migration(migrationCreator) {
     const fetcher = new Fetcher(makeRequest, config.requestBatchSize)
     const parseResult = new ParseResult()
     const intents = await buildIntents(migrationCreator, makeRequest, config)
@@ -96,7 +99,7 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
       throw new errors.EditorInterfacesFetchingError()
     }
 
-    const existingEditorInterfaces: Map<String, EditorInterfaces> = new Map()
+    const existingEditorInterfaces: Map<string, EditorInterfaces> = new Map()
     for (const [contentTypeId, apiEi] of apiEditorInterfaces) {
       const editorInterfaces = new EditorInterfaces(apiEi)
       existingEditorInterfaces.set(contentTypeId, editorInterfaces)
@@ -136,7 +139,7 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
       return new Tag(apiTag)
     })
 
-    const payloadValidationErrors = validateChunks(intentList, ctsWithEntryInfo, tags)
+    const payloadValidationErrors = validateChunks(intentList, ctsWithEntryInfo, existingEditorInterfaces, tags)
 
     if (payloadValidationErrors.length) {
       parseResult.payloadValidationErrors = payloadValidationErrors
@@ -145,7 +148,13 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
 
     const locales = await fetcher.getLocalesForSpace()
 
-    const api = new OfflineAPI({ contentTypes: existingCts, entries, locales, editorInterfacesByContentType: existingEditorInterfaces, tags: existingTags })
+    const api = new OfflineAPI({
+      contentTypes: existingCts,
+      entries,
+      locales,
+      editorInterfacesByContentType: existingEditorInterfaces,
+      tags: existingTags
+    })
 
     await intentList.compressed().applyTo(api)
 
@@ -156,8 +165,4 @@ const createMigrationParser = function (makeRequest: Function, config: ClientCon
   }
 }
 
-export {
-  createMigrationParser as default,
-  createMigrationParser,
-  ParseResult
-}
+export { createMigrationParser as default, createMigrationParser, ParseResult }

@@ -23,7 +23,8 @@ describe('payload validation (display field)', function () {
         [
           {
             type: 'InvalidAction',
-            message: 'Cannot set "dessert" as displayField on content type "lunch" because it does not exist'
+            message:
+              'Cannot set "dessert" as displayField on content type "lunch" because it does not exist'
           }
         ],
         [],
@@ -41,9 +42,7 @@ describe('payload validation (display field)', function () {
         lunch.displayField('dessert')
       }, [])
 
-      expect(errors).to.eql([
-        []
-      ])
+      expect(errors).to.eql([[]])
     })
   })
 
@@ -66,7 +65,8 @@ describe('payload validation (display field)', function () {
         [
           {
             type: 'InvalidAction',
-            message: 'Cannot delete field "dessert" on content type "lunch" because it is set as the display field'
+            message:
+              'Cannot delete field "dessert" on content type "lunch" because it is set as the display field'
           }
         ]
       ])

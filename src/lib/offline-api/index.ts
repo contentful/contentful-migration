@@ -11,17 +11,21 @@ import { PayloadValidationError, InvalidActionError } from '../interfaces/errors
 import DisplayFieldValidator from './validator/display-field'
 import SchemaValidator from './validator/schema/index'
 import TypeChangeValidator from './validator/type-change'
+import AnnotationValidator from './validator/annotations'
 import TagsOnEntryValidator from './validator/tags-on-entry'
 import { Intent } from '../interfaces/intent'
 import APIEntry from '../interfaces/api-entry'
 import APITag, { TagVisibility } from '../interfaces/api-tag'
 import Link from '../entities/link'
+import { EditorInterfaceSchemaValidator } from './validator/editor-interface'
+import FieldGroupsCountValidator from './validator/field-groups-count'
+import ResourceLinksValidator from './validator/resource-links'
 
 interface RequestBatch {
   intent: Intent
   requests: Request[]
-  validationErrors: (PayloadValidationError | InvalidActionError)[],
-  runtimeErrors: Error[],
+  validationErrors: (PayloadValidationError | InvalidActionError)[]
+  runtimeErrors: Error[]
 }
 
 interface OfflineApiOptions {
@@ -37,12 +41,13 @@ export enum ApiHook {
   PublishContentType = 'PUBLISH_CONTENT_TYPE',
   UnpublishContentType = 'UNPUBLISH_CONTENT_TYPE',
   SaveTag = 'SAVE_TAG',
-  SaveEntry = 'SAVE_ENTRY'
+  SaveEntry = 'SAVE_ENTRY',
+  SaveEditorInterface = 'SAVE_EDITOR_INTERFACE'
 }
 
 const saveContentTypeRequest = function (ct: ContentType): Request {
   const apiContentType = omit(ct.toAPI(), 'sys')
-  apiContentType.fields = apiContentType.fields.filter(field => !field.deleted)
+  apiContentType.fields = apiContentType.fields.filter((field) => !field.deleted)
   return {
     method: 'PUT',
     url: `/content_types/${ct.id}`,
@@ -126,7 +131,10 @@ const deleteRequest = function (ct: ContentType): Request {
   }
 }
 
-const saveEditorInterfacesRequest = function (contentTypeId: string, editorInterfaces: EditorInterfaces): Request {
+const saveEditorInterfacesRequest = function (
+  contentTypeId: string,
+  editorInterfaces: EditorInterfaces
+): Request {
   return {
     method: 'PUT',
     url: `/content_types/${contentTypeId}/editor_interface`,
@@ -171,13 +179,14 @@ class OfflineAPI {
   private intent: Intent = null
   private requestBatches: RequestBatch[] = []
   private contentTypeValidators: ContentTypePayloadValidator[] = []
+  private editorInterfaceValidators: EditorInterfaceSchemaValidator[] = []
   private locales: string[] = []
   private modifiedTags: Map<String, Tag> = null
   private savedTags: Map<String, Tag> = null
   private tagValidators: TagSchemaValidator[] = []
   private entryValidators: EntryValidator[] = []
 
-  constructor (options: OfflineApiOptions) {
+  constructor(options: OfflineApiOptions) {
     const {
       contentTypes,
       entries,
@@ -207,10 +216,19 @@ class OfflineAPI {
       this.publishedContentTypes.set(id, contentType.clone())
     }
 
-    this.contentTypeValidators.push(new FieldDeletionValidator())
-    this.contentTypeValidators.push(new DisplayFieldValidator())
-    this.contentTypeValidators.push(new SchemaValidator())
-    this.contentTypeValidators.push(new TypeChangeValidator())
+    this.contentTypeValidators.push(
+      new FieldDeletionValidator(),
+      new DisplayFieldValidator(),
+      new SchemaValidator(),
+      new TypeChangeValidator(),
+      new AnnotationValidator(),
+      new ResourceLinksValidator()
+    )
+
+    this.editorInterfaceValidators.push(
+      new EditorInterfaceSchemaValidator(),
+      new FieldGroupsCountValidator()
+    )
 
     this.tagValidators.push(new TagSchemaValidator())
 
@@ -223,7 +241,7 @@ class OfflineAPI {
     this.locales = locales
   }
 
-  async getContentType (id: string): Promise<ContentType> {
+  async getContentType(id: string): Promise<ContentType> {
     if (!this.hasContentType(id)) {
       throw new Error(`Cannot get Content Type ${id} because it does not exist`)
     }
@@ -231,19 +249,21 @@ class OfflineAPI {
     return this.modifiedContentTypes.get(id)
   }
 
-  async getEditorInterfaces (contentTypeId: string): Promise<EditorInterfaces> {
+  async getEditorInterfaces(contentTypeId: string): Promise<EditorInterfaces> {
     if (!this.editorInterfaces.has(contentTypeId)) {
-      throw new Error(`Cannot get editor interfaces for Content Type ${contentTypeId} because it does not exist`)
+      throw new Error(
+        `Cannot get editor interfaces for Content Type ${contentTypeId} because it does not exist`
+      )
     }
 
     return this.editorInterfaces.get(contentTypeId)
   }
 
-  async hasContentType (id: string): Promise<boolean> {
+  async hasContentType(id: string): Promise<boolean> {
     return this.modifiedContentTypes.has(id)
   }
 
-  async createContentType (id: string): Promise<ContentType> {
+  async createContentType(id: string): Promise<ContentType> {
     this.assertRecording()
 
     const ct = new ContentType({ sys: { id, version: 0 }, fields: [], name: undefined })
@@ -253,7 +273,7 @@ class OfflineAPI {
     return ct
   }
 
-  async saveContentType (id: string): Promise<ContentType> {
+  async saveContentType(id: string): Promise<ContentType> {
     this.assertRecording()
 
     const hasContentType = this.modifiedContentTypes.has(id)
@@ -287,7 +307,7 @@ class OfflineAPI {
     return ct
   }
 
-  async publishContentType (id: string): Promise<ContentType> {
+  async publishContentType(id: string): Promise<ContentType> {
     this.assertRecording()
 
     const ct = await this.getContentType(id)
@@ -319,7 +339,7 @@ class OfflineAPI {
     return ct
   }
 
-  async unpublishContentType (id: string): Promise<ContentType> {
+  async unpublishContentType(id: string): Promise<ContentType> {
     this.assertRecording()
 
     const ct = await this.getContentType(id)
@@ -348,7 +368,7 @@ class OfflineAPI {
     return ct
   }
 
-  async deleteContentType (id: string) {
+  async deleteContentType(id: string) {
     this.assertRecording()
 
     const ct = await this.getContentType(id)
@@ -358,21 +378,30 @@ class OfflineAPI {
     this.modifiedContentTypes.delete(id)
     this.publishedContentTypes.delete(id)
     this.savedContentTypes.delete(id)
-
   }
 
-  async saveEditorInterfaces (contentTypeId: string) {
+  async saveEditorInterfaces(contentTypeId: string) {
     this.assertRecording()
     if (!this.editorInterfaces.has(contentTypeId)) {
-      throw new Error(`Cannot save editor interfaces for Content Type ${contentTypeId} because they do not exist`)
+      throw new Error(
+        `Cannot save editor interfaces for Content Type ${contentTypeId} because they do not exist`
+      )
     }
     const editorInterfaces = this.editorInterfaces.get(contentTypeId)
     this.currentRequestsRecorded.push(saveEditorInterfacesRequest(contentTypeId, editorInterfaces))
     editorInterfaces.version = editorInterfaces.version + 1
+
+    for (const validator of this.editorInterfaceValidators) {
+      if (validator.hooks.includes(ApiHook.SaveEditorInterface)) {
+        const errors = validator.validate(editorInterfaces)
+        this.currentValidationErrorsRecorded = this.currentValidationErrorsRecorded.concat(errors)
+      }
+    }
+
     return editorInterfaces
   }
 
-  async createEntry (contentTypeId: string, id: string): Promise<Entry> {
+  async createEntry(contentTypeId: string, id: string): Promise<Entry> {
     this.assertRecording()
 
     const entryData: APIEntry = {
@@ -393,7 +422,7 @@ class OfflineAPI {
     return entry
   }
 
-  async saveEntry (id: string) {
+  async saveEntry(id: string) {
     this.assertRecording()
 
     const hasEntry = await this.hasEntry(id)
@@ -422,18 +451,18 @@ class OfflineAPI {
     return entry
   }
 
-  async hasEntry (id: string): Promise<boolean> {
+  async hasEntry(id: string): Promise<boolean> {
     return this.entries.some((entry) => entry.id === id)
   }
 
-  async publishEntry (id: string): Promise<Entry> {
+  async publishEntry(id: string): Promise<Entry> {
     this.assertRecording()
 
     const hasEntry = this.entries.some((entry) => entry.id === id)
 
     if (!hasEntry) {
       throw new Error(`Cannot publish Entry ${id} because it does not exist`)
-    }    // Store clone as a request
+    } // Store clone as a request
     const entry = this.entries.find((entry) => entry.id === id)
 
     this.currentRequestsRecorded.push(publishEntryRequest(entry.clone()))
@@ -445,7 +474,7 @@ class OfflineAPI {
     return entry
   }
 
-  async unpublishEntry (id: string): Promise<Entry> {
+  async unpublishEntry(id: string): Promise<Entry> {
     this.assertRecording()
 
     const hasEntry = this.entries.some((entry) => entry.id === id)
@@ -466,14 +495,14 @@ class OfflineAPI {
     return entry
   }
 
-  async deleteEntry (id: string): Promise<Entry> {
+  async deleteEntry(id: string): Promise<Entry> {
     this.assertRecording()
 
     const hasEntry = this.entries.some((entry) => entry.id === id)
 
     if (!hasEntry) {
       throw new Error(`Cannot delete Entry ${id} because it does not exist`)
-    }    // Store clone as a request
+    } // Store clone as a request
     const entry = this.entries.find((entry) => entry.id === id)
 
     const index = this.entries.indexOf(entry)
@@ -484,13 +513,12 @@ class OfflineAPI {
     return entry
   }
 
-  async getEntriesForContentType (ctId: string): Promise<Entry[]> {
+  async getEntriesForContentType(ctId: string): Promise<Entry[]> {
     const entries = this.entries.filter((entry) => entry.contentTypeId === ctId)
     return entries
   }
 
-  async getLinks (childId: string, locales: string[]): Promise<Link[]> {
-
+  async getLinks(childId: string, locales: string[]): Promise<Link[]> {
     const links: Link[] = []
 
     for (let entry of this.entries) {
@@ -516,11 +544,11 @@ class OfflineAPI {
     return links
   }
 
-  async getLocalesForSpace () {
+  async getLocalesForSpace() {
     return this.locales
   }
 
-  async startRecordingRequests (intent: Intent) {
+  async startRecordingRequests(intent: Intent) {
     if (this.isRecordingRequests) {
       throw new Error('You need to stop recording before starting again')
     }
@@ -533,7 +561,7 @@ class OfflineAPI {
 
   // Returns all requests that needed to happen
   // for all changes
-  async stopRecordingRequests () {
+  async stopRecordingRequests() {
     if (!this.isRecordingRequests) {
       throw new Error('You need to start recording before stopping')
     }
@@ -552,14 +580,14 @@ class OfflineAPI {
     this.intent = null
   }
 
-  async getRequestBatches (): Promise<RequestBatch[]> {
+  async getRequestBatches(): Promise<RequestBatch[]> {
     if (this.isRecordingRequests) {
       throw new Error('Cannot get batches while still recording')
     }
     return this.requestBatches
   }
 
-  async createTag (id: string, visibility: TagVisibility = 'private'): Promise<Tag> {
+  async createTag(id: string, visibility: TagVisibility = 'private'): Promise<Tag> {
     this.assertRecording()
 
     const tagData: APITag = {
@@ -578,7 +606,7 @@ class OfflineAPI {
     return tag
   }
 
-  async saveTag (id: string) {
+  async saveTag(id: string) {
     this.assertRecording()
 
     const hasTag = await this.hasTag(id)
@@ -607,7 +635,7 @@ class OfflineAPI {
     return tag
   }
 
-  async deleteTag (id: string) {
+  async deleteTag(id: string) {
     this.assertRecording()
 
     const tag = await this.getTag(id)
@@ -617,11 +645,11 @@ class OfflineAPI {
     this.savedTags.delete(id)
   }
 
-  async hasTag (id: string): Promise<boolean> {
+  async hasTag(id: string): Promise<boolean> {
     return this.modifiedTags.has(id)
   }
 
-  async getTag (id: string): Promise<Tag> {
+  async getTag(id: string): Promise<Tag> {
     if (!this.hasTag(id)) {
       throw new Error(`Cannot get Tag ${id} because it does not exist`)
     }
@@ -629,15 +657,15 @@ class OfflineAPI {
     return this.modifiedTags.get(id)
   }
 
-  async getTagsForEnvironment (): Promise<Map<String, Tag>> {
+  async getTagsForEnvironment(): Promise<Map<String, Tag>> {
     return this.modifiedTags
   }
 
-  public async recordRuntimeError (error) {
+  public async recordRuntimeError(error) {
     this.currentRuntimeErrorsRecorded.push(error)
   }
 
-  private assertRecording () {
+  private assertRecording() {
     if (this.isRecordingRequests) {
       return
     }
@@ -646,8 +674,4 @@ class OfflineAPI {
   }
 }
 
-export {
-  OfflineAPI as default,
-  OfflineAPI,
-  RequestBatch
-}
+export { OfflineAPI as default, OfflineAPI, RequestBatch }

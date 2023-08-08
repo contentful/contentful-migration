@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: contentful-migration
+  description: |
+    🚚 Migration tooling for contentful
+  annotations:
+    circleci.com/project-slug: github/contentful/contentful-migration
+    github.com/project-slug: contentful/contentful-migration
+    contentful.com/ci-alert-slack: prd-phoenix-ci-alerts
+spec:
+  type: cli
+  lifecycle: production
+  owner: group:team-phoenix

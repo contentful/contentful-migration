@@ -7,64 +7,72 @@ const noOp = () => undefined
 
 describe('Intent List', function () {
   it('initializes correctly', async function () {
-    const intents = await parseIntoIntents(function up (migration) {
-      const person = migration.createContentType('person', {
-        description: 'A content type for a person',
-        name: 'foo'
-      })
+    const intents = await parseIntoIntents(
+      function up(migration) {
+        const person = migration.createContentType('person', {
+          description: 'A content type for a person',
+          name: 'foo'
+        })
 
-      const fullName = person.createField('fullName', {
-        name: 'Full Name',
-        type: 'Symbol'
-      })
+        const fullName = person.createField('fullName', {
+          name: 'Full Name',
+          type: 'Symbol'
+        })
 
-      person.editField('lastName', {
-        name: 'New Last Name'
-      })
+        person.editField('lastName', {
+          name: 'New Last Name'
+        })
 
-      person.editField('fullName').localized(true)
-      fullName.required(true)
+        person.editField('fullName').localized(true)
+        fullName.required(true)
 
-      person.name('bar')
+        person.name('bar')
 
-      const address = migration.editContentType('address', {
-        name: 'the new name'
-      })
-      person.name('a person')
+        const address = migration.editContentType('address', {
+          name: 'the new name'
+        })
+        person.name('a person')
 
-      address.editField('houseNumber').omitted(true)
-      address.createField('houseExtension', {
-        type: 'Symbol'
-      })
+        address.editField('houseNumber').omitted(true)
+        address.createField('houseExtension', {
+          type: 'Symbol'
+        })
 
-      const sampleTag = migration.createTag('sampleTagId', {
-        name: 'tag name'
-      })
-    }, noOp, {})
+        const sampleTag = migration.createTag('sampleTagId', {
+          name: 'tag name'
+        })
+      },
+      noOp,
+      {}
+    )
 
     const intentList = new IntentList(intents)
     expect(intentList.getIntents().length).to.equal(17)
   })
 
   it('compresses ct create with field creates & updates', async function () {
-    const intents = await parseIntoIntents(function up (migration) {
-      const person = migration.createContentType('person', {
-        description: 'A content type for a person',
-        name: 'foo'
-      })
+    const intents = await parseIntoIntents(
+      function up(migration) {
+        const person = migration.createContentType('person', {
+          description: 'A content type for a person',
+          name: 'foo'
+        })
 
-      const fullName = person.createField('fullName', {
-        name: 'Full Name',
-        type: 'Symbol'
-      })
+        const fullName = person.createField('fullName', {
+          name: 'Full Name',
+          type: 'Symbol'
+        })
 
-      person.editField('lastName', {
-        name: 'New Last Name'
-      })
+        person.editField('lastName', {
+          name: 'New Last Name'
+        })
 
-      person.editField('fullName').localized(true)
-      fullName.required(true)
-    }, noOp, {})
+        person.editField('fullName').localized(true)
+        fullName.required(true)
+      },
+      noOp,
+      {}
+    )
 
     const intentList = new IntentList(intents)
     const compressedList = intentList.compressed()
@@ -76,11 +84,15 @@ describe('Intent List', function () {
   })
 
   it('compresses tag create', async function () {
-    const intents = await parseIntoIntents(function up (migration) {
-      migration.createTag('bar', {
-        name: 'foo'
-      })
-    }, noOp, {})
+    const intents = await parseIntoIntents(
+      function up(migration) {
+        migration.createTag('bar', {
+          name: 'foo'
+        })
+      },
+      noOp,
+      {}
+    )
 
     const intentList = new IntentList(intents)
     const compressedList = intentList.compressed()
@@ -90,5 +102,4 @@ describe('Intent List', function () {
     expect(compressedList.getIntents().length).to.equal(1)
     expect(compressedIntent.getIntents().length).to.equal(2)
   })
-
 })

@@ -3,19 +3,21 @@ import { Entry } from '../../../../src/lib/entities/entry'
 import shouldPublishLocalChanges from '../../../../src/lib/utils/should-publish-local-changes'
 import makeApiEntry from '../../../helpers/make-api-entry'
 
-function entry (version, publishedVersion) {
-  return new Entry(makeApiEntry({
-    id: '246',
-    contentTypeId: 'dog',
-    version,
-    publishedVersion,
-    fields: {
-      name: {
-        'en-US': 'bob',
-        'hawaii': 'haukea'
+function entry(version, publishedVersion) {
+  return new Entry(
+    makeApiEntry({
+      id: '246',
+      contentTypeId: 'dog',
+      version,
+      publishedVersion,
+      fields: {
+        name: {
+          'en-US': 'bob',
+          hawaii: 'haukea'
+        }
       }
-    }
-  }))
+    })
+  )
 }
 
 describe('A shouldPublish util function', function () {

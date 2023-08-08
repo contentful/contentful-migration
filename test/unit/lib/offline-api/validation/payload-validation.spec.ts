@@ -38,9 +38,7 @@ describe('payload validation', function () {
         lunch.name('A lunch')
 
         for (let i = 0; i < 51; i++) {
-          lunch.createField(`menu${i}`)
-            .type('Symbol')
-            .name(`menu${i}`)
+          lunch.createField(`menu${i}`).type('Symbol').name(`menu${i}`)
         }
       }, [])
       expect(errors).to.eql([
@@ -76,9 +74,7 @@ describe('payload validation', function () {
           const lunch = migration.createContentType('lunch')
           lunch.name('A lunch')
 
-          lunch.createField(type)
-            .type(type)
-            .name(type)
+          lunch.createField(type).type(type).name(type)
         }, [])
 
         expect(errors).to.eql([[]])
@@ -92,12 +88,10 @@ describe('payload validation', function () {
         const lunch = migration.createContentType('lunch')
         lunch.name('A lunch')
 
-        lunch.createField('invalid')
-          .type('Invalid')
-          .name('invalid')
+        lunch.createField('invalid').type('Invalid').name('invalid')
       }, [])
 
-      const valid = `["Symbol", "Text", "Integer", "Number", "Date", "Boolean", "Object", "Link", "Array", "Location", "RichText"]`
+      const valid = `["Symbol", "Text", "Integer", "Number", "Date", "Boolean", "Object", "Link", "Array", "Location", "RichText", "ResourceLink"]`
       expect(errors).to.eql([
         [
           {

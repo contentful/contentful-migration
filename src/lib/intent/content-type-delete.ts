@@ -5,34 +5,34 @@ import chalk from 'chalk'
 import { PlanMessage } from '../interfaces/plan-message'
 
 export default class ContentTypeDeleteIntent extends Intent {
-  isContentTypeDelete () {
+  isContentTypeDelete() {
     return true
   }
 
-  groupsWith (): boolean {
+  groupsWith(): boolean {
     return false
   }
 
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return true
   }
 
-  shouldSave (): boolean {
+  shouldSave(): boolean {
     return false
   }
 
-  shouldPublish (): boolean {
+  shouldPublish(): boolean {
     return false
   }
 
-  toActions () {
+  toActions() {
     return [
       new ContentTypeUnpublishAction(this.getContentTypeId()),
       new ContentTypeDeleteAction(this.getContentTypeId())
     ]
   }
 
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     return {
       heading: chalk`Delete Content Type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],
