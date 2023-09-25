@@ -41,6 +41,7 @@ function getArgvConfig({
   rawProxy,
   requestBatchSize,
   headers,
+  host,
   retryLimit
 }): ClientConfig {
   const config = {
@@ -51,6 +52,7 @@ function getArgvConfig({
     rawProxy,
     requestBatchSize,
     headers: addSequenceHeader(headers),
+    host,
     retryLimit
   }
 

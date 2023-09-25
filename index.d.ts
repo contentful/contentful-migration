@@ -9,6 +9,7 @@ export type RunMigrationConfig = {
   yes?: boolean
   retryLimit?: number
   requestBatchSize?: number
+  host?: string
 } & ({ filePath: string } | { migrationFunction: MigrationFunction })
 
 export function runMigration(config: RunMigrationConfig): Promise<any>
