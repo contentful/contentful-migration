@@ -68,6 +68,11 @@ describe('Config', function () {
     expect(config.retryLimit).to.eql(10)
   })
 
+  it('exposes host from argv', function () {
+    const config = getConfig({ host: 'https://foo.bar:443' })
+    expect(config.host).to.eql('https://foo.bar:443')
+  })
+
   it('validates retryLimit argument', function () {
     expect(() => getConfig({ retryLimit: -1 })).to.throw(
       Error,
