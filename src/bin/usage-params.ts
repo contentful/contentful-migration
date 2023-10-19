@@ -61,6 +61,13 @@ export default yargs
     type: 'number',
     default: 100
   })
+  .option('request-limit', {
+    alias: 'r',
+    boolean: false,
+    describe: 'Max requests per second',
+    type: 'number',
+    default: 10
+  })
   .option('header', {
     alias: 'H',
     type: 'string',

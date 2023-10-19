@@ -2,23 +2,27 @@ import * as path from 'path'
 import type { AxiosRequestConfig } from 'axios'
 
 import chalk from 'chalk'
-import * as inquirer from 'inquirer'
+import inquirer from 'inquirer'
 import { Listr } from 'listr2'
 import { createManagementClient } from './lib/contentful-client'
-const { version } = require('../../package.json')
-const { SpaceAccessError } = require('../lib/errors')
 import createMigrationParser, { ParseResult } from '../lib/migration-parser'
-import { renderPlan, renderValidationErrors, renderRuntimeErrors } from './lib/render-migration'
+import { renderPlan, renderRuntimeErrors, renderValidationErrors } from './lib/render-migration'
 import renderStepsErrors from './lib/steps-errors'
 import writeErrorsToLog from './lib/write-errors-to-log'
-import { RequestBatch } from '../lib/offline-api/index'
+import { RequestBatch } from '../lib/offline-api'
 import { getConfig } from './lib/config'
 import ValidationError from '../lib/interfaces/errors'
 import { PlainClientAPI } from 'contentful-management'
 import trim from 'lodash/trim'
 
+import { SpaceAccessError } from '../lib/errors'
+import pThrottle from 'p-throttle'
+
+const { version } = require('../../package.json')
+
 class ManyError extends Error {
   public errors: (Error | ValidationError)[]
+
   constructor(message: string, errors: (Error | ValidationError)[]) {
     super(message)
     this.errors = errors
@@ -28,6 +32,7 @@ class ManyError extends Error {
 class BatchError extends Error {
   public batch: RequestBatch
   public errors: Error[]
+
   constructor(message: string, batch: RequestBatch, errors: Error[]) {
     super(message)
     this.batch = batch
@@ -45,7 +50,16 @@ const makeTerminatingFunction =
     }
   }
 
-export const createMakeRequest = (client: PlainClientAPI, { spaceId, environmentId }) => {
+export const createMakeRequest = (
+  client: PlainClientAPI,
+  { spaceId, environmentId, limit = 10 }
+) => {
+  const throttle = pThrottle({
+    limit,
+    interval: 1000,
+    strict: false
+  })
+
   const makeBaseUrl = (url: string) => {
     const parts = ['spaces', spaceId, 'environments', environmentId, trim(url, '/')]
 
@@ -56,11 +70,14 @@ export const createMakeRequest = (client: PlainClientAPI, { spaceId, environment
     const { url, ...config } = requestConfig
     const fullUrl = makeBaseUrl(url)
 
-    return client.raw.http(fullUrl, config)
+    return throttle(() => client.raw.http(fullUrl, config))()
   }
 }
 
-const getMigrationFunctionFromFile = (filePath, terminate) => {
+const getMigrationFunctionFromFile = (
+  filePath: string,
+  terminate: ReturnType<typeof makeTerminatingFunction>
+) => {
   try {
     return require(filePath)
   } catch (e) {
@@ -90,7 +107,8 @@ const createRun = ({ shouldThrow }) =>
     const client = createManagementClient(clientConfig)
     const makeRequest = createMakeRequest(client, {
       spaceId: clientConfig.spaceId,
-      environmentId: clientConfig.environmentId
+      environmentId: clientConfig.environmentId,
+      limit: argv.requestLimit
     })
 
     const migrationParser = createMigrationParser(makeRequest, clientConfig)
