@@ -1,5 +1,5 @@
 import * as path from 'path'
-import type { AxiosRequestConfig } from 'axios'
+import type { RawAxiosRequestConfig } from 'axios'
 
 import chalk from 'chalk'
 import inquirer from 'inquirer'
@@ -66,7 +66,7 @@ export const createMakeRequest = (
     return parts.filter((x) => x !== '').join('/')
   }
 
-  return function makeRequest(requestConfig: AxiosRequestConfig) {
+  return function makeRequest(requestConfig: RawAxiosRequestConfig) {
     const { url, ...config } = requestConfig
     const fullUrl = makeBaseUrl(url)
 
