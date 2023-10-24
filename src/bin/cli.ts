@@ -40,9 +40,13 @@ class BatchError extends Error {
   }
 }
 
+function hasManyErrors(error: unknown): error is ManyError | BatchError {
+  return error instanceof ManyError || error instanceof BatchError
+}
+
 const makeTerminatingFunction =
   ({ shouldThrow }) =>
-  (error: Error) => {
+  (error: any) => {
     if (shouldThrow) {
       throw error
     } else {
@@ -236,10 +240,18 @@ const createRun = ({ shouldThrow }) =>
         const successfulMigration = await new Listr(tasks).run()
         console.log(chalk`🎉  {bold.green Migration successful}`)
         return successfulMigration
-      } catch (err) {
+      } catch (err: unknown) {
         console.error(chalk`🚨  {bold.red Migration unsuccessful}`)
-        console.error(chalk`{red ${err.message}}\n`)
-        err.errors.forEach((err) => console.error(chalk`{red ${err}}\n\n`))
+
+        if (err instanceof Error) {
+          console.error(chalk`{red ${err.message}}\n`)
+          if (hasManyErrors(err) && Array.isArray(err.errors)) {
+            err.errors.forEach((err: any) => console.error(chalk`{red ${err}}\n\n`))
+          }
+        } else {
+          console.error(chalk`{red ${err}}\n`)
+        }
+
         await Promise.all(serverErrorsWritten)
         console.error(`Please check the errors log for more details: ${errorsFile}`)
         terminate(err)
