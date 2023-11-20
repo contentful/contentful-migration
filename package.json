@@ -1,6 +1,6 @@
 {
   "name": "contentful-migration",
-  "version": "0.0.0-development",
+  "version": "0.0.0",
   "description": "Migration tooling for contentful",
   "author": "Contentful GmbH",
   "license": "MIT",
@@ -40,7 +40,10 @@
     "test:unit:debug": "NODE_ENV=test mocha debug --require test/setup-unit.js --recursive 'test/unit/**/**/*.spec.{js,ts}'",
     "test:integration:debug": "NODE_ENV=test mocha debug --require test/integration/setup.js 'test/integration/**/*.spec.js'",
     "test:e2e:debug": "NODE_ENV=test mocha debug 'test/end-to-end/**/*.spec.js'",
-    "cm": "git-cz"
+    "cm": "git-cz",
+    "unpublish-library": "npm unpublish @ks/contentful-migration --force",
+    "update-version": "npm version patch --force",
+    "publish-library": "npm run build && npm run update-version && npm run unpublish-library && npm publish"
   },
   "files": [
     "README.md",
