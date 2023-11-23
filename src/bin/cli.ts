@@ -65,7 +65,14 @@ export const createMakeRequest = (
   })
 
   const makeBaseUrl = (url: string) => {
-    const parts = ['spaces', spaceId, 'environments', environmentId, trim(url, '/')]
+    const parts = [
+      'https://api.contentful.com',
+      'spaces',
+      spaceId,
+      'environments',
+      environmentId,
+      trim(url, '/')
+    ]
 
     return parts.filter((x) => x !== '').join('/')
   }
