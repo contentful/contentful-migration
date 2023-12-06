@@ -51,7 +51,7 @@
     "docs"
   ],
   "dependencies": {
-    "@hapi/hoek": "^10.0.1",
+    "@hapi/hoek": "^11.0.4",
     "axios": "^1.6.2",
     "bluebird": "^3.7.2",
     "callsites": "^3.1.0",
