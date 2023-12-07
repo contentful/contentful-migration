@@ -51,13 +51,13 @@
     "docs"
   ],
   "dependencies": {
-    "@hapi/hoek": "^10.0.1",
-    "axios": "^1.5.1",
+    "@hapi/hoek": "^11.0.4",
+    "axios": "^1.6.2",
     "bluebird": "^3.7.2",
     "callsites": "^3.1.0",
     "cardinal": "^2.1.1",
     "chalk": "^4.0.0",
-    "contentful-management": "^11.2.0",
+    "contentful-management": "^11.5.7",
     "didyoumean2": "^5.0.0",
     "https-proxy-agent": "^5.0.0",
     "inquirer": "^8.1.2",
@@ -70,7 +70,7 @@
     "yargs": "^15.3.1"
   },
   "devDependencies": {
-    "@contentful/eslint-config-backend": "^9.0.0",
+    "@contentful/eslint-config-backend": "^10.2.1",
     "@semantic-release/changelog": "^6.0.0",
     "@types/bluebird": "^3.5.30",
     "@types/chai": "^4.2.11",
@@ -89,7 +89,7 @@
     "cz-conventional-changelog": "^3.3.0",
     "dirty-chai": "^2.0.1",
     "eslint": "^8.28.0",
-    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-mocha": "^10.0.4",
     "eslint-plugin-node": "^11.1.0",
