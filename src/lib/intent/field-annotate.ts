@@ -31,7 +31,8 @@ export default class FieldAnnotateIntent extends Intent {
         id,
         type: 'Link',
         linkType: 'Annotation'
-      }
+      },
+      ...this.payload.fieldAnnotationPayload
     }))
     return [new FieldAnnotateAction(this.getContentTypeId(), this.getFieldId(), annotationLinks)]
   }

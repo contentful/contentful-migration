@@ -711,8 +711,16 @@ class ContentType {
     delete this._metadata?.annotations?.ContentType
   }
 
-  setFieldAnnotations(fieldId: string, annotations: AnnotationLink[]) {
-    set(this, `_metadata.annotations.ContentTypeField.${fieldId}`, annotations)
+  setFieldAnnotations(
+    fieldId: string,
+    annotations: AnnotationLink[],
+    fieldAnnotationPayload?: Record<string, any>
+  ) {
+    set(
+      this,
+      `_metadata.annotations.ContentTypeField.${fieldId}`,
+      Object.assign(annotations, fieldAnnotationPayload)
+    )
   }
 
   getFieldAnnotations(fieldId: string) {

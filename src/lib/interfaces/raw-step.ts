@@ -52,6 +52,7 @@ interface RawStepPayload {
   tagVisibility?: TagVisibility
   entryTransformationForTags?: EntrySetTags
   annotations?: AnnotationId[]
+  fieldAnnotationPayload?: Record<string, any>
 }
 
 interface EditorInterfaceInfo {

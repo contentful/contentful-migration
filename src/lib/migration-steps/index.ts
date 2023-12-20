@@ -52,7 +52,7 @@ class Field extends DispatchProxy {
     })
   }
 
-  setAnnotations(annotationIds: string[]) {
+  setAnnotations(annotationIds: string[], fieldAnnotationPayload?: Record<string, any>) {
     const callsite = getFirstExternalCaller()
     const fieldInstanceId = this.contentType.fieldInstanceIds.getNew(this.id)
     this.contentType.dispatch(
@@ -62,7 +62,8 @@ class Field extends DispatchProxy {
         this.id,
         fieldInstanceId,
         callsite,
-        annotationIds
+        annotationIds,
+        fieldAnnotationPayload
       )
     )
 
