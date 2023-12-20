@@ -1217,6 +1217,19 @@ describe('the migration', function () {
                 linkType: 'Annotation'
               }
             }
+          ],
+          title: [
+            {
+              sys: {
+                type: 'Link',
+                linkType: 'Annotation',
+                id: 'Contentful:GraphQLFieldResolver'
+              },
+              parameters: {
+                appFunctionId: '123',
+                appDefinitionId: '456'
+              }
+            }
           ]
         }
       }

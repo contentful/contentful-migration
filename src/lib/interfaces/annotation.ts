@@ -94,6 +94,28 @@ export const availableAnnotations = {
         ]
       }
     ]
+  }),
+  'Contentful:GraphQLFieldResolver': new Annotation({
+    id: 'Contentful:GraphQLFieldResolver',
+    targets: [
+      {
+        type: 'ContentTypeField',
+        accept: [
+          {
+            type: 'Symbol'
+          },
+          {
+            type: 'Array',
+            items: {
+              type: 'Symbol'
+            }
+          },
+          {
+            type: 'Object'
+          }
+        ]
+      }
+    ]
   })
 }
 

@@ -674,7 +674,8 @@ const actionCreators = {
       fieldId,
       fieldInstanceId,
       callsite,
-      annotationIds
+      annotationIds,
+      fieldAnnotationPayload?
     ): Intents.FieldAnnotate =>
       new Intents.FieldAnnotate({
         type: 'field/annotate',
@@ -689,7 +690,8 @@ const actionCreators = {
         payload: {
           contentTypeId,
           fieldId,
-          annotations: annotationIds
+          annotations: annotationIds,
+          fieldAnnotationPayload
         }
       })
   },
