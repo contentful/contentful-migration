@@ -56,7 +56,7 @@ const makeTerminatingFunction =
 
 export const createMakeRequest = (
   client: PlainClientAPI,
-  { spaceId, environmentId, limit = 10 }
+  { spaceId, environmentId, limit = 10, host = 'api.contentful.com' }
 ) => {
   const throttle = pThrottle({
     limit,
@@ -66,7 +66,7 @@ export const createMakeRequest = (
 
   const makeBaseUrl = (url: string) => {
     const parts = [
-      'https://api.contentful.com',
+      `https://${host}`,
       'spaces',
       spaceId,
       'environments',
@@ -114,12 +114,15 @@ const createRun = ({ shouldThrow }) =>
       },
       getConfig(argv)
     )
+    // allow users to override the default host via the contentful-cli
+    argv.host && Object.assign(clientConfig, { host: argv.host })
 
     const client = createManagementClient(clientConfig)
     const makeRequest = createMakeRequest(client, {
       spaceId: clientConfig.spaceId,
       environmentId: clientConfig.environmentId,
-      limit: argv.requestLimit
+      limit: argv.requestLimit,
+      host: clientConfig.host
     })
 
     const migrationParser = createMigrationParser(makeRequest, clientConfig)
