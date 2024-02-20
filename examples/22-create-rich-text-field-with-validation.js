@@ -47,16 +47,8 @@ module.exports = function (migration) {
         }
       },
       {
-        enabledMarks: [
-          'bold',
-          'italic',
-          'underline',
-          'code',
-          'superscript',
-          'subscript'
-        ],
-        message:
-          'Only bold, italic, underline, code, superscript, and subscript marks are allowed'
+        enabledMarks: ['bold', 'italic', 'underline', 'code', 'superscript', 'subscript'],
+        message: 'Only bold, italic, underline, code, superscript, and subscript marks are allowed'
       },
       {
         enabledNodeTypes: [
@@ -76,10 +68,11 @@ module.exports = function (migration) {
           'hyperlink',
           'entry-hyperlink',
           'asset-hyperlink',
-          'embedded-entry-inline'
+          'embedded-entry-inline',
+          'embedded-resource-block'
         ],
         message:
-          'Only heading 1, heading 2, heading 3, heading 4, heading 5, heading 6, ordered list, unordered list, horizontal rule, quote, block entry, asset, table, link to Url, link to entry, link to asset, and inline entry nodes are allowed'
+          'Only heading 1, heading 2, heading 3, heading 4, heading 5, heading 6, ordered list, unordered list, horizontal rule, quote, block entry, asset, table, block embedded resource, asset, link to Url, link to entry, link to asset, and inline entry nodes are allowed'
       }
     ])
 }

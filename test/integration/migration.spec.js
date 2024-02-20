@@ -1320,26 +1320,28 @@ describe('the migration', function () {
     })
 
     expect(ct.fields[0].type).to.eql('RichText')
-    expect(ct.fields[0].validations[1].enabledNodeTypes).to.eql([
+    expect(ct.fields[0].validations[2].enabledNodeTypes).to.eql([
       'heading-1',
       'heading-2',
       'heading-3',
       'heading-4',
       'heading-5',
+      'heading-6',
       'ordered-list',
       'unordered-list',
       'hr',
       'blockquote',
       'embedded-entry-block',
       'embedded-asset-block',
+      'table',
       'hyperlink',
       'entry-hyperlink',
       'asset-hyperlink',
       'embedded-entry-inline',
       'embedded-resource-block'
     ])
-    expect(ct.fields[0].validations[1].message).to.eql(
-      'Only heading 1, heading 2, heading 3, heading 4, heading 5, ordered list, unordered list, horizontal rule, quote, block entry, block embedded resource, asset, link to Url, link to entry, link to asset, and inline entry nodes are allowed'
+    expect(ct.fields[0].validations[2].message).to.eql(
+      'Only heading 1, heading 2, heading 3, heading 4, heading 5, heading 6, ordered list, unordered list, horizontal rule, quote, block entry, asset, table, block embedded resource, asset, link to Url, link to entry, link to asset, and inline entry nodes are allowed'
     )
     expect(ct.fields[0].validations[0].nodes['embedded-entry-block']).to.eql([
       {
