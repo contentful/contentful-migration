@@ -59,7 +59,7 @@
     "chalk": "^4.0.0",
     "contentful-management": "^11.15.0",
     "didyoumean2": "^5.0.0",
-    "https-proxy-agent": "^5.0.0",
+    "https-proxy-agent": "^7.0.4",
     "inquirer": "^8.1.2",
     "joi": "^17.4.0",
     "kind-of": "^6.0.3",
