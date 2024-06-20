@@ -266,4 +266,39 @@ describe('apply content-type migration examples', function () {
         })
       )
   })
+
+  it('applies 54-create-experience-type', function (done) {
+    cli()
+      .run(
+        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/54-create-experience-type.js`
+      )
+      .on(/\? Do you want to apply the migration \(Y\/n\)/)
+      .respond('Y\n')
+      .expect(assert.plans.contentType.create('experienceType'))
+      .expect(assert.plans.annotation.assign('Contentful:ExperienceType'))
+      .expect(assert.plans.actions.apply())
+      .end(
+        co(function* () {
+          const contentType = yield getDevContentType(
+            SOURCE_TEST_SPACE,
+            environmentId,
+            'experienceType'
+          )
+          expect(contentType.metadata).to.eql({
+            annotations: {
+              ContentType: [
+                {
+                  sys: {
+                    id: 'Contentful:ExperienceType',
+                    type: 'Link',
+                    linkType: 'Annotation'
+                  }
+                }
+              ]
+            }
+          })
+          done()
+        })
+      )
+  })
 })

@@ -1380,7 +1380,7 @@ describe('the migration', function () {
     })
   })
 
-  // Requires space to be enables for Studio Experiences via org settings
+  // Note: Requires space to be enabled for Studio Experiences via org settings
   it('assigns experience type annotation', async function () {
     await migrator(createExperienceType)
     const ct = await request({
