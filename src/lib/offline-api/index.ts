@@ -11,7 +11,7 @@ import { PayloadValidationError, InvalidActionError } from '../interfaces/errors
 import DisplayFieldValidator from './validator/display-field'
 import SchemaValidator from './validator/schema/index'
 import TypeChangeValidator from './validator/type-change'
-import AnnotationValidator from './validator/annotations'
+import AnnotationsValidator from './validator/annotations'
 import TagsOnEntryValidator from './validator/tags-on-entry'
 import { Intent } from '../interfaces/intent'
 import APIEntry from '../interfaces/api-entry'
@@ -221,7 +221,7 @@ class OfflineAPI {
       new DisplayFieldValidator(),
       new SchemaValidator(),
       new TypeChangeValidator(),
-      new AnnotationValidator(),
+      new AnnotationsValidator(),
       new ResourceLinksValidator()
     )
 
