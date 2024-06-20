@@ -42,6 +42,7 @@ const moveFieldOnContentTypeWithEditorLayout = require('../../examples/51-move-f
 const deleteFieldOnContentTypeWithEditorLayout = require('../../examples/52-delete-field-in-content-type-with-editor-layout')
 const renameFieldOnContentTypeWithEditorLayout = require('../../examples/53-rename-field-in-content-type-with-editor-layout')
 const createRichTextFieldWithValidation = require('../../examples/22-create-rich-text-field-with-validation')
+const createExperienceType = require('../../examples/54-create-experience-type')
 
 const { createMigrationParser } = require('../../built/lib/migration-parser')
 const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget')
@@ -1376,6 +1377,29 @@ describe('the migration', function () {
           contentTypes: ['contentType1', 'contentType2', 'contentType3']
         }
       ]
+    })
+  })
+
+  // Requires space to be enables for Studio Experiences via org settings
+  it('assigns experience type annotation', async function () {
+    await migrator(createExperienceType)
+    const ct = await request({
+      method: 'GET',
+      url: '/content_types/experienceType'
+    })
+
+    expect(ct.metadata).to.eql({
+      annotations: {
+        ContentType: [
+          {
+            sys: {
+              id: 'Contentful:ExperienceType',
+              type: 'Link',
+              linkType: 'Annotation'
+            }
+          }
+        ]
+      }
     })
   })
 })
