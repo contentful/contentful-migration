@@ -21,27 +21,24 @@ const rangeForDate = () =>
     max: Joi.string().optional().allow(null)
   })
 
+const regexpSchema = () =>
+  Joi.alternatives().try(
+    Joi.object().instance(RegExp),
+    Joi.object({
+      pattern: Joi.string(),
+      flags: Joi.string().allow(null).optional()
+    })
+  )
+
 const linkContentType = validation('linkContentType', Joi.array().items(Joi.string()))
 const inValidation = validation('in', Joi.array())
 const linkMimetypeGroup = validation('linkMimetypeGroup', Joi.array().items(Joi.string()))
 const size = validation('size', range('number'))
 const rangeValidation = validation('range', range('number'))
 
-const regexp = validation(
-  'regexp',
-  Joi.object({
-    pattern: Joi.string(),
-    flags: Joi.string().allow(null).optional()
-  })
-)
+const regexp = validation('regexp', regexpSchema())
 
-const prohibitRegexp = validation(
-  'prohibitRegexp',
-  Joi.object({
-    pattern: Joi.string(),
-    flags: Joi.string().allow(null).optional()
-  })
-)
+const prohibitRegexp = validation('prohibitRegexp', regexpSchema())
 
 const unique = validation('unique', Joi.boolean())
 const dateRange = validation('dateRange', rangeForDate())
