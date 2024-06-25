@@ -47,8 +47,17 @@ module.exports = function (migration) {
         }
       },
       {
-        enabledMarks: ['bold', 'italic', 'underline', 'code', 'superscript', 'subscript'],
-        message: 'Only bold, italic, underline, code, superscript, and subscript marks are allowed'
+        enabledMarks: [
+          'bold',
+          'italic',
+          'underline',
+          'code',
+          'superscript',
+          'subscript',
+          'strikethrough'
+        ],
+        message:
+          'Only bold, italic, underline, code, superscript, subscript, and strikethrough marks are allowed'
       },
       {
         enabledNodeTypes: [

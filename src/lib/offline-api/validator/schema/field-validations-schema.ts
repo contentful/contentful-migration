@@ -75,7 +75,15 @@ const nodes = validation(
 const enabledMarks = validation(
   'enabledMarks',
   Joi.array().items(
-    Joi.string().valid('bold', 'italic', 'code', 'underline', 'superscript', 'subscript')
+    Joi.string().valid(
+      'bold',
+      'italic',
+      'code',
+      'underline',
+      'superscript',
+      'subscript',
+      'strikethrough'
+    )
   )
 )
 
