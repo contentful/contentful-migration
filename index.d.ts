@@ -201,6 +201,12 @@ export interface IFieldGroupWidgetSettings {
   [setting: string]: WidgetSettingsValue
 }
 
+export interface IEntryEditor {
+  widgetNamespace: 'editor-builtin' | 'builtin' | 'extension' | 'app',
+  widgetId: string,
+  settings?: IEditorInterfaceOptions
+}
+
 export interface ContentType {
   id: string
   instanceId: string
@@ -239,10 +245,17 @@ export interface ContentType {
    * @param settings Widget settings
    */
   configureEntryEditor(
-    widgetNamespace: 'builtin' | 'extension' | 'app',
+    widgetNamespace: 'editor-builtin' | 'builtin' | 'extension' | 'app',
     widgetId: string,
     settings?: IEditorInterfaceOptions
   ): void
+
+  /**
+   * Similar to configureEntryEditor, but allows configuring multiple entry editors at once.
+   *
+   * @param entryEditors An array of entry editor configurations.
+   */
+  configureEntryEditors(entryEditors: IEntryEditor[]): void
 
   /**
    * Changes the control of given field's ID.
