@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+import * as url from 'url'
 import * as cardinal from 'cardinal'
 import * as _ from 'lodash'
 import chalk from 'chalk'
@@ -33,11 +34,12 @@ const renderStepsErrors = function (errors: ValidationError[]) {
   const messages = []
 
   for (const file of Object.keys(errorsByFile)) {
-    const fileContents = fs.readFileSync(file, 'utf-8')
+    const filePath = file.startsWith(`file://`) ? url.fileURLToPath(file) : file;
+    const fileContents = fs.readFileSync(filePath, 'utf-8')
     const highlightedCode = cardinal.highlight(fileContents, { linenos: true })
     const lines = highlightedCode.split('\n')
 
-    const fileErrorsMessage = chalk`{red Errors in ${file}}\n\n`
+    const fileErrorsMessage = chalk`{red Errors in ${filePath}}\n\n`
     const errorMessages = errorsByFile[file]
       .map((error) => {
         const intent = error.details.intent
