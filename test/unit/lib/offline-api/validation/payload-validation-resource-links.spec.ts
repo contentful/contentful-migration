@@ -2,7 +2,10 @@
 
 import { expect } from 'chai'
 import validateBatches from './validate-batches'
-import { MAX_RESOURCE_LINKS } from '../../../../../src/lib/utils/resource-links'
+import {
+  MAX_ALLOWED_RESOURCES,
+  MAX_RESOURCE_LINKS
+} from '../../../../../src/lib/utils/resource-links'
 
 const VALID_ALLOWED_RESOURCE = {
   type: 'Contentful:Entry',
@@ -136,29 +139,19 @@ describe('payload validation (dependencies)', function () {
           .createField('mainCourse')
           .name('Main Course')
           .type('ResourceLink')
-          .allowedResources([
-            {
+          .allowedResources(
+            [...Array(MAX_ALLOWED_RESOURCES + 1).keys()].map((value) => ({
               ...VALID_ALLOWED_RESOURCE,
-              source: 'crn:contentful:::content:spaces/cooking-space-1'
-            },
-            {
-              ...VALID_ALLOWED_RESOURCE,
-              source: 'crn:contentful:::content:spaces/cooking-space-2'
-            },
-            {
-              ...VALID_ALLOWED_RESOURCE,
-              source: 'crn:contentful:::content:spaces/cooking-space-3'
-            },
-            { ...VALID_ALLOWED_RESOURCE, source: 'crn:contentful:::content:spaces/cooking-space-4' }
-          ])
+              source: `crn:contentful:::content:spaces/cooking-space-${value + 1}`
+            }))
+          )
       }, existingCts)
 
       expect(errors).to.eql([
         [
           {
             type: 'InvalidPayload',
-            message:
-              'The property "allowedResources" on the field "mainCourse" must have at most 3 items.'
+            message: `The property "allowedResources" on the field "mainCourse" must have at most ${MAX_ALLOWED_RESOURCES} items.`
           }
         ]
       ])
