@@ -56,19 +56,24 @@ const assetImageDimensions = validation(
 
 const assetFileSize = validation('assetFileSize', range('number'))
 
+const resourceLinkNode = () =>
+  Joi.object({
+    validations: Joi.array().items(size),
+    allowedResources: allowedResourcesSchema
+  })
+
 const nodes = validation(
   'nodes',
   Joi.object({
     'embedded-entry-block': Joi.array(),
     'embedded-entry-inline': Joi.array(),
+    'embedded-resource-inline': resourceLinkNode(),
     'embedded-asset-block': Joi.array(),
-    'embedded-resource-block': Joi.object({
-      validations: Joi.array().items(size),
-      allowedResources: allowedResourcesSchema
-    }),
+    'embedded-resource-block': resourceLinkNode(),
     'entry-hyperlink': Joi.array(),
     'asset-hyperlink': Joi.array(),
-    hyperlink: Joi.array()
+    hyperlink: Joi.array(),
+    'resource-hyperlink': resourceLinkNode()
   })
 )
 
@@ -100,7 +105,9 @@ const enabledNodeTypes = validation(
       'hyperlink',
       'entry-hyperlink',
       'asset-hyperlink',
-      'embedded-entry-inline'
+      'resource-hyperlink',
+      'embedded-entry-inline',
+      'embedded-resource-inline'
     )
   )
 )
