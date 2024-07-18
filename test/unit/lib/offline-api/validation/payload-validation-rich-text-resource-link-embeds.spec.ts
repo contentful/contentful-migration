@@ -326,8 +326,7 @@ describe('payload validation (dependencies)', function () {
       expect(errors).to.eql([
         [
           {
-            message:
-              'The property "validations.1.nodes.embedded-resource-block.allowedResources" on the field "menu" must have at most 3 items.',
+            message: `The property "validations.1.nodes.embedded-resource-block.allowedResources" on the field "menu" must have at most ${MAX_ALLOWED_RESOURCES} items.`,
             type: 'InvalidPayload'
           }
         ]
