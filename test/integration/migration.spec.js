@@ -42,6 +42,7 @@ const moveFieldOnContentTypeWithEditorLayout = require('../../examples/51-move-f
 const deleteFieldOnContentTypeWithEditorLayout = require('../../examples/52-delete-field-in-content-type-with-editor-layout')
 const renameFieldOnContentTypeWithEditorLayout = require('../../examples/53-rename-field-in-content-type-with-editor-layout')
 const createRichTextFieldWithValidation = require('../../examples/22-create-rich-text-field-with-validation')
+const createExperienceType = require('../../examples/54-create-experience-type')
 
 const { createMigrationParser } = require('../../built/lib/migration-parser')
 const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget')
@@ -1217,6 +1218,19 @@ describe('the migration', function () {
                 linkType: 'Annotation'
               }
             }
+          ],
+          title: [
+            {
+              sys: {
+                type: 'Link',
+                linkType: 'Annotation',
+                id: 'Contentful:GraphQLFieldResolver'
+              },
+              parameters: {
+                appFunctionId: '123',
+                appDefinitionId: '456'
+              }
+            }
           ]
         }
       }
@@ -1307,26 +1321,28 @@ describe('the migration', function () {
     })
 
     expect(ct.fields[0].type).to.eql('RichText')
-    expect(ct.fields[0].validations[1].enabledNodeTypes).to.eql([
+    expect(ct.fields[0].validations[2].enabledNodeTypes).to.eql([
       'heading-1',
       'heading-2',
       'heading-3',
       'heading-4',
       'heading-5',
+      'heading-6',
       'ordered-list',
       'unordered-list',
       'hr',
       'blockquote',
       'embedded-entry-block',
       'embedded-asset-block',
+      'table',
       'hyperlink',
       'entry-hyperlink',
       'asset-hyperlink',
       'embedded-entry-inline',
       'embedded-resource-block'
     ])
-    expect(ct.fields[0].validations[1].message).to.eql(
-      'Only heading 1, heading 2, heading 3, heading 4, heading 5, ordered list, unordered list, horizontal rule, quote, block entry, block embedded resource, asset, link to Url, link to entry, link to asset, and inline entry nodes are allowed'
+    expect(ct.fields[0].validations[2].message).to.eql(
+      'Only heading 1, heading 2, heading 3, heading 4, heading 5, heading 6, ordered list, unordered list, horizontal rule, quote, block entry, asset, table, block embedded resource, asset, link to Url, link to entry, link to asset, and inline entry nodes are allowed'
     )
     expect(ct.fields[0].validations[0].nodes['embedded-entry-block']).to.eql([
       {
@@ -1361,6 +1377,29 @@ describe('the migration', function () {
           contentTypes: ['contentType1', 'contentType2', 'contentType3']
         }
       ]
+    })
+  })
+
+  // Note: Requires space to be enabled for Studio Experiences via org settings
+  it('assigns experience type annotation', async function () {
+    await migrator(createExperienceType)
+    const ct = await request({
+      method: 'GET',
+      url: '/content_types/experienceType'
+    })
+
+    expect(ct.metadata).to.eql({
+      annotations: {
+        ContentType: [
+          {
+            sys: {
+              id: 'Contentful:ExperienceType',
+              type: 'Link',
+              linkType: 'Annotation'
+            }
+          }
+        ]
+      }
     })
   })
 })

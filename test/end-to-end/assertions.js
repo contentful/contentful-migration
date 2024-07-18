@@ -95,7 +95,7 @@ module.exports = {
     contentType: {
       create: function (id, params) {
         return (result) => {
-          expect(result.stdout).not.to.be.empty()
+          expect(result.stdout).not.to.be.empty(result.stderr)
 
           const withoutAnsiCodes = stripAnsi(result.stdout)
           expect(withoutAnsiCodes).to.include(`Create Content Type ${id}`)
@@ -108,7 +108,7 @@ module.exports = {
       },
       update: function (id, params) {
         return (result) => {
-          expect(result.stdout).not.to.be.empty()
+          expect(result.stdout).not.to.be.empty(result.stderr)
 
           const withoutAnsiCodes = stripAnsi(result.stdout)
           expect(withoutAnsiCodes).to.include(`Update Content Type ${id}`)
@@ -121,7 +121,7 @@ module.exports = {
       },
       delete: function (id) {
         return (result) => {
-          expect(result.stdout).not.to.be.empty()
+          expect(result.stdout).not.to.be.empty(result.stderr)
 
           const withoutAnsiCodes = stripAnsi(result.stdout)
           expect(withoutAnsiCodes).to.include(`Delete Content Type ${id}`)
@@ -424,6 +424,17 @@ module.exports = {
 
           const withoutAnsiCodes = stripAnsi(result.stdout)
           expect(withoutAnsiCodes).to.include(`Delete Tag ${id}`)
+        }
+      }
+    },
+    annotation: {
+      assign: function (id) {
+        return (result) => {
+          expect(result.stdout).not.to.be.empty(result.stderr)
+
+          const withoutAnsiCodes = stripAnsi(result.stdout)
+
+          expect(withoutAnsiCodes).to.include(`Assign annotation ${id}`)
         }
       }
     }

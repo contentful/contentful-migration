@@ -58,6 +58,7 @@ export class Annotation {
 }
 
 export const availableAnnotations = {
+  // Targeting ContentType
   'Contentful:AggregateRoot': new Annotation({
     id: 'Contentful:AggregateRoot',
     targets: [
@@ -74,6 +75,15 @@ export const availableAnnotations = {
       }
     ]
   }),
+  'Contentful:ExperienceType': new Annotation({
+    id: 'Contentful:ExperienceType',
+    targets: [
+      {
+        type: 'ContentType'
+      }
+    ]
+  }),
+  // Targeting ContentTypeField
   'Contentful:AggregateComponent': new Annotation({
     id: 'Contentful:AggregateComponent',
     targets: [
@@ -90,6 +100,28 @@ export const availableAnnotations = {
               type: 'Link',
               linkType: 'Entry'
             }
+          }
+        ]
+      }
+    ]
+  }),
+  'Contentful:GraphQLFieldResolver': new Annotation({
+    id: 'Contentful:GraphQLFieldResolver',
+    targets: [
+      {
+        type: 'ContentTypeField',
+        accept: [
+          {
+            type: 'Symbol'
+          },
+          {
+            type: 'Array',
+            items: {
+              type: 'Symbol'
+            }
+          },
+          {
+            type: 'Object'
           }
         ]
       }

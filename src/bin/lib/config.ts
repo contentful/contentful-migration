@@ -10,13 +10,19 @@ const configPath = path.resolve(homedir, '.contentfulrc.json')
 function getFileConfig(): ClientConfig {
   try {
     const config = require(configPath)
-    if (config.cmaToken) {
-      return { accessToken: config.cmaToken }
+    let clientConfig: ClientConfig = {}
+
+    if (config.host) {
+      clientConfig.host = config.host
     }
     if (config.managementToken) {
-      return { accessToken: config.managementToken }
+      clientConfig.accessToken = config.managementToken
     }
-    return {}
+    if (config.cmaToken) {
+      clientConfig.accessToken = config.cmaToken
+    }
+
+    return clientConfig
   } catch (e) {
     return {}
   }
@@ -35,6 +41,7 @@ function getArgvConfig({
   rawProxy,
   requestBatchSize,
   headers,
+  host,
   retryLimit
 }): ClientConfig {
   const config = {
@@ -45,6 +52,7 @@ function getArgvConfig({
     rawProxy,
     requestBatchSize,
     headers: addSequenceHeader(headers),
+    host,
     retryLimit
   }
 

@@ -390,7 +390,7 @@ For the given (source) content type, transforms all its entries according to the
   - `locale` one of the locales in the space being transformed
   - `id` id of the current entry in scope
 
-  The return value must be an object with the same keys as specified in the `targetContentType`. Their values will be written to the respective entry fields for the current locale (i.e. `{nameField: 'myNewValue'}`). If it returns `undefined`, this the values for this locale on the entry will be left untouched.
+The return value must be an object with the same keys as specified in the `targetContentType`. Their values will be written to the respective entry fields for the current locale (i.e. `{nameField: 'myNewValue'}`). If it returns `undefined`, the values for this locale on the entry will be left untouched.
 
 ##### `transformEntriesToType` Example
 
@@ -541,7 +541,7 @@ Creates a field with provided `id`.
   - `Array` (requires `items`)
   - `Link` (requires `linkType`)
   - `ResourceLink` (requires `allowedResources`)
-- **`items : Object`** _(required for type 'Array')_ – Defines the items of an Array field.
+- **`items : Object`** _(required for type `Array`)_ – Defines the items of an Array field.
   Example:
 
   ```javascript
@@ -554,9 +554,9 @@ Creates a field with provided `id`.
   }
   ```
 
-- **`linkType : string`** _(required for type 'Link')_ – Type of the referenced entry.
-  Can take the same values as the ones listed for `type` above.
-- **`allowedResources`** _(required for type 'ResourceLink')_ - Defines which resources can be linked through the field.
+- **`linkType : string`** _(required for type `Link`)_ – Type of the referenced entry.
+  Value must be either `Asset` or `Entry`.
+- **`allowedResources`** _(required for type `ResourceLink`)_ - Defines which resources can be linked through the field.
 - **`required : boolean`** – Sets the field as required.
 - **`validations : Array`** – Validations for the field.
   Example:

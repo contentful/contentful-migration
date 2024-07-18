@@ -5,12 +5,19 @@ class FieldAnnotateAction extends EntityAction {
   private contentTypeId: string
   private fieldId: string
   private annotations: AnnotationLink[]
+  private fieldAnnotationPayload: Record<string, any>
 
-  constructor(contentTypeId: string, fieldId: string, annotations?: AnnotationLink[]) {
+  constructor(
+    contentTypeId: string,
+    fieldId: string,
+    annotations?: AnnotationLink[],
+    fieldAnnotationPayload?: Record<string, any>
+  ) {
     super()
     this.contentTypeId = contentTypeId
     this.fieldId = fieldId
     this.annotations = annotations
+    this.fieldAnnotationPayload = fieldAnnotationPayload
   }
 
   getEntityId(): string {
@@ -25,7 +32,7 @@ class FieldAnnotateAction extends EntityAction {
     if (!this.annotations || !this.annotations.length) {
       ct.clearFieldAnnotations(this.fieldId)
     } else {
-      ct.setFieldAnnotations(this.fieldId, this.annotations)
+      ct.setFieldAnnotations(this.fieldId, this.annotations, this.fieldAnnotationPayload)
     }
   }
 }

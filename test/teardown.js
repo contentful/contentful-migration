@@ -9,8 +9,6 @@ if (!space) {
   throw new Error('CONTENTFUL_SPACE_ID is missing')
 }
 
-console.log(`space id ${space}`)
-
 const contentful = require('contentful-management')
 
 function initClient() {

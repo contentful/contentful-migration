@@ -1,24 +1,28 @@
 import * as path from 'path'
-import type { AxiosRequestConfig } from 'axios'
+import type { RawAxiosRequestConfig } from 'axios'
 
 import chalk from 'chalk'
-import * as inquirer from 'inquirer'
+import inquirer from 'inquirer'
 import { Listr } from 'listr2'
 import { createManagementClient } from './lib/contentful-client'
-const { version } = require('../../package.json')
-const { SpaceAccessError } = require('../lib/errors')
 import createMigrationParser, { ParseResult } from '../lib/migration-parser'
-import { renderPlan, renderValidationErrors, renderRuntimeErrors } from './lib/render-migration'
+import { renderPlan, renderRuntimeErrors, renderValidationErrors } from './lib/render-migration'
 import renderStepsErrors from './lib/steps-errors'
 import writeErrorsToLog from './lib/write-errors-to-log'
-import { RequestBatch } from '../lib/offline-api/index'
+import { RequestBatch } from '../lib/offline-api'
 import { getConfig } from './lib/config'
 import ValidationError from '../lib/interfaces/errors'
 import { PlainClientAPI } from 'contentful-management'
 import trim from 'lodash/trim'
 
+import { SpaceAccessError } from '../lib/errors'
+import pThrottle from 'p-throttle'
+
+const { version } = require('../../package.json')
+
 class ManyError extends Error {
   public errors: (Error | ValidationError)[]
+
   constructor(message: string, errors: (Error | ValidationError)[]) {
     super(message)
     this.errors = errors
@@ -28,6 +32,7 @@ class ManyError extends Error {
 class BatchError extends Error {
   public batch: RequestBatch
   public errors: Error[]
+
   constructor(message: string, batch: RequestBatch, errors: Error[]) {
     super(message)
     this.batch = batch
@@ -35,9 +40,13 @@ class BatchError extends Error {
   }
 }
 
+function hasManyErrors(error: unknown): error is ManyError | BatchError {
+  return error instanceof ManyError || error instanceof BatchError
+}
+
 const makeTerminatingFunction =
   ({ shouldThrow }) =>
-  (error: Error) => {
+  (error: any) => {
     if (shouldThrow) {
       throw error
     } else {
@@ -45,22 +54,41 @@ const makeTerminatingFunction =
     }
   }
 
-export const createMakeRequest = (client: PlainClientAPI, { spaceId, environmentId }) => {
+export const createMakeRequest = (
+  client: PlainClientAPI,
+  { spaceId, environmentId, limit = 10, host = 'api.contentful.com' }
+) => {
+  const throttle = pThrottle({
+    limit,
+    interval: 1000,
+    strict: false
+  })
+
   const makeBaseUrl = (url: string) => {
-    const parts = ['spaces', spaceId, 'environments', environmentId, trim(url, '/')]
+    const parts = [
+      `https://${host}`,
+      'spaces',
+      spaceId,
+      'environments',
+      environmentId,
+      trim(url, '/')
+    ]
 
     return parts.filter((x) => x !== '').join('/')
   }
 
-  return function makeRequest(requestConfig: AxiosRequestConfig) {
+  return function makeRequest(requestConfig: RawAxiosRequestConfig) {
     const { url, ...config } = requestConfig
     const fullUrl = makeBaseUrl(url)
 
-    return client.raw.http(fullUrl, config)
+    return throttle(() => client.raw.http(fullUrl, config))()
   }
 }
 
-const getMigrationFunctionFromFile = (filePath, terminate) => {
+const getMigrationFunctionFromFile = (
+  filePath: string,
+  terminate: ReturnType<typeof makeTerminatingFunction>
+) => {
   try {
     return require(filePath)
   } catch (e) {
@@ -86,11 +114,15 @@ const createRun = ({ shouldThrow }) =>
       },
       getConfig(argv)
     )
+    // allow users to override the default host via the contentful-cli
+    argv.host && Object.assign(clientConfig, { host: argv.host })
 
     const client = createManagementClient(clientConfig)
     const makeRequest = createMakeRequest(client, {
       spaceId: clientConfig.spaceId,
-      environmentId: clientConfig.environmentId
+      environmentId: clientConfig.environmentId,
+      limit: argv.requestLimit,
+      host: clientConfig.host
     })
 
     const migrationParser = createMigrationParser(makeRequest, clientConfig)
@@ -218,10 +250,18 @@ const createRun = ({ shouldThrow }) =>
         const successfulMigration = await new Listr(tasks).run()
         console.log(chalk`🎉  {bold.green Migration successful}`)
         return successfulMigration
-      } catch (err) {
+      } catch (err: unknown) {
         console.error(chalk`🚨  {bold.red Migration unsuccessful}`)
-        console.error(chalk`{red ${err.message}}\n`)
-        err.errors.forEach((err) => console.error(chalk`{red ${err}}\n\n`))
+
+        if (err instanceof Error) {
+          console.error(chalk`{red ${err.message}}\n`)
+          if (hasManyErrors(err) && Array.isArray(err.errors)) {
+            err.errors.forEach((err: any) => console.error(chalk`{red ${err}}\n\n`))
+          }
+        } else {
+          console.error(chalk`{red ${err}}\n`)
+        }
+
         await Promise.all(serverErrorsWritten)
         console.error(`Please check the errors log for more details: ${errorsFile}`)
         terminate(err)

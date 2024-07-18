@@ -4,7 +4,7 @@ import { allowedResourcesSchema } from './allowed-resources-schema'
 const validation = (name, constraint) =>
   Joi.object({
     [name]: constraint,
-    message: Joi.string()
+    message: Joi.string().allow(null)
   })
 
 const range = (type) =>
@@ -80,7 +80,7 @@ const nodes = validation(
 const enabledMarks = validation(
   'enabledMarks',
   Joi.array().items(
-    Joi.string().valid('bold', 'italic', 'code', 'underline', 'superscript', 'subscript')
+    Joi.string().valid('bold', 'italic', 'code', 'underline', 'superscript', 'subscript', 'strikethrough')
   )
 )
 
