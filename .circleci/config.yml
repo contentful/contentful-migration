@@ -7,7 +7,7 @@ orbs:
 jobs:
   check:
     docker:
-      - image: 'cimg/base:stable'
+      - image: 'cimg/base:current'
     steps:
       - checkout
       - node/install:
@@ -27,7 +27,7 @@ jobs:
             npm run test:typescript-declaration
   test-unit:
     docker:
-      - image: 'cimg/base:stable'
+      - image: 'cimg/base:current'
     steps:
       - checkout
       - node/install:
@@ -39,7 +39,7 @@ jobs:
             npm run test:unit
   test-integration:
     docker:
-      - image: 'cimg/base:stable'
+      - image: 'cimg/base:current'
     steps:
       - checkout
       - node/install:
@@ -51,7 +51,7 @@ jobs:
             npm run test:integration
   test-e2e:
     docker:
-      - image: 'cimg/base:stable'
+      - image: 'cimg/base:current'
     steps:
       - checkout
       - node/install:
@@ -63,7 +63,7 @@ jobs:
             npm run test:e2e
   release:
     docker:
-      - image: 'cimg/base:stable'
+      - image: 'cimg/base:current'
     steps:
       - checkout
       - node/install:
