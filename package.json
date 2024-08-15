@@ -84,7 +84,7 @@
     "@types/sinon-chai": "^3.2.4",
     "@types/yargs": "^17.0.28",
     "chai": "^4.2.0",
-    "chai-as-promised": "^7.1.1",
+    "chai-as-promised": "^8.0.0",
     "commitizen": "^4.2.2",
     "cz-conventional-changelog": "^3.3.0",
     "dirty-chai": "^2.0.1",
