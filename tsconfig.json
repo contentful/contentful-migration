@@ -3,22 +3,15 @@
     "outDir": "./built",
     "allowJs": true,
     "target": "es2017",
-    "esModuleInterop":true,
+    "esModuleInterop": true,
     "module": "commonjs",
-    "lib": [
-      "es2015",
-      "es2016",
-      "es2017",
-      "esnext"
-    ],
+    "lib": ["es2015", "es2016", "es2017", "esnext"],
     "sourceMap": true,
-    "typeRoots": [
-      "./typings",
-      "./node_modules/@types"
-    ],
+    "typeRoots": ["./typings", "./node_modules/@types"],
     "moduleResolution": "node",
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "skipLibCheck": true
   },
   "include": [
     "./src/**/*"
