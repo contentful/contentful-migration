@@ -1,4 +1,4 @@
-import { omit, compact, get } from 'lodash'
+import { omit, compact, get, isArray } from 'lodash'
 import FieldDeletionValidator from './validator/field-deletion'
 import { ContentTypePayloadValidator } from './validator/content-type'
 import { TagSchemaValidator } from './validator/tag'
@@ -529,8 +529,8 @@ class OfflineAPI {
           if (get(field, 'sys.id') === childId) {
             links.push(new Link(entry, key, locale))
           }
-          if (field instanceof Array) {
-            const fieldArray = field
+          if (isArray(field)) {
+            const fieldArray: any[] = field
             fieldArray.forEach((fieldEntry, index) => {
               if (get(fieldEntry, 'sys.id') === childId) {
                 links.push(new Link(entry, key, locale, index))
