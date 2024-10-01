@@ -161,11 +161,17 @@ export interface IValidation {
   [validation: string]: any
 }
 
-export interface AllowedResource {
+export interface ContentfulEntryResource {
   type: 'Contentful:Entry'
   source: string
   contentTypes: string[]
 }
+
+export interface ExternalResource {
+  type: string
+}
+
+export type AllowedResource = ContentfulEntryResource | ExternalResource
 
 export type WidgetSettingsValue = number | boolean | string | undefined
 
