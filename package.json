@@ -36,7 +36,6 @@
     "lint": "eslint 'examples/**/*.js' 'test/**/*.js' 'src/**/*.js' && tslint --project tsconfig-dev.json --config tslint.json -e '**/*.js'",
     "lint:fix": "prettier --write 'src/**/*.{ts,tsx,js,jsx}' 'test/**/*.{ts,tsx,js,jsx}' && eslint --fix 'examples/**/*.js' 'test/**/*.js' 'src/**/*.js' && tslint --fix --project tsconfig-dev.json --config tslint.json -e '**/*.js'",
     "semantic-release": "semantic-release",
-    "travis-deploy-once": "travis-deploy-once",
     "test:unit:debug": "NODE_ENV=test mocha debug --require test/setup-unit.js --recursive 'test/unit/**/**/*.spec.{js,ts}'",
     "test:integration:debug": "NODE_ENV=test mocha debug --require test/integration/setup.js 'test/integration/**/*.spec.js'",
     "test:e2e:debug": "NODE_ENV=test mocha debug 'test/end-to-end/**/*.spec.js'",
@@ -103,12 +102,11 @@
     "prettier": "^3.0.3",
     "rewire": "^5.0.0",
     "rimraf": "^5.0.1",
-    "semantic-release": "^21.0.1",
+    "semantic-release": "^22.0.12",
     "sinon": "^18.0.0",
     "sinon-chai": "^3.5.0",
     "source-map-support": "^0.5.16",
     "strip-ansi": "^6.0.0",
-    "travis-deploy-once": "^5.0.11",
     "ts-node": "^10.0.0",
     "tslint": "^6.1.1",
     "tslint-config-prettier": "^1.18.0",
@@ -124,7 +122,12 @@
   },
   "release": {
     "branches": [
-      "main"
+      "main",
+      {
+        "name": "beta",
+        "channel": "beta",
+        "prerelease": true
+      }
     ],
     "plugins": [
       [
