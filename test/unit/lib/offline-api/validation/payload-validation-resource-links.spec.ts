@@ -272,7 +272,7 @@ describe('payload validation (dependencies)', function () {
       ])
     })
 
-    it('should return an error when the type value is referencing a invalid type', async function () {
+    it('returns an error when the type value is referencing a invalid type', async function () {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
@@ -299,7 +299,7 @@ describe('payload validation (dependencies)', function () {
       ])
     })
 
-    it('should return an error when the type value is referencing custom ResourceProvider:ResourceType pair with additional properties', async function () {
+    it('returns an error when the type value is referencing custom ResourceProvider:ResourceType pair with additional properties', async function () {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
