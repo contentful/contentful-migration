@@ -184,7 +184,66 @@ describe('payload validation (dependencies)', function () {
   })
 
   describe('when setting a field to ResourceLink but specifying wrong resource properties', function () {
-    it('returns errors', async function () {
+    it('returns errors when an invalid ResourceType is provided for the Contentful: ResourceProvider', async function () {
+      const existingCts = []
+      const errors = await validateBatches(function (migration) {
+        const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
+
+        lunch
+          .createField('mainCourse')
+          .name('Main Course')
+          .type('ResourceLink')
+          .allowedResources([
+            {
+              type: 'Contentful:Asset',
+              source: 'crn:contentful:::content:spaces/cooking-space-2',
+              contentTypes: ['cookingMethod']
+            }
+          ])
+      }, existingCts)
+
+      expect(errors).to.eql([
+        [
+          {
+            type: 'InvalidPayload',
+            message:
+              'Allowed resource at index 0 on the field "mainCourse" has an invalid property: "type" must be [Contentful:Entry].'
+          }
+        ]
+      ])
+    })
+
+    it('returns errors when the allowedResources of the Contentful: Provider contains additional fields', async function () {
+      const existingCts = []
+      const errors = await validateBatches(function (migration) {
+        const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
+
+        lunch
+          .createField('mainCourse')
+          .name('Main Course')
+          .type('ResourceLink')
+          .allowedResources([
+            {
+              type: 'Contentful:Entry',
+              source: 'crn:contentful:::content:spaces/cooking-space-1',
+              contentTypes: ['cookingMethod'],
+              unexpectedProperty: 'someValue'
+            }
+          ])
+      }, existingCts)
+
+      expect(errors).to.eql([
+        [
+          {
+            message:
+              'Allowed resource at index 0 on the field "mainCourse" has an invalid property: "unexpectedProperty" is not allowed.',
+            type: 'InvalidPayload'
+          }
+        ]
+      ])
+    })
+
+    it('returns errors when the contentTypes array is empty', async function () {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
@@ -198,12 +257,6 @@ describe('payload validation (dependencies)', function () {
               type: 'Contentful:Entry',
               source: 'crn:contentful:::content:spaces/cooking-space-1',
               contentTypes: []
-            },
-            {
-              type: 'Contentful:Asset',
-              source: 'crn:contentful:::content:spaces/cooking-space-2',
-              contentTypes: ['cookingMethod'],
-              unexpectedProperty: 'someValue'
             }
           ])
       }, existingCts)
@@ -214,15 +267,60 @@ describe('payload validation (dependencies)', function () {
             type: 'InvalidPayload',
             message:
               'Allowed resource at index 0 on the field "mainCourse" has an invalid property: "contentTypes" must contain at least 1 items.'
-          },
+          }
+        ]
+      ])
+    })
+
+    it('should return an error when the type value is referencing a invalid type', async function () {
+      const existingCts = []
+      const errors = await validateBatches(function (migration) {
+        const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
+
+        lunch
+          .createField('mainCourse')
+          .name('Main Course')
+          .type('ResourceLink')
+          .allowedResources([
+            {
+              type: 'Foo'
+            }
+          ])
+      }, existingCts)
+
+      expect(errors).to.eql([
+        [
           {
-            type: 'InvalidPayload',
             message:
-              'Allowed resource at index 1 on the field "mainCourse" has an invalid property: "type" must be [Contentful:Entry].'
-          },
+              'Allowed resource at index 0 on the field "mainCourse" has an invalid property: "type" with value "Foo" fails to match the required pattern: /^[A-Z][a-z]*:[A-Z][a-z]*$/.',
+            type: 'InvalidPayload'
+          }
+        ]
+      ])
+    })
+
+    it('should return an error when the type value is referencing custom ResourceProvider:ResourceType pair with additional properties', async function () {
+      const existingCts = []
+      const errors = await validateBatches(function (migration) {
+        const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
+
+        lunch
+          .createField('mainCourse')
+          .name('Main Course')
+          .type('ResourceLink')
+          .allowedResources([
+            {
+              type: 'Foo:Bar',
+              source: 'crn:contentful:::content:spaces/cooking-space-2'
+            }
+          ])
+      }, existingCts)
+
+      expect(errors).to.eql([
+        [
           {
             message:
-              'Allowed resource at index 1 on the field "mainCourse" has an invalid property: "unexpectedProperty" is not allowed.',
+              'Allowed resource at index 0 on the field "mainCourse" has an invalid property: "source" is not allowed.',
             type: 'InvalidPayload'
           }
         ]
@@ -241,6 +339,25 @@ describe('payload validation (dependencies)', function () {
           .name('Main Course')
           .type('ResourceLink')
           .allowedResources([VALID_ALLOWED_RESOURCE])
+      }, existingCts)
+
+      expect(errors).to.eql([[]])
+    })
+
+    it('should not return an error when the type value is referencing a custom ResourceProvider:ResourceType pair', async function () {
+      const existingCts = []
+      const errors = await validateBatches(function (migration) {
+        const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
+
+        lunch
+          .createField('mainCourse')
+          .name('Main Course')
+          .type('ResourceLink')
+          .allowedResources([
+            {
+              type: 'Foo:Bar'
+            }
+          ])
       }, existingCts)
 
       expect(errors).to.eql([[]])

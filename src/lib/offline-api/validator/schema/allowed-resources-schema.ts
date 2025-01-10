@@ -6,9 +6,17 @@ export const allowedResourcesSchema = Joi.array()
   .max(MAX_ALLOWED_RESOURCES)
   .unique('source')
   .items(
-    Joi.object({
-      type: Joi.string().valid('Contentful:Entry'),
-      source: Joi.string(),
-      contentTypes: Joi.array().min(1).items(Joi.string())
-    })
+    Joi.alternatives().conditional(
+      Joi.object({ type: Joi.string().regex(/^Contentful:/) }).unknown(),
+      {
+        then: Joi.object({
+          type: Joi.string().valid('Contentful:Entry'),
+          source: Joi.string(),
+          contentTypes: Joi.array().min(1).items(Joi.string())
+        }),
+        otherwise: Joi.object({
+          type: Joi.string().regex(/^[A-Z][a-z]*:[A-Z][a-z]*$/)
+        })
+      }
+    )
   )
