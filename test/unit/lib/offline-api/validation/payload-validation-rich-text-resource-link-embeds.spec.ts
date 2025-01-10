@@ -184,7 +184,7 @@ describe('payload validation (dependencies)', function () {
       ])
     })
 
-    it('should return an error when the type value is not one of the supported values', async function () {
+    it('should return an error when the type value is not one of the supported values for the Contentful: Provider', async function () {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
