@@ -31,6 +31,32 @@ export interface EditorLayoutMovement {
   afterFieldGroup(groupId?: string): void
 }
 
+type BuiltinEditor =
+  | 'assetLinkEditor'
+  | 'assetLinksEditor'
+  | 'assetGalleryEditor'
+  | 'boolean'
+  | 'datePicker'
+  | 'entryLinkEditor'
+  | 'entryLinksEditor'
+  | 'entryCardEditor'
+  | 'entryCardsEditor'
+  | 'numberEditor'
+  | 'rating'
+  | 'locationEditor'
+  | 'objectEditor'
+  | 'urlEditor'
+  | 'slugEditor'
+  | 'listInput'
+  | 'checkbox'
+  | 'tagEditor'
+  | 'multipleLine'
+  | 'markdown'
+  | 'singleLine'
+  | 'dropdown'
+  | 'radio'
+  | 'richTextEditor'
+
 type FieldType =
   | 'Symbol'
   | 'Text'
@@ -208,8 +234,8 @@ export interface IFieldGroupWidgetSettings {
 }
 
 export interface IEntryEditor {
-  widgetNamespace: 'editor-builtin' | 'builtin' | 'extension' | 'app',
-  widgetId: string,
+  widgetNamespace: 'editor-builtin' | 'builtin' | 'extension' | 'app'
+  widgetId: string
   settings?: IEditorInterfaceOptions
 }
 
@@ -251,7 +277,12 @@ export interface ContentType {
    * @param settings Widget settings
    */
   configureEntryEditor(
-    widgetNamespace: 'editor-builtin' | 'builtin' | 'extension' | 'app',
+    widgetNamespace: 'builtin',
+    widgetId: BuiltinEditor,
+    settings?: IEditorInterfaceOptions
+  ): void
+  configureEntryEditor(
+    widgetNamespace: 'editor-builtin' | 'extension' | 'app',
     widgetId: string,
     settings?: IEditorInterfaceOptions
   ): void
@@ -273,7 +304,13 @@ export interface ContentType {
    */
   changeFieldControl(
     fieldId: string,
-    widgetNamespace: 'builtin' | 'extension' | 'app',
+    widgetNamespace: 'builtin',
+    widgetId: BuiltinEditor,
+    settings: IEditorInterfaceOptions
+  ): void
+  changeFieldControl(
+    fieldId: string,
+    widgetNamespace: 'extension' | 'app',
     widgetId: string,
     settings?: IEditorInterfaceOptions
   ): void
