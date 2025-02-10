@@ -56,7 +56,7 @@
     "callsites": "^3.1.0",
     "cardinal": "^2.1.1",
     "chalk": "^4.0.0",
-    "contentful-management": "^11.40.3",
+    "contentful-management": "^11.47.1",
     "didyoumean2": "^5.0.0",
     "https-proxy-agent": "^5.0.0",
     "inquirer": "^8.1.2",
