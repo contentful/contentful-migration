@@ -42,4 +42,32 @@ describe('A shouldPublish util function', function () {
     expect(shouldPublishLocalChanges(undefined, entry(2, 1))).to.eql(false)
     expect(shouldPublishLocalChanges(undefined, entry(5, 1))).to.eql(false)
   })
+
+  describe('with locale based publishing', function () {
+    const changedEntity = entry(4, 1)
+    changedEntity.fieldStatus = {
+      '*': { 'en-US': 'changed', 'de-DE': 'published' }
+    }
+
+    const publishedEntity = entry(2, 1)
+    publishedEntity.fieldStatus = {
+      '*': { 'en-US': 'published', 'de-DE': 'published' }
+    }
+
+    it('returns true if explicitly set', () => {
+      expect(shouldPublishLocalChanges(true, changedEntity)).to.eql(true)
+    })
+
+    it('returns false if explicitly set', () => {
+      expect(shouldPublishLocalChanges(false, publishedEntity)).to.eql(false)
+    })
+
+    it('returns false for "preserve" and pending remote changes', () => {
+      expect(shouldPublishLocalChanges('preserve', changedEntity)).to.eql(false)
+    })
+
+    it('returns true for "preserve" and no pending remote changes', () => {
+      expect(shouldPublishLocalChanges('preserve', publishedEntity)).to.eql(true)
+    })
+  })
 })

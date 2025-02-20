@@ -4,6 +4,11 @@ interface SimpleEntry {
   version: number
   publishedVersion?: number
   fields: object
+  fieldStatus?: {
+    '*': {
+      [key: string]: 'draft' | 'published' | 'changed'
+    }
+  }
 }
 
 const makeApiEntry = function (simpleEntry: SimpleEntry) {
@@ -17,7 +22,8 @@ const makeApiEntry = function (simpleEntry: SimpleEntry) {
         linkType: 'ContentType',
         id: simpleEntry.contentTypeId
       }
-    }
+    },
+    fieldStatus: simpleEntry.fieldStatus
   }
 
   return {
