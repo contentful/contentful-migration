@@ -114,7 +114,7 @@ class EntryDeriveAction extends APIAction {
         }
         await api.saveEntry(targetEntry.id)
         if (shouldPublishLocalChanges(this.shouldPublish, entry, this.useLocaleBasedPublishing)) {
-          this.publishEntry(api, targetEntry, locales)
+          await this.publishEntry(api, targetEntry, locales)
         }
       }
       const field = sourceContentType.fields.getField(this.referenceField)
@@ -131,7 +131,7 @@ class EntryDeriveAction extends APIAction {
 
       await api.saveEntry(entry.id)
       if (shouldPublishLocalChanges(this.shouldPublish, entry, this.useLocaleBasedPublishing)) {
-        this.publishEntry(api, entry, locales)
+        await this.publishEntry(api, entry, locales)
       }
     }
   }
