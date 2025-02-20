@@ -25,7 +25,8 @@ class EntryTransformToTypeIntentValidator extends SchemaValidator {
       to: Joi.array().items(Joi.string()).required(),
       identityKey: Joi.func().required(),
       shouldPublish: Joi.boolean(),
-      deriveEntryForLocale: Joi.func().required()
+      deriveEntryForLocale: Joi.func().required(),
+      useLocaleBasedPublishing: Joi.boolean().optional()
     }
   }
 }
