@@ -306,7 +306,7 @@ export interface ContentType {
     fieldId: string,
     widgetNamespace: 'builtin',
     widgetId: BuiltinEditor,
-    settings: IEditorInterfaceOptions
+    settings?: IEditorInterfaceOptions
   ): void
   changeFieldControl(
     fieldId: string,
