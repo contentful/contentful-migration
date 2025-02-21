@@ -95,6 +95,12 @@ describe('EntryDeriveIntent', function () {
           id: 'doge',
           contentTypeId: 'entry',
           version: 1,
+          fieldStatus: {
+            '*': {
+              'en-US': 'draft',
+              'de-DE': 'draft'
+            }
+          },
           fields: {
             text: {
               'en-US': 'Such text, wow',
@@ -112,6 +118,12 @@ describe('EntryDeriveIntent', function () {
           id: 'clickbait',
           contentTypeId: 'entry',
           version: 1,
+          fieldStatus: {
+            '*': {
+              'en-US': 'draft',
+              'de-DE': 'draft'
+            }
+          },
           fields: {
             text: {
               'en-US': "You won't believe what happened next",
@@ -129,6 +141,12 @@ describe('EntryDeriveIntent', function () {
           id: 'categorical-imperative',
           contentTypeId: 'entry',
           version: 1,
+          fieldStatus: {
+            '*': {
+              'en-US': 'draft',
+              'de-DE': 'draft'
+            }
+          },
           fields: {
             text: {
               'en-US':
@@ -153,13 +171,18 @@ describe('EntryDeriveIntent', function () {
 
       const allAuthors = await api.getEntriesForContentType('author')
       const authorEntries = allAuthors.map((entry) => entry.toApiEntry())
-
       expect(sourceEntries).to.eql([
         makeApiEntry({
           id: 'doge',
           contentTypeId: 'entry',
           version: 3,
           publishedVersion: 2,
+          fieldStatus: {
+            '*': {
+              'en-US': 'published',
+              'de-DE': 'published'
+            }
+          },
           fields: {
             text: {
               'en-US': 'Such text, wow',
@@ -182,6 +205,12 @@ describe('EntryDeriveIntent', function () {
           contentTypeId: 'entry',
           version: 3,
           publishedVersion: 2,
+          fieldStatus: {
+            '*': {
+              'en-US': 'published',
+              'de-DE': 'published'
+            }
+          },
           fields: {
             text: {
               'en-US': "You won't believe what happened next",
@@ -204,6 +233,12 @@ describe('EntryDeriveIntent', function () {
           contentTypeId: 'entry',
           version: 3,
           publishedVersion: 2,
+          fieldStatus: {
+            '*': {
+              'en-US': 'published',
+              'de-DE': 'published'
+            }
+          },
           fields: {
             text: {
               'en-US':
@@ -231,6 +266,12 @@ describe('EntryDeriveIntent', function () {
           contentTypeId: 'author',
           version: 2,
           publishedVersion: 1,
+          fieldStatus: {
+            '*': {
+              'en-US': 'published',
+              'de-DE': 'published'
+            }
+          },
           fields: {
             firstName: {
               'en-US': 'Author'
@@ -248,6 +289,12 @@ describe('EntryDeriveIntent', function () {
           contentTypeId: 'author',
           version: 2,
           publishedVersion: 1,
+          fieldStatus: {
+            '*': {
+              'en-US': 'published',
+              'de-DE': 'published'
+            }
+          },
           fields: {
             firstName: {
               'en-US': 'Immanuel'
@@ -351,6 +398,12 @@ describe('EntryDeriveIntent', function () {
           id: 'doge',
           contentTypeId: 'entry',
           version: 1,
+          fieldStatus: {
+            '*': {
+              'en-US': 'draft',
+              'de-DE': 'draft'
+            }
+          },
           fields: {
             text: {
               'en-US': 'Such text, wow',
@@ -368,6 +421,12 @@ describe('EntryDeriveIntent', function () {
           id: 'clickbait',
           contentTypeId: 'entry',
           version: 1,
+          fieldStatus: {
+            '*': {
+              'en-US': 'draft',
+              'de-DE': 'draft'
+            }
+          },
           fields: {
             text: {
               'en-US': "You won't believe what happened next",
@@ -385,6 +444,12 @@ describe('EntryDeriveIntent', function () {
           id: 'categorical-imperative',
           contentTypeId: 'entry',
           version: 1,
+          fieldStatus: {
+            '*': {
+              'en-US': 'draft',
+              'de-DE': 'draft'
+            }
+          },
           fields: {
             text: {
               'en-US':
@@ -416,6 +481,12 @@ describe('EntryDeriveIntent', function () {
           contentTypeId: 'entry',
           version: 3,
           publishedVersion: 2,
+          fieldStatus: {
+            '*': {
+              'en-US': 'published',
+              'de-DE': 'published'
+            }
+          },
           fields: {
             text: {
               'en-US': 'Such text, wow',
@@ -438,6 +509,12 @@ describe('EntryDeriveIntent', function () {
           contentTypeId: 'entry',
           version: 3,
           publishedVersion: 2,
+          fieldStatus: {
+            '*': {
+              'en-US': 'published',
+              'de-DE': 'published'
+            }
+          },
           fields: {
             text: {
               'en-US': "You won't believe what happened next",
@@ -460,6 +537,12 @@ describe('EntryDeriveIntent', function () {
           id: 'categorical-imperative',
           contentTypeId: 'entry',
           version: 1,
+          fieldStatus: {
+            '*': {
+              'en-US': 'draft',
+              'de-DE': 'draft'
+            }
+          },
           fields: {
             text: {
               'en-US':
@@ -484,6 +567,12 @@ describe('EntryDeriveIntent', function () {
           contentTypeId: 'author',
           version: 2,
           publishedVersion: 1,
+          fieldStatus: {
+            '*': {
+              'en-US': 'published',
+              'de-DE': 'published'
+            }
+          },
           fields: {
             firstName: {
               'en-US': 'Author'

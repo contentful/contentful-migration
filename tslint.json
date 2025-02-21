@@ -3,6 +3,7 @@
   "extends": ["tslint-config-standard", "tslint-config-prettier"],
   "rules": {
     "await-promise": false,
-    "return-undefined": false
+    "return-undefined": false,
+    "deprecation": false
   }
 }

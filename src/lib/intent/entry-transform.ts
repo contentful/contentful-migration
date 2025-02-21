@@ -26,7 +26,8 @@ export default class EntryTransformIntent extends Intent {
         this.getContentTypeId(),
         this.payload.transformation.from,
         this.payload.transformation.transformEntryForLocale,
-        this.payload.transformation.shouldPublish
+        this.payload.transformation.shouldPublish,
+        this.payload.transformation.useLocaleBasedPublishing
       )
     ]
   }

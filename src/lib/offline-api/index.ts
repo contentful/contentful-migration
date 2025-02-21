@@ -81,6 +81,24 @@ const publishEntryRequest = function (entry: Entry): Request {
   }
 }
 
+const localeBasedPublishEntryRequest = function (entry: Entry, locales: string[]): Request {
+  return {
+    method: 'PUT',
+    url: `/entries/${entry.id}/published`,
+    headers: {
+      'X-Contentful-Version': entry.version,
+      'X-Contentful-Content-Type': entry.contentTypeId
+    },
+    data: {
+      add: {
+        fields: {
+          '*': locales
+        }
+      }
+    }
+  }
+}
+
 const unpublishEntryRequest = function (entry: Entry): Request {
   return {
     method: 'DELETE',
@@ -470,6 +488,46 @@ class OfflineAPI {
     // Mutate version bump
     entry.publishedVersion = entry.version
     entry.version = entry.version + 1
+
+    // Mutate fieldStatus
+    entry.fieldStatus = {
+      '*': Object.fromEntries(
+        (entry.fieldStatus
+          ? Object.keys(entry.fieldStatus['*'])
+          : await this.getLocalesForSpace()
+        ).map((locale) => [locale, 'published'])
+      )
+    }
+
+    return entry
+  }
+
+  async localeBasedPublishEntry(id: string, locales: string[]): Promise<Entry> {
+    this.assertRecording()
+
+    const hasEntry = this.entries.some((entry) => entry.id === id)
+
+    if (!hasEntry) {
+      throw new Error(`Cannot publish Entry ${id} because it does not exist`)
+    } // Store clone as a request
+    const entry = this.entries.find((entry) => entry.id === id)
+
+    this.currentRequestsRecorded.push(localeBasedPublishEntryRequest(entry.clone(), locales))
+
+    // Mutate version bump
+    entry.publishedVersion = entry.version
+    entry.version = entry.version + 1
+
+    // Mutate fieldStatus
+    entry.fieldStatus = {
+      '*': {
+        ...entry.fieldStatus['*'],
+        ...locales.reduce((acc, locale) => {
+          acc[locale] = 'published'
+          return acc
+        }, {})
+      }
+    }
 
     return entry
   }

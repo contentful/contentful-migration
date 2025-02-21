@@ -2,6 +2,7 @@ import { cloneDeep } from 'lodash'
 import APIEntry from '../interfaces/api-entry'
 import APITagLink from '../interfaces/api-tag-link'
 import isDefined from '../utils/is-defined'
+import type { EntityMetaSysProps } from 'contentful-management'
 
 class Entry {
   private _id: string
@@ -10,6 +11,7 @@ class Entry {
   private _fields: object
   private _publishedVersion?: number
   private _tags?: APITagLink[]
+  private _fieldStatus?: EntityMetaSysProps['fieldStatus']
 
   constructor(entry: APIEntry) {
     this._id = entry.sys.id
@@ -18,6 +20,7 @@ class Entry {
     this._contentTypeId = entry.sys.contentType.sys.id
     this._publishedVersion = entry.sys.publishedVersion
     this._tags = entry.metadata?.tags
+    this._fieldStatus = entry.sys.fieldStatus
   }
 
   get id() {
@@ -86,6 +89,14 @@ class Entry {
     this._tags = tags
   }
 
+  get fieldStatus() {
+    return this._fieldStatus
+  }
+
+  set fieldStatus(fieldStatus: EntityMetaSysProps['fieldStatus']) {
+    this._fieldStatus = fieldStatus
+  }
+
   toApiEntry(): APIEntry {
     const sys = {
       id: this.id,
@@ -97,7 +108,8 @@ class Entry {
           linkType: 'ContentType',
           id: this.contentTypeId
         }
-      }
+      },
+      fieldStatus: cloneDeep(this.fieldStatus)
     }
 
     let payload: APIEntry

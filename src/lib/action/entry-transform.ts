@@ -9,12 +9,13 @@ class EntryTransformAction extends APIAction {
   private fromFields: string[]
   private transformEntryForLocale: Function
   private shouldPublish: boolean | 'preserve'
-
+  private useLocaleBasedPublishing: boolean
   constructor(
     contentTypeId: string,
     fromFields: string[],
     transformation: Function,
-    shouldPublish: boolean | 'preserve' = 'preserve'
+    shouldPublish: boolean | 'preserve' = 'preserve',
+    useLocaleBasedPublishing: boolean = false
   ) {
     super()
     this.contentTypeId = contentTypeId
@@ -22,6 +23,7 @@ class EntryTransformAction extends APIAction {
     // this.toFields = toFields
     this.transformEntryForLocale = transformation
     this.shouldPublish = shouldPublish
+    this.useLocaleBasedPublishing = useLocaleBasedPublishing
   }
 
   async applyTo(api: OfflineAPI) {
@@ -57,8 +59,18 @@ class EntryTransformAction extends APIAction {
       }
       if (changesForThisEntry) {
         await api.saveEntry(entry.id)
-        if (shouldPublishLocalChanges(this.shouldPublish, entry)) {
-          await api.publishEntry(entry.id)
+        if (shouldPublishLocalChanges(this.shouldPublish, entry, this.useLocaleBasedPublishing)) {
+          if (this.useLocaleBasedPublishing) {
+            const localesToPublish =
+              this.shouldPublish === 'preserve'
+                ? Object.entries(entry.fieldStatus['*'])
+                    .filter(([, status]) => status === 'published')
+                    .map(([locale]) => locale)
+                : locales
+            await api.localeBasedPublishEntry(entry.id, localesToPublish)
+          } else {
+            await api.publishEntry(entry.id)
+          }
         }
       }
     }

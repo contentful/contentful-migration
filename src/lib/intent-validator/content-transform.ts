@@ -23,7 +23,8 @@ class ContentTransformIntentValidator extends SchemaValidator {
       from: Joi.array().items(Joi.string()).required(),
       to: Joi.array().items(Joi.string()).required(),
       transformEntryForLocale: Joi.func().required(),
-      shouldPublish: Joi.alternatives().try(Joi.boolean(), Joi.string().valid('preserve'))
+      shouldPublish: Joi.alternatives().try(Joi.boolean(), Joi.string().valid('preserve')),
+      useLocaleBasedPublishing: Joi.boolean().optional()
     }
   }
 }

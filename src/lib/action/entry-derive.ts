@@ -20,6 +20,7 @@ class EntryDeriveAction extends APIAction {
   ) => Promise<any>
   private identityKey: (fromFields: any) => Promise<string>
   private shouldPublish: boolean | 'preserve'
+  private useLocaleBasedPublishing: boolean
 
   constructor(contentTypeId: string, entryDerivation: EntryDerive) {
     super()
@@ -32,6 +33,17 @@ class EntryDeriveAction extends APIAction {
     this.shouldPublish = isDefined(entryDerivation.shouldPublish)
       ? entryDerivation.shouldPublish
       : true
+    this.useLocaleBasedPublishing = isDefined(entryDerivation.useLocaleBasedPublishing)
+      ? entryDerivation.useLocaleBasedPublishing
+      : false
+  }
+
+  private async publishEntry(api: OfflineAPI, entry: Entry, locales: string[]) {
+    if (this.useLocaleBasedPublishing) {
+      await api.localeBasedPublishEntry(entry.id, locales)
+    } else {
+      await api.publishEntry(entry.id)
+    }
   }
 
   async applyTo(api: OfflineAPI) {
@@ -101,8 +113,8 @@ class EntryDeriveAction extends APIAction {
           }
         }
         await api.saveEntry(targetEntry.id)
-        if (shouldPublishLocalChanges(this.shouldPublish, entry)) {
-          await api.publishEntry(targetEntry.id)
+        if (shouldPublishLocalChanges(this.shouldPublish, entry, this.useLocaleBasedPublishing)) {
+          await this.publishEntry(api, targetEntry, locales)
         }
       }
       const field = sourceContentType.fields.getField(this.referenceField)
@@ -118,8 +130,8 @@ class EntryDeriveAction extends APIAction {
       }
 
       await api.saveEntry(entry.id)
-      if (shouldPublishLocalChanges(this.shouldPublish, entry)) {
-        await api.publishEntry(entry.id)
+      if (shouldPublishLocalChanges(this.shouldPublish, entry, this.useLocaleBasedPublishing)) {
+        await this.publishEntry(api, entry, locales)
       }
     }
   }
