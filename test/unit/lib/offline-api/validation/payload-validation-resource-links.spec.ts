@@ -292,7 +292,7 @@ describe('payload validation (dependencies)', function () {
         [
           {
             message:
-              'Allowed resource at index 0 on the field "mainCourse" has an invalid property: "type" with value "Foo" fails to match the required pattern: /^[A-Z][a-z]*:[A-Z][a-z]*$/.',
+              'Allowed resource at index 0 on the field "mainCourse" has an invalid property: "type" with value "Foo" fails to match the required pattern: /^[a-zA-Z][a-zA-Z0-9]*:[A-Za-z0-9]+$/.',
             type: 'InvalidPayload'
           }
         ]

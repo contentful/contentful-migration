@@ -15,7 +15,7 @@ export const allowedResourcesSchema = Joi.array()
           contentTypes: Joi.array().min(1).items(Joi.string())
         }),
         otherwise: Joi.object({
-          type: Joi.string().regex(/^[A-Z][a-z]*:[A-Z][a-z]*$/)
+          type: Joi.string().regex(/^[a-zA-Z][a-zA-Z0-9]*:[A-Za-z0-9]+$/)
         })
       }
     )
