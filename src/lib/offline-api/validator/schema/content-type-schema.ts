@@ -1,6 +1,6 @@
 import * as Joi from 'joi'
 
-const MAX_FIELDS = 50
+const MAX_FIELDS = 100
 const contentTypeSchema = Joi.object().keys({
   name: Joi.string().required(),
   description: Joi.string().allow(''),
