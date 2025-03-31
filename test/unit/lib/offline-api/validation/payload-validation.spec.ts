@@ -37,7 +37,7 @@ describe('payload validation', function () {
         const lunch = migration.createContentType('lunch')
         lunch.name('A lunch')
 
-        for (let i = 0; i < 51; i++) {
+        for (let i = 0; i < 101; i++) {
           lunch.createField(`menu${i}`).type('Symbol').name(`menu${i}`)
         }
       }, [])
@@ -45,7 +45,7 @@ describe('payload validation', function () {
         [
           {
             type: 'InvalidPayload',
-            message: 'Content type "lunch" cannot have more than 50 fields.'
+            message: 'Content type "lunch" cannot have more than 100 fields.'
           }
         ]
       ])
