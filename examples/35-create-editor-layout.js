@@ -28,4 +28,6 @@ module.exports = function (migration) {
     helpText: 'Search related fields',
     collapsedByDefault: false
   })
+
+  editorLayout.createFieldGroup('metadata').name('Metadata')
 }
