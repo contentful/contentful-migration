@@ -28,8 +28,4 @@ module.exports = function (migration) {
     helpText: 'Search related fields',
     collapsedByDefault: false
   })
-
-  // move two existing fields into the settings field group
-  editorLayout.moveField('title').toTheTopOfFieldGroup('settings')
-  editorLayout.moveField('name').afterField('title')
 }
