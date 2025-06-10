@@ -764,6 +764,60 @@ const actionCreators = {
           annotations: annotationIds,
           fieldAnnotationPayload
         }
+      }),
+    addAnnotation: (
+      contentTypeId,
+      contentTypeInstanceId,
+      fieldId,
+      fieldInstanceId,
+      callsite,
+      annotationIds,
+      fieldAnnotationPayload
+    ): Intents.FieldAnnotate =>
+      new Intents.FieldAnnotate({
+        type: 'field/annotate',
+        meta: {
+          contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+          fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId,
+          fieldId,
+          props: {
+            annotations: annotationIds,
+            fieldAnnotationPayload
+          }
+        }
+      }),
+    addItemsValidation: (
+      contentTypeId,
+      contentTypeInstanceId,
+      fieldId,
+      fieldInstanceId,
+      callsite,
+      validations
+    ): Intents.FieldAddItemsValidation =>
+      new Intents.FieldAddItemsValidation({
+        type: 'field/addItemsValidation',
+        meta: {
+          contentTypeInstanceId: `contentType/${contentTypeId}/${contentTypeInstanceId}`,
+          fieldInstanceId: `fields/${fieldId}/${fieldInstanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId,
+          fieldId,
+          props: {
+            validations
+          }
+        }
       })
   },
   tag: {
