@@ -22,10 +22,39 @@ class FieldAddItemsValidationAction extends FieldAction {
     }
 
     // Merge new validations with existing ones
-    field.items.validations = [...field.items.validations, ...this.validations]
+    const existingValidations = field.items.validations || []
+    const newValidations = this.validations || []
+
+    // Handle linkContentType validations specially
+    const existingLinkContentType = existingValidations.find((v) => v.linkContentType)
+    const newLinkContentType = newValidations.find((v) => v.linkContentType)
+
+    if (existingLinkContentType && newLinkContentType) {
+      // Merge linkContentType arrays
+      const mergedContentTypes = [
+        ...new Set([
+          ...(existingLinkContentType.linkContentType || []),
+          ...(newLinkContentType.linkContentType || [])
+        ])
+      ]
+
+      // Remove both old validations
+      const filteredExisting = existingValidations.filter((v) => !v.linkContentType)
+      const filteredNew = newValidations.filter((v) => !v.linkContentType)
+
+      // Add merged validation
+      field.items.validations = [
+        ...filteredExisting,
+        ...filteredNew,
+        { linkContentType: mergedContentTypes }
+      ]
+    } else {
+      // If no linkContentType to merge, just append
+      field.items.validations = [...existingValidations, ...newValidations]
+    }
 
     fields.setField(this.getFieldId(), field)
   }
 }
 
-export { FieldAddItemsValidationAction } 
+export { FieldAddItemsValidationAction }
