@@ -35,6 +35,7 @@ import EntrySetTagsIntent from './entry-set-tags'
 import EditorLayoutChangeFieldGroupIdIntent from './editor-layout/editor-layout-change-field-group-id'
 import EditorLayoutDeleteIntent from './editor-layout/editor-layout-delete'
 import FieldAnnotateIntent from './field-annotate'
+import FieldAddItemsValidationIntent from './field-add-items-validation'
 
 export {
   Intent as default,
@@ -74,5 +75,6 @@ export {
   EntrySetTagsIntent as EntrySetTags,
   EditorLayoutMoveFieldIntent as EditorLayoutMoveField,
   EditorLayoutChangeFieldGroupIdIntent as EditorLayoutChangeFieldGroupId,
-  EditorLayoutDeleteIntent as EditorLayoutDelete
+  EditorLayoutDeleteIntent as EditorLayoutDelete,
+  FieldAddItemsValidationIntent as FieldAddItemsValidation
 }

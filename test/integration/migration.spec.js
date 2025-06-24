@@ -43,6 +43,8 @@ const deleteFieldOnContentTypeWithEditorLayout = require('../../examples/52-dele
 const renameFieldOnContentTypeWithEditorLayout = require('../../examples/53-rename-field-in-content-type-with-editor-layout')
 const createRichTextFieldWithValidation = require('../../examples/22-create-rich-text-field-with-validation')
 const createExperienceType = require('../../examples/54-create-experience-type')
+const addItemsValidation = require('../../examples/56-add-items-validation')
+const addItemsValidationUpdate = require('../../examples/57-add-items-validation-update')
 
 const { createMigrationParser } = require('../../built/lib/migration-parser')
 const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget')
@@ -1400,6 +1402,69 @@ describe('the migration', function () {
           }
         ]
       }
+    })
+  })
+
+  it('creates content type with items validation', async function () {
+    await migrator(addItemsValidation)
+    const ct = await request({
+      method: 'GET',
+      url: '/content_types/testModel'
+    })
+
+    // Verify the content type was created with all fields
+    expect(ct.name).to.eql('Test Model')
+    expect(ct.description).to.eql('A test model for addItemsValidation')
+
+    // Verify the name field
+    const nameField = ct.fields.find((f) => f.id === 'name')
+    // eslint-disable-next-line no-unused-expressions
+    expect(nameField).to.exist
+    expect(nameField.type).to.eql('Symbol')
+    expect(nameField.required).to.eql(true)
+
+    // Verify the tags field with its validations
+    const tagsField = ct.fields.find((f) => f.id === 'tags')
+    // eslint-disable-next-line no-unused-expressions
+    expect(tagsField).to.exist
+    expect(tagsField.type).to.eql('Array')
+    expect(tagsField.items.type).to.eql('Symbol')
+    expect(tagsField.items.validations).to.deep.include({ unique: true })
+    expect(tagsField.items.validations).to.deep.include({ size: { min: 1, max: 5 } })
+
+    // Verify the skills field with its validations
+    const skillsField = ct.fields.find((f) => f.id === 'skills')
+    // eslint-disable-next-line no-unused-expressions
+    expect(skillsField).to.exist
+    expect(skillsField.type).to.eql('Array')
+    expect(skillsField.items.type).to.eql('Symbol')
+    expect(skillsField.items.validations).to.deep.include({ size: { min: 1 } })
+
+    // Verify the relatedEntries field with its validations
+    const relatedEntriesField = ct.fields.find((f) => f.id === 'relatedEntries')
+    // eslint-disable-next-line no-unused-expressions
+    expect(relatedEntriesField).to.exist
+    expect(relatedEntriesField.type).to.eql('Array')
+    expect(relatedEntriesField.items.type).to.eql('Link')
+    expect(relatedEntriesField.items.linkType).to.eql('Entry')
+    expect(relatedEntriesField.items.validations).to.deep.include({
+      linkContentType: ['contentModelA', 'contentModelB']
+    })
+  })
+
+  it('updates items validation for existing field', async function () {
+    await migrator(addItemsValidationUpdate)
+    const ct = await request({
+      method: 'GET',
+      url: '/content_types/testModel'
+    })
+
+    // Verify the relatedEntries field now includes contentModelC in its validations
+    const relatedEntriesField = ct.fields.find((f) => f.id === 'relatedEntries')
+    // eslint-disable-next-line no-unused-expressions
+    expect(relatedEntriesField).to.exist
+    expect(relatedEntriesField.items.validations).to.deep.include({
+      linkContentType: ['contentModelC']
     })
   })
 })
