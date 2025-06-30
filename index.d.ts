@@ -239,6 +239,24 @@ export interface IEntryEditor {
   settings?: IEditorInterfaceOptions
 }
 
+export interface ITaxonomyConceptValidationLink {
+  sys: {
+    type: 'Link'
+    linkType: 'TaxonomyConcept'
+    id: string
+  }
+  required?: boolean
+}
+
+export interface ITaxonomyConceptSchemeValidationLink {
+  sys: {
+    type: 'Link'
+    linkType: 'TaxonomyConceptScheme'
+    id: string
+  }
+  required?: boolean
+}
+
 export interface ContentType {
   id: string
   instanceId: string
@@ -255,6 +273,23 @@ export interface ContentType {
 
   /** Removes all annotaions associated with the field */
   clearAnnotations(): ContentType
+
+  /** Set taxonomy validations associated with the content type */
+  setTaxonomyValidation(
+    taxonomyValidations: Array<
+      ITaxonomyConceptValidationLink | ITaxonomyConceptSchemeValidationLink
+    >
+  ): ContentType
+
+  /** Add a single taxonomy validation to the content type */
+  addTaxonomyValidation(
+    id: string,
+    linkType: 'TaxonomyConcept' | 'TaxonomyConceptScheme',
+    options?: { required?: boolean }
+  ): ContentType
+
+  /** Clear all taxonomy validations from the content type */
+  clearTaxonomyValidations(): ContentType
 
   /** Creates a field with provided id. */
   createField(id: string, init?: IFieldOptions): Field

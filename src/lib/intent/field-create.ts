@@ -15,6 +15,7 @@ export default class FieldCreateIntent extends Intent {
       (other.isContentTypeUpdate() ||
         other.isContentTypeCreate() ||
         other.isContentTypeAnnotate() ||
+        other.isContentTypeTaxonomyValidation() ||
         other.isFieldCreate() ||
         other.isFieldUpdate() ||
         other.isFieldMove()) &&
