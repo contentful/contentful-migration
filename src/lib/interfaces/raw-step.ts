@@ -6,7 +6,12 @@ import TransformEntryToType from './entry-transform-to-type'
 import { SidebarWidgetNamespace, SidebarWidgetSettings } from '../action/sidebarwidget'
 import { EntryEditorNamespace, EntryEditorSettings } from '../action/entryeditor-configure'
 import { EntryEditor } from '../action/entryeditors-configure'
-import { APIEditorInterfaceGroupControl, APIEditorLayoutFieldGroupItem } from './content-type'
+import {
+  APIEditorInterfaceGroupControl,
+  APIEditorLayoutFieldGroupItem,
+  TaxonomyConceptValidationLink,
+  TaxonomyConceptSchemeValidationLink
+} from './content-type'
 import { AnnotationId } from './annotation'
 
 interface RawStep {
@@ -53,6 +58,8 @@ interface RawStepPayload {
   entryTransformationForTags?: EntrySetTags
   annotations?: AnnotationId[]
   fieldAnnotationPayload?: Record<string, any>
+  taxonomyValidations?: Array<TaxonomyConceptValidationLink | TaxonomyConceptSchemeValidationLink>
+  taxonomyValidation?: TaxonomyConceptValidationLink | TaxonomyConceptSchemeValidationLink
 }
 
 interface EditorInterfaceInfo {

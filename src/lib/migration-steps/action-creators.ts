@@ -1,4 +1,8 @@
 import * as Intents from '../intent/index'
+import {
+  ContentTypeAddTaxonomyValidationIntent,
+  ContentTypeClearTaxonomyValidationsIntent
+} from '../intent/content-type-taxonomy-validation'
 import { TagVisibility } from '../interfaces/api-tag'
 import ContentTransform from '../interfaces/content-transform'
 import EntryDerive from '../interfaces/entry-derive'
@@ -51,6 +55,73 @@ const actionCreators = {
         payload: {
           contentTypeId: id,
           annotations: annotationIds
+        }
+      }),
+    setTaxonomyValidations: (
+      id,
+      instanceId,
+      callsite,
+      taxonomyValidations
+    ): Intents.ContentTypeTaxonomyValidation =>
+      new Intents.ContentTypeTaxonomyValidation({
+        type: 'contentType/update',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: id,
+          taxonomyValidations: taxonomyValidations
+        }
+      }),
+    addTaxonomyValidation: (
+      id,
+      instanceId,
+      callsite,
+      taxonomyId,
+      linkType,
+      options
+    ): ContentTypeAddTaxonomyValidationIntent =>
+      new ContentTypeAddTaxonomyValidationIntent({
+        type: 'contentType/addTaxonomyValidation',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: id,
+          taxonomyValidation: {
+            sys: {
+              type: 'Link',
+              linkType,
+              id: taxonomyId
+            },
+            ...(options?.required !== undefined && { required: options.required })
+          }
+        }
+      }),
+    clearTaxonomyValidations: (
+      id,
+      instanceId,
+      callsite
+    ): ContentTypeClearTaxonomyValidationsIntent =>
+      new ContentTypeClearTaxonomyValidationsIntent({
+        type: 'contentType/clearTaxonomyValidations',
+        meta: {
+          contentTypeInstanceId: `contentType/${id}/${instanceId}`,
+          callsite: {
+            file: callsite?.getFileName(),
+            line: callsite?.getLineNumber()
+          }
+        },
+        payload: {
+          contentTypeId: id
         }
       }),
     delete: (id, instanceId, callsite): Intents.ContentTypeDelete => {

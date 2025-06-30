@@ -764,6 +764,39 @@ Configure the annotations assigned to this content type. See [annotations docume
 
 Remove all assigned annotations from this content type
 
+#### `addTaxonomyValidation(id, linkType[, opts])`
+
+Adds a taxonomy validation to this content type. This method is additive - you can call it multiple times to add validations one by one.
+
+**`id : string`** – The ID of the taxonomy concept or concept scheme.
+
+**`linkType : string`** – The type of taxonomy link. Must be either `TaxonomyConcept` or `TaxonomyConceptScheme`.
+
+**`opts : Object`** – Validation options, with the following properties:
+
+- **`required : boolean`** – Whether this taxonomy validation is required. Defaults to `false`.
+
+#### `clearTaxonomyValidations()`
+
+Remove all taxonomy validations from this content type.
+
+#### `setTaxonomyValidations(validations)`
+
+Replace all existing taxonomy validations with a new set of validations.
+
+**`validations : Array`** – Array of taxonomy validation objects. Each validation object should have the following structure:
+
+```javascript
+{
+  sys: {
+    type: 'Link',
+    id: 'taxonomy-id',
+    linkType: 'TaxonomyConcept' // or 'TaxonomyConceptScheme'
+  },
+  required: true // or false
+}
+```
+
 ### Field
 
 The field object has the same methods as the properties listed in the [`ContentType.createField`](#createfieldid--string-opts--object--field) method.
@@ -881,7 +914,7 @@ You can use Typescript to write your migration files using `ts-node`! First `npm
 then run your migration with ts-node:
 
 ```bash
-node_modules/.bin/ts-node node_modules/.bin/contentful-migration -s $CONTENTFUL_SPACE_ID -a $CONTENTFUL_MANAGEMENT_TOKEN my_migration.ts
+node_modules/.bin/ts-node node_modules/.bin/contentful-migration -s $CONTENTFUL_SPACE_ID -a $CONTENTFUL_MANAGEMENT_TOKEN -o $CONTENTFUL_ORGANIZATION_ID my_migration.ts
 ```
 
 An example Typescript migration:

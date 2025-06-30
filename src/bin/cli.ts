@@ -54,9 +54,14 @@ const makeTerminatingFunction =
     }
   }
 
+export enum UrlBaseType {
+  Space = 'space',
+  Org = 'org'
+}
+
 export const createMakeRequest = (
   client: PlainClientAPI,
-  { spaceId, environmentId, limit = 10, host = 'api.contentful.com' }
+  { spaceId, environmentId, organizationId, limit = 10, host = 'api.contentful.com' }
 ) => {
   const throttle = pThrottle({
     limit,
@@ -64,7 +69,12 @@ export const createMakeRequest = (
     strict: false
   })
 
-  const makeBaseUrl = (url: string) => {
+  const makeOrgBaseUrl = (url: string) => {
+    const parts = [`https://${host}`, 'organizations', organizationId, trim(url, '/')]
+    return parts.filter((x) => x !== '').join('/')
+  }
+
+  const makeSpaceBaseUrl = (url: string) => {
     const parts = [
       `https://${host}`,
       'spaces',
@@ -73,13 +83,12 @@ export const createMakeRequest = (
       environmentId,
       trim(url, '/')
     ]
-
     return parts.filter((x) => x !== '').join('/')
   }
 
-  return function makeRequest(requestConfig: RawAxiosRequestConfig) {
-    const { url, ...config } = requestConfig
-    const fullUrl = makeBaseUrl(url)
+  return function makeRequest(requestConfig: RawAxiosRequestConfig & { baseType?: UrlBaseType }) {
+    const { url, baseType, ...config } = requestConfig
+    const fullUrl = baseType === UrlBaseType.Org ? makeOrgBaseUrl(url) : makeSpaceBaseUrl(url)
 
     return throttle(() => client.raw.http(fullUrl, config))()
   }
@@ -121,6 +130,7 @@ const createRun = ({ shouldThrow }) =>
     const makeRequest = createMakeRequest(client, {
       spaceId: clientConfig.spaceId,
       environmentId: clientConfig.environmentId,
+      organizationId: clientConfig.organizationId,
       limit: argv.requestLimit,
       host: clientConfig.host
     })

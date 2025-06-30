@@ -139,7 +139,12 @@ const createMigrationParser = function (
       return new Tag(apiTag)
     })
 
-    const payloadValidationErrors = validateChunks(intentList, ctsWithEntryInfo, existingEditorInterfaces, tags)
+    const payloadValidationErrors = validateChunks(
+      intentList,
+      ctsWithEntryInfo,
+      existingEditorInterfaces,
+      tags
+    )
 
     if (payloadValidationErrors.length) {
       parseResult.payloadValidationErrors = payloadValidationErrors
