@@ -14,7 +14,9 @@ import {
   APIControlWidgetNamespace,
   APIEditorInterfaceEditorLayout,
   APIEditorLayoutFieldGroupItem,
-  ContentTypeMetadata
+  ContentTypeMetadata,
+  TaxonomyConceptValidationLink,
+  TaxonomyConceptSchemeValidationLink
 } from '../interfaces/content-type'
 import { SidebarWidgetNamespace, DEFAULT_SIDEBAR_LIST } from '../action/sidebarwidget'
 import {
@@ -731,6 +733,69 @@ class ContentType {
     delete this._metadata?.annotations?.ContentTypeField?.[fieldId]
   }
 
+  setTaxonomyValidations(
+    taxonomyValidations: Array<TaxonomyConceptValidationLink | TaxonomyConceptSchemeValidationLink>
+  ) {
+    set(this, '_metadata.taxonomy', taxonomyValidations)
+  }
+
+  addTaxonomyValidation(
+    id: string,
+    linkType: 'TaxonomyConcept' | 'TaxonomyConceptScheme',
+    options: { required?: boolean } = {}
+  ) {
+    const current = this.getTaxonomyValidation() || []
+
+    // Check if validation already exists for this ID
+    const existingIndex = current.findIndex((validation) => validation.sys.id === id)
+
+    let newValidation: TaxonomyConceptValidationLink | TaxonomyConceptSchemeValidationLink
+
+    if (linkType === 'TaxonomyConcept') {
+      newValidation = {
+        sys: {
+          type: 'Link',
+          linkType: 'TaxonomyConcept',
+          id
+        }
+      }
+    } else {
+      newValidation = {
+        sys: {
+          type: 'Link',
+          linkType: 'TaxonomyConceptScheme',
+          id
+        }
+      }
+    }
+
+    if (options.required !== undefined) {
+      newValidation.required = options.required
+    }
+
+    if (existingIndex >= 0) {
+      // Update existing validation
+      current[existingIndex] = newValidation
+    } else {
+      // Add new validation
+      current.push(newValidation)
+    }
+
+    this.setTaxonomyValidations(current)
+  }
+
+  clearTaxonomyValidations() {
+    // Ensure metadata object exists before setting taxonomy
+    if (!this._metadata) {
+      this._metadata = {}
+    }
+    this._metadata.taxonomy = []
+  }
+
+  getTaxonomyValidation() {
+    return this._metadata?.taxonomy
+  }
+
   get version() {
     return this._version
   }
@@ -740,7 +805,7 @@ class ContentType {
   }
 
   toAPI(): APIContentType {
-    return cloneDeep({
+    const basePayload: any = {
       sys: {
         id: this.id,
         version: this.version
@@ -748,9 +813,30 @@ class ContentType {
       name: this.name,
       displayField: this.displayField,
       fields: this.fields.toRaw(),
-      description: this.description,
-      ...(this._metadata ? prune({ metadata: this._metadata }) : undefined)
-    })
+      description: this.description
+    }
+
+    if (this._metadata) {
+      const metadata: any = {}
+
+      // Simple rule: preserve all arrays in metadata (empty or not)
+      if (this._metadata.taxonomy !== undefined) {
+        metadata.taxonomy = this._metadata.taxonomy
+      }
+
+      if (this._metadata.annotations) {
+        const prunedAnnotations = prune(this._metadata.annotations)
+        if (prunedAnnotations) {
+          metadata.annotations = prunedAnnotations
+        }
+      }
+
+      if (Object.keys(metadata).length > 0) {
+        basePayload.metadata = metadata
+      }
+    }
+
+    return cloneDeep(basePayload)
   }
 
   clone(): ContentType {
@@ -763,4 +849,13 @@ const isTargetFieldItem = (item, fieldId): item is FieldItem =>
 const isTargetGroupItem = (item, groupId): item is FieldGroupItem =>
   isFieldGroupItem(item) && item.groupId === groupId
 
-export { ContentType as default, ContentType, Fields, Field, EditorInterfaces, AnnotationLink }
+export {
+  ContentType as default,
+  ContentType,
+  Fields,
+  Field,
+  EditorInterfaces,
+  AnnotationLink,
+  TaxonomyConceptValidationLink,
+  TaxonomyConceptSchemeValidationLink
+}

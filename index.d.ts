@@ -4,6 +4,7 @@ export type RunMigrationConfig = {
   accessToken?: string
   spaceId?: string
   environmentId?: string
+  organizationId?: string
   proxy?: string
   rawProxy?: boolean
   yes?: boolean
@@ -239,6 +240,24 @@ export interface IEntryEditor {
   settings?: IEditorInterfaceOptions
 }
 
+export interface ITaxonomyConceptValidationLink {
+  sys: {
+    type: 'Link'
+    linkType: 'TaxonomyConcept'
+    id: string
+  }
+  required?: boolean
+}
+
+export interface ITaxonomyConceptSchemeValidationLink {
+  sys: {
+    type: 'Link'
+    linkType: 'TaxonomyConceptScheme'
+    id: string
+  }
+  required?: boolean
+}
+
 export interface ContentType {
   id: string
   instanceId: string
@@ -255,6 +274,23 @@ export interface ContentType {
 
   /** Removes all annotaions associated with the field */
   clearAnnotations(): ContentType
+
+  /** Set taxonomy validations associated with the content type */
+  setTaxonomyValidations(
+    taxonomyValidations: Array<
+      ITaxonomyConceptValidationLink | ITaxonomyConceptSchemeValidationLink
+    >
+  ): ContentType
+
+  /** Add a single taxonomy validation to the content type */
+  addTaxonomyValidation(
+    id: string,
+    linkType: 'TaxonomyConcept' | 'TaxonomyConceptScheme',
+    options?: { required?: boolean }
+  ): ContentType
+
+  /** Clear all taxonomy validations from the content type */
+  clearTaxonomyValidations(): ContentType
 
   /** Creates a field with provided id. */
   createField(id: string, init?: IFieldOptions): Field
@@ -702,6 +738,7 @@ export interface ClientConfig {
   accessToken?: string
   spaceId?: string
   environmentId?: string
+  organizationId?: string
   proxy?: string
   rawProxy?: boolean
   requestBatchSize?: number

@@ -12,14 +12,15 @@ const config = {
 
 const client = createManagementClient(config)
 
-const makeRequest = function (spaceId, environmentId, requestConfig) {
-  return createMakeRequest(client, { spaceId, environmentId })(requestConfig)
+const makeRequest = function (spaceId, environmentId, organizationId, requestConfig) {
+  return createMakeRequest(client, { spaceId, environmentId, organizationId })(requestConfig)
 }
 
 const waitForJobCompletion = Bluebird.coroutine(function* (makeRequest, spaceId, environmentId) {
   while (true) {
     try {
-      const environmentJob = yield makeRequest(spaceId, environmentId, {
+      const organizationId = undefined
+      const environmentJob = yield makeRequest(spaceId, environmentId, organizationId, {
         method: 'GET',
         url: ``
       })
@@ -44,7 +45,8 @@ const waitForJobCompletion = Bluebird.coroutine(function* (makeRequest, spaceId,
 
 const createDevEnvironment = Bluebird.coroutine(function* (spaceId, environmentId) {
   try {
-    yield makeRequest(spaceId, environmentId, {
+    const organizationId = undefined
+    yield makeRequest(spaceId, environmentId, organizationId, {
       method: 'PUT',
       url: '',
       data: {
@@ -62,35 +64,40 @@ const createDevEnvironment = Bluebird.coroutine(function* (spaceId, environmentI
 })
 
 function getDevContentType(spaceId, environmentId, id) {
-  return makeRequest(spaceId, environmentId, {
+  const organizationId = undefined
+  return makeRequest(spaceId, environmentId, organizationId, {
     method: 'GET',
     url: `/content_types/${id}`
   })
 }
 
 function getDevEditorInterface(spaceId, environmentId, id) {
-  return makeRequest(spaceId, environmentId, {
+  const organizationId = undefined
+  return makeRequest(spaceId, environmentId, organizationId, {
     method: 'GET',
     url: `/content_types/${id}/editor_interface`
   })
 }
 
 function getEntries(spaceId, environmentId, id) {
-  return makeRequest(spaceId, environmentId, {
+  const organizationId = undefined
+  return makeRequest(spaceId, environmentId, organizationId, {
     method: 'GET',
     url: `/entries?content_type=${id}`
   })
 }
 
 function deleteDevEnvironment(spaceId, environmentId) {
-  return makeRequest(spaceId, environmentId, {
+  const organizationId = undefined
+  return makeRequest(spaceId, environmentId, organizationId, {
     method: 'DELETE',
     url: ''
   })
 }
 
 function getDevTag(spaceId, environmentId, id) {
-  return makeRequest(spaceId, environmentId, {
+  const organizationId = undefined
+  return makeRequest(spaceId, environmentId, organizationId, {
     method: 'GET',
     url: `/tags/${id}`
   })

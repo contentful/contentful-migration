@@ -74,6 +74,10 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
+  isContentTypeTaxonomyValidation() {
+    return false
+  }
+
   isFieldCreate() {
     return false
   }

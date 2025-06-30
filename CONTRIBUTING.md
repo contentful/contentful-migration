@@ -16,12 +16,13 @@ Don't worry if this is your first time with Typescript. The language reads like 
 
 In order to run integration tests, you need:
 
-* a source space the tests are run against (`CONTENTFUL_SPACE_ID`) and is called `contentful-migration`
-* a management token for the defined space (`CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN`)
+- a source space the tests are run against (`CONTENTFUL_SPACE_ID`) and is called `contentful-migration`
+- a source organization the tests are run against (`CONTENTFUL_ORGANIZATION_ID`)
+- a management token for the defined space (`CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN`)
 
 ```sh
 CONTENTFUL_SPACE_ID=<spaceId> \
 CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN=CFPAT-xxx \
+CONTENTFUL_ORGANIZATION_ID=<organizationId> \
 npm test
 ```
-

@@ -23,7 +23,8 @@ describe('apply content transformation', function () {
   before(async function () {
     this.timeout(30000)
     environmentId = await createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
-    request = makeRequest.bind(null, SOURCE_TEST_SPACE, environmentId)
+    const organizationId = undefined
+    request = makeRequest.bind(null, SOURCE_TEST_SPACE, environmentId, organizationId)
     await request({
       method: 'PUT',
       url: '/content_types/newsArticle',

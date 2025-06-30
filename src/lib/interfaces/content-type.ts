@@ -6,6 +6,24 @@ interface AllowedResource {
   contentTypes: string[]
 }
 
+interface TaxonomyConceptValidationLink {
+  sys: {
+    type: 'Link'
+    linkType: 'TaxonomyConcept'
+    id: string
+  }
+  required?: boolean
+}
+
+interface TaxonomyConceptSchemeValidationLink {
+  sys: {
+    type: 'Link'
+    linkType: 'TaxonomyConceptScheme'
+    id: string
+  }
+  required?: boolean
+}
+
 interface Field {
   id: string
   newId?: string
@@ -32,6 +50,7 @@ type ContentTypeMetadata = {
     ContentType?: AnnotationLink[]
     ContentTypeField?: Record<string, AnnotationLink[]>
   }
+  taxonomy?: Array<TaxonomyConceptValidationLink | TaxonomyConceptSchemeValidationLink>
 }
 
 interface APIContentType {
@@ -127,5 +146,7 @@ export {
   APISidebarWidgetSettings,
   APIControlWidgetNamespace,
   APISidebarWidgetNamespace,
-  ContentTypeMetadata
+  ContentTypeMetadata,
+  TaxonomyConceptValidationLink,
+  TaxonomyConceptSchemeValidationLink
 }

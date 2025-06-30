@@ -36,6 +36,7 @@ function getEnvConfig(): ClientConfig {
 function getArgvConfig({
   spaceId,
   environmentId = 'master',
+  organizationId,
   accessToken,
   proxy,
   rawProxy,
@@ -47,6 +48,7 @@ function getArgvConfig({
   const config = {
     spaceId,
     environmentId,
+    organizationId,
     accessToken,
     proxy,
     rawProxy,

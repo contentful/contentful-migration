@@ -43,9 +43,9 @@ const deleteFieldOnContentTypeWithEditorLayout = require('../../examples/52-dele
 const renameFieldOnContentTypeWithEditorLayout = require('../../examples/53-rename-field-in-content-type-with-editor-layout')
 const createRichTextFieldWithValidation = require('../../examples/22-create-rich-text-field-with-validation')
 const createExperienceType = require('../../examples/54-create-experience-type')
-
 const { createMigrationParser } = require('../../built/lib/migration-parser')
 const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget')
+const taxonomyHelpers = require('../helpers/taxonomy-helpers')
 const co = Bluebird.coroutine
 
 const record = require('../record')
@@ -58,6 +58,7 @@ after(recorder.after)
 const ENVIRONMENT_ID = 'env-integration' + Date.now()
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID
+const TEST_ORGANIZATION = process.env.CONTENTFUL_ORGANIZATION_ID
 
 describe('the migration', function () {
   this.timeout(30000)
@@ -65,11 +66,22 @@ describe('the migration', function () {
   let migrator
   let request
 
+  let createConceptScheme
+  let createConcept
+  let deleteConceptScheme
+  let deleteConcept
+
   before(
     co(function* () {
       this.timeout(30000)
       yield createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
-      request = makeRequest.bind(null, SOURCE_TEST_SPACE, ENVIRONMENT_ID)
+      request = makeRequest.bind(null, SOURCE_TEST_SPACE, ENVIRONMENT_ID, TEST_ORGANIZATION)
+
+      createConceptScheme = taxonomyHelpers.createConceptScheme(request)
+      createConcept = taxonomyHelpers.createConcept(request)
+      deleteConceptScheme = taxonomyHelpers.deleteConceptScheme(request)
+      deleteConcept = taxonomyHelpers.deleteConcept(request)
+
       migrationParser = createMigrationParser(request, {})
       migrator = co(function* (migration) {
         const parseResult = yield migrationParser(migration)
@@ -1402,4 +1414,250 @@ describe('the migration', function () {
       }
     })
   })
+
+  it(
+    'assigns taxonomy validations on a content type using setTaxonomyValidations',
+    co(function* () {
+      const conceptSchemeId = 'test-concept-scheme-' + Date.now()
+      const testContentTypeId = 'test-content-type-' + Date.now()
+      let createdConceptScheme
+
+      try {
+        createdConceptScheme = yield createConceptScheme(
+          conceptSchemeId,
+          'Test Concept Scheme',
+          'A test concept scheme for integration testing'
+        )
+
+        expect(createdConceptScheme.sys.id).to.eql(conceptSchemeId)
+
+        const migrationWithActualId = function (migration) {
+          const contentType = migration
+            .createContentType(testContentTypeId)
+            .name('Taxonomy Test Content Type')
+            .description('A content type for testing taxonomy validation')
+
+          contentType.createField('title').name('Title').type('Symbol').required(true)
+
+          contentType.createField('description').name('Description').type('Text')
+
+          contentType.setTaxonomyValidations([
+            {
+              sys: {
+                type: 'Link',
+                linkType: 'TaxonomyConceptScheme',
+                id: conceptSchemeId
+              },
+              required: true
+            }
+          ])
+        }
+
+        yield migrator(migrationWithActualId)
+
+        const createdContentType = yield request({
+          method: 'GET',
+          url: `/content_types/${testContentTypeId}`
+        })
+
+        // Validate that the content type has the taxonomy validation assigned
+        expect(createdContentType.name).to.eql('Taxonomy Test Content Type')
+        expect(createdContentType.metadata).to.have.property('taxonomy')
+        expect(createdContentType.metadata.taxonomy).to.eql([
+          {
+            sys: {
+              type: 'Link',
+              linkType: 'TaxonomyConceptScheme',
+              id: conceptSchemeId
+            },
+            required: true
+          }
+        ])
+      } finally {
+        if (createdConceptScheme) {
+          yield deleteConceptScheme(conceptSchemeId, createdConceptScheme.sys.version)
+        }
+      }
+    })
+  )
+
+  it(
+    'adds taxonomy validations incrementally using addTaxonomyValidation',
+    co(function* () {
+      const conceptSchemeId = 'test-concept-scheme-1-' + Date.now()
+      const conceptId = 'test-concept-1-' + Date.now()
+      const testContentTypeId = 'test-add-taxonomy-' + Date.now()
+      let createdConceptScheme, createdConcept
+
+      try {
+        createdConceptScheme = yield createConceptScheme(
+          conceptSchemeId,
+          'Test Concept Scheme 1',
+          'First concept scheme for testing'
+        )
+
+        createdConcept = yield createConcept(conceptId, 'Test Concept', 'Concept for testing')
+
+        const migrationWithIncrementalAdds = function (migration) {
+          const contentType = migration
+            .createContentType(testContentTypeId)
+            .name('Incremental Taxonomy Test')
+            .description('Testing incremental taxonomy validation adds')
+
+          contentType.createField('title').name('Title').type('Symbol').required(true)
+
+          contentType.addTaxonomyValidation(conceptSchemeId, 'TaxonomyConceptScheme', {
+            required: true
+          })
+          contentType.addTaxonomyValidation(conceptId, 'TaxonomyConcept', { required: false })
+        }
+
+        yield migrator(migrationWithIncrementalAdds)
+
+        const createdContentType = yield request({
+          method: 'GET',
+          url: `/content_types/${testContentTypeId}`
+        })
+
+        // Validate that both taxonomy validations are present
+        expect(createdContentType.metadata).to.have.property('taxonomy')
+        expect(createdContentType.metadata.taxonomy).to.have.lengthOf(2)
+
+        const validation1 = createdContentType.metadata.taxonomy.find(
+          (v) => v.sys.id === conceptSchemeId
+        )
+        const validation2 = createdContentType.metadata.taxonomy.find((v) => v.sys.id === conceptId)
+
+        expect(validation1).to.not.be.undefined()
+        expect(validation1.required).to.eql(true)
+        expect(validation1.sys.linkType).to.eql('TaxonomyConceptScheme')
+
+        expect(validation2).to.not.be.undefined()
+        expect(validation2.required).to.eql(false)
+        expect(validation2.sys.linkType).to.eql('TaxonomyConcept')
+      } finally {
+        if (createdConceptScheme) {
+          yield deleteConceptScheme(conceptSchemeId, createdConceptScheme.sys.version)
+        }
+        if (createdConcept) {
+          yield deleteConcept(conceptId, createdConcept.sys.version)
+        }
+      }
+    })
+  )
+
+  it(
+    'overwrites existing taxonomy validation when adding same concept ID',
+    co(function* () {
+      const conceptSchemeId = 'test-overwrite-scheme-' + Date.now()
+      const testContentTypeId = 'test-overwrite-taxonomy-' + Date.now()
+      let createdConceptScheme
+
+      try {
+        createdConceptScheme = yield createConceptScheme(
+          conceptSchemeId,
+          'Test Overwrite Scheme',
+          'Concept scheme for testing overwrite behavior'
+        )
+
+        const migrationWithOverwrite = function (migration) {
+          const contentType = migration
+            .createContentType(testContentTypeId)
+            .name('Overwrite Taxonomy Test')
+            .description('Testing taxonomy validation overwrite behavior')
+
+          contentType.createField('title').name('Title').type('Symbol').required(true)
+
+          contentType.addTaxonomyValidation(conceptSchemeId, 'TaxonomyConceptScheme', {
+            required: true
+          })
+
+          contentType.addTaxonomyValidation(conceptSchemeId, 'TaxonomyConceptScheme', {
+            required: false
+          })
+        }
+
+        yield migrator(migrationWithOverwrite)
+
+        // Validate that only one validation exists with the updated values
+        const createdContentType = yield request({
+          method: 'GET',
+          url: `/content_types/${testContentTypeId}`
+        })
+
+        expect(createdContentType.metadata).to.have.property('taxonomy')
+        expect(createdContentType.metadata.taxonomy).to.have.lengthOf(1)
+
+        const validation = createdContentType.metadata.taxonomy[0]
+        expect(validation.sys.id).to.eql(conceptSchemeId)
+        expect(validation.required).to.eql(false) // Should be the updated value
+        expect(validation.sys.linkType).to.eql('TaxonomyConceptScheme')
+      } finally {
+        // Clean up concept scheme
+        if (createdConceptScheme) {
+          yield deleteConceptScheme(conceptSchemeId, createdConceptScheme.sys.version)
+        }
+      }
+    })
+  )
+
+  it(
+    'clears all taxonomy validations from content type',
+    co(function* () {
+      const conceptSchemeId1 = 'test-clear-scheme-1-' + Date.now()
+      const conceptSchemeId2 = 'test-clear-scheme-2-' + Date.now()
+      const testContentTypeId = 'test-clear-taxonomy-' + Date.now()
+      let createdConceptScheme1, createdConceptScheme2
+
+      try {
+        createdConceptScheme1 = yield createConceptScheme(
+          conceptSchemeId1,
+          'Test Clear Scheme 1',
+          'First scheme for testing clear behavior'
+        )
+
+        createdConceptScheme2 = yield createConceptScheme(
+          conceptSchemeId2,
+          'Test Clear Scheme 2',
+          'Second scheme for testing clear behavior'
+        )
+
+        const migrationWithClear = function (migration) {
+          const contentType = migration
+            .createContentType(testContentTypeId)
+            .name('Clear Taxonomy Test')
+            .description('Testing taxonomy validation clear behavior')
+
+          contentType.createField('title').name('Title').type('Symbol').required(true)
+
+          contentType.addTaxonomyValidation(conceptSchemeId1, 'TaxonomyConceptScheme', {
+            required: true
+          })
+          contentType.addTaxonomyValidation(conceptSchemeId2, 'TaxonomyConceptScheme', {
+            required: false
+          })
+
+          contentType.clearTaxonomyValidations()
+        }
+
+        yield migrator(migrationWithClear)
+
+        const createdContentType = yield request({
+          method: 'GET',
+          url: `/content_types/${testContentTypeId}`
+        })
+
+        // Validate that no taxonomy validations exist
+        expect(createdContentType.metadata?.taxonomy).to.eql([])
+      } finally {
+        // Clean up concept schemes
+        if (createdConceptScheme1) {
+          yield deleteConceptScheme(conceptSchemeId1, createdConceptScheme1.sys.version)
+        }
+        if (createdConceptScheme2) {
+          yield deleteConceptScheme(conceptSchemeId2, createdConceptScheme2.sys.version)
+        }
+      }
+    })
+  )
 })

@@ -27,6 +27,10 @@ export default yargs
     describe: 'ID of the environment within the space to run the migration script on',
     default: 'master'
   })
+  .option('organization-id', {
+    alias: 'o',
+    describe: 'ID of the organization (required for organization-scoped operations)'
+  })
   .option('access-token', {
     alias: 'a',
     describe:
