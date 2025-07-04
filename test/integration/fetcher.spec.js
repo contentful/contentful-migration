@@ -25,13 +25,12 @@ describe('the fetcher', function () {
   )
 
   it(
-    'gets the orginanization id from the space',
+    'gets the organization id from the space',
     co(function* () {
       const fetcher = new Fetcher(request, 100, SOURCE_TEST_SPACE)
-      fetcher.getOrganizationIdFromSpace().then((orgId) => {
-        expect(orgId).to.be.a('string')
-        expect(orgId).to.have.length.above(0)
-      })
+      const orgId = yield fetcher.getOrganizationIdFromSpace()
+      expect(orgId).to.be.a('string')
+      expect(orgId).to.have.length.above(0)
     })
   )
 })
