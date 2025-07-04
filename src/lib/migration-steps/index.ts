@@ -314,13 +314,13 @@ class ContentType extends DispatchProxy {
     return this
   }
 
-  setTaxonomyValidation(
+  setTaxonomyValidations(
     taxonomyValidations: Array<TaxonomyConceptValidationLink | TaxonomyConceptSchemeValidationLink>
   ) {
     const callsite = getFirstExternalCaller()
 
     this.dispatch(
-      actionCreators.contentType.setTaxonomyValidation(
+      actionCreators.contentType.setTaxonomyValidations(
         this.id,
         this.instanceId,
         callsite,

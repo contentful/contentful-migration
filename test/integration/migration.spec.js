@@ -1420,7 +1420,7 @@ describe('the migration', function () {
   })
 
   it(
-    'assigns taxonomy validations on a content type using setTaxonomyValidation',
+    'assigns taxonomy validations on a content type using setTaxonomyValidations',
     co(function* () {
       const conceptSchemeId = 'test-concept-scheme-' + Date.now()
       const testContentTypeId = 'test-content-type-' + Date.now()
@@ -1445,7 +1445,7 @@ describe('the migration', function () {
 
           contentType.createField('description').name('Description').type('Text')
 
-          contentType.setTaxonomyValidation([
+          contentType.setTaxonomyValidations([
             {
               sys: {
                 type: 'Link',

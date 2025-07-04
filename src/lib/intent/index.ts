@@ -2,7 +2,7 @@ import Intent from './base-intent'
 import FieldUpdateIntent from './field-update'
 import ContentTypeUpdateIntent from './content-type-update'
 import ContentTypeAnnotateIntent from './content-type-annotate'
-import ContentTypeSetTaxonomyValidationIntent from './content-type-taxonomy-validation'
+import ContentTypeSetTaxonomyValidationsIntent from './content-type-taxonomy-validation'
 import EntryTransformIntent from './entry-transform'
 import FieldRenameIntent from './field-rename'
 import FieldMoveIntent from './field-move'
@@ -51,7 +51,7 @@ export {
   ContentTypeDeleteIntent as ContentTypeDelete,
   ContentTypeUpdateIntent as ContentTypeUpdate,
   ContentTypeAnnotateIntent as ContentTypeAnnotate,
-  ContentTypeSetTaxonomyValidationIntent as ContentTypeTaxonomyValidation,
+  ContentTypeSetTaxonomyValidationsIntent as ContentTypeTaxonomyValidation,
   EntryDeriveIntent as EntryDerive,
   EntryTransformToTypeIntent as EntryTransformToType,
   EditorInterfaceUpdateIntent as EditorInterfaceUpdate,

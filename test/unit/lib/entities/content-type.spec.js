@@ -53,7 +53,7 @@ describe('ContentType taxonomy validation', () => {
     contentType = new ContentType(apiContentType)
   })
 
-  describe('setTaxonomyValidation', () => {
+  describe('setTaxonomyValidations', () => {
     it('sets taxonomy validation on content type', () => {
       const taxonomyValidations = [
         {
@@ -74,7 +74,7 @@ describe('ContentType taxonomy validation', () => {
         }
       ]
 
-      contentType.setTaxonomyValidation(taxonomyValidations)
+      contentType.setTaxonomyValidations(taxonomyValidations)
 
       const result = contentType.getTaxonomyValidation()
       expect(result).to.deep.equal(taxonomyValidations)
@@ -92,7 +92,7 @@ describe('ContentType taxonomy validation', () => {
         }
       ]
 
-      contentType.setTaxonomyValidation(taxonomyValidations)
+      contentType.setTaxonomyValidations(taxonomyValidations)
 
       const newTaxonomyValidations = [
         {
@@ -105,7 +105,7 @@ describe('ContentType taxonomy validation', () => {
         }
       ]
 
-      contentType.setTaxonomyValidation(newTaxonomyValidations)
+      contentType.setTaxonomyValidations(newTaxonomyValidations)
 
       const result = contentType.getTaxonomyValidation()
       expect(result).to.deep.equal(newTaxonomyValidations)
@@ -123,7 +123,7 @@ describe('ContentType taxonomy validation', () => {
         }
       ]
 
-      contentType.setTaxonomyValidation(taxonomyValidations)
+      contentType.setTaxonomyValidations(taxonomyValidations)
 
       const apiOutput = contentType.toAPI()
       expect(apiOutput.metadata.taxonomy).to.deep.equal(taxonomyValidations)

@@ -733,7 +733,7 @@ class ContentType {
     delete this._metadata?.annotations?.ContentTypeField?.[fieldId]
   }
 
-  setTaxonomyValidation(
+  setTaxonomyValidations(
     taxonomyValidations: Array<TaxonomyConceptValidationLink | TaxonomyConceptSchemeValidationLink>
   ) {
     set(this, '_metadata.taxonomy', taxonomyValidations)
@@ -781,7 +781,7 @@ class ContentType {
       current.push(newValidation)
     }
 
-    this.setTaxonomyValidation(current)
+    this.setTaxonomyValidations(current)
   }
 
   clearTaxonomyValidations() {

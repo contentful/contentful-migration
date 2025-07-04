@@ -57,7 +57,7 @@ const actionCreators = {
           annotations: annotationIds
         }
       }),
-    setTaxonomyValidation: (
+    setTaxonomyValidations: (
       id,
       instanceId,
       callsite,

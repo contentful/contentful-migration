@@ -5,7 +5,7 @@ import {
   TaxonomyConceptSchemeValidationLink
 } from '../entities/content-type'
 
-export class ContentTypeSetTaxonomyValidationAction extends EntityAction {
+export class ContentTypeSetTaxonomyValidationsAction extends EntityAction {
   private contentTypeId: string
   private taxonomyValidations: Array<
     TaxonomyConceptValidationLink | TaxonomyConceptSchemeValidationLink
@@ -29,7 +29,7 @@ export class ContentTypeSetTaxonomyValidationAction extends EntityAction {
   }
 
   async applyTo(ct: ContentType): Promise<void> {
-    ct.setTaxonomyValidation(this.taxonomyValidations)
+    ct.setTaxonomyValidations(this.taxonomyValidations)
   }
 }
 

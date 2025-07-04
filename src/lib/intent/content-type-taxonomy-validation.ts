@@ -2,12 +2,12 @@ import Intent from './base-intent'
 import { PlanMessage } from '../interfaces/plan-message'
 import chalk from 'chalk'
 import {
-  ContentTypeSetTaxonomyValidationAction,
+  ContentTypeSetTaxonomyValidationsAction,
   ContentTypeAddTaxonomyValidationAction,
   ContentTypeClearTaxonomyValidationsAction
 } from '../action/content-type-taxonomy-validation'
 
-export default class ContentTypeSetTaxonomyValidationIntent extends Intent {
+export default class ContentTypeSetTaxonomyValidationsIntent extends Intent {
   isContentTypeTaxonomyValidation() {
     return true
   }
@@ -36,7 +36,7 @@ export default class ContentTypeSetTaxonomyValidationIntent extends Intent {
 
   toActions() {
     return [
-      new ContentTypeSetTaxonomyValidationAction(
+      new ContentTypeSetTaxonomyValidationsAction(
         this.getContentTypeId(),
         this.payload.taxonomyValidations
       )
