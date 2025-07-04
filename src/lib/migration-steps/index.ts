@@ -13,7 +13,11 @@ import EntrySetTags from '../interfaces/entry-set-tags'
 import TransformEntryToType from '../interfaces/entry-transform-to-type'
 import { ClientConfig } from '../../bin/lib/config'
 import { deprecatedMethod } from '../utils/deprecated'
-import { APIEditorInterfaceSettings } from '../interfaces/content-type'
+import {
+  APIEditorInterfaceSettings,
+  TaxonomyConceptValidationLink,
+  TaxonomyConceptSchemeValidationLink
+} from '../interfaces/content-type'
 
 const createInstanceIdManager = () => {
   const instanceCounts = {}
@@ -306,6 +310,51 @@ class ContentType extends DispatchProxy {
 
     this.dispatch(
       actionCreators.contentType.setAnnotations(this.id, this.instanceId, callsite, undefined)
+    )
+    return this
+  }
+
+  setTaxonomyValidations(
+    taxonomyValidations: Array<TaxonomyConceptValidationLink | TaxonomyConceptSchemeValidationLink>
+  ) {
+    const callsite = getFirstExternalCaller()
+
+    this.dispatch(
+      actionCreators.contentType.setTaxonomyValidations(
+        this.id,
+        this.instanceId,
+        callsite,
+        taxonomyValidations
+      )
+    )
+    return this
+  }
+
+  addTaxonomyValidation(
+    id: string,
+    linkType: 'TaxonomyConcept' | 'TaxonomyConceptScheme',
+    options: { required?: boolean } = {}
+  ) {
+    const callsite = getFirstExternalCaller()
+
+    this.dispatch(
+      actionCreators.contentType.addTaxonomyValidation(
+        this.id,
+        this.instanceId,
+        callsite,
+        id,
+        linkType,
+        options
+      )
+    )
+    return this
+  }
+
+  clearTaxonomyValidations() {
+    const callsite = getFirstExternalCaller()
+
+    this.dispatch(
+      actionCreators.contentType.clearTaxonomyValidations(this.id, this.instanceId, callsite)
     )
     return this
   }

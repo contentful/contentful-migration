@@ -8,7 +8,11 @@ import Bluebird from 'bluebird'
 import APIFetcher from './interfaces/api-fetcher'
 
 export default class Fetcher implements APIFetcher {
-  constructor(private makeRequest: Function, private requestBatchSize: number = 100) {}
+  constructor(
+    private makeRequest: Function,
+    private requestBatchSize: number = 100,
+    private spaceId?: string
+  ) {}
 
   async getEntriesInIntents(intentList: IntentList): Promise<APIEntry[]> {
     const loadAllEntries = intentList.getIntents().some((intent) => intent.requiresAllEntries())
@@ -149,6 +153,31 @@ export default class Fetcher implements APIFetcher {
 
     const tags = await this.fetchAllPaginatedItems<APITag>('/tags')
     return tags
+  }
+
+  async getOrganizationIdFromSpace(): Promise<string> {
+    if (!this.spaceId) {
+      throw new Error('Space ID is required to fetch organization ID')
+    }
+
+    try {
+      const response = await this.makeRequest({
+        method: 'GET',
+        url: `/spaces/${this.spaceId}`,
+        raw: true
+      })
+
+      const organizationId = response?.sys?.organization?.sys?.id
+
+      if (!organizationId) {
+        throw new Error('Organization ID could not be retrieved from space')
+      }
+
+      return organizationId
+    } catch (error) {
+      console.error('Could not fetch organization ID from space:', error.message)
+      throw error
+    }
   }
 
   private async fetchEditorInterface(

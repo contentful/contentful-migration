@@ -59,7 +59,7 @@ const createMigrationParser = function (
   config: ClientConfig
 ): (migrationCreator: (migration: any) => any) => Promise<ParseResult> {
   return async function migration(migrationCreator) {
-    const fetcher = new Fetcher(makeRequest, config.requestBatchSize)
+    const fetcher = new Fetcher(makeRequest, config.requestBatchSize, config.spaceId)
     const parseResult = new ParseResult()
     const intents = await buildIntents(migrationCreator, makeRequest, config)
 
@@ -139,7 +139,12 @@ const createMigrationParser = function (
       return new Tag(apiTag)
     })
 
-    const payloadValidationErrors = validateChunks(intentList, ctsWithEntryInfo, existingEditorInterfaces, tags)
+    const payloadValidationErrors = validateChunks(
+      intentList,
+      ctsWithEntryInfo,
+      existingEditorInterfaces,
+      tags
+    )
 
     if (payloadValidationErrors.length) {
       parseResult.payloadValidationErrors = payloadValidationErrors

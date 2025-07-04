@@ -14,7 +14,9 @@ import {
   APIControlWidgetNamespace,
   APIEditorInterfaceEditorLayout,
   APIEditorLayoutFieldGroupItem,
-  ContentTypeMetadata
+  ContentTypeMetadata,
+  TaxonomyConceptValidationLink,
+  TaxonomyConceptSchemeValidationLink
 } from '../interfaces/content-type'
 import { SidebarWidgetNamespace, DEFAULT_SIDEBAR_LIST } from '../action/sidebarwidget'
 import {
@@ -731,6 +733,65 @@ class ContentType {
     delete this._metadata?.annotations?.ContentTypeField?.[fieldId]
   }
 
+  setTaxonomyValidations(
+    taxonomyValidations: Array<TaxonomyConceptValidationLink | TaxonomyConceptSchemeValidationLink>
+  ) {
+    set(this, '_metadata.taxonomy', taxonomyValidations)
+  }
+
+  addTaxonomyValidation(
+    id: string,
+    linkType: 'TaxonomyConcept' | 'TaxonomyConceptScheme',
+    options: { required?: boolean } = {}
+  ) {
+    const current = this.getTaxonomyValidation() || []
+
+    // Check if validation already exists for this ID
+    const existingIndex = current.findIndex((validation) => validation.sys.id === id)
+
+    let newValidation: TaxonomyConceptValidationLink | TaxonomyConceptSchemeValidationLink
+
+    if (linkType === 'TaxonomyConcept') {
+      newValidation = {
+        sys: {
+          type: 'Link',
+          linkType: 'TaxonomyConcept',
+          id
+        }
+      }
+    } else {
+      newValidation = {
+        sys: {
+          type: 'Link',
+          linkType: 'TaxonomyConceptScheme',
+          id
+        }
+      }
+    }
+
+    if (options.required !== undefined) {
+      newValidation.required = options.required
+    }
+
+    if (existingIndex >= 0) {
+      // Update existing validation
+      current[existingIndex] = newValidation
+    } else {
+      // Add new validation
+      current.push(newValidation)
+    }
+
+    this.setTaxonomyValidations(current)
+  }
+
+  clearTaxonomyValidations() {
+    set(this, '_metadata.taxonomy', undefined)
+  }
+
+  getTaxonomyValidation() {
+    return this._metadata?.taxonomy
+  }
+
   get version() {
     return this._version
   }
@@ -763,4 +824,13 @@ const isTargetFieldItem = (item, fieldId): item is FieldItem =>
 const isTargetGroupItem = (item, groupId): item is FieldGroupItem =>
   isFieldGroupItem(item) && item.groupId === groupId
 
-export { ContentType as default, ContentType, Fields, Field, EditorInterfaces, AnnotationLink }
+export {
+  ContentType as default,
+  ContentType,
+  Fields,
+  Field,
+  EditorInterfaces,
+  AnnotationLink,
+  TaxonomyConceptValidationLink,
+  TaxonomyConceptSchemeValidationLink
+}
