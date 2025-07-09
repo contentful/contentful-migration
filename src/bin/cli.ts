@@ -64,7 +64,10 @@ export const createMakeRequest = (
     strict: false
   })
 
-  const makeBaseUrl = (url: string) => {
+  const makeBaseUrl = (url: string, raw?: boolean) => {
+    if (raw) {
+      return `https://${host}${url}`
+    }
     const parts = [
       `https://${host}`,
       'spaces',
@@ -73,13 +76,12 @@ export const createMakeRequest = (
       environmentId,
       trim(url, '/')
     ]
-
     return parts.filter((x) => x !== '').join('/')
   }
 
-  return function makeRequest(requestConfig: RawAxiosRequestConfig) {
-    const { url, ...config } = requestConfig
-    const fullUrl = makeBaseUrl(url)
+  return function makeRequest(requestConfig: RawAxiosRequestConfig & { raw?: boolean }) {
+    const { url, raw, ...config } = requestConfig
+    const fullUrl = makeBaseUrl(url, raw)
 
     return throttle(() => client.raw.http(fullUrl, config))()
   }
