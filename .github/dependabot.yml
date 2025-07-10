@@ -12,6 +12,9 @@ updates:
     - dependency-name: husky
       versions:
         - ">=5.0.0"
+    - dependency-name: chai-as-promised
+      versions:
+        - ">=8.0.0"
     commit-message:
       prefix: build
       include: scope
