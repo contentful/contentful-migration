@@ -59,7 +59,7 @@
     "contentful-management": "^11.48.1",
     "didyoumean2": "^7.0.4",
     "https-proxy-agent": "^5.0.0",
-    "inquirer": "^8.1.2",
+    "inquirer": "^12.9.0",
     "joi": "^17.4.0",
     "kind-of": "^6.0.3",
     "listr2": "^3.13.5",
