@@ -215,6 +215,98 @@ describe('Transform Entry to Type Action', function () {
     expect(batches[0].requests[3].url).to.eql('/entries/123/published')
   })
 
+  it('preserves locale-based published state of target entry and referenced entries', async (): Promise<void> => {
+    const transformation: TransformEntryToType = {
+      sourceContentType: 'dog',
+      targetContentType: 'copycat',
+      from: ['name'],
+      updateReferences: true,
+      shouldPublish: 'preserve',
+      identityKey: async () => '345',
+      transformEntryForLocale: async (fields, locale) => {
+        return { name: fields['name'][locale] }
+      },
+      useLocaleBasedPublishing: true
+    }
+
+    const action = new EntryTransformToTypeAction(transformation)
+    const entries = [
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version: 2,
+          publishedVersion: 1,
+          fields: {
+            name: {
+              'en-US': 'bob',
+              hawaii: 'haukea'
+            }
+          },
+          fieldStatus: {
+            '*': {
+              'en-US': 'draft',
+              hawaii: 'published'
+            }
+          }
+        })
+      ),
+      new Entry(
+        makeApiEntry({
+          id: '123',
+          contentTypeId: 'person',
+          version: 2,
+          publishedVersion: 1,
+          fields: {
+            pet: {
+              'en-US': {
+                sys: {
+                  type: 'Link',
+                  id: '246'
+                }
+              }
+            }
+          },
+          fieldStatus: {
+            '*': {
+              'en-US': 'draft',
+              hawaii: 'published'
+            }
+          }
+        })
+      )
+    ]
+
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US', 'hawaii'] })
+    await api.startRecordingRequests(null)
+
+    await action.applyTo(api)
+    await api.stopRecordingRequests()
+    const batches = await api.getRequestBatches()
+
+    expect(batches[0].requests.length).to.eq(4)
+
+    expect(batches[0].requests[1].method).to.eql('PUT')
+    expect(batches[0].requests[1].url).to.eql('/entries/345/published')
+    expect(
+      (
+        batches[0].requests[1].data as {
+          add?: { fields?: { '*': string[] } | undefined } | undefined
+        }
+      )?.add?.fields?.['*']
+    ).to.have.all.members(['hawaii'])
+
+    expect(batches[0].requests[3].method).to.eql('PUT')
+    expect(batches[0].requests[3].url).to.eql('/entries/123/published')
+    expect(
+      (
+        batches[0].requests[3].data as {
+          add?: { fields?: { '*': string[] } | undefined } | undefined
+        }
+      )?.add?.fields?.['*']
+    ).to.have.all.members(['hawaii'])
+  })
+
   it('preserves publish state of child entry', async (): Promise<void> => {
     const transformation: TransformEntryToType = {
       sourceContentType: 'dog',
