@@ -9,6 +9,7 @@ class EntryTransformToTypeAction extends APIAction {
   private fromFields?: string[]
   private sourceContentTypeId: string
   private targetContentTypeId: string
+  private entryIds?: string[]
   private transformEntryForLocale: (
     inputFields: any,
     locale: string,
@@ -24,6 +25,7 @@ class EntryTransformToTypeAction extends APIAction {
     this.fromFields = entryTransformation.from
     this.sourceContentTypeId = entryTransformation.sourceContentType
     this.targetContentTypeId = entryTransformation.targetContentType
+    this.entryIds = entryTransformation.entryIds
     this.identityKey = entryTransformation.identityKey
     this.shouldPublish = entryTransformation.shouldPublish || false
     this.removeOldEntries = entryTransformation.removeOldEntries || false
@@ -32,7 +34,10 @@ class EntryTransformToTypeAction extends APIAction {
   }
 
   async applyTo(api: OfflineAPI) {
-    const entries: Entry[] = await api.getEntriesForContentType(this.sourceContentTypeId)
+    const allEntries: Entry[] = await api.getEntriesForContentType(this.sourceContentTypeId)
+    const entries: Entry[] = this.entryIds
+      ? allEntries.filter((entry) => this.entryIds!.includes(entry.id))
+      : allEntries
     const locales: string[] = await api.getLocalesForSpace()
 
     for (const entry of entries) {

@@ -381,6 +381,7 @@ For the given (source) content type, transforms all its entries according to the
 - **`sourceContentType : string`** _(required)_ – Content type ID of source entries
 - **`targetContentType : string`** _(required)_ – Targeted Content type ID
 - **`from : array`** _(optional)_ – Array of the source field IDs, returns complete list of fields if not configured
+- **`entryIds : array`** _(optional)_ – Array of entry IDs to limit transformation to specific entries. If not provided, all entries of the source content type will be transformed
 - **`identityKey: function (fields): string`** _(required)_ - Function to create a new entry ID for the target entry
 - **`shouldPublish : bool | 'preserve'`** _(optional)_ – Flag that specifies publishing of target entries, `preserve` will keep current states of the source entries (default `false`)
 - **`updateReferences : bool`** _(optional)_ – Flag that specifies if linking entries should be updated with target entries (default `false`). Note that this flag does not support Rich Text Fields references.
