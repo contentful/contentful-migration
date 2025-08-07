@@ -18,6 +18,7 @@ class EntryTransformToTypeAction extends APIAction {
   private shouldPublish: boolean | 'preserve'
   private removeOldEntries: boolean
   private updateReferences: boolean
+  private useLocaleBasedPublishing: boolean
 
   constructor(entryTransformation: EntryTransformToType) {
     super()
@@ -29,6 +30,7 @@ class EntryTransformToTypeAction extends APIAction {
     this.removeOldEntries = entryTransformation.removeOldEntries || false
     this.updateReferences = entryTransformation.updateReferences || false
     this.transformEntryForLocale = entryTransformation.transformEntryForLocale
+    this.useLocaleBasedPublishing = entryTransformation.useLocaleBasedPublishing || false
   }
 
   async applyTo(api: OfflineAPI) {
@@ -97,8 +99,20 @@ class EntryTransformToTypeAction extends APIAction {
         }
       }
       await api.saveEntry(targetEntry.id)
-      if (shouldPublishLocalChanges(this.shouldPublish, entry)) {
-        await api.publishEntry(targetEntry.id)
+
+      if (shouldPublishLocalChanges(this.shouldPublish, entry, this.useLocaleBasedPublishing)) {
+        if (this.useLocaleBasedPublishing) {
+          const localesToPublish =
+            this.shouldPublish === 'preserve'
+              ? Object.entries(entry.fieldStatus['*'])
+                  .filter(([, status]) => status === 'published')
+                  .map(([locale]) => locale)
+              : locales
+
+          await api.localeBasedPublishEntry(targetEntry.id, localesToPublish)
+        } else {
+          await api.publishEntry(targetEntry.id)
+        }
       }
 
       // look for entries linking to the old entry and replace them with references to the new entry
@@ -114,8 +128,24 @@ class EntryTransformToTypeAction extends APIAction {
           }
 
           await api.saveEntry(link.element.id)
-          if (shouldPublishLocalChanges(this.shouldPublish, link.element)) {
-            await api.publishEntry(link.element.id)
+          if (
+            shouldPublishLocalChanges(
+              this.shouldPublish,
+              link.element,
+              this.useLocaleBasedPublishing
+            )
+          ) {
+            if (this.useLocaleBasedPublishing) {
+              const localesToPublish =
+                this.shouldPublish === 'preserve'
+                  ? Object.entries(link.element.fieldStatus['*'])
+                      .filter(([, status]) => status === 'published')
+                      .map(([locale]) => locale)
+                  : locales
+              await api.localeBasedPublishEntry(link.element.id, localesToPublish)
+            } else {
+              await api.publishEntry(link.element.id)
+            }
           }
         }
       }

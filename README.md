@@ -48,13 +48,13 @@
 
 - [contentful-migration - content model migration tool](#contentful-migration---content-model-migration-tool)
   - [Core Features](#core-features)
-  - [Pre-requisites && Installation](#pre-requisites--installation)
+  - [Pre-requisites \&\& Installation](#pre-requisites--installation)
     - [Pre-requisites](#pre-requisites)
     - [Installation](#installation)
   - [Usage](#usage)
   - [:exclamation: Usage as CLI](#exclamation-usage-as-cli)
     - [Usage as a library](#usage-as-a-library)
-  - [Documentation & References](#documentation--references)
+  - [Documentation \& References](#documentation--references)
     - [Configuration](#configuration)
     - [Chaining vs Object notation](#chaining-vs-object-notation)
     - [`migration`](#migration)
@@ -95,7 +95,14 @@
       - [`createEditorLayout ()` : EditorLayout](#createeditorlayout---editorlayout)
       - [`editEditorLayout ()` : EditorLayout](#editeditorlayout---editorlayout)
       - [`deleteEditorLayout ()` : void](#deleteeditorlayout---void)
+      - [`setAnnotations(AnnotationId[])`](#setannotationsannotationid)
+      - [`clearAnnotations()`](#clearannotations)
+      - [`addTaxonomyValidation(id, linkType[, opts])`](#addtaxonomyvalidationid-linktype-opts)
+      - [`clearTaxonomyValidations()`](#cleartaxonomyvalidations)
+      - [`setTaxonomyValidations(validations)`](#settaxonomyvalidationsvalidations)
     - [Field](#field)
+      - [`setAnnotations(AnnotationId[])`](#setannotationsannotationid-1)
+      - [`clearAnnotations()`](#clearannotations-1)
     - [Editor Layout](#editor-layout)
       - [`moveField(id)` : MovableEditorLayoutItem](#movefieldid--movableeditorlayoutitem)
       - [`createFieldGroup(id[, opts])` : EditorLayoutFieldGroup](#createfieldgroupid-opts--editorlayoutfieldgroup)
@@ -386,6 +393,7 @@ For the given (source) content type, transforms all its entries according to the
 - **`updateReferences : bool`** _(optional)_ – Flag that specifies if linking entries should be updated with target entries (default `false`). Note that this flag does not support Rich Text Fields references.
 - **`removeOldEntries : bool`** _(optional)_ – Flag that specifies if source entries should be deleted (default `false`)
 - **`transformEntryForLocale : function (fields, locale, {id}): object`** _(required)_ – Transformation function to be applied.
+- **`useLocaleBasedPublishing: bool`** _(optional)_ - Flag to use locale based publishing for the target entries. (default: `false`)
 
   - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `fields == {myField: {'en-US': 'my field value'}}`)
   - `locale` one of the locales in the space being transformed

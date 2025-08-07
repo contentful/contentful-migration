@@ -521,7 +521,7 @@ class OfflineAPI {
     // Mutate fieldStatus
     entry.fieldStatus = {
       '*': {
-        ...entry.fieldStatus['*'],
+        ...entry.fieldStatus?.['*'],
         ...locales.reduce((acc, locale) => {
           acc[locale] = 'published'
           return acc
