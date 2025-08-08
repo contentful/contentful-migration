@@ -393,11 +393,10 @@ For the given (source) content type, transforms all its entries according to the
 - **`updateReferences : bool`** _(optional)_ – Flag that specifies if linking entries should be updated with target entries (default `false`). Note that this flag does not support Rich Text Fields references.
 - **`removeOldEntries : bool`** _(optional)_ – Flag that specifies if source entries should be deleted (default `false`)
 - **`transformEntryForLocale : function (fields, locale, {id}): object`** _(required)_ – Transformation function to be applied.
-- **`useLocaleBasedPublishing: bool`** _(optional)_ - Flag to use locale based publishing for the target entries. (default: `false`)
-
   - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `fields == {myField: {'en-US': 'my field value'}}`)
   - `locale` one of the locales in the space being transformed
   - `id` id of the current entry in scope
+- **`useLocaleBasedPublishing: bool`** _(optional)_ - Flag to use locale based publishing for the target entries. (default: `false`)
 
 The return value must be an object with the same keys as specified in the `targetContentType`. Their values will be written to the respective entry fields for the current locale (i.e. `{nameField: 'myNewValue'}`). If it returns `undefined`, the values for this locale on the entry will be left untouched.
 
