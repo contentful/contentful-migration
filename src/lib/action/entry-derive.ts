@@ -7,6 +7,7 @@ import isDefined from '../utils/is-defined'
 import Entry from '../entities/entry'
 import * as _ from 'lodash'
 import shouldPublishLocalChanges from '../utils/should-publish-local-changes'
+import { createHash } from 'crypto'
 
 class EntryDeriveAction extends APIAction {
   private contentTypeId: string
@@ -307,11 +308,7 @@ function defaultDerivedChildId(
 }
 
 function shortHash(input: string): string {
-  let h = 0
-  for (let i = 0; i < input.length; i++) {
-    h = (h << 5) - h + input.charCodeAt(i)
-    h |= 0
-  }
-  const unsigned = h >>> 0
-  return unsigned.toString(36).slice(0, 6)
+  const hashHex = createHash('sha256').update(input).digest('hex')
+  const base36 = BigInt('0x' + hashHex).toString(36)
+  return base36.slice(0, 6)
 }
