@@ -26,7 +26,11 @@ class EntryDeriveIntentValidator extends SchemaValidator {
       derivedFields: Joi.array().items(Joi.string()).required(),
       identityKey: Joi.func().required(),
       shouldPublish: Joi.alternatives().try(Joi.boolean(), Joi.string().valid('preserve')),
-      deriveEntryForLocale: Joi.func().required(),
+      // exactly one of deriveEntryForLocale or deriveEntriesForLocale must be provided
+      deriveEntryForLocale: Joi.func(),
+      deriveEntriesForLocale: Joi.func(),
+      derivedEntryId: Joi.func(),
+      publishDerived: Joi.string().valid('always', 'never', 'preserve'),
       useLocaleBasedPublishing: Joi.boolean().optional()
     }
   }

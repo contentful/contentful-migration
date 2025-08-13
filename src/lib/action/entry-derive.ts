@@ -13,14 +13,27 @@ class EntryDeriveAction extends APIAction {
   private fromFields: string[]
   private referenceField: string
   private derivedContentType: string
+  private derivedFields: string[]
   private deriveEntryForLocale: (
     inputFields: any,
     locale: string,
     { id }: { id: string }
   ) => Promise<any>
+  private deriveEntriesForLocale?: (
+    inputFields: any,
+    locale: string,
+    context: { id: string }
+  ) => Promise<Array<{ fields: Record<string, any> }>> | Array<{ fields: Record<string, any> }>
   private identityKey: (fromFields: any) => Promise<string>
   private shouldPublish: boolean | 'preserve'
   private useLocaleBasedPublishing: boolean
+  private derivedEntryId?: (params: {
+    sourceId: string
+    locale: string
+    index: number
+    candidate: { fields: Record<string, any> }
+  }) => string
+  private publishDerived?: 'always' | 'never' | 'preserve'
 
   constructor(contentTypeId: string, entryDerivation: EntryDerive) {
     super()
@@ -28,7 +41,9 @@ class EntryDeriveAction extends APIAction {
     this.fromFields = entryDerivation.from
     this.referenceField = entryDerivation.toReferenceField
     this.derivedContentType = entryDerivation.derivedContentType
+    this.derivedFields = entryDerivation.derivedFields
     this.deriveEntryForLocale = entryDerivation.deriveEntryForLocale
+    this.deriveEntriesForLocale = entryDerivation.deriveEntriesForLocale
     this.identityKey = entryDerivation.identityKey
     this.shouldPublish = isDefined(entryDerivation.shouldPublish)
       ? entryDerivation.shouldPublish
@@ -36,6 +51,8 @@ class EntryDeriveAction extends APIAction {
     this.useLocaleBasedPublishing = isDefined(entryDerivation.useLocaleBasedPublishing)
       ? entryDerivation.useLocaleBasedPublishing
       : false
+    this.derivedEntryId = entryDerivation.derivedEntryId
+    this.publishDerived = entryDerivation.publishDerived
   }
 
   private async publishEntry(api: OfflineAPI, entry: Entry, locales: string[]) {
@@ -44,6 +61,17 @@ class EntryDeriveAction extends APIAction {
     } else {
       await api.publishEntry(entry.id)
     }
+  }
+
+  private isDerivedFieldAllowed(fieldId: string): boolean {
+    return this.derivedFields?.includes(fieldId)
+  }
+
+  private resolveChildPublishMode(): boolean | 'preserve' {
+    if (this.publishDerived === 'always') return true
+    if (this.publishDerived === 'never') return false
+    if (this.publishDerived === 'preserve') return 'preserve'
+    return this.shouldPublish
   }
 
   async applyTo(api: OfflineAPI) {
@@ -56,6 +84,132 @@ class EntryDeriveAction extends APIAction {
       const newEntryId = await this.identityKey(inputs)
       const hasEntry = await api.hasEntry(newEntryId)
 
+      // Multi-entry mode: derive multiple children and set array of links
+      if (this.deriveEntriesForLocale) {
+        const field = sourceContentType.fields.getField(this.referenceField)
+        // Validate destination is Array<Link<Entry>>
+        if (
+          !(
+            field &&
+            field.type === 'Array' &&
+            field.items?.type === 'Link' &&
+            field.items?.linkType === 'Entry'
+          )
+        ) {
+          await api.recordRuntimeError(
+            new Error(
+              `Invalid destination: field "${this.referenceField}" must be of type Array<Link<Entry>> to use deriveEntriesForLocale.`
+            )
+          )
+          continue
+        }
+
+        // If validations specify linkContentType ensure includes derivedContentType
+        const linkContentTypeValidation = (field.items?.validations || []).find((v) =>
+          Array.isArray(v?.linkContentType)
+        )
+        if (
+          linkContentTypeValidation &&
+          !linkContentTypeValidation.linkContentType.includes(this.derivedContentType)
+        ) {
+          await api.recordRuntimeError(
+            new Error(
+              `Destination field "${this.referenceField}" validations.linkContentType does not include "${this.derivedContentType}".`
+            )
+          )
+          continue
+        }
+
+        // For each locale, derive child entries and link them positionally
+        for (const locale of locales) {
+          let derivedList: Array<{ fields: Record<string, any> }> = []
+          try {
+            const res = await this.deriveEntriesForLocale(inputs, locale, { id: entry.id })
+            derivedList = Array.isArray(res) ? res : []
+          } catch (err) {
+            await api.recordRuntimeError(err)
+            continue
+          }
+
+          const childIdsInOrder: string[] = []
+          for (let index = 0; index < derivedList.length; index++) {
+            const candidate = derivedList[index]
+            const targetId = this.derivedEntryId
+              ? this.derivedEntryId({ sourceId: entry.id, locale, index, candidate })
+              : defaultDerivedChildId(entry.id, this.referenceField, locale, index)
+
+            childIdsInOrder.push(targetId)
+
+            const childExists = await api.hasEntry(targetId)
+            if (!childExists) {
+              const targetEntry = await api.createEntry(this.derivedContentType, targetId)
+              // Only write declared derivedFields for this locale
+              for (const [fieldId, localizedField] of _.entries(candidate.fields)) {
+                if (!this.isDerivedFieldAllowed(fieldId)) continue
+                if (!targetEntry.fields[fieldId]) {
+                  targetEntry.setField(fieldId, {})
+                }
+                const value = _.get(localizedField, locale)
+                if (value !== undefined) {
+                  targetEntry.setFieldForLocale(fieldId, locale, value)
+                }
+              }
+              await api.saveEntry(targetEntry.id)
+              // Publish behavior for derived children
+              const childPublishMode = this.resolveChildPublishMode()
+              if (
+                shouldPublishLocalChanges(childPublishMode, entry, this.useLocaleBasedPublishing)
+              ) {
+                if (this.useLocaleBasedPublishing) {
+                  await api.localeBasedPublishEntry(targetEntry.id, [locale])
+                } else {
+                  await api.publishEntry(targetEntry.id)
+                }
+              }
+            } else {
+              // Update existing entry fields for this locale (upsert semantics)
+              const targetEntry = (
+                await api.getEntriesForContentType(this.derivedContentType)
+              ).find((e) => e.id === targetId)
+              for (const [fieldId, localizedField] of _.entries(candidate.fields)) {
+                if (!this.isDerivedFieldAllowed(fieldId)) continue
+                if (!targetEntry.fields[fieldId]) {
+                  targetEntry.setField(fieldId, {})
+                }
+                const value = _.get(localizedField, locale)
+                if (value !== undefined) {
+                  targetEntry.setFieldForLocale(fieldId, locale, value)
+                }
+              }
+              await api.saveEntry(targetEntry.id)
+              const childPublishMode = this.resolveChildPublishMode()
+              if (
+                shouldPublishLocalChanges(childPublishMode, entry, this.useLocaleBasedPublishing)
+              ) {
+                if (this.useLocaleBasedPublishing) {
+                  await api.localeBasedPublishEntry(targetEntry.id, [locale])
+                } else {
+                  await api.publishEntry(targetEntry.id)
+                }
+              }
+            }
+          }
+
+          // Write array of links for this locale (can be empty)
+          const links = childIdsInOrder.map((id) => ({
+            sys: { type: 'Link', linkType: 'Entry', id }
+          }))
+          entry.setFieldForLocale(this.referenceField, locale, links)
+        }
+
+        await api.saveEntry(entry.id)
+        if (shouldPublishLocalChanges(this.shouldPublish, entry, this.useLocaleBasedPublishing)) {
+          await this.publishEntry(api, entry, locales)
+        }
+        continue
+      }
+
+      // Single-entry mode
       let skipEntry = true
       let fieldsForTargetEntry = {}
 
@@ -138,3 +292,26 @@ class EntryDeriveAction extends APIAction {
 }
 
 export { EntryDeriveAction }
+
+function defaultDerivedChildId(
+  sourceId: string,
+  toReferenceField: string,
+  locale: string,
+  index: number
+): string {
+  const base = `${sourceId}-${toReferenceField}-${locale}-${index}`
+  if (base.length <= 64) return base
+  const hash = shortHash(base)
+  const maxBase = 64 - (1 + hash.length)
+  return `${base.slice(0, Math.max(0, maxBase))}-${hash}`
+}
+
+function shortHash(input: string): string {
+  let h = 0
+  for (let i = 0; i < input.length; i++) {
+    h = (h << 5) - h + input.charCodeAt(i)
+    h |= 0
+  }
+  const unsigned = h >>> 0
+  return unsigned.toString(36).slice(0, 6)
+}
