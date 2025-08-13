@@ -37,6 +37,24 @@ describe('Entry derivation', function () {
 
       expect(validationErrors).to.eql([])
     })
+
+    it('returns no validation errors for multi-entry mode', async function () {
+      const validationErrors = await validateSteps(function up(migration) {
+        migration.deriveLinkedEntries({
+          contentType: 'post',
+          derivedContentType: 'child',
+          from: ['raw'],
+          toReferenceField: 'items',
+          derivedFields: ['payload'],
+          identityKey: async () => 'ignored',
+          shouldPublish: false,
+          deriveEntriesForLocale: (from, locale) => {
+            return []
+          }
+        })
+      })
+      expect(validationErrors).to.eql([])
+    })
   })
 
   describe('when using the wrong type for the properties', function () {

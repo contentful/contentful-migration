@@ -598,13 +598,33 @@ export interface IDeriveLinkedEntriesConfig {
   /** (optional) – If true, both the source and the derived entries will be published. If false, both will remain in draft state. If preserve, will keep current states of the source entries (default true) */
   shouldPublish?: boolean | 'preserve'
   /**
-   * (required) – Function that generates the field values for the derived entry.
+   * (required for single-entry derivation) – Function that generates the field values for the derived entry.
    *  fields is an object containing each of the from fields. Each field will contain their current localized values (i.e. fields == {myField: {'en-US': 'my field value'}})
    *  locale one of the locales in the space being transformed
    *
    * The return value must be an object with the same keys as specified in derivedFields. Their values will be written to the respective new entry fields for the current locale (i.e. {nameField: 'myNewValue'})
    */
-  deriveEntryForLocale: (inputFields: ContentFields, locale: string) => { [field: string]: any }
+  deriveEntryForLocale?: (inputFields: ContentFields, locale: string) => { [field: string]: any }
+
+  /** (required for multi-entry derivation) – Function that generates 0..N child entries for this (source, locale). If provided, overrides deriveEntryForLocale. */
+  deriveEntriesForLocale?: (
+    fromFields: ContentFields,
+    locale: string,
+    context: { id: string }
+  ) =>
+    | Array<{ fields: { [field: string]: { [locale: string]: any } } }>
+    | Promise<Array<{ fields: { [field: string]: { [locale: string]: any } } }>>
+
+  /** (optional) – control deterministic IDs per derived child; if omitted, default is `${sourceId}-${toReferenceField}-${locale}-${index}`. */
+  derivedEntryId?: (params: {
+    sourceId: string
+    locale: string
+    index: number
+    candidate: { fields: { [field: string]: { [locale: string]: any } } }
+  }) => string
+
+  /** (optional) – publish behavior for derived entries; default 'preserve' */
+  publishDerived?: 'always' | 'never' | 'preserve'
 }
 
 type TagVisibility = 'private' | 'public'

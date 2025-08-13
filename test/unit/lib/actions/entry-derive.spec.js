@@ -365,16 +365,16 @@ describe('Entry Derive', function () {
         return fromFields.owner['en-US'].toLowerCase().replace(' ', '-')
       },
       shouldPublish: true,
-      deriveEntryForLocale: async (inputFields, locale) => {
+      // Multi-entry mode: two children out of a two-word owner
+      deriveEntriesForLocale: async (inputFields, locale) => {
         if (locale !== 'en-US') {
-          return
+          return []
         }
         const [firstName, lastName] = inputFields.owner[locale].split(' ')
-
-        return {
-          firstName,
-          lastName
-        }
+        return [
+          { fields: { firstName: { [locale]: firstName }, lastName: { [locale]: '' } } },
+          { fields: { firstName: { [locale]: '' }, lastName: { [locale]: lastName } } }
+        ]
       }
     })
 
@@ -427,16 +427,74 @@ describe('Entry Derive', function () {
     api.stopRecordingRequests()
     const batches = await api.getRequestBatches()
 
-    expect(batches[0].requests.length).to.eq(4)
-    const createTargetEntryFields = batches[0].requests[0].data.fields
-    const updateEntryWithLinkFields = batches[0].requests[2].data.fields
-    expect(createTargetEntryFields.firstName['en-US']).to.eq('johnny') // target entry has first and last name
-    expect(createTargetEntryFields.lastName['en-US']).to.eq('depp')
-    expect(typeof updateEntryWithLinkFields.owners['en-US'][0].sys).to.eq('object') // request to update entry is n to n link
+    // Requests: create first child, maybe publish, create second child, maybe publish, update parent, maybe publish
+    expect(
+      batches[0].requests.some(
+        (r) => r.url.startsWith('/entries/') && !r.url.endsWith('/published')
+      )
+    ).to.eq(true)
+    const updateEntryWithLinkFields =
+      batches[0].requests[batches[0].requests.length - 2].data.fields
+    expect(Array.isArray(updateEntryWithLinkFields.owners['en-US'])).to.eq(true)
+    expect(updateEntryWithLinkFields.owners['en-US'].length).to.eq(2)
     expect(updateEntryWithLinkFields.owners['en-US'][0].sys.type).to.eq('Link')
-    expect(updateEntryWithLinkFields.owners['en-US'][0].sys.id).to.eq(
-      batches[0].requests[0].data.sys.id
-    ) // id of linked object is same as id of target object
+  })
+
+  it('multi-entry empty list writes empty array', async function () {
+    const action = new EntryDeriveAction('post', {
+      derivedContentType: 'child',
+      from: ['raw'],
+      toReferenceField: 'items',
+      derivedFields: ['payload'],
+      identityKey: async () => 'unused',
+      shouldPublish: false,
+      deriveEntriesForLocale: async (from, locale) => {
+        const value = from.raw?.[locale]
+        if (value == null) return []
+        return []
+      }
+    })
+
+    const contentTypes = new Map()
+    contentTypes.set(
+      'post',
+      new ContentType({
+        sys: { id: 'post' },
+        fields: [
+          {
+            name: 'items',
+            id: 'items',
+            type: 'Array',
+            items: {
+              type: 'Link',
+              linkType: 'Entry',
+              validations: [{ linkContentType: ['child'] }]
+            }
+          },
+          { id: 'raw', name: 'raw', type: 'Symbol', localized: true }
+        ]
+      })
+    )
+
+    const entries = [
+      new Entry(
+        makeApiEntry({
+          id: '1',
+          contentTypeId: 'post',
+          version: 1,
+          fields: { raw: { 'en-US': null } }
+        })
+      )
+    ]
+
+    const api = new OfflineApi({ contentTypes, entries, locales: ['en-US'] })
+    api.startRecordingRequests(null)
+    await action.applyTo(api)
+    api.stopRecordingRequests()
+    const batches = await api.getRequestBatches()
+
+    const updateReq = batches[0].requests.find((r) => r.url === '/entries/1')
+    expect(updateReq.data.fields.items['en-US']).to.eql([])
   })
 
   it('provides entry id', async function () {
