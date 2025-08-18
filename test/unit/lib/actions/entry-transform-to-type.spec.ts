@@ -652,4 +652,56 @@ describe('Transform Entry to Type Action', function () {
     await api.stopRecordingRequests()
     expect(ids).to.eql(['246'])
   })
+
+  it('transforms only specified entries when entryIds is provided', async function () {
+    const transformation: TransformEntryToType = {
+      sourceContentType: 'dog',
+      targetContentType: 'copycat',
+      from: ['name'],
+      entryIds: ['246'],
+      identityKey: async (fields) => fields.name['en-US'].toString(),
+      transformEntryForLocale: async (fields, locale) => {
+        return { name: 'x' + fields['name'][locale] }
+      }
+    }
+
+    const action = new EntryTransformToTypeAction(transformation)
+    const entries = [
+      new Entry(
+        makeApiEntry({
+          id: '246',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'bob'
+            }
+          }
+        })
+      ),
+      new Entry(
+        makeApiEntry({
+          id: '247',
+          contentTypeId: 'dog',
+          version: 1,
+          fields: {
+            name: {
+              'en-US': 'alice'
+            }
+          }
+        })
+      )
+    ]
+    const api = new OfflineApi({ contentTypes: new Map(), entries, locales: ['en-US'] })
+    await api.startRecordingRequests(null)
+
+    await action.applyTo(api)
+    await api.stopRecordingRequests()
+    const batches = await api.getRequestBatches()
+
+    expect(batches[0].requests.length).to.eq(1)
+    const targetData = batches[0].requests[0].data as APIEntry
+    expect(targetData.fields['name']['en-US']).to.eql('xbob')
+    expect(targetData.sys.id).to.eql('bob')
+  })
 })
