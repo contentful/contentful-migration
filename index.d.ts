@@ -57,6 +57,8 @@ type BuiltinEditor =
   | 'dropdown'
   | 'radio'
   | 'richTextEditor'
+  | 'resourceLinkEditor'
+  | 'resourceLinksEditor'
 
 type FieldType =
   | 'Symbol'
