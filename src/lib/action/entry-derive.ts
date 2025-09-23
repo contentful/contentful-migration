@@ -40,7 +40,15 @@ class EntryDeriveAction extends APIAction {
 
   private async publishEntry(api: OfflineAPI, entry: Entry, locales: string[]) {
     if (this.useLocaleBasedPublishing) {
-      await api.localeBasedPublishEntry(entry.id, locales)
+      // Publish only locales that were already published if shouldPublish is 'preserve'
+      const localesToPublish =
+        this.shouldPublish === 'preserve' && entry.fieldStatus
+          ? Object.entries(entry.fieldStatus['*'])
+              .filter(([, status]) => status === 'published')
+              .map(([locale]) => locale)
+          : locales
+
+      await api.localeBasedPublishEntry(entry.id, localesToPublish)
     } else {
       await api.publishEntry(entry.id)
     }

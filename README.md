@@ -351,6 +351,8 @@ The derive function is expected to return an object with the desired target fiel
 
 - **`shouldPublish : bool|'preserve'`** _(optional)_ – If true, both the source and the derived entries will be published. If false, both will remain in draft state. If preserve, will keep current states of the source entries (default `true`)
 
+- **`useLocaleBasedPublishing : bool`** _(optional)_ - If true, the transformed entries will be published with locale based publishing. If `false`, they will remain in draft state. When the value from `shouldPublish` is set to "preserve" items will be published only if the original entry was published in this locale as well (default false)
+
 ##### `deriveLinkedEntries(config)` Example
 
 ```javascript
