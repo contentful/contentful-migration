@@ -14,6 +14,14 @@ export default function shouldPublishLocalChanges(
   entry: Entry,
   useLocaleBasedPublishing: boolean = false
 ) {
+  // console.log(`1. [ CM ] shouldPublishLocalChanges() shouldPublish => `, shouldPublish)
+  // console.log(`2. [ CM ] shouldPublishLocalChanges() entry => `, entry)
+  // console.log(`2. [ CM ] shouldPublishLocalChanges() entry.fieldStatus => `, entry.fieldStatus['*'])
+  // console.log(
+  //   `3. [ CM ] shouldPublishLocalChanges() useLocaleBasedPublishing => `,
+  //   useLocaleBasedPublishing
+  // )
+
   if (shouldPublish === true) {
     return true
   } else if (shouldPublish === false) {
@@ -23,7 +31,13 @@ export default function shouldPublishLocalChanges(
       return false
     }
     if (useLocaleBasedPublishing && entry.fieldStatus) {
-      return Object.values(entry.fieldStatus['*']).some((status) => status === 'published')
+      const response = Object.values(entry.fieldStatus['*']).some(
+        (status) => status === 'published'
+      )
+
+      // console.log(`4. [ CM ] shouldPublishLocalChanges() THIS BLOCK!!! returned => `, response)
+
+      return response
     }
     if (!entry.version || isNaN(entry.version)) {
       return false

@@ -40,7 +40,7 @@ class EntryDeriveAction extends APIAction {
 
   private async publishEntry(api: OfflineAPI, entry: Entry, locales: string[]) {
     if (this.useLocaleBasedPublishing) {
-      await api.localeBasedPublishEntry(entry.id, locales)
+      await api.localeBasedPublishEntry(entry.id, locales, this.shouldPublish)
     } else {
       await api.publishEntry(entry.id)
     }

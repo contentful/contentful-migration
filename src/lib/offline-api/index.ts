@@ -81,7 +81,67 @@ const publishEntryRequest = function (entry: Entry): Request {
   }
 }
 
-const localeBasedPublishEntryRequest = function (entry: Entry, locales: string[]): Request {
+const localeBasedPublishEntryRequest = function (
+  entry: Entry,
+  // locales: string[],
+  shouldPublish: boolean | 'preserve'
+): Request {
+  if (entry.contentTypeId === 'dog') {
+    console.log(`[ localeBasedPublishEntryReq ] entry => `, JSON.stringify(entry, null, 4))
+  }
+
+  // if (entry.contentTypeId === 'dog') {
+  //   console.log(
+  //     `[ localeBasedPublishEntryReq ] entry.fieldStatus?.['*'] => `,
+  //     JSON.stringify(entry.fieldStatus?.['*'], null, 4)
+  //   )
+  // }
+
+  // if (entry.contentTypeId === 'dog') {
+  //   console.log(`[ localeBasedPublishEntryReq ] shouldPublish => `, shouldPublish)
+  // }
+
+  // if (entry.contentTypeId === 'dog') {
+  //   console.log(`[ localeBasedPublishEntryReq ] locales => `, JSON.stringify(locales, null, 4))
+  // }
+
+  const localesToPublish: string[] = []
+
+  // [ 'de', 'en-US', 'es' ]
+
+  //   {
+  //     "*": {
+  //         "de": "changed",
+  //         "en-US": "published",
+  //         "es": "draft"
+  //     }
+  // }
+
+  // This logic might be able to be moved one level up, and instead just pass locales, and not have to pass shouldPublish
+  Object.entries(entry.fieldStatus?.['*']).forEach(([locale, status]) => {
+    if (entry.contentTypeId === 'dog') {
+      console.log(`  >>  [ forEach ] {`, locale, `:`, status, `}`)
+    }
+
+    // Only publish locales that are not yet published
+
+    if (shouldPublish === true) {
+      localesToPublish.push(locale)
+    } else if (shouldPublish === false) {
+      // do nothing
+    } else if (shouldPublish === 'preserve') {
+      // only publish published locales, draft and changed remain unchanged.
+      // Therefore this method could remain simple and unchanged for this PR.
+      if (status === 'published') {
+        localesToPublish.push(locale)
+      }
+    }
+  })
+
+  if (entry.contentTypeId === 'dog') {
+    console.log(`      >> localesToPublish => `, localesToPublish)
+  }
+
   return {
     method: 'PUT',
     url: `/entries/${entry.id}/published`,
@@ -92,7 +152,7 @@ const localeBasedPublishEntryRequest = function (entry: Entry, locales: string[]
     data: {
       add: {
         fields: {
-          '*': locales
+          '*': localesToPublish
         }
       }
     }
@@ -502,7 +562,15 @@ class OfflineAPI {
     return entry
   }
 
-  async localeBasedPublishEntry(id: string, locales: string[]): Promise<Entry> {
+  async localeBasedPublishEntry(
+    id: string,
+    locales: string[],
+    shouldPublish?: boolean | 'preserve'
+  ): Promise<Entry> {
+    if (shouldPublish === undefined) {
+      shouldPublish = true
+    }
+
     this.assertRecording()
 
     const hasEntry = this.entries.some((entry) => entry.id === id)
@@ -512,24 +580,47 @@ class OfflineAPI {
     } // Store clone as a request
     const entry = this.entries.find((entry) => entry.id === id)
 
-    this.currentRequestsRecorded.push(localeBasedPublishEntryRequest(entry.clone(), locales))
+    const newFieldStatus = this.determineNewFieldStatus(
+      entry.fieldStatus?.['*'] || {},
+      locales,
+      shouldPublish
+    )
+
+    // Mutate fieldStatus
+    entry.fieldStatus = newFieldStatus
+
+    this.currentRequestsRecorded.push(
+      localeBasedPublishEntryRequest(entry.clone(), /* locales, */ shouldPublish)
+    )
 
     // Mutate version bump
     entry.publishedVersion = entry.version
     entry.version = entry.version + 1
 
-    // Mutate fieldStatus
-    entry.fieldStatus = {
-      '*': {
-        ...entry.fieldStatus?.['*'],
-        ...locales.reduce((acc, locale) => {
-          acc[locale] = 'published'
-          return acc
-        }, {})
+    return entry
+  }
+
+  determineNewFieldStatus = (
+    fieldStatus: Record<string, 'published' | 'changed' | 'draft'>,
+    locales: string[],
+    shouldPublish: boolean | 'preserve' = 'preserve'
+  ) => {
+    if (shouldPublish === 'preserve') {
+      return {
+        '*': fieldStatus
+      }
+    } else {
+      // Publish all locales
+      return {
+        '*': {
+          ...fieldStatus,
+          ...locales.reduce((acc, locale) => {
+            acc[locale] = 'published'
+            return acc
+          }, {})
+        }
       }
     }
-
-    return entry
   }
 
   async unpublishEntry(id: string): Promise<Entry> {
