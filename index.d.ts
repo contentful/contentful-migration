@@ -607,6 +607,14 @@ export interface IDeriveLinkedEntriesConfig {
    * The return value must be an object with the same keys as specified in derivedFields. Their values will be written to the respective new entry fields for the current locale (i.e. {nameField: 'myNewValue'})
    */
   deriveEntryForLocale: (inputFields: ContentFields, locale: string) => { [field: string]: any }
+
+  /**
+   * (optional) – If true, the transformed entries will be published with locale based publishing.
+   * If `false`, they will remain in draft state. When the value from `shouldPublish` is set to
+   * "preserve" items will be published only if the original entry was published in this locale
+   *  as well (default false)
+   */
+  useLocaleBasedPublishing?: boolean
 }
 
 type TagVisibility = 'private' | 'public'

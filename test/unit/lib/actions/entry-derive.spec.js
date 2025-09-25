@@ -217,6 +217,87 @@ describe('Entry Derive', function () {
     expect(batches[0].requests[1].data.sys.version).to.eql(1)
   })
 
+  /**
+   * Assert that when the useLocaleBasedPublishing flag is true AND shouldPublish is "preserve",
+   * then an entry with 3 locales, en-US (status: Changed), de-DE (status: draft) and
+   * es-MX (status: Published), will maintain each of their respective statuses.
+   */
+  it('preserves each locale published status when using (localeBasedPublishing: true) with (shouldPublish: "preserve")', async function () {
+    const action = new EntryDeriveAction('dog', {
+      derivedContentType: 'owner',
+      from: ['owner'],
+      toReferenceField: 'ownerRef',
+      derivedFields: ['firstName', 'lastName'],
+      identityKey: async (fromFields) => {
+        return fromFields.owner['en-US'].toLowerCase().replace(' ', '-')
+      },
+      useLocaleBasedPublishing: true,
+      shouldPublish: 'preserve',
+      deriveEntryForLocale: async (inputFields, locale) => {
+        const [firstName, lastName] = inputFields.owner[locale].split(' ')
+        return {
+          firstName,
+          lastName
+        }
+      }
+    })
+
+    const contentTypes = new Map()
+    contentTypes.set(
+      'dog',
+      new ContentType({
+        sys: {
+          id: 'dog'
+        },
+        fields: [
+          {
+            name: 'ownerRef',
+            id: 'ownerRef',
+            type: 'Symbol'
+          }
+        ]
+      })
+    )
+
+    const entries = [
+      new Entry(
+        makeApiEntry({
+          id: '789',
+          contentTypeId: 'dog',
+          version: 5,
+          publishedVersion: 4,
+          fields: {
+            owner: {
+              'en-US': 'john doe',
+              'de-DE': 'Felix Rausch',
+              'es-MX': 'Juan Perez'
+            }
+          },
+          fieldStatus: {
+            '*': {
+              'en-US': 'changed',
+              'de-DE': 'draft',
+              'es-MX': 'published'
+            }
+          }
+        })
+      )
+    ]
+
+    const api = new OfflineApi({ contentTypes, entries, locales: ['en-US', 'de-DE', 'es-MX'] })
+    api.startRecordingRequests(null)
+    await action.applyTo(api)
+    api.stopRecordingRequests()
+    const batches = await api.getRequestBatches()
+
+    expect(batches[0].requests.length).to.eq(4)
+
+    expect(batches[0].requests[2].data.sys.fieldStatus['*']['en-US']).to.eql('changed')
+    expect(batches[0].requests[2].data.sys.fieldStatus['*']['de-DE']).to.eql('draft')
+    expect(batches[0].requests[2].data.sys.fieldStatus['*']['es-MX']).to.eql('published')
+    expect(batches[0].requests[3].data.add.fields['*']).to.eql(['es-MX'])
+  })
+
   it('preserves publish state of parent entry when is not published', async function () {
     const action = new EntryDeriveAction('dog', {
       derivedContentType: 'owner',
