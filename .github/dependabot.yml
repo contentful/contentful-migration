@@ -15,6 +15,21 @@ updates:
     - dependency-name: "semantic-release"
       versions:
         - ">=23.0.0"
+    # Pure ESM package. Remove from ignore when ESM is supported
+    # https://github.com/chalk/chalk/releases/tag/v5.0.0
+    - dependency-name: chalk
+      versions:
+        - ">=5.0.0"
+    # Pure ESM package. Remove from ignore when ESM is supported
+    # https://github.com/SBoudrias/Inquirer.js/releases/tag/inquirer%409.0.0
+    - dependency-name: inquirer
+      versions:
+        - ">=9.0.0"
+    # Pure ESM package. Remove from ignore when ESM is supported
+    # https://github.com/uuidjs/uuid/releases/tag/v12.0.0
+    - dependency-name: uuid
+      versions:
+        - ">=12.0.0"
     commit-message:
       prefix: build
       include: scope
