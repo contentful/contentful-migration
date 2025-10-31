@@ -159,8 +159,19 @@
 
 ### Installation
 
+To install from GitHub Packages, you first need to authenticate. Create or edit `~/.npmrc` to include:
+
+```
+@contentful:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
+```
+
+Replace `YOUR_GITHUB_TOKEN` with a GitHub Personal Access Token that has `read:packages` permission.
+
+Then install the package:
+
 ```bash
-npm install contentful-migration
+npm install @contentful/contentful-migration
 ```
 
 ## Usage
@@ -174,7 +185,7 @@ npm install contentful-migration
 ### Usage as a library
 
 ```javascript
-const { runMigration } = require('contentful-migration')
+const { runMigration } = require('@contentful/contentful-migration')
 const options = {
   filePath: '<migration-file-path>',
   spaceId: '<space-id>',
@@ -198,7 +209,7 @@ module.exports = function (migration, context) {
 You can also pass the function directly. For example:
 
 ```javascript
-const { runMigration } = require('contentful-migration')
+const { runMigration } = require('@contentful/contentful-migration')
 
 function migrationFunction(migration, context) {
   const dog = migration.createContentType('dog')
@@ -338,11 +349,9 @@ The derive function is expected to return an object with the desired target fiel
 - **`derivedFields : array`** _(required)_ – Array of the field IDs on the target content type
 
 - **`identityKey: function (fields): string`** _(required)_ - Called once per source entry. Returns the ID used for the derived entry, which is also used for de-duplication so that multiple source entries can link to the same derived entry.
-
   - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `fields == {myField: {'en-US': 'my field value'}}`)
 
 - **`deriveEntryForLocale : function (fields, locale, {id}): object`** _(required)_ – Function that generates the field values for the derived entry.
-
   - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `fields == {myField: {'en-US': 'my field value'}}`)
   - `locale` one of the locales in the space being transformed
   - `id` id of the current entry in scope
@@ -436,7 +445,6 @@ Creates a tag with provided `id` and returns a reference to the newly created ta
 - **`id : string`** – The ID of the tag.
 
 - **`opts : Object`** – Tag definition, with the following options:
-
   - **`name : string`** – Name of the tag.
 
 - **`visibility : 'private' | 'public'`** Tag visibility - defaults to `private`.
@@ -897,7 +905,7 @@ You can check out the [examples](/examples) to learn more about the migrations D
 Each example file is prefixed with a sequence number, specifying the order in which you're supposed to run the migrations, as follows:
 
 ```javascript
-const runMigration = require('contentful-migration/built/bin/cli').runMigration
+const runMigration = require('@contentful/contentful-migration/built/bin/cli').runMigration
 
 const options = {
   spaceId: '<space-id>',
@@ -930,7 +938,7 @@ node_modules/.bin/ts-node node_modules/.bin/contentful-migration -s $CONTENTFUL_
 An example Typescript migration:
 
 ```typescript
-import { MigrationFunction } from 'contentful-migration'
+import { MigrationFunction } from '@contentful/contentful-migration'
 
 // typecast to 'MigrationFunction' to ensure you get type hints in your editor
 export = function (migration, { makeRequest, spaceId, accessToken }) {

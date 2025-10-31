@@ -71,6 +71,11 @@ jobs:
       - node/install-packages
       - vault/get-secrets:
           template-preset: 'semantic-release-ecosystem'
+      - run:
+          name: Setup npmrc for GitHub Packages
+          command: |
+            echo "//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_WRITE_TOKEN}" > ./.npmrc
+            echo "@contentful:registry=https://npm.pkg.github.com" >> ./.npmrc
       - run: npm run semantic-release
 workflows:
   test-and-release:

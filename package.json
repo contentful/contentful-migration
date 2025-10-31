@@ -1,5 +1,5 @@
 {
-  "name": "contentful-migration",
+  "name": "@contentful/contentful-migration",
   "version": "0.0.0-development",
   "description": "Migration tooling for contentful",
   "author": "Contentful GmbH",
@@ -20,6 +20,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/contentful/contentful-migration"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
     "clean": "rimraf built",
