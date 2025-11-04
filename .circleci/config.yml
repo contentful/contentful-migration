@@ -4,15 +4,26 @@ orbs:
   vault: contentful/vault@1
   node: circleci/node@5.1.0
 
+commands:
+  install-dependencies:
+    steps:
+      - restore_cache:
+          keys:
+            - npm-cache-{{ arch }}-{{ checksum ".nvmrc" }}-{{ checksum "package-lock.json" }}
+            - npm-cache
+      - vault/get-secrets:
+          template-preset: 'packages-read'
+      - run: echo "//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_READ_TOKEN}" > ~/.npmrc
+      - run: echo "@contentful:registry=https://npm.pkg.github.com" >> ~/.npmrc
+      - run: npm ci --prefer-offline
+
 jobs:
   check:
     docker:
-      - image: 'cimg/base:current'
+      - image: cimg/node:18 
     steps:
       - checkout
-      - node/install:
-          node-version: '18'
-      - node/install-packages
+      - install-dependencies
       - run:
           name: Lint
           command: |
@@ -27,51 +38,44 @@ jobs:
             npm run test:typescript-declaration
   test-unit:
     docker:
-      - image: 'cimg/base:current'
+      - image: cimg/node:18 
     steps:
       - checkout
-      - node/install:
-          node-version: '18'
-      - node/install-packages
+      - install-dependencies
       - run:
           name: Run Unit Tests
           command: |
             npm run test:unit
   test-integration:
     docker:
-      - image: 'cimg/base:current'
+      - image: cimg/node:18 
     steps:
       - checkout
-      - node/install:
-          node-version: '18'
-      - node/install-packages
+      - install-dependencies
       - run:
           name: Run Integration Tests
           command: |
             npm run test:integration
   test-e2e:
     docker:
-      - image: 'cimg/base:current'
+      - image: cimg/node:18 
     steps:
       - checkout
-      - node/install:
-          node-version: '18'
-      - node/install-packages
+      - install-dependencies
       - run:
           name: Run E2E Tests
           command: |
             npm run test:e2e
   release:
     docker:
-      - image: 'cimg/base:current'
+      - image: cimg/node:18 
     steps:
       - checkout
-      - node/install:
-          node-version: '18'
-      - node/install-packages
+      - install-dependencies
       - vault/get-secrets:
           template-preset: 'semantic-release-ecosystem'
       - run: npm run semantic-release
+
 workflows:
   test-and-release:
     jobs:
@@ -91,3 +95,4 @@ workflows:
               only:
                 - main
                 - beta
+                - dx-506-github-packages

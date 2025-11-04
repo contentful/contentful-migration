@@ -125,6 +125,11 @@
         "name": "beta",
         "channel": "beta",
         "prerelease": true
+      },
+      {
+        "name": "dev",
+        "channel": "dx-506-github-packages",
+        "prerelease": true
       }
     ],
     "plugins": [
