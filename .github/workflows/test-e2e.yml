@@ -2,6 +2,13 @@ name: Run Checks
 
 on:
   workflow_call:
+    secrets:
+      CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN:
+        required: true
+      CONTENTFUL_ORGANIZATION_ID:
+        required: true
+      CONTENTFUL_SPACE_ID:
+        required: true
 
 jobs:
   test-e2e:
@@ -27,5 +34,9 @@ jobs:
             dist 
           key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
 
-      - name: Run integration tests
-        run: npm run test:integration
+      - name: Run e2e tests
+        run: npm run test:e2e
+        env:
+          CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
+          CONTENTFUL_ORGANIZATION_ID: ${{ secrets.CONTENTFUL_ORGANIZATION_ID }}
+          CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}

@@ -19,10 +19,12 @@ jobs:
   test-integration:
     needs: build
     uses: ./.github/workflows/test-integration.yml
+    secrets: inherit
   
   test-e2e:
     needs: build
     uses: ./.github/workflows/test-e2e.yml
+    secrets: inherit
 
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
