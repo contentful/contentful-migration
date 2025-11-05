@@ -25,7 +25,7 @@
     "build": "npm run clean && tsc -p tsconfig.json",
     "build-dev": "npm run clean && tsc -p tsconfig-dev.json",
     "clean": "rimraf dist",
-    "format": "prettier --write \"**/*.{ts,js,json,md}\"",
+    "format:fix": "prettier --write \"**/*.{ts,js,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,js,json,md}\"",
     "prepare": "npm run build && husky install",
     "test": "NOCK_RECORD=0 npm run build && npm run test:unit && npm run test:integration && npm run test:e2e && npm run lint && npm run test:typescript-declaration",
