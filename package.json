@@ -22,9 +22,11 @@
     "url": "https://github.com/contentful/contentful-migration"
   },
   "scripts": {
-    "clean": "rimraf built",
     "build": "npm run clean && tsc -p tsconfig.json",
     "build-dev": "npm run clean && tsc -p tsconfig-dev.json",
+    "clean": "rimraf dist",
+    "format": "prettier --write \"**/*.{ts,js,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,js,json,md}\"",
     "prepare": "npm run build && husky install",
     "test": "NOCK_RECORD=0 npm run build && npm run test:unit && npm run test:integration && npm run test:e2e && npm run lint && npm run test:typescript-declaration",
     "test:watch": "npm run test:unit -- --watch",
@@ -46,7 +48,7 @@
     "index.d.ts",
     "CHANGELOG.md",
     "bin",
-    "built",
+    "dist",
     "docs"
   ],
   "dependencies": {
