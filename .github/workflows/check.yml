@@ -23,7 +23,8 @@ jobs:
       - name: Restore the build folders
         uses: actions/cache/restore@v4
         with:
-          path: build
+          path: |
+            dist 
           key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Run linter
