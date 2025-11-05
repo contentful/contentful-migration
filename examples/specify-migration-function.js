@@ -1,20 +1,20 @@
-const { runMigration } = require('../built/bin/cli');
+const { runMigration } = require('../dist/bin/cli')
 
-function migrationFunction (migration) {
+function migrationFunction(migration) {
   const dog = migration.createContentType('dog', {
     name: 'angry dog',
     description: 'super angry'
-  });
+  })
 
   dog.createField('woofs', {
     name: 'woof woof',
     type: 'Number',
     required: true
-  });
+  })
 }
 
-async function main () {
-  let statusCode = 0;
+async function main() {
+  let statusCode = 0
 
   try {
     await runMigration({
@@ -23,15 +23,15 @@ async function main () {
       accessToken: process.env.CONTENTFUL_MANAGEMENT_ACCESS_TOKEN,
       environmentId: 'master',
       yes: true
-    });
+    })
   } catch (e) {
-    statusCode = 1;
-    console.log('Catching Error');
+    statusCode = 1
+    console.log('Catching Error')
   } finally {
-    console.log('Cleaning Up');
+    console.log('Cleaning Up')
   }
 
-  process.exit(statusCode);
+  process.exit(statusCode)
 }
 
-main();
+main()

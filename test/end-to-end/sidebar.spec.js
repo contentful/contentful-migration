@@ -7,7 +7,7 @@ const {
   deleteDevEnvironment,
   getDevEditorInterface
 } = require('../helpers/client')
-const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget')
+const { DEFAULT_SIDEBAR_LIST } = require('../../dist/lib/action/sidebarwidget')
 
 const uuid = require('uuid')
 const ENVIRONMENT_ID = uuid.v4()
