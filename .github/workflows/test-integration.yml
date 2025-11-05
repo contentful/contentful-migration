@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  lint:
+  test-integration:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,4 +27,4 @@ jobs:
           key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Run integration tests
-        run: npm test:integration
+        run: npm run test:integration
