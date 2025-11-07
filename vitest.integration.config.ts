@@ -5,9 +5,9 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: ['test/unit/**/*.spec.ts', 'test/integration/**/*.spec.ts'],
-    exclude: ['node_modules', 'dist', 'test/end-to-end'],
-    setupFiles: ['./test/setup-unit.ts', './test/integration/setup.ts'],
+    include: ['test/integration/**/*.spec.ts'],
+    exclude: ['node_modules', 'dist', 'test/unit', 'test/end-to-end'],
+    setupFiles: ['./test/integration/setup.ts'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

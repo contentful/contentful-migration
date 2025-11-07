@@ -1,4 +1,4 @@
-const { runMigration } = require('../dist/bin/cli')
+const { runMigration } = require('../src/bin/cli')
 
 function migrationFunction(migration) {
   const dog = migration.createContentType('dog', {

@@ -1,9 +1,9 @@
-const nock = require('nock')
-const path = require('path')
-const fs = require('fs')
-const zlib = require('zlib')
+import nock from 'nock'
+import path from 'path'
+import fs from 'fs'
+import zlib from 'zlib'
 
-module.exports = function (name, options) {
+export default function (name: string, options?: { fixtureFolder?: string }) {
   // options tell us where to store our fixtures
   options = options || {}
   const fixtureFolder = options.fixtureFolder || 'fixtures'
@@ -11,7 +11,7 @@ module.exports = function (name, options) {
   // `hasFixture` indicates whether the test has fixtures we should read,
   // or doesn't, so we should record and save them.
   // the environment variable `NOCK_RECORD` can be used to force a new recording.
-  let hasFixture = parseInt(process.env.NOCK_RECORD) === 1
+  let hasFixture = parseInt(process.env.NOCK_RECORD || '0') === 1
   return {
     // starts recording, or ensure the fixtures exist
     before: function () {
@@ -32,10 +32,10 @@ module.exports = function (name, options) {
       }
     },
     // saves our recording if fixtures didn't already exist
-    after: function (done) {
+    after: function (done?: () => void) {
       if (!hasFixture) {
         const fixtures = nock.recorder.play()
-        const decodedFixtures = fixtures.map((fixture) => {
+        const decodedFixtures = fixtures.map((fixture: string) => {
           if (fixture.indexOf('gzip') !== -1) {
             const matches = fixture.match(/reply\(\d{3},\s*"([a-f0-9]+)"/)
             if (matches) {
@@ -52,9 +52,9 @@ module.exports = function (name, options) {
           }
         })
         const text = "const nock = require('nock');\n" + decodedFixtures.join('\n')
-        fs.writeFile(fp, text, done)
+        fs.writeFile(fp, text, done || (() => {}))
       } else {
-        done()
+        if (done) done()
       }
     }
   }
