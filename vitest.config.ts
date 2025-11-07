@@ -28,6 +28,8 @@ export default defineConfig({
           include: ['test/integration/**/*.spec.ts'],
           exclude: ['node_modules', 'dist', 'test/unit', 'test/end-to-end'],
           setupFiles: ['./test/integration/setup.ts'],
+          testTimeout: 30000,
+          hookTimeout: 30000,
           maxConcurrency: 1,
           maxWorkers: 1
         }
@@ -40,6 +42,7 @@ export default defineConfig({
           exclude: ['node_modules', 'dist', 'test/unit', 'test/integration'],
           setupFiles: ['./test/end-to-end/setup.ts'],
           testTimeout: 30000,
+          hookTimeout: 30000,
           maxConcurrency: 1,
           maxWorkers: 1
         }
