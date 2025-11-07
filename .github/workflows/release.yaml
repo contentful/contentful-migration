@@ -28,7 +28,7 @@ jobs:
           secrets: |
             secret/data/github/github_packages_read GITHUB_PACKAGES_READ_TOKEN | GITHUB_PACKAGES_READ_TOKEN;
             secret/data/github/github_packages_write GITHUB_PACKAGES_WRITE_TOKEN | GITHUB_PACKAGES_WRITE_TOKEN;
-            github/token/${{ github.event.repository.name }}-semantic-release token | GITHUB_TOKEN ;
+            github/token/${{ github.event.repository.name }}-semantic-release token | GITHUB_TOKEN;
 
       - name: Get Automation Bot User ID
         id: get-user-id
