@@ -1,40 +1,25 @@
-'use strict'
+import { describe, it, beforeAll, afterAll, expect } from 'vitest'
+import assert from './assertions'
+import cli from './cli'
+import { createDevEnvironment, deleteDevEnvironment, getDevContentType } from '../helpers/client'
 
-const Bluebird = require('bluebird')
-const co = Bluebird.coroutine
-
-const { expect } = require('chai')
-const assert = require('./assertions')
-const cli = require('./cli')
-const {
-  createDevEnvironment,
-  deleteDevEnvironment,
-  getDevContentType
-} = require('../helpers/client')
-
-const uuid = require('uuid')
-const ENVIRONMENT_ID = uuid.v4()
+import { v4 as uuidv4 } from 'uuid'
+const ENVIRONMENT_ID = uuidv4()
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID
 
-describe('apply validations migration examples', function () {
-  this.timeout(30000)
-  let environmentId
+describe('apply validations migration examples', () => {
+  let environmentId: string
 
-  before(
-    co(function* () {
-      this.timeout(30000)
-      environmentId = yield createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
-    })
-  )
+  beforeAll(async () => {
+    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE!, ENVIRONMENT_ID)
+  })
 
-  after(
-    co(function* () {
-      yield deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId)
-    })
-  )
+  afterAll(async () => {
+    await deleteDevEnvironment(SOURCE_TEST_SPACE!, environmentId)
+  })
 
-  it('aborts 09-validate-validations migration', function (done) {
+  it('aborts 09-validate-validations migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/09-validate-validations.js`
@@ -45,7 +30,7 @@ describe('apply validations migration examples', function () {
       .expect(assert.plans.actions.abort())
       .end(done)
   })
-  it('applies 09-validate-validations migration', function (done) {
+  it('applies 09-validate-validations migration', (done) => {
     const expectedFields = [
       {
         id: 'name',
@@ -144,20 +129,18 @@ describe('apply validations migration examples', function () {
         })
       )
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          const contentType = yield getDevContentType(
-            SOURCE_TEST_SPACE,
-            environmentId,
-            'dieatary-food'
-          )
-          expect(contentType.fields).to.eql(expectedFields)
-          done()
-        })
-      )
+      .end(async () => {
+        const contentType = await getDevContentType(
+          SOURCE_TEST_SPACE!,
+          environmentId,
+          'dieatary-food'
+        )
+        expect(contentType.fields).toEqual(expectedFields)
+        done()
+      })
   })
 
-  it('successfully creates field with rich text and validations', function (done) {
+  it('successfully creates field with rich text and validations', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/22-create-rich-text-field-with-validation.js`

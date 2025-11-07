@@ -1,40 +1,25 @@
-'use strict'
+import { describe, it, beforeAll, afterAll, expect } from 'vitest'
+import assert from './assertions'
+import cli from './cli'
+import { createDevEnvironment, deleteDevEnvironment, getDevContentType } from '../helpers/client'
+import { v4 as uuidv4 } from 'uuid'
 
-const Bluebird = require('bluebird')
-const co = Bluebird.coroutine
-
-const { expect } = require('chai')
-const assert = require('./assertions')
-const cli = require('./cli')
-const {
-  createDevEnvironment,
-  deleteDevEnvironment,
-  getDevContentType
-} = require('../helpers/client')
-
-const uuid = require('uuid')
-const ENVIRONMENT_ID = uuid.v4()
+const ENVIRONMENT_ID = uuidv4()
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID
 
-describe('apply field migration examples', function () {
-  this.timeout(30000)
-  let environmentId
+describe('apply field migration examples', () => {
+  let environmentId: string
 
-  before(
-    co(function* () {
-      this.timeout(30000)
-      environmentId = yield createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
-    })
-  )
+  beforeAll(async () => {
+    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE!, ENVIRONMENT_ID)
+  })
 
-  after(
-    co(function* () {
-      yield deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId)
-    })
-  )
+  afterAll(async () => {
+    await deleteDevEnvironment(SOURCE_TEST_SPACE!, environmentId)
+  })
 
-  it('aborts 06-delete-field migration', function (done) {
+  it('aborts 06-delete-field migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/06-delete-field.js`
@@ -45,7 +30,7 @@ describe('apply field migration examples', function () {
       .expect(assert.plans.actions.abort())
       .end(done)
   })
-  it('applies 06-delete-field migration', function (done) {
+  it('applies 06-delete-field migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/06-delete-field.js`
@@ -55,18 +40,16 @@ describe('apply field migration examples', function () {
       .expect(assert.plans.contentType.create('dog', { name: 'Angry dog' }))
       .expect(assert.plans.field.delete('postmenBites'))
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          const contentType = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'dog')
-          expect(contentType.name).to.eql('Angry dog')
-          expect(contentType.description).to.eql("Who's got mad? He is!")
-          expect(contentType.fields.length).to.eql(1)
-          done()
-        })
-      )
+      .end(async () => {
+        const contentType = await getDevContentType(SOURCE_TEST_SPACE!, environmentId, 'dog')
+        expect(contentType.name).toEqual('Angry dog')
+        expect(contentType.description).toEqual("Who's got mad? He is!")
+        expect(contentType.fields.length).toEqual(1)
+        done()
+      })
   })
 
-  it('aborts change-field-id migration', function (done) {
+  it('aborts change-field-id migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/change-field-id.js`
@@ -77,7 +60,7 @@ describe('apply field migration examples', function () {
       .expect(assert.plans.actions.abort())
       .end(done)
   })
-  it('applies change-field-id migration', function (done) {
+  it('applies change-field-id migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/change-field-id.js`
@@ -87,16 +70,14 @@ describe('apply field migration examples', function () {
       .expect(assert.plans.field.rename('goodboys', 'aDifferentId'))
       .expect(assert.plans.field.update('aDifferentId', { name: 'ID switching is fun!' }))
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          const contentType = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'dog')
-          expect(contentType.fields[0].id).to.eql('aDifferentId')
-          done()
-        })
-      )
+      .end(async () => {
+        const contentType = await getDevContentType(SOURCE_TEST_SPACE!, environmentId, 'dog')
+        expect(contentType.fields[0].id).toEqual('aDifferentId')
+        done()
+      })
   })
 
-  it('aborts 07-display-field migration', function (done) {
+  it('aborts 07-display-field migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/07-display-field.js`
@@ -106,7 +87,7 @@ describe('apply field migration examples', function () {
       .expect(assert.plans.actions.abort())
       .end(done)
   })
-  it('applies 07-display-field migration', function (done) {
+  it('applies 07-display-field migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/07-display-field.js`
@@ -116,17 +97,15 @@ describe('apply field migration examples', function () {
       .expect(assert.plans.contentType.create('food', { name: 'foooood', displayField: 'taste' }))
       .expect(assert.plans.field.create('taste', { type: 'Symbol', name: 'what it tastes like' }))
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          const contentType = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'food')
-          expect(contentType.name).to.eql('foooood')
-          expect(contentType.displayField).to.eql('taste')
-          done()
-        })
-      )
+      .end(async () => {
+        const contentType = await getDevContentType(SOURCE_TEST_SPACE!, environmentId, 'food')
+        expect(contentType.name).toEqual('foooood')
+        expect(contentType.displayField).toEqual('taste')
+        done()
+      })
   })
 
-  it('aborts 08-move-field migration', function (done) {
+  it('aborts 08-move-field migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/08-move-field.js`
@@ -137,7 +116,7 @@ describe('apply field migration examples', function () {
       .expect(assert.plans.actions.abort())
       .end(done)
   })
-  it('applies 08-move-field migration', function (done) {
+  it('applies 08-move-field migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/08-move-field.js`
@@ -162,17 +141,15 @@ describe('apply field migration examples', function () {
       )
       .expect(assert.plans.field.move('after', 'gmo', 'vegan'))
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          const contentType = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'food')
-          expect(contentType.fields[0].id).to.eql('calories')
-          expect(contentType.fields[1].id).to.eql('taste')
-          expect(contentType.fields[2].id).to.eql('producer')
-          expect(contentType.fields[3].id).to.eql('vegan')
-          expect(contentType.fields[4].id).to.eql('gmo')
-          expect(contentType.fields[5].id).to.eql('sugar')
-          done()
-        })
-      )
+      .end(async () => {
+        const contentType = await getDevContentType(SOURCE_TEST_SPACE!, environmentId, 'food')
+        expect(contentType.fields[0].id).toEqual('calories')
+        expect(contentType.fields[1].id).toEqual('taste')
+        expect(contentType.fields[2].id).toEqual('producer')
+        expect(contentType.fields[3].id).toEqual('vegan')
+        expect(contentType.fields[4].id).toEqual('gmo')
+        expect(contentType.fields[5].id).toEqual('sugar')
+        done()
+      })
   })
 })

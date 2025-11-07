@@ -1,13 +1,11 @@
-'use strict'
-
-const assert = require('./assertions')
-const cli = require('./cli')
+import { describe, it, expect } from 'vitest'
+import assert from './assertions'
+import cli from './cli'
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID
 
-describe('invalid payload errors', function () {
-  it('outputs the validation errors', function (done) {
-    this.timeout(20000)
+describe('invalid payload errors', () => {
+  it('outputs the validation errors', (done) => {
     cli()
       .run(`--space-id ${SOURCE_TEST_SPACE} ./examples/13-payload-validations.js`)
       .expect(assert.validations.contentType.requiredProperty('name'))

@@ -1,24 +1,20 @@
-'use strict'
+import { describe, it, beforeAll, afterAll, expect } from 'vitest'
+import _ from 'lodash'
+import assert from './assertions'
+import cli from './cli'
+import { createDevEnvironment, deleteDevEnvironment, makeRequest } from '../helpers/client'
 
-const { expect } = require('chai')
-const _ = require('lodash')
-const assert = require('./assertions')
-const cli = require('./cli')
-const { createDevEnvironment, deleteDevEnvironment, makeRequest } = require('../helpers/client')
-
-const uuid = require('uuid')
-const ENVIRONMENT_ID = uuid.v4()
+import { v4 as uuidv4 } from 'uuid'
+const ENVIRONMENT_ID = uuidv4()
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID
 
-describe('apply set tags transformation', function () {
-  this.timeout(30000)
-  let environmentId
-  let request
+describe('apply set tags transformation', () => {
+  let environmentId: string
+  let request: any
 
-  before(async function () {
-    this.timeout(30000)
-    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
+  beforeAll(async () => {
+    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE!, ENVIRONMENT_ID)
     const organizationId = undefined
     request = makeRequest.bind(null, SOURCE_TEST_SPACE, environmentId, organizationId)
     await request({
@@ -96,11 +92,11 @@ describe('apply set tags transformation', function () {
     })
   })
 
-  after(async function () {
-    await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId)
+  afterAll(async () => {
+    await deleteDevEnvironment(SOURCE_TEST_SPACE!, environmentId)
   })
 
-  it('aborts 31-set-tags-for-entries', function (done) {
+  it('aborts 31-set-tags-for-entries', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/31-set-tags-for-entries.js`
@@ -112,7 +108,7 @@ describe('apply set tags transformation', function () {
       .end(done)
   })
 
-  it('applies 31-set-tags-for-entries', function (done) {
+  it('applies 31-set-tags-for-entries', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/31-set-tags-for-entries.js`
@@ -120,7 +116,7 @@ describe('apply set tags transformation', function () {
       .on(/\? Do you want to apply the migration \(Y\/n\)/)
       .respond('y\n')
       .expect(assert.plans.actions.apply())
-      .end(async function () {
+      .end(async () => {
         const blogEntries = await request({
           method: 'GET',
           url: '/entries?content_type=article',
@@ -129,18 +125,18 @@ describe('apply set tags transformation', function () {
           }
         })
 
-        expect(blogEntries.items[0].fields.title).to.exist()
+        expect(blogEntries.items[0].fields.title).toBeDefined()
 
         const blogEntriesWithoutSysAndFields = blogEntries.items.map((i) =>
           _.omit(i, ['sys', 'fields'])
         )
-        expect(blogEntriesWithoutSysAndFields[0].metadata.tags.length).to.eql(2)
+        expect(blogEntriesWithoutSysAndFields[0].metadata.tags.length).toEqual(2)
         expect(
-          blogEntriesWithoutSysAndFields[0].metadata.tags.some((tag) => tag.sys.id === 'new')
-        ).to.eql(true)
+          blogEntriesWithoutSysAndFields[0].metadata.tags.some((tag: any) => tag.sys.id === 'new')
+        ).toEqual(true)
         expect(
-          blogEntriesWithoutSysAndFields[0].metadata.tags.some((tag) => tag.sys.id === 'old')
-        ).to.eql(true)
+          blogEntriesWithoutSysAndFields[0].metadata.tags.some((tag: any) => tag.sys.id === 'old')
+        ).toEqual(true)
 
         done()
       })

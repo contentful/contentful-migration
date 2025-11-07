@@ -1,28 +1,24 @@
-'use strict'
-
-const { expect } = require('chai')
-const _ = require('lodash')
-const assert = require('./assertions')
-const cli = require('./cli')
-const {
+import { describe, it, beforeAll, afterAll, expect } from 'vitest'
+import _ from 'lodash'
+import assert from './assertions'
+import cli from './cli'
+import {
   createDevEnvironment,
   deleteDevEnvironment,
   getEntries,
   makeRequest
-} = require('../helpers/client')
+} from '../helpers/client'
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID
 
-const uuid = require('uuid')
-const ENVIRONMENT_ID = uuid.v4()
+import { v4 as uuidv4 } from 'uuid'
+const ENVIRONMENT_ID = uuidv4()
 
-describe('apply content transformation', function () {
-  this.timeout(30000)
-  let environmentId
-  let request
+describe('apply content transformation', () => {
+  let environmentId: string
+  let request: any
 
-  before(async function () {
-    this.timeout(30000)
-    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
+  beforeAll(async () => {
+    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE!, ENVIRONMENT_ID)
     const organizationId = undefined
     request = makeRequest.bind(null, SOURCE_TEST_SPACE, environmentId, organizationId)
     await request({
@@ -102,11 +98,11 @@ describe('apply content transformation', function () {
     })
   })
 
-  after(async function () {
-    await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId)
+  afterAll(async () => {
+    await deleteDevEnvironment(SOURCE_TEST_SPACE!, environmentId)
   })
 
-  it('aborts 12-transform-content', function (done) {
+  it('aborts 12-transform-content', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/12-transform-content.js`
@@ -118,7 +114,7 @@ describe('apply content transformation', function () {
       .end(done)
   })
 
-  it('applies 12-transform-content', function (done) {
+  it('applies 12-transform-content', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/12-transform-content.js`
@@ -126,8 +122,8 @@ describe('apply content transformation', function () {
       .on(/\? Do you want to apply the migration \(Y\/n\)/)
       .respond('y\n')
       .expect(assert.plans.actions.apply())
-      .end(async function () {
-        const res = await getEntries(SOURCE_TEST_SPACE, environmentId, 'newsArticle')
+      .end(async () => {
+        const res = await getEntries(SOURCE_TEST_SPACE!, environmentId, 'newsArticle')
         const entriesWithoutSysAndMetadata = res.items.map((i) => _.omit(i, ['sys', 'metadata']))
         const metadata = res.items[0].metadata
         const expected = [
@@ -139,13 +135,13 @@ describe('apply content transformation', function () {
             }
           }
         ]
-        expect(entriesWithoutSysAndMetadata).to.eql(expected)
-        expect(metadata.tags.length).to.eql(1)
+        expect(entriesWithoutSysAndMetadata).toEqual(expected)
+        expect(metadata.tags.length).toEqual(1)
         done()
       })
   })
 
-  it('applies 14-transform-content-error', function (done) {
+  it('applies 14-transform-content-error', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/14-transform-content-error.js`

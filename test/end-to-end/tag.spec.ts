@@ -1,29 +1,25 @@
-'use strict'
+import { describe, it, beforeAll, afterAll, expect } from 'vitest'
+import assert from './assertions'
+import cli from './cli'
+import { createDevEnvironment, deleteDevEnvironment, getDevTag } from '../helpers/client'
+import { v4 as uuidv4 } from 'uuid'
 
-const { expect } = require('chai')
-const assert = require('./assertions')
-const cli = require('./cli')
-const { createDevEnvironment, deleteDevEnvironment, getDevTag } = require('../helpers/client')
-
-const uuid = require('uuid')
-const ENVIRONMENT_ID = uuid.v4()
+const ENVIRONMENT_ID = uuidv4()
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID
 
-describe('apply tag migration examples', function () {
-  this.timeout(30000)
-  let environmentId
+describe('apply tag migration examples', () => {
+  let environmentId: string
 
-  before(async function () {
-    this.timeout(30000)
-    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
+  beforeAll(async () => {
+    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE!, ENVIRONMENT_ID)
   })
 
-  after(async function () {
-    await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId)
+  afterAll(async () => {
+    await deleteDevEnvironment(SOURCE_TEST_SPACE!, environmentId)
   })
 
-  it('aborts 28-create-tag migration', function (done) {
+  it('aborts 28-create-tag migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/28-create-tag.js`
@@ -35,7 +31,7 @@ describe('apply tag migration examples', function () {
       .end(done)
   })
 
-  it('applies 28-create-tag migration', function (done) {
+  it('applies 28-create-tag migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/28-create-tag.js`
@@ -44,14 +40,14 @@ describe('apply tag migration examples', function () {
       .respond('y\n')
       .expect(assert.plans.tag.create('sampletag', { name: 'marketing' }))
       .expect(assert.plans.actions.apply())
-      .end(async function () {
-        const tag = await getDevTag(SOURCE_TEST_SPACE, environmentId, 'sampletag')
-        expect(tag.name).to.eql('marketing')
+      .end(async () => {
+        const tag = await getDevTag(SOURCE_TEST_SPACE!, environmentId, 'sampletag')
+        expect(tag.name).toEqual('marketing')
         done()
       })
   })
 
-  it('aborts 29-modify-tag migration', function (done) {
+  it('aborts 29-modify-tag migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/29-modify-tag.js`
@@ -63,7 +59,7 @@ describe('apply tag migration examples', function () {
       .end(done)
   })
 
-  it('applies 29-modify-tag migration', function (done) {
+  it('applies 29-modify-tag migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/29-modify-tag.js`
@@ -72,14 +68,14 @@ describe('apply tag migration examples', function () {
       .respond('Y\n')
       .expect(assert.plans.tag.update('sampletag', { name: 'better marketing' }))
       .expect(assert.plans.actions.apply())
-      .end(async function () {
-        const tag = await getDevTag(SOURCE_TEST_SPACE, environmentId, 'sampletag')
-        expect(tag.name).to.eql('better marketing')
+      .end(async () => {
+        const tag = await getDevTag(SOURCE_TEST_SPACE!, environmentId, 'sampletag')
+        expect(tag.name).toEqual('better marketing')
         done()
       })
   })
 
-  it('applies delete-tag migration', function (done) {
+  it('applies delete-tag migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/30-delete-tag.js`
@@ -88,14 +84,14 @@ describe('apply tag migration examples', function () {
       .respond('Y\n')
       .expect(assert.plans.tag.delete('sampletag'))
       .expect(assert.plans.actions.apply())
-      .end(async function () {
+      .end(async () => {
         let result
         try {
-          result = await getDevTag(SOURCE_TEST_SPACE, environmentId, 'sampletag')
-        } catch (err) {
-          expect(err.name).to.eql('NotFound')
+          result = await getDevTag(SOURCE_TEST_SPACE!, environmentId, 'sampletag')
+        } catch (err: any) {
+          expect(err.name).toEqual('NotFound')
         }
-        expect(result).to.be.undefined()
+        expect(result).toBeUndefined()
         done()
       })
   })

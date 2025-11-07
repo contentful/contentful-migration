@@ -1,41 +1,30 @@
-'use strict'
-
-const Bluebird = require('bluebird')
-const co = Bluebird.coroutine
-
-const { expect } = require('chai')
-const assert = require('./assertions')
-const cli = require('./cli')
-const {
+import { describe, it, beforeAll, afterAll, expect } from 'vitest'
+import assert from './assertions'
+import cli from './cli'
+import {
   createDevEnvironment,
   deleteDevEnvironment,
   getDevContentType,
   getDevTag
-} = require('../helpers/client')
+} from '../helpers/client'
+import { v4 as uuidv4 } from 'uuid'
 
-const uuid = require('uuid')
-const ENVIRONMENT_ID = uuid.v4()
+const ENVIRONMENT_ID = uuidv4()
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID
 
-describe('apply content-type migration examples', function () {
-  this.timeout(30000)
-  let environmentId
+describe('apply content-type migration examples', () => {
+  let environmentId: string
 
-  before(
-    co(function* () {
-      this.timeout(30000)
-      environmentId = yield createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
-    })
-  )
+  beforeAll(async () => {
+    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE!, ENVIRONMENT_ID)
+  })
 
-  after(
-    co(function* () {
-      yield deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId)
-    })
-  )
+  afterAll(async () => {
+    await deleteDevEnvironment(SOURCE_TEST_SPACE!, environmentId)
+  })
 
-  it('aborts 01-angry-dog migration', function (done) {
+  it('aborts 01-angry-dog migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/01-angry-dog.js`
@@ -46,7 +35,7 @@ describe('apply content-type migration examples', function () {
       .expect(assert.plans.actions.abort())
       .end(done)
   })
-  it('applies 01-angry-dog migration', function (done) {
+  it('applies 01-angry-dog migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/01-angry-dog.js`
@@ -55,18 +44,16 @@ describe('apply content-type migration examples', function () {
       .respond('y\n')
       .expect(assert.plans.contentType.create('dog', { name: 'angry dog' }))
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          const contentType = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'dog')
-          expect(contentType.name).to.eql('angry dog')
-          expect(contentType.description).to.eql('super angry')
-          expect(contentType.fields.length).to.eql(1)
-          done()
-        })
-      )
+      .end(async () => {
+        const contentType = await getDevContentType(SOURCE_TEST_SPACE!, environmentId, 'dog')
+        expect(contentType.name).toEqual('angry dog')
+        expect(contentType.description).toEqual('super angry')
+        expect(contentType.fields.length).toEqual(1)
+        done()
+      })
   })
 
-  it('aborts 02-friendly-dog migration', function (done) {
+  it('aborts 02-friendly-dog migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/02-friendly-dog.js`
@@ -77,7 +64,7 @@ describe('apply content-type migration examples', function () {
       .expect(assert.plans.actions.abort())
       .end(done)
   })
-  it('applies 02-friendly-dog migration', function (done) {
+  it('applies 02-friendly-dog migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/02-friendly-dog.js`
@@ -92,18 +79,16 @@ describe('apply content-type migration examples', function () {
         })
       )
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          const contentType = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'dog')
-          expect(contentType.name).to.eql('Friendly dog')
-          expect(contentType.description).to.eql("Who's a good boy? He is!")
-          expect(contentType.fields.length).to.eql(2)
-          done()
-        })
-      )
+      .end(async () => {
+        const contentType = await getDevContentType(SOURCE_TEST_SPACE!, environmentId, 'dog')
+        expect(contentType.name).toEqual('Friendly dog')
+        expect(contentType.description).toEqual("Who's a good boy? He is!")
+        expect(contentType.fields.length).toEqual(2)
+        done()
+      })
   })
 
-  it('aborts 03-long-example migration', function (done) {
+  it('aborts 03-long-example migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/03-long-example.js`
@@ -117,7 +102,7 @@ describe('apply content-type migration examples', function () {
       .expect(assert.plans.actions.abort())
       .end(done)
   })
-  it('applies 03-long-example migration', function (done) {
+  it('applies 03-long-example migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/03-long-example.js`
@@ -169,33 +154,31 @@ describe('apply content-type migration examples', function () {
       )
       .expect(assert.plans.tag.create('longexampletag', { name: 'long example marketing' }))
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          const contentTypePerson = yield getDevContentType(
-            SOURCE_TEST_SPACE,
-            environmentId,
-            'person'
-          )
-          const contentTypeAnimal = yield getDevContentType(
-            SOURCE_TEST_SPACE,
-            environmentId,
-            'animal'
-          )
-          const tag = yield getDevTag(SOURCE_TEST_SPACE, environmentId, 'longexampletag')
+      .end(async () => {
+        const contentTypePerson = await getDevContentType(
+          SOURCE_TEST_SPACE!,
+          environmentId,
+          'person'
+        )
+        const contentTypeAnimal = await getDevContentType(
+          SOURCE_TEST_SPACE!,
+          environmentId,
+          'animal'
+        )
+        const tag = await getDevTag(SOURCE_TEST_SPACE!, environmentId, 'longexampletag')
 
-          expect(contentTypePerson.name).to.eql('Person')
-          expect(contentTypePerson.description).to.eql('A content type for a person')
-          expect(contentTypePerson.fields.length).to.eql(3)
-          expect(contentTypeAnimal.name).to.eql('Animal')
-          expect(contentTypeAnimal.description).to.eql('An animal')
-          expect(contentTypeAnimal.fields.length).to.eql(3)
-          expect(tag.name).to.eql('long example marketing')
-          done()
-        })
-      )
+        expect(contentTypePerson.name).toEqual('Person')
+        expect(contentTypePerson.description).toEqual('A content type for a person')
+        expect(contentTypePerson.fields.length).toEqual(3)
+        expect(contentTypeAnimal.name).toEqual('Animal')
+        expect(contentTypeAnimal.description).toEqual('An animal')
+        expect(contentTypeAnimal.fields.length).toEqual(3)
+        expect(tag.name).toEqual('long example marketing')
+        done()
+      })
   })
 
-  it('applies delete-content-type migration', function (done) {
+  it('applies delete-content-type migration', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/delete-content-type.js`
@@ -204,21 +187,19 @@ describe('apply content-type migration examples', function () {
       .respond('Y\n')
       .expect(assert.plans.contentType.delete('dog'))
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          let result
-          try {
-            result = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'dog')
-          } catch (err) {
-            expect(err.name).to.eql('NotFound')
-          }
-          expect(result).to.be.undefined()
-          done()
-        })
-      )
+      .end(async () => {
+        let result
+        try {
+          result = await getDevContentType(SOURCE_TEST_SPACE!, environmentId, 'dog')
+        } catch (err: any) {
+          expect(err.name).toEqual('NotFound')
+        }
+        expect(result).toBeUndefined()
+        done()
+      })
   })
 
-  it('applies 47-create-resource-link-fields', function (done) {
+  it('applies 47-create-resource-link-fields', (done) => {
     const allowedResources = [
       {
         type: 'Contentful:Entry',
@@ -250,24 +231,22 @@ describe('apply content-type migration examples', function () {
         })
       )
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          const contentType = yield getDevContentType(
-            SOURCE_TEST_SPACE,
-            environmentId,
-            'contentTypeWithResourceLinks'
-          )
-          expect(contentType.fields.length).to.eql(2)
-          expect(contentType.fields[0].type).to.eql('ResourceLink')
-          expect(contentType.fields[0].allowedResources).to.eql(allowedResources)
-          expect(contentType.fields[1].items.type).to.eql('ResourceLink')
-          expect(contentType.fields[1].allowedResources).to.eql(allowedResources)
-          done()
-        })
-      )
+      .end(async () => {
+        const contentType = await getDevContentType(
+          SOURCE_TEST_SPACE!,
+          environmentId,
+          'contentTypeWithResourceLinks'
+        )
+        expect(contentType.fields.length).toEqual(2)
+        expect(contentType.fields[0].type).toEqual('ResourceLink')
+        expect(contentType.fields[0].allowedResources).toEqual(allowedResources)
+        expect(contentType.fields[1].items.type).toEqual('ResourceLink')
+        expect(contentType.fields[1].allowedResources).toEqual(allowedResources)
+        done()
+      })
   })
 
-  it('applies 54-create-experience-type', function (done) {
+  it('applies 54-create-experience-type', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/54-create-experience-type.js`
@@ -277,28 +256,26 @@ describe('apply content-type migration examples', function () {
       .expect(assert.plans.contentType.create('experienceType'))
       .expect(assert.plans.annotation.assign('Contentful:ExperienceType'))
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          const contentType = yield getDevContentType(
-            SOURCE_TEST_SPACE,
-            environmentId,
-            'experienceType'
-          )
-          expect(contentType.metadata).to.eql({
-            annotations: {
-              ContentType: [
-                {
-                  sys: {
-                    id: 'Contentful:ExperienceType',
-                    type: 'Link',
-                    linkType: 'Annotation'
-                  }
+      .end(async () => {
+        const contentType = await getDevContentType(
+          SOURCE_TEST_SPACE!,
+          environmentId,
+          'experienceType'
+        )
+        expect(contentType.metadata).toEqual({
+          annotations: {
+            ContentType: [
+              {
+                sys: {
+                  id: 'Contentful:ExperienceType',
+                  type: 'Link',
+                  linkType: 'Annotation'
                 }
-              ]
-            }
-          })
-          done()
+              }
+            ]
+          }
         })
-      )
+        done()
+      })
   })
 })

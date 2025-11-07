@@ -27,7 +27,21 @@ export default defineConfig({
           name: 'integration',
           include: ['test/integration/**/*.spec.ts'],
           exclude: ['node_modules', 'dist', 'test/unit', 'test/end-to-end'],
-          setupFiles: ['./test/integration/setup.ts']
+          setupFiles: ['./test/integration/setup.ts'],
+          maxConcurrency: 1,
+          maxWorkers: 1
+        }
+      },
+      {
+        extends: true,
+        test: {
+          name: 'e2e',
+          include: ['test/end-to-end/**/*.spec.ts'],
+          exclude: ['node_modules', 'dist', 'test/unit', 'test/integration'],
+          setupFiles: ['./test/end-to-end/setup.ts'],
+          testTimeout: 30000,
+          maxConcurrency: 1,
+          maxWorkers: 1
         }
       }
     ]

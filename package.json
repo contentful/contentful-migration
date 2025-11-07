@@ -33,14 +33,14 @@
     "test:unit": "NODE_ENV=test vitest run --project unit",
     "test:integration": "NODE_ENV=test vitest run --project integration",
     "posttest": "node test/teardown.js",
-    "test:e2e": "NODE_ENV=test mocha 'test/end-to-end/**/*.spec.js'",
+    "test:e2e": "NODE_ENV=test vitest run --project e2e",
     "test:typescript-declaration": "tsc --strict --noEmit index.d.ts",
     "lint": "eslint 'examples/**/*.js' 'test/**/*.js' 'src/**/*.js'",
     "lint:fix": "prettier --write 'src/**/*.{ts,tsx,js,jsx}' 'test/**/*.{ts,tsx,js,jsx}' && eslint --fix 'examples/**/*.js' 'test/**/*.js' 'src/**/*.js'",
     "semantic-release": "semantic-release",
     "test:unit:debug": "NODE_ENV=test vitest --project unit",
     "test:integration:debug": "NODE_ENV=test vitest --project integration",
-    "test:e2e:debug": "NODE_ENV=test mocha debug 'test/end-to-end/**/*.spec.js'",
+    "test:e2e:debug": "NODE_ENV=test vitest --project e2e",
     "cm": "git-cz"
   },
   "files": [

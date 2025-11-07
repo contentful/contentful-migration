@@ -1,29 +1,25 @@
-'use strict'
-
-const { expect } = require('chai')
-const _ = require('lodash')
-const assert = require('./assertions')
-const cli = require('./cli')
-const {
+import { describe, it, beforeAll, afterAll, expect } from 'vitest'
+import _ from 'lodash'
+import assert from './assertions'
+import cli from './cli'
+import {
   createDevEnvironment,
   deleteDevEnvironment,
   getEntries,
   makeRequest
-} = require('../helpers/client')
+} from '../helpers/client'
 
-const uuid = require('uuid')
-const ENVIRONMENT_ID = uuid.v4()
+import { v4 as uuidv4 } from 'uuid'
+const ENVIRONMENT_ID = uuidv4()
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID
 
-describe('apply derive entry transformation', function () {
-  this.timeout(30000)
-  let environmentId
-  let request
+describe('apply derive entry transformation', () => {
+  let environmentId: string
+  let request: any
 
-  before(async function () {
-    this.timeout(30000)
-    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
+  beforeAll(async () => {
+    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE!, ENVIRONMENT_ID)
     const organizationId = undefined
     request = makeRequest.bind(null, SOURCE_TEST_SPACE, environmentId, organizationId)
     await request({
@@ -80,11 +76,11 @@ describe('apply derive entry transformation', function () {
     })
   })
 
-  after(async function () {
-    await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId)
+  afterAll(async () => {
+    await deleteDevEnvironment(SOURCE_TEST_SPACE!, environmentId)
   })
 
-  it('aborts 15-derive-entry', function (done) {
+  it('aborts 15-derive-entry', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/15-derive-entry-n-to-1.js`
@@ -96,7 +92,7 @@ describe('apply derive entry transformation', function () {
       .end(done)
   })
 
-  it('applies 15-derive-entry', function (done) {
+  it('applies 15-derive-entry', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/15-derive-entry-n-to-1.js`
@@ -104,11 +100,11 @@ describe('apply derive entry transformation', function () {
       .on(/\? Do you want to apply the migration \(Y\/n\)/)
       .respond('y\n')
       .expect(assert.plans.actions.apply())
-      .end(async function () {
-        const sortFn = (entry) => entry.fields.name['en-US']
+      .end(async () => {
+        const sortFn = (entry: any) => entry.fields.name['en-US']
 
-        const dogs = await getEntries(SOURCE_TEST_SPACE, environmentId, 'dog')
-        const owners = await getEntries(SOURCE_TEST_SPACE, environmentId, 'owner')
+        const dogs = await getEntries(SOURCE_TEST_SPACE!, environmentId, 'dog')
+        const owners = await getEntries(SOURCE_TEST_SPACE!, environmentId, 'owner')
         const dogsEntriesWithoutSysAndMetadata = _.sortBy(
           dogs.items.map((i) => _.omit(i, ['sys', 'metadata'])),
           sortFn
@@ -141,7 +137,7 @@ describe('apply derive entry transformation', function () {
           sortFn
         )
 
-        expect(dogsEntriesWithoutSysAndMetadata).to.eql(expectedDogs)
+        expect(dogsEntriesWithoutSysAndMetadata).toEqual(expectedDogs)
 
         const expectedOwners = [
           {
@@ -151,8 +147,8 @@ describe('apply derive entry transformation', function () {
             }
           }
         ]
-        expect(ownersEntriesWithoutSysAndMetadata.length).to.eql(1)
-        expect(ownersEntriesWithoutSysAndMetadata).to.eql(expectedOwners)
+        expect(ownersEntriesWithoutSysAndMetadata.length).toEqual(1)
+        expect(ownersEntriesWithoutSysAndMetadata).toEqual(expectedOwners)
         done()
       })
   })

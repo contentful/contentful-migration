@@ -1,14 +1,11 @@
-'use strict'
-
-const assert = require('./assertions')
-const cli = require('./cli')
+import { describe, it, expect } from 'vitest'
+import assert from './assertions'
+import cli from './cli'
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID
 
-describe('04-steps-errors.js', function () {
-  it('outputs the correct errors', function (done) {
-    this.timeout(10000)
-
+describe('04-steps-errors.js', () => {
+  it('outputs the correct errors', (done) => {
     cli()
       .run(`--space-id ${SOURCE_TEST_SPACE} ./examples/04-steps-errors.js`)
       .expect(assert.errors.contentType.invalidPropertyWithSuggestion('nmae', 'name'))
@@ -20,10 +17,8 @@ describe('04-steps-errors.js', function () {
   })
 })
 
-describe('05-plan-errors.js', function () {
-  it('outputs the correct errors', function (done) {
-    this.timeout(20000)
-
+describe('05-plan-errors.js', () => {
+  it('outputs the correct errors', (done) => {
     cli()
       .run(`--space-id ${SOURCE_TEST_SPACE} ./examples/05-plan-errors.js`)
       .expect(assert.errors.contentType.duplicateCreate(13, 'person'))

@@ -1,32 +1,28 @@
-'use strict'
-
-const { expect } = require('chai')
-const cli = require('./cli')
-const {
+import { describe, it, beforeAll, afterAll, expect } from 'vitest'
+import cli from './cli'
+import {
   createDevEnvironment,
   deleteDevEnvironment,
   getDevEditorInterface
-} = require('../helpers/client')
+} from '../helpers/client'
 
-const uuid = require('uuid')
-const ENVIRONMENT_ID = uuid.v4()
+import { v4 as uuidv4 } from 'uuid'
+const ENVIRONMENT_ID = uuidv4()
 
 const SOURCE_TEST_SPACE = process.env.CONTENTFUL_SPACE_ID
 
-describe('apply entry extension migration examples', function () {
-  this.timeout(30000)
-  let environmentId
+describe('apply entry extension migration examples', () => {
+  let environmentId: string
 
-  before(async () => {
-    this.timeout(30000)
-    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
+  beforeAll(async () => {
+    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE!, ENVIRONMENT_ID)
   })
 
-  after(async () => {
-    await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId)
+  afterAll(async () => {
+    await deleteDevEnvironment(SOURCE_TEST_SPACE!, environmentId)
   })
 
-  it('migrates the editor with 25-configure-entry-editor.js', function (done) {
+  it('migrates the editor with 25-configure-entry-editor.js', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/25-configure-entry-editor.js`
@@ -35,13 +31,13 @@ describe('apply entry extension migration examples', function () {
       .respond('y\n')
       .end(async () => {
         const editorInterfaces = await getDevEditorInterface(
-          SOURCE_TEST_SPACE,
+          SOURCE_TEST_SPACE!,
           environmentId,
           'customEntryEditor_v5'
         )
         const editor = editorInterfaces.editor
 
-        expect(editor).to.eql({
+        expect(editor).toEqual({
           settings: {},
           widgetId: 'customEntryEditor_v5',
           widgetNamespace: 'extension'
@@ -50,7 +46,7 @@ describe('apply entry extension migration examples', function () {
       })
   })
 
-  it('migrates the editor with 26-reset-entry-editor.js', function (done) {
+  it('migrates the editor with 26-reset-entry-editor.js', (done) => {
     cli()
       .run(
         `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/26-reset-entry-editor.js`
@@ -59,12 +55,12 @@ describe('apply entry extension migration examples', function () {
       .respond('y\n')
       .end(async () => {
         const editorInterfaces = await getDevEditorInterface(
-          SOURCE_TEST_SPACE,
+          SOURCE_TEST_SPACE!,
           environmentId,
           'resetEntryEditor_v5'
         )
         const editor = editorInterfaces.editor
-        expect(editor).to.eql(undefined)
+        expect(editor).toBeUndefined()
         done()
       })
   })
