@@ -1,12 +1,12 @@
 'use strict'
 
-const { expect } = require('chai')
+import { describe, it, expect } from 'vitest'
 import Fetcher from '../../../src/lib/fetcher'
 import createMigrationParser from '../../../src/lib/migration-parser'
 
-describe('Migration parser', function () {
-  describe('when transforming content', function () {
-    it('returns all collected errors', async function () {
+describe('Migration parser', () => {
+  describe('when transforming content', () => {
+    it('returns all collected errors', async () => {
       const fakeMakeRequest = (config) => {
         if (
           config.url === `/content_types?limit=100&order=sys.createdAt&sys.id[in]=foo,cat&skip=0`
@@ -114,21 +114,21 @@ describe('Migration parser', function () {
       const parseResult = await migrationParser(throws)
       const result = parseResult.batches
 
-      expect(result.length).to.eql(2)
+      expect(result.length).toBe(2)
 
-      expect(result[0].requests.length).to.eql(1)
-      expect(result[0].requests[0].url).to.eql('/entries/456')
-      expect(result[0].runtimeErrors.length).to.eql(1)
-      expect(result[0].runtimeErrors).to.eql([fooError])
+      expect(result[0].requests.length).toBe(1)
+      expect(result[0].requests[0].url).toEqual('/entries/456')
+      expect(result[0].runtimeErrors.length).toBe(1)
+      expect(result[0].runtimeErrors).toEqual([fooError])
 
-      expect(result[1].requests.length).to.eql(0)
-      expect(result[1].runtimeErrors.length).to.eql(1)
-      expect(result[1].runtimeErrors).to.eql([catError])
+      expect(result[1].requests.length).toBe(0)
+      expect(result[1].runtimeErrors.length).toBe(1)
+      expect(result[1].runtimeErrors).toEqual([catError])
     })
   })
 
-  describe('when shouldPublish is false', function () {
-    it('does not produce publish requests', async function () {
+  describe('when shouldPublish is false', () => {
+    it('does not produce publish requests', async () => {
       const fakeMakeRequest = (config) => {
         if (config.url === `/content_types?limit=100&order=sys.createdAt&sys.id[in]=foo&skip=0`) {
           return {
@@ -210,11 +210,11 @@ describe('Migration parser', function () {
       const parseResult = await migrationParser(transformFunction)
       const result = parseResult.batches
 
-      expect(result.length).to.eql(1)
-      expect(result[0].requests.length).to.eql(2)
-      expect(result[0].requests[0].url).to.eql('/entries/123')
-      expect(result[0].requests[1].url).to.eql('/entries/456')
-      expect(result[0].validationErrors).to.eql([])
+      expect(result.length).toBe(1)
+      expect(result[0].requests.length).toBe(2)
+      expect(result[0].requests[0].url).toEqual('/entries/123')
+      expect(result[0].requests[1].url).toEqual('/entries/456')
+      expect(result[0].validationErrors).toEqual([])
     })
   })
 })

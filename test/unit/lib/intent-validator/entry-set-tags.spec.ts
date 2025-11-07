@@ -1,39 +1,37 @@
-'use strict'
-
-import { expect } from 'chai'
-
+import { describe, it, expect } from 'vitest'
 import EntrySetTagsIntentValidator from '../../../../src/lib/intent-validator/entry-set-tags'
 import createValidator from './validate-steps'
+
 const validateSteps = createValidator([EntrySetTagsIntentValidator])
 
-describe('Entry tag update', function () {
-  describe('when providing the required properties', function () {
-    it('returns no validation errors', async function () {
-      const validationErrors = await validateSteps(function up(migration) {
+describe('Entry tag update', () => {
+  describe('when providing the required properties', () => {
+    it('returns no validation errors', async () => {
+      const validationErrors = await validateSteps(function up(migration: any) {
         migration.setTagsForEntries({
           contentType: 'dog',
           from: ['owner'],
-          setTagsForEntry: async (entryFields, entryTags, apiTags) => {
+          setTagsForEntry: async (entryFields: any, entryTags: any, apiTags: any) => {
             return [...entryTags, ...apiTags]
           }
         })
       })
-      expect(validationErrors).to.eql([])
+      expect(validationErrors).toEqual([])
     })
 
-    describe('when using the wrong type for the properties', function () {
-      it('returns all validation errors', async function () {
+    describe('when using the wrong type for the properties', () => {
+      it('returns all validation errors', async () => {
         const properties = {
           contentType: 'person',
           from: 'information',
           to: 'address',
           setTagsForEntry: {}
         }
-        const validationErrors = await validateSteps(function up(migration) {
+        const validationErrors = await validateSteps(function up(migration: any) {
           migration.setTagsForEntries(properties)
         })
 
-        expect(validationErrors).to.eql([
+        expect(validationErrors).toEqual([
           {
             details: {
               step: {

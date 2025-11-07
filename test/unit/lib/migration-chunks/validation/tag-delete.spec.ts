@@ -1,11 +1,9 @@
-'use strict'
+import { describe, it, expect } from 'vitest'
+import validateChunks from './validate-chunks'
 
-const { expect } = require('chai')
-const validateChunks = require('./validate-chunks').default
-
-describe('tag delete validation', function () {
-  describe('when deleting a tag twice', function () {
-    it('returns an error', async function () {
+describe('tag delete validation', () => {
+  describe('when deleting a tag twice', () => {
+    it('returns an error', async () => {
       const tags = [
         {
           sys: { id: 'foo' }
@@ -13,7 +11,7 @@ describe('tag delete validation', function () {
       ]
 
       const errors = await validateChunks(
-        function up(migration) {
+        function up(migration: any) {
           migration.deleteTag('foo')
           migration.deleteTag('foo')
         },
@@ -21,7 +19,7 @@ describe('tag delete validation', function () {
         tags
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           type: 'InvalidAction',
           message: 'Tag with id "foo" cannot be deleted more than once.',
@@ -41,12 +39,12 @@ describe('tag delete validation', function () {
     })
   })
 
-  describe('when deleting several tags several times', function () {
-    it('returns the right errors', async function () {
+  describe('when deleting several tags several times', () => {
+    it('returns the right errors', async () => {
       const tags = [{ sys: { id: 'foo' } }, { sys: { id: 'bar' } }, { sys: { id: 'baz' } }]
 
       const errors = await validateChunks(
-        function up(migration) {
+        function up(migration: any) {
           migration.deleteTag('foo')
           migration.deleteTag('bar')
           migration.deleteTag('baz')
@@ -61,7 +59,7 @@ describe('tag delete validation', function () {
         tags
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           type: 'InvalidAction',
           message: 'Tag with id "foo" cannot be deleted more than once.',
@@ -156,8 +154,8 @@ describe('tag delete validation', function () {
     })
   })
 
-  describe('when deleting a tag that does not exist', function () {
-    it('returns an error', async function () {
+  describe('when deleting a tag that does not exist', () => {
+    it('returns an error', async () => {
       const tags = [
         {
           sys: { id: 'foo' }
@@ -168,14 +166,14 @@ describe('tag delete validation', function () {
       ]
 
       const errors = await validateChunks(
-        function up(migration) {
+        function up(migration: any) {
           migration.deleteTag('baz')
         },
         [],
         tags
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           type: 'InvalidAction',
           message: 'You cannot delete tag "baz" because it does not exist.',
@@ -195,8 +193,8 @@ describe('tag delete validation', function () {
     })
   })
 
-  describe('when editing a tag that has been deleted earlier', function () {
-    it('returns an error', async function () {
+  describe('when editing a tag that has been deleted earlier', () => {
+    it('returns an error', async () => {
       const tags = [
         {
           sys: { id: 'foo' }
@@ -204,7 +202,7 @@ describe('tag delete validation', function () {
       ]
 
       const errors = await validateChunks(
-        function up(migration) {
+        function up(migration: any) {
           migration.deleteTag('foo')
           migration.editTag('foo').name('another name')
         },
@@ -212,7 +210,7 @@ describe('tag delete validation', function () {
         tags
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           type: 'InvalidAction',
           message: 'Tag with id "foo" cannot be edited because it was deleted before.',
@@ -234,7 +232,7 @@ describe('tag delete validation', function () {
       ])
     })
 
-    it('returns an error also when several edits after several deletes', async function () {
+    it('returns an error also when several edits after several deletes', async () => {
       const tags = [
         {
           sys: { id: 'foo' },
@@ -246,7 +244,7 @@ describe('tag delete validation', function () {
       ]
 
       const errors = await validateChunks(
-        function up(migration) {
+        function up(migration: any) {
           migration.editTag('bar').name('confusedYet?')
           migration.deleteTag('foo')
           migration.editTag('foo').name('yet?')
@@ -257,7 +255,7 @@ describe('tag delete validation', function () {
         tags
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           type: 'InvalidAction',
           message: 'Tag with id "foo" cannot be edited because it was deleted before.',

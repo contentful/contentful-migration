@@ -1,12 +1,12 @@
+import { describe, it, expect } from 'vitest'
 import ComposedIntent from '../../../../src/lib/intent/composed-intent'
-import { expect } from 'chai'
 import IntentList from '../../../../src/lib/intent-list/index'
 import { migration as parseIntoIntents } from '../../../../src/lib/migration-steps/index'
 
 const noOp = () => undefined
 
-describe('Intent List', function () {
-  it('initializes correctly', async function () {
+describe('Intent List', () => {
+  it('initializes correctly', async () => {
     const intents = await parseIntoIntents(
       function up(migration) {
         const person = migration.createContentType('person', {
@@ -47,10 +47,10 @@ describe('Intent List', function () {
     )
 
     const intentList = new IntentList(intents)
-    expect(intentList.getIntents().length).to.equal(17)
+    expect(intentList.getIntents().length).toBe(17)
   })
 
-  it('compresses ct create with field creates & updates', async function () {
+  it('compresses ct create with field creates & updates', async () => {
     const intents = await parseIntoIntents(
       function up(migration) {
         const person = migration.createContentType('person', {
@@ -79,11 +79,11 @@ describe('Intent List', function () {
 
     const compressedIntent = compressedList.getIntents()[0] as ComposedIntent
 
-    expect(compressedList.getIntents().length).to.equal(1)
-    expect(compressedIntent.getIntents().length).to.equal(9)
+    expect(compressedList.getIntents().length).toBe(1)
+    expect(compressedIntent.getIntents().length).toBe(9)
   })
 
-  it('compresses tag create', async function () {
+  it('compresses tag create', async () => {
     const intents = await parseIntoIntents(
       function up(migration) {
         migration.createTag('bar', {
@@ -99,7 +99,7 @@ describe('Intent List', function () {
 
     const compressedIntent = compressedList.getIntents()[0] as ComposedIntent
 
-    expect(compressedList.getIntents().length).to.equal(1)
-    expect(compressedIntent.getIntents().length).to.equal(2)
+    expect(compressedList.getIntents().length).toBe(1)
+    expect(compressedIntent.getIntents().length).toBe(2)
   })
 })

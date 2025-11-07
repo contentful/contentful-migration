@@ -1,18 +1,16 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import validateBatches from './validate-batches'
 
-describe('payload validation', function () {
-  describe('when missing required properties', function () {
-    it('returns the errors', async function () {
+describe('payload validation', () => {
+  describe('when missing required properties', () => {
+    it('returns the errors', async () => {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch')
 
         lunch.createField('menu')
       }, [])
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -31,8 +29,8 @@ describe('payload validation', function () {
     })
   })
 
-  describe('when adding more than 50 fields', function () {
-    it('returns the errors', async function () {
+  describe('when adding more than 50 fields', () => {
+    it('returns the errors', async () => {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch')
         lunch.name('A lunch')
@@ -41,7 +39,7 @@ describe('payload validation', function () {
           lunch.createField(`menu${i}`).type('Symbol').name(`menu${i}`)
         }
       }, [])
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -52,8 +50,8 @@ describe('payload validation', function () {
     })
   })
 
-  describe('when using a valid type', function () {
-    it('returns no error', async function () {
+  describe('when using a valid type', () => {
+    it('returns no error', async () => {
       // Link and Array are excluded
       // since they need extra properties
       // and are tested explicitly in another test
@@ -77,13 +75,13 @@ describe('payload validation', function () {
           lunch.createField(type).type(type).name(type)
         }, [])
 
-        expect(errors).to.eql([[]])
+        expect(errors).toEqual([[]])
       }
     })
   })
 
-  describe('when using an invalid type', function () {
-    it('returns the errors', async function () {
+  describe('when using an invalid type', () => {
+    it('returns the errors', async () => {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch')
         lunch.name('A lunch')
@@ -92,7 +90,7 @@ describe('payload validation', function () {
       }, [])
 
       const valid = `["Symbol", "Text", "Integer", "Number", "Date", "Boolean", "Object", "Link", "Array", "Location", "RichText", "ResourceLink"]`
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -103,15 +101,15 @@ describe('payload validation', function () {
     })
   })
 
-  describe('when setting a description', function () {
-    it('returns no error', async function () {
+  describe('when setting a description', () => {
+    it('returns no error', async () => {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch')
         lunch.name('A lunch')
         lunch.description('A description')
       }, [])
 
-      expect(errors).to.eql([[]])
+      expect(errors).toEqual([[]])
     })
 
     it('accepts empty string', async function () {
@@ -121,7 +119,7 @@ describe('payload validation', function () {
         lunch.description('')
       }, [])
 
-      expect(errors).to.eql([[]])
+      expect(errors).toEqual([[]])
     })
   })
 })

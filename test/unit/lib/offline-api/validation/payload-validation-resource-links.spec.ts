@@ -1,6 +1,4 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import validateBatches from './validate-batches'
 import {
   MAX_ALLOWED_RESOURCES,
@@ -13,9 +11,9 @@ const VALID_ALLOWED_RESOURCE = {
   contentTypes: ['cookingMethod', 'recipe']
 }
 
-describe('payload validation (dependencies)', function () {
-  describe('when setting a field to ResourceLink but not specifying allowedResources', function () {
-    it('returns an error', async function () {
+describe('payload validation (dependencies)', () => {
+  describe('when setting a field to ResourceLink but not specifying allowedResources', () => {
+    it('returns an error', async () => {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
@@ -23,7 +21,7 @@ describe('payload validation (dependencies)', function () {
         lunch.createField('mainCourse').name('Main Course').type('ResourceLink')
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -35,8 +33,8 @@ describe('payload validation (dependencies)', function () {
     })
   })
 
-  describe('when setting a field to ResourceLink Array but not specifying allowedResources', function () {
-    it('returns an error', async function () {
+  describe('when setting a field to ResourceLink Array but not specifying allowedResources', () => {
+    it('returns an error', async () => {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
@@ -46,7 +44,7 @@ describe('payload validation (dependencies)', function () {
         })
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -58,8 +56,8 @@ describe('payload validation (dependencies)', function () {
     })
   })
 
-  describe('when setting a field to Symbol but specifying allowedResources', function () {
-    it('returns an error', async function () {
+  describe('when setting a field to Symbol but specifying allowedResources', () => {
+    it('returns an error', async () => {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
@@ -67,7 +65,7 @@ describe('payload validation (dependencies)', function () {
         lunch.createField('mainCourse').name('Main Course').type('Symbol').allowedResources([{}])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -93,7 +91,7 @@ describe('payload validation (dependencies)', function () {
           .allowedResources([{}])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -118,7 +116,7 @@ describe('payload validation (dependencies)', function () {
           .allowedResources([])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -147,7 +145,7 @@ describe('payload validation (dependencies)', function () {
           )
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -171,7 +169,7 @@ describe('payload validation (dependencies)', function () {
           .allowedResources(['invalid'])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -202,7 +200,7 @@ describe('payload validation (dependencies)', function () {
           ])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -232,7 +230,7 @@ describe('payload validation (dependencies)', function () {
           ])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             message:
@@ -261,7 +259,7 @@ describe('payload validation (dependencies)', function () {
           ])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -288,7 +286,7 @@ describe('payload validation (dependencies)', function () {
           ])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             message:
@@ -316,7 +314,7 @@ describe('payload validation (dependencies)', function () {
           ])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             message:
@@ -341,7 +339,7 @@ describe('payload validation (dependencies)', function () {
           .allowedResources([VALID_ALLOWED_RESOURCE])
       }, existingCts)
 
-      expect(errors).to.eql([[]])
+      expect(errors).toEqual([[]])
     })
 
     it('should not return an error when the type value is referencing a custom ResourceProvider:ResourceType pair', async function () {
@@ -360,7 +358,7 @@ describe('payload validation (dependencies)', function () {
           ])
       }, existingCts)
 
-      expect(errors).to.eql([[]])
+      expect(errors).toEqual([[]])
     })
   })
 
@@ -377,7 +375,7 @@ describe('payload validation (dependencies)', function () {
           .allowedResources([VALID_ALLOWED_RESOURCE, VALID_ALLOWED_RESOURCE])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             message:
@@ -404,7 +402,7 @@ describe('payload validation (dependencies)', function () {
         }
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             message: 'Content type "lunch" cannot have more than 3 resource link fields.',

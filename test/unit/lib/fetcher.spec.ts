@@ -1,5 +1,4 @@
-import { expect } from 'chai'
-import sinon from 'sinon'
+import { describe, it, expect, vi } from 'vitest'
 
 import { migration as buildIntents } from '../../../src/lib/migration-steps'
 import IntentList from '../../../src/lib/intent-list'
@@ -10,8 +9,8 @@ import Intent from '../../../src/lib/intent/base-intent'
 
 const noOp = () => undefined
 
-describe('Fetcher', function () {
-  it('fetches all required Entries in the plan', async function () {
+describe('Fetcher', () => {
+  it('fetches all required Entries in the plan', async () => {
     const intents = await buildIntents(
       function up(migration) {
         migration.transformEntries({
@@ -27,28 +26,20 @@ describe('Fetcher', function () {
           }
         })
       },
+      // @ts-expect-error - previous ts error before migration to vitest
       null,
       null
     )
 
-    const request = sinon.stub()
+    const request = vi.fn()
     request
-      .withArgs({
-        method: 'GET',
-        url: `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=newsArticle&skip=0`
-      })
-      .resolves({
+      .mockResolvedValueOnce({
         skip: 0,
         limit: 4,
         total: 6,
         items: ['item1', 'item2', 'item3', 'item4']
       })
-    request
-      .withArgs({
-        method: 'GET',
-        url: `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=newsArticle&skip=4`
-      })
-      .resolves({
+      .mockResolvedValueOnce({
         skip: 4,
         limit: 4,
         total: 6,
@@ -60,20 +51,20 @@ describe('Fetcher', function () {
     const fetcher = new Fetcher(request)
     const entries = await fetcher.getEntriesInIntents(intentList)
 
-    expect(request).to.have.been.calledWith({
+    expect(request).toHaveBeenCalledWith({
       method: 'GET',
       url: `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=newsArticle&skip=0`
     })
-    expect(request).to.have.been.calledWith({
+    expect(request).toHaveBeenCalledWith({
       method: 'GET',
       url: `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&sys.contentType.sys.id[in]=newsArticle&skip=4`
     })
 
     const result = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6']
-    expect(entries).to.eql(result)
+    expect(entries).toEqual(result)
   })
 
-  it('fetches all Entries of all CTs in the plan if an intent needs them all', async function () {
+  it('fetches all Entries of all CTs in the plan if an intent needs them all', async () => {
     const intents = await buildIntents(
       function up(migration) {
         migration.transformEntriesToType({
@@ -92,24 +83,15 @@ describe('Fetcher', function () {
       null
     )
 
-    const request = sinon.stub()
+    const request = vi.fn()
     request
-      .withArgs({
-        method: 'GET',
-        url: `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&skip=0`
-      })
-      .resolves({
+      .mockResolvedValueOnce({
         skip: 0,
         limit: 4,
         total: 6,
         items: ['item1', 'item2', 'item3', 'item4']
       })
-    request
-      .withArgs({
-        method: 'GET',
-        url: `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&skip=4`
-      })
-      .resolves({
+      .mockResolvedValueOnce({
         skip: 4,
         limit: 4,
         total: 6,
@@ -121,20 +103,20 @@ describe('Fetcher', function () {
     const fetcher = new Fetcher(request)
     const entries = await fetcher.getEntriesInIntents(intentList)
 
-    expect(request).to.have.been.calledWith({
+    expect(request).toHaveBeenCalledWith({
       method: 'GET',
       url: `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&skip=0`
     })
-    expect(request).to.have.been.calledWith({
+    expect(request).toHaveBeenCalledWith({
       method: 'GET',
       url: `/entries?limit=100&order=sys.createdAt&sys.archivedAt[exists]=false&skip=4`
     })
 
     const result = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6']
-    expect(entries).to.eql(result)
+    expect(entries).toEqual(result)
   })
 
-  it('adds entries info to content types', async function () {
+  it('adds entries info to content types', async () => {
     const intents = await buildIntents(
       function up(migration) {
         migration.deleteContentType('foo')
@@ -144,25 +126,15 @@ describe('Fetcher', function () {
       {}
     )
 
-    const request = sinon.stub()
+    const request = vi.fn()
     request
-      .withArgs({
-        method: 'GET',
-        url: '/entries?sys.contentType.sys.id=foo'
-      })
-      .resolves({
+      .mockResolvedValueOnce({
         skip: 0,
         limit: 2,
         total: 2,
         items: ['item', 'item']
       })
-
-    request
-      .withArgs({
-        method: 'GET',
-        url: '/entries?sys.contentType.sys.id=bar'
-      })
-      .resolves({
+      .mockResolvedValueOnce({
         skip: 0,
         limit: 2,
         total: 0,
@@ -195,12 +167,12 @@ describe('Fetcher', function () {
       contentTypes
     )
 
-    expect(contentTypesWithEntryInfo[0].id).to.eql('foo')
-    expect(contentTypesWithEntryInfo[0].hasEntries).to.eql(true)
-    expect(contentTypesWithEntryInfo[1].id).to.eql('bar')
+    expect(contentTypesWithEntryInfo[0].id).toEqual('foo')
+    expect(contentTypesWithEntryInfo[0].hasEntries).toEqual(true)
+    expect(contentTypesWithEntryInfo[1].id).toEqual('bar')
   })
 
-  it('fetches all the Content Types in the plan', async function () {
+  it('fetches all the Content Types in the plan', async () => {
     const intents = await buildIntents(
       function up(migration) {
         const person = migration.createContentType('person', {
@@ -230,9 +202,9 @@ describe('Fetcher', function () {
       {}
     )
 
-    const request = sinon.stub()
+    const request = vi.fn()
 
-    request.resolves({
+    request.mockResolvedValue({
       items: [
         {
           name: 'Person',
@@ -271,11 +243,11 @@ describe('Fetcher', function () {
     const fetcher = new Fetcher(request)
     const contentTypes = await fetcher.getContentTypesInChunks(intentList)
 
-    expect(request).to.have.been.calledWith({
+    expect(request).toHaveBeenCalledWith({
       method: 'GET',
       url: `/content_types?limit=100&order=sys.createdAt&sys.id[in]=person,dog,cat,plant&skip=0`
     })
-    expect(contentTypes).to.eql([
+    expect(contentTypes).toEqual([
       {
         name: 'Person',
         description: 'Someone like you',
@@ -305,7 +277,7 @@ describe('Fetcher', function () {
     ])
   })
 
-  it('fetches all the Content Types in the plan when it includes entry derive', async function () {
+  it('fetches all the Content Types in the plan when it includes entry derive', async () => {
     const intents = await buildIntents(
       function up(migration) {
         migration.deriveLinkedEntries({
@@ -335,9 +307,9 @@ describe('Fetcher', function () {
       {}
     )
 
-    const request = sinon.stub()
+    const request = vi.fn()
 
-    request.resolves({
+    request.mockResolvedValue({
       items: [
         {
           name: 'Dog',
@@ -377,13 +349,13 @@ describe('Fetcher', function () {
     const fetcher = new Fetcher(request)
     await fetcher.getContentTypesInChunks(intentList)
 
-    expect(request).to.have.been.calledWith({
+    expect(request).toHaveBeenCalledWith({
       method: 'GET',
       url: `/content_types?limit=100&order=sys.createdAt&sys.id[in]=dog,owner&skip=0`
     })
   })
 
-  it('fetches all required Editor Interfaces in the plan', async function () {
+  it('fetches all required Editor Interfaces in the plan', async () => {
     const intents = await buildIntents(
       function up(migration) {
         const foo = migration.editContentType('foo')
@@ -395,13 +367,9 @@ describe('Fetcher', function () {
       {}
     )
 
-    const request = sinon.stub()
+    const request = vi.fn()
     request
-      .withArgs({
-        method: 'GET',
-        url: '/content_types/foo/editor_interface'
-      })
-      .resolves({
+      .mockResolvedValueOnce({
         sys: {
           version: 1
         },
@@ -412,12 +380,7 @@ describe('Fetcher', function () {
           }
         ]
       })
-    request
-      .withArgs({
-        method: 'GET',
-        url: '/content_types/bar/editor_interface'
-      })
-      .resolves({
+      .mockResolvedValueOnce({
         sys: {
           version: 2
         },
@@ -434,11 +397,11 @@ describe('Fetcher', function () {
     const fetcher = new Fetcher(request)
     const editorInterfaces = await fetcher.getEditorInterfacesInIntents(intentList)
 
-    expect(request).to.have.been.calledWith({
+    expect(request).toHaveBeenCalledWith({
       method: 'GET',
       url: '/content_types/foo/editor_interface'
     })
-    expect(request).to.have.been.calledWith({
+    expect(request).toHaveBeenCalledWith({
       method: 'GET',
       url: '/content_types/bar/editor_interface'
     })
@@ -466,39 +429,25 @@ describe('Fetcher', function () {
         }
       ]
     })
-    expect(editorInterfaces).to.eql(result)
+    expect(editorInterfaces).toEqual(result)
   })
 
-  it('fetches all locales in the space', async function () {
-    const request = sinon.stub()
+  it('fetches all locales in the space', async () => {
+    const request = vi.fn()
     request
-      .withArgs({
-        method: 'GET',
-        url: `/locales?limit=100&order=sys.createdAt&skip=0`
-      })
-      .resolves({
+      .mockResolvedValueOnce({
         skip: 0,
         limit: 2,
         total: 6,
         items: [{ code: 'a' }, { code: 'b' }]
       })
-    request
-      .withArgs({
-        method: 'GET',
-        url: `/locales?limit=100&order=sys.createdAt&skip=2`
-      })
-      .resolves({
+      .mockResolvedValueOnce({
         skip: 2,
         limit: 4,
         total: 6,
         items: [{ code: 'c' }, { code: 'd' }]
       })
-    request
-      .withArgs({
-        method: 'GET',
-        url: `/locales?limit=100&order=sys.createdAt&skip=4`
-      })
-      .resolves({
+      .mockResolvedValueOnce({
         skip: 4,
         limit: 6,
         total: 6,
@@ -508,24 +457,24 @@ describe('Fetcher', function () {
     const fetcher = new Fetcher(request)
     const localeCodes = await fetcher.getLocalesForSpace()
 
-    expect(request).to.have.been.calledWith({
+    expect(request).toHaveBeenCalledWith({
       method: 'GET',
       url: `/locales?limit=100&order=sys.createdAt&skip=0`
     })
-    expect(request).to.have.been.calledWith({
+    expect(request).toHaveBeenCalledWith({
       method: 'GET',
       url: `/locales?limit=100&order=sys.createdAt&skip=2`
     })
-    expect(request).to.have.been.calledWith({
+    expect(request).toHaveBeenCalledWith({
       method: 'GET',
       url: `/locales?limit=100&order=sys.createdAt&skip=4`
     })
 
     const result = ['a', 'b', 'c', 'd', 'e', 'f']
-    expect(localeCodes).to.eql(result)
+    expect(localeCodes).toEqual(result)
   })
 
-  it('fetches all tags in the enviroment', async function () {
+  it('fetches all tags in the enviroment', async () => {
     const intents = await buildIntents(
       function up(migration) {
         migration.createTag('person', {
@@ -537,38 +486,33 @@ describe('Fetcher', function () {
       {}
     )
 
-    const request = sinon.stub()
-    request
-      .withArgs({
-        method: 'GET',
-        url: `/tags?limit=100&order=sys.createdAt&skip=0`
-      })
-      .resolves({
-        items: [
-          {
-            name: 'Person Tag',
-            sys: { id: 'person', type: 'Tag', visbility: 'private' }
-          },
-          {
-            name: 'A very goodboy',
-            sys: { id: 'dog', type: 'Tag', visbility: 'public' }
-          }
-        ],
-        total: 2,
-        limit: 2
-      })
+    const request = vi.fn()
+    request.mockResolvedValue({
+      items: [
+        {
+          name: 'Person Tag',
+          sys: { id: 'person', type: 'Tag', visbility: 'private' }
+        },
+        {
+          name: 'A very goodboy',
+          sys: { id: 'dog', type: 'Tag', visbility: 'public' }
+        }
+      ],
+      total: 2,
+      limit: 2
+    })
 
     const intentList = new IntentList(intents)
 
     const fetcher = new Fetcher(request)
     const tags = await fetcher.getTagsForEnvironment(intentList)
 
-    expect(request).to.have.been.calledWith({
+    expect(request).toHaveBeenCalledWith({
       method: 'GET',
       url: `/tags?limit=100&order=sys.createdAt&skip=0`
     })
 
-    expect(tags).to.eql([
+    expect(tags).toEqual([
       {
         name: 'Person Tag',
         sys: { id: 'person', type: 'Tag', visbility: 'private' }
@@ -580,7 +524,7 @@ describe('Fetcher', function () {
     ])
   })
 
-  it("fetches intents with 'requiresAllTags'", async function () {
+  it("fetches intents with 'requiresAllTags'", async () => {
     class FakeIntent extends Intent {
       constructor() {
         super({ type: 'test', meta: { callsite: { line: 1, file: ' ' } }, payload: {} })
@@ -606,33 +550,28 @@ describe('Fetcher', function () {
       }
     }
 
-    const request = sinon.stub()
-    request
-      .withArgs({
-        method: 'GET',
-        url: `/tags?limit=100&order=sys.createdAt&skip=0`
-      })
-      .resolves({
-        items: [
-          {
-            name: 'Person Tag',
-            sys: { id: 'person', type: 'Tag', visibility: 'private' }
-          },
-          {
-            name: 'A very goodboy',
-            sys: { id: 'dog', type: 'Tag', visibility: 'public' }
-          }
-        ],
-        total: 2,
-        limit: 2
-      })
+    const request = vi.fn()
+    request.mockResolvedValue({
+      items: [
+        {
+          name: 'Person Tag',
+          sys: { id: 'person', type: 'Tag', visibility: 'private' }
+        },
+        {
+          name: 'A very goodboy',
+          sys: { id: 'dog', type: 'Tag', visibility: 'public' }
+        }
+      ],
+      total: 2,
+      limit: 2
+    })
 
     const intentList = new IntentList([new FakeIntent()])
     const fetcher = new Fetcher(request)
 
     const tags = await fetcher.getTagsForEnvironment(intentList)
 
-    expect(tags).to.eql([
+    expect(tags).toEqual([
       {
         name: 'Person Tag',
         sys: { id: 'person', type: 'Tag', visibility: 'private' }
@@ -644,7 +583,7 @@ describe('Fetcher', function () {
     ])
   })
 
-  it('fetches with a given limit', async function () {
+  it('fetches with a given limit', async () => {
     const intents = await buildIntents(
       function up(migration) {
         migration.createTag('person', {
@@ -656,33 +595,28 @@ describe('Fetcher', function () {
       {}
     )
 
-    const request = sinon.stub()
-    request
-      .withArgs({
-        method: 'GET',
-        url: `/tags?limit=99&order=sys.createdAt&skip=0`
-      })
-      .resolves({
-        items: [
-          {
-            name: 'Person Tag',
-            sys: { id: 'person', type: 'Tag' }
-          },
-          {
-            name: 'A very goodboy',
-            sys: { id: 'dog', type: 'Tag' }
-          }
-        ],
-        total: 2,
-        limit: 2
-      })
+    const request = vi.fn()
+    request.mockResolvedValue({
+      items: [
+        {
+          name: 'Person Tag',
+          sys: { id: 'person', type: 'Tag' }
+        },
+        {
+          name: 'A very goodboy',
+          sys: { id: 'dog', type: 'Tag' }
+        }
+      ],
+      total: 2,
+      limit: 2
+    })
 
     const intentList = new IntentList(intents)
 
     const fetcher = new Fetcher(request, 99)
     await fetcher.getTagsForEnvironment(intentList)
 
-    expect(request).to.have.been.calledWith({
+    expect(request).toHaveBeenCalledWith({
       method: 'GET',
       url: `/tags?limit=99&order=sys.createdAt&skip=0`
     })

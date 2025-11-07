@@ -1,11 +1,9 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import validateBatches from './validate-batches'
 
-describe('payload validation (type change)', function () {
-  describe('when changing the type of a field', function () {
-    it('returns an error', async function () {
+describe('payload validation (type change)', () => {
+  describe('when changing the type of a field', () => {
+    it('returns an error', async () => {
       const existingCts = [
         {
           sys: { id: 'lunch' },
@@ -20,7 +18,7 @@ describe('payload validation (type change)', function () {
         lunch.editField('mainCourse').type('Date')
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidAction',

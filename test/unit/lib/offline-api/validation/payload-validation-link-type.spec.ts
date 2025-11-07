@@ -1,11 +1,9 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import validateBatches from './validate-batches'
 
-describe('payload validation (dependencies)', function () {
-  describe('when setting a field to Link but not specifying the linkType', function () {
-    it('returns an error', async function () {
+describe('payload validation (dependencies)', () => {
+  describe('when setting a field to Link but not specifying the linkType', () => {
+    it('returns an error', async () => {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
@@ -13,7 +11,7 @@ describe('payload validation (dependencies)', function () {
         lunch.createField('mainCourse').name('Main Course').type('Link')
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -34,7 +32,7 @@ describe('payload validation (dependencies)', function () {
         lunch.createField('mainCourse').name('Main Course').type('Symbol').linkType('Entry')
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -55,7 +53,7 @@ describe('payload validation (dependencies)', function () {
         lunch.createField('mainCourse').name('Main Course').type('Link').linkType('Hermann')
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',

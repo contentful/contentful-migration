@@ -1,5 +1,5 @@
+import { describe, it, expect } from 'vitest'
 import { migration as migrationSteps } from '../../../../src/lib/migration-steps'
-import { expect } from 'chai'
 import IntentList from '../../../../src/lib/intent-list'
 import { Intent } from '../../../../src/lib/interfaces/intent'
 import { SaveEditorInterfaceAction } from '../../../../src/lib/action/editorinterface-save'
@@ -14,10 +14,10 @@ const composedIntent = async function (migration): Promise<Intent[]> {
   return list.compressed().getIntents()
 }
 
-describe('EntryEditorResetIntent', function () {
+describe('EntryEditorResetIntent', () => {
   const ctId = 'test'
 
-  it('resets editor property', async function () {
+  it('resets editor property', async () => {
     const intents = await composedIntent((migration) => {
       const ct = migration.createContentType(ctId)
       ct.name('Test CT')
@@ -35,8 +35,8 @@ describe('EntryEditorResetIntent', function () {
 
     const actions = intent.toActions()
 
-    expect(actions[0]).to.eql(new EntryEditorResetToDefaultAction(ctId))
+    expect(actions[0]).toEqual(new EntryEditorResetToDefaultAction(ctId))
 
-    expect(actions[1]).to.eql(new SaveEditorInterfaceAction(ctId))
+    expect(actions[1]).toEqual(new SaveEditorInterfaceAction(ctId))
   })
 })

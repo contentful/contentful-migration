@@ -1,6 +1,4 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import { EntryTransformAction } from '../../../../src/lib/action/entry-transform'
 import { EntryTransformToTypeAction } from '../../../../src/lib/action/entry-transform-to-type'
@@ -10,8 +8,8 @@ import { Entry } from '../../../../src/lib/entities/entry'
 
 import makeApiEntry from '../../../helpers/make-api-entry'
 
-describe('Entry Action', function () {
-  it('collects errors when applying to the state', async function () {
+describe('Entry Action', () => {
+  it('collects errors when applying to the state', async () => {
     const ourError = new Error('BOOM')
     const transformation = () => {
       throw ourError
@@ -50,13 +48,13 @@ describe('Entry Action', function () {
       await action.applyTo(api)
       await api.stopRecordingRequests()
       const batches = await api.getRequestBatches()
-      expect(batches[0].runtimeErrors).to.eql([ourError, ourError])
+      expect(batches[0].runtimeErrors).toEqual([ourError, ourError])
     } catch (err) {
       expect.fail()
     }
   })
 
-  it('skips a locale when the transform returns undefined', async function () {
+  it('skips a locale when the transform returns undefined', async () => {
     const transformation = (fields, locale) => {
       if (locale === 'hawaii') {
         return
@@ -101,13 +99,13 @@ describe('Entry Action', function () {
     await action.applyTo(api)
     await api.stopRecordingRequests()
     const batches = await api.getRequestBatches()
-    expect(batches[0].requests[0].data.fields).to.eql({
+    expect(batches[0].requests[0].data.fields).toEqual({
       name: {
         'en-US': 'bob!',
         hawaii: 'haukea'
       }
     })
-    expect(batches[0].requests[1].data.fields).to.eql({
+    expect(batches[0].requests[1].data.fields).toEqual({
       name: {
         'en-US': 'jim!',
         hawaii: 'aloha'
@@ -115,7 +113,7 @@ describe('Entry Action', function () {
     })
   })
 
-  it('skips an entry when the transform returns undefined for all its locales', async function () {
+  it('skips an entry when the transform returns undefined for all its locales', async () => {
     const transformation = () => {
       return
     }
@@ -155,7 +153,7 @@ describe('Entry Action', function () {
     await action.applyTo(api)
     await api.stopRecordingRequests()
     const batches = await api.getRequestBatches()
-    expect(batches[0].requests).to.eql([])
+    expect(batches[0].requests).toEqual([])
   })
 
   async function shouldPublishTest(shouldPublish, version, publishedVersion, expectPublish) {
@@ -214,7 +212,7 @@ describe('Entry Action', function () {
     return shouldPublishTest('preserve', 3, 1, true)
   })
 
-  it('provides entry id', async function () {
+  it('provides entry id', async () => {
     const ids = []
 
     const transformation = (fields, locale, { id }) => {
@@ -256,6 +254,6 @@ describe('Entry Action', function () {
 
     await action.applyTo(api)
     await api.stopRecordingRequests()
-    expect(ids).to.eql(['246', '123'])
+    expect(ids).toEqual(['246', '123'])
   })
 })

@@ -1,7 +1,4 @@
-'use strict'
-
-import { expect } from 'chai'
-import sinon from 'sinon'
+import { describe, it, expect, vi } from 'vitest'
 
 import { migration as migrationSteps } from '../../../src/lib/migration-steps'
 import IntentList from '../../../src/lib/intent-list'
@@ -9,8 +6,8 @@ import Fetcher from '../../../src/lib/fetcher'
 
 const noOp = () => undefined
 
-describe('Content Type fetcher', function () {
-  it('fetches all the Content Types in the plan', async function () {
+describe('Content Type fetcher', () => {
+  it('fetches all the Content Types in the plan', async () => {
     const intents = await migrationSteps(
       function up(migration) {
         const person = migration.createContentType('person', {
@@ -40,9 +37,9 @@ describe('Content Type fetcher', function () {
       {}
     )
 
-    const request = sinon.stub()
+    const request = vi.fn()
 
-    request.resolves({
+    request.mockResolvedValue({
       items: [
         {
           name: 'Person',
@@ -81,11 +78,11 @@ describe('Content Type fetcher', function () {
     const fetcher = new Fetcher(request)
     const contentTypes = await fetcher.getContentTypesInChunks(intentList)
 
-    expect(request).to.have.been.calledWith({
+    expect(request).toHaveBeenCalledWith({
       method: 'GET',
       url: `/content_types?limit=100&order=sys.createdAt&sys.id[in]=person,dog,cat,plant&skip=0`
     })
-    expect(contentTypes).to.eql([
+    expect(contentTypes).toEqual([
       {
         name: 'Person',
         description: 'Someone like you',

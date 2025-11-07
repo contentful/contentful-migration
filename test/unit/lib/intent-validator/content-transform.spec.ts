@@ -1,15 +1,13 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import ContentTransformIntentValidator from '../../../../src/lib/intent-validator/content-transform'
 import createValidator from './validate-steps'
 const validateSteps = createValidator([ContentTransformIntentValidator])
 import { omit } from 'lodash'
 
-describe('Content transformation', function () {
-  describe('when providing the required properties', function () {
-    it('returns no validation errors', async function () {
+describe('Content transformation', () => {
+  describe('when providing the required properties', () => {
+    it('returns no validation errors', async () => {
       const properties = {
         contentType: 'person',
         from: ['information'],
@@ -22,11 +20,11 @@ describe('Content transformation', function () {
         migration.transformEntries(properties)
       })
 
-      expect(validationErrors).to.eql([])
+      expect(validationErrors).toEqual([])
     })
 
-    describe('when using the wrong type for the properties', function () {
-      it('returns all validation errors', async function () {
+    describe('when using the wrong type for the properties', () => {
+      it('returns all validation errors', async () => {
         const properties = {
           contentType: 'person',
           from: 'information',
@@ -37,7 +35,7 @@ describe('Content transformation', function () {
           migration.transformEntries(properties)
         })
 
-        expect(validationErrors).to.eql([
+        expect(validationErrors).toEqual([
           {
             details: {
               step: {
@@ -106,9 +104,9 @@ describe('Content transformation', function () {
     })
   })
 
-  describe('when providing optional arguments', function () {
-    describe('shouldPublish', function () {
-      it('returns no validation errors', async function () {
+  describe('when providing optional arguments', () => {
+    describe('shouldPublish', () => {
+      it('returns no validation errors', async () => {
         const properties = {
           from: ['information'],
           to: ['address'],
@@ -123,12 +121,12 @@ describe('Content transformation', function () {
           person.transformEntries(properties)
         })
 
-        expect(validationErrors).to.eql([])
+        expect(validationErrors).toEqual([])
       })
     })
 
-    describe('when using an invalid type', function () {
-      it('returns validation errors', async function () {
+    describe('when using an invalid type', () => {
+      it('returns validation errors', async () => {
         const transformationFunc = () => {
           console.log('transform!')
         }
@@ -142,7 +140,7 @@ describe('Content transformation', function () {
         const validationErrors = await validateSteps(function up(migration) {
           migration.transformEntries(properties)
         })
-        expect(validationErrors).to.eql([
+        expect(validationErrors).toEqual([
           {
             details: {
               step: {
@@ -170,8 +168,8 @@ describe('Content transformation', function () {
     })
   })
 
-  describe('when spelling a property wrong', function () {
-    it('returns all validation errors', async function () {
+  describe('when spelling a property wrong', () => {
+    it('returns all validation errors', async () => {
       const properties = {
         contentType: 'person',
         from: ['information'],
@@ -184,7 +182,7 @@ describe('Content transformation', function () {
         migration.transformEntries(properties)
       })
 
-      expect(validationErrors).to.eql([
+      expect(validationErrors).toEqual([
         {
           type: 'InvalidProperty',
           message:

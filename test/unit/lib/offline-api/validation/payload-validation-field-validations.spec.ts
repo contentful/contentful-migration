@@ -1,11 +1,9 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import validateBatches from './validate-batches'
 
-describe('payload validation', function () {
-  describe('fieldValidations', function () {
-    it('errors on duplicate validation', async function () {
+describe('payload validation', () => {
+  describe('fieldValidations', () => {
+    it('errors on duplicate validation', async () => {
       const errors = await validateBatches(function up(migration) {
         const person = migration.createContentType('person').name('Person').description('A Person')
 
@@ -16,7 +14,7 @@ describe('payload validation', function () {
           .validations([{ unique: true }, { unique: true }])
       }, [])
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -26,7 +24,7 @@ describe('payload validation', function () {
       ])
     })
 
-    it('errors on unknown validations key', async function () {
+    it('errors on unknown validations key', async () => {
       const errors = await validateBatches(function up(migration) {
         const person = migration.createContentType('person').name('Person').description('A Person')
 
@@ -37,7 +35,7 @@ describe('payload validation', function () {
           .validations([{ unique: true }, { size: { min: 5, max: 10 } }, { foo: true }])
       }, [])
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -47,7 +45,7 @@ describe('payload validation', function () {
       ])
     })
 
-    it('errors with correct invalid key on unknown validations key', async function () {
+    it('errors with correct invalid key on unknown validations key', async () => {
       const errors = await validateBatches(function up(migration) {
         const person = migration.createContentType('person').name('Person').description('A Person')
 
@@ -61,7 +59,7 @@ describe('payload validation', function () {
           ])
       }, [])
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -71,7 +69,7 @@ describe('payload validation', function () {
       ])
     })
 
-    it('errors on wrong validation parameter (object)', async function () {
+    it('errors on wrong validation parameter (object)', async () => {
       const errors = await validateBatches(function up(migration) {
         const person = migration.createContentType('person').name('Person').description('A Person')
 
@@ -82,7 +80,7 @@ describe('payload validation', function () {
           .validations([{ size: 2 }])
       }, [])
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -92,7 +90,7 @@ describe('payload validation', function () {
       ])
     })
 
-    it('errors on wrong validation parameter (primitive)', async function () {
+    it('errors on wrong validation parameter (primitive)', async () => {
       const errors = await validateBatches(function up(migration) {
         const person = migration.createContentType('person').name('Person').description('A Person')
 
@@ -103,7 +101,7 @@ describe('payload validation', function () {
           .validations([{ unique: 'nope' }])
       }, [])
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -113,7 +111,7 @@ describe('payload validation', function () {
       ])
     })
 
-    it('handles mixed validation errors', async function () {
+    it('handles mixed validation errors', async () => {
       const errors = await validateBatches(function up(migration) {
         const person = migration.createContentType('person').name('Person').description('A Person')
 
@@ -133,7 +131,7 @@ describe('payload validation', function () {
           ])
       }, [])
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -155,7 +153,7 @@ describe('payload validation', function () {
       ])
     })
 
-    it('allows custom error message key', async function () {
+    it('allows custom error message key', async () => {
       const errors = await validateBatches(function up(migration) {
         const person = migration.createContentType('person').name('Person').description('A Person')
 
@@ -169,7 +167,7 @@ describe('payload validation', function () {
           ])
       }, [])
 
-      expect(errors).to.eql([[]])
+      expect(errors).toEqual([[]])
     })
 
     it('allows null values for optional validation properties', async function () {
@@ -183,7 +181,7 @@ describe('payload validation', function () {
           .validations([{ regexp: { pattern: '^[A-Za-zs]+$', flags: null } }])
       }, [])
 
-      expect(errors).to.eql([[]])
+      expect(errors).toEqual([[]])
     })
 
     it('can validate all blocks and inlines for RichText', async function () {
@@ -212,7 +210,7 @@ describe('payload validation', function () {
           ])
       }, [])
 
-      expect(errors).to.eql([[]])
+      expect(errors).toEqual([[]])
     })
   })
 })

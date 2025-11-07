@@ -1,11 +1,7 @@
-'use strict'
+import { migration as createSteps } from '../../../../src/lib/migration-steps'
+import IntentList from '../../../../src/lib/intent-list'
 
-const Bluebird = require('bluebird')
-
-const createSteps = require('../../../../src/lib/migration-steps').migration
-const IntentList = require('../../../../src/lib/intent-list').default
-
-const stripCallsites = (errors) => {
+const stripCallsites = (errors: any[]) => {
   return errors.map((error) => {
     delete error.details.intent.package
     error.details.step = error.details.intent
@@ -15,8 +11,8 @@ const stripCallsites = (errors) => {
   })
 }
 
-module.exports = Bluebird.coroutine(function* (validators, migration) {
-  const steps = yield createSteps(migration)
+export default async function validateSteps(validators: any[], migration: any) {
+  const steps = await createSteps(migration)
 
   const stepList = new IntentList(steps)
 
@@ -27,4 +23,4 @@ module.exports = Bluebird.coroutine(function* (validators, migration) {
   const errors = stepList.validate()
   const stripped = stripCallsites(errors)
   return stripped
-})
+}

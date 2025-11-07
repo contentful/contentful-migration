@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest'
-
 import FieldMovementValidator from '../../../../src/lib/intent-validator/field-movement'
-import createValidator from './validate-steps'
-const validateSteps = createValidator([FieldMovementValidator])
+import validateSteps from './validate-steps'
+
+const validateStepsWithValidator = validateSteps.bind(null, [FieldMovementValidator])
 
 describe('field-movement validation', () => {
   describe('when doing an invalid movement', () => {
     it('returns all validation errors', async () => {
-      const validationErrors = await validateSteps(function up(migration) {
+      const validationErrors = await validateStepsWithValidator(function up(migration: any) {
         const person = migration.editContentType('person', {
           description: 'A content type for a person',
           name: 'Person'
@@ -44,7 +44,7 @@ describe('field-movement validation', () => {
 
   describe('when moving a field relative to itself', () => {
     it('returns all validation errors', async () => {
-      const validationErrors = await validateSteps(function up(migration) {
+      const validationErrors = await validateStepsWithValidator(function up(migration: any) {
         const person = migration.editContentType('person', {
           description: 'A content type for a person',
           name: 'Person'
@@ -81,7 +81,7 @@ describe('field-movement validation', () => {
 
   describe('when doing an almost valid movement', () => {
     it('returns all validation errors', async () => {
-      const validationErrors = await validateSteps(function up(migration) {
+      const validationErrors = await validateStepsWithValidator(function up(migration: any) {
         const person = migration.editContentType('person', {
           description: 'A content type for a person',
           name: 'Person'
@@ -118,7 +118,7 @@ describe('field-movement validation', () => {
 
   describe('when doing a movement with an invalid type', () => {
     it('does not error on invalid types for toTheTop and toTheBottom', async () => {
-      const validationErrors = await validateSteps(function up(migration) {
+      const validationErrors = await validateStepsWithValidator(function up(migration: any) {
         const person = migration.editContentType('person', {
           description: 'A content type for a person',
           name: 'Person'
@@ -132,7 +132,7 @@ describe('field-movement validation', () => {
     })
 
     it('returns all validation errors', async () => {
-      const validationErrors = await validateSteps(function up(migration) {
+      const validationErrors = await validateStepsWithValidator(function up(migration: any) {
         const person = migration.editContentType('person', {
           description: 'A content type for a person',
           name: 'Person'

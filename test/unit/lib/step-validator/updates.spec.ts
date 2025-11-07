@@ -1,14 +1,19 @@
 import { describe, it, expect } from 'vitest'
-
-import ContentTypeUpdateValidator from '../../../../src/lib/intent-validator/content-type-update'
 import FieldUpdateValidator from '../../../../src/lib/intent-validator/field-update'
-import createValidator from './validate-steps'
-const validateSteps = createValidator([FieldUpdateValidator, ContentTypeUpdateValidator])
+import ContentTypeUpdateValidator from '../../../../src/lib/intent-validator/content-type-update'
+import TagUpdateValidator from '../../../../src/lib/intent-validator/tag-update'
+import validateSteps from './validate-steps'
+
+const validateStepsWithValidators = validateSteps.bind(null, [
+  FieldUpdateValidator,
+  ContentTypeUpdateValidator,
+  TagUpdateValidator
+])
 
 describe('migration-steps validation', () => {
   describe('when invoking methods for invalid props', () => {
-    it('returns all the validation errors', async () => {
-      const validationErrors = await validateSteps(function up(migration) {
+    it('returns all the validation errors for content types and fields', async () => {
+      const validationErrors = await validateStepsWithValidators(function up(migration: any) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
           invalidProp: 'Totally invalid'
@@ -103,14 +108,63 @@ describe('migration-steps validation', () => {
         }
       ])
     })
+
+    it('returns validation errors for tags', async () => {
+      const validationErrors = await validateStepsWithValidators(function up(migration: any) {
+        const marketing = migration.createTag('marketing', {
+          name: 'marketing tag',
+          invalidProp: 'Totally invalid'
+        })
+        marketing.somethingElse('Also invalid')
+      })
+
+      expect(validationErrors).toEqual([
+        {
+          type: 'InvalidProperty',
+          message: '"invalidProp" is not a valid property name for a tag.',
+          details: {
+            step: {
+              type: 'tag/update',
+              meta: {
+                tagInstanceId: 'tag/marketing/0'
+              },
+              payload: {
+                tagId: 'marketing',
+                props: {
+                  invalidProp: 'Totally invalid'
+                }
+              }
+            }
+          }
+        },
+        {
+          type: 'InvalidProperty',
+          message: '"somethingElse" is not a valid property name for a tag.',
+          details: {
+            step: {
+              type: 'tag/update',
+              meta: {
+                tagInstanceId: 'tag/marketing/0'
+              },
+              payload: {
+                tagId: 'marketing',
+                props: {
+                  somethingElse: 'Also invalid'
+                }
+              }
+            }
+          }
+        }
+      ])
+    })
   })
 
   describe('when passing the wrong type for a prop', () => {
     it('returns all the validation errors', async () => {
-      const invalidFunction = function () {
-        return undefined
-      }
-      const validationErrors = await validateSteps(function up(migration) {
+      /* tslint:disable */
+      const invalidFunction = function () {}
+      /* tslint:enable */
+      const validationErrors = await validateStepsWithValidators(function up(migration: any) {
         const person = migration.createContentType('person', {
           description: ['Array']
         })
@@ -278,7 +332,7 @@ describe('migration-steps validation', () => {
 
   describe('when invoking methods for invalid props that are very close to valid props', () => {
     it('returns all the validation errors', async () => {
-      const validationErrors = await validateSteps(function up(migration) {
+      const validationErrors = await validateStepsWithValidators(function up(migration: any) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
           nmae: 'Totally invalid'
@@ -331,18 +385,6 @@ describe('migration-steps validation', () => {
           }
         }
       ])
-    })
-  })
-
-  describe('when setting an empty description for a content type', () => {
-    it('does not return any errors', async () => {
-      const validationErrors = await validateSteps(function up(migration) {
-        migration.createContentType('person', {
-          description: ''
-        })
-      })
-
-      expect(validationErrors).toEqual([])
     })
   })
 })

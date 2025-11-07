@@ -1,11 +1,10 @@
-'use strict'
-const { expect } = require('chai')
-const validateChunks = require('./validate-chunks').default
+import { describe, it, expect } from 'vitest'
+import validateChunks from './validate-chunks'
 
-describe('tag plan validation', function () {
-  describe('when creating a tag twice', function () {
-    it('returns an error', async function () {
-      const errors = await validateChunks(function up(migration) {
+describe('tag plan validation', () => {
+  describe('when creating a tag twice', () => {
+    it('returns an error', async () => {
+      const errors = await validateChunks(function up(migration: any) {
         migration.createTag('person', {
           name: 'foo'
         })
@@ -14,7 +13,7 @@ describe('tag plan validation', function () {
         })
       }, [])
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           type: 'InvalidAction',
           message: 'Tag with id "person" cannot be created more than once.',
@@ -35,8 +34,8 @@ describe('tag plan validation', function () {
     })
   })
 
-  describe('when editing a tag before creating it', function () {
-    it('returns an error', async function () {
+  describe('when editing a tag before creating it', () => {
+    it('returns an error', async () => {
       const tags = [
         {
           sys: { id: 'somethingElse' }
@@ -44,7 +43,7 @@ describe('tag plan validation', function () {
       ]
 
       const errors = await validateChunks(
-        function up(migration) {
+        function up(migration: any) {
           migration.editTag('person', {
             name: 'foo'
           })
@@ -57,7 +56,7 @@ describe('tag plan validation', function () {
         tags
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           type: 'InvalidAction',
           message: 'You cannot set a property on tag "person" because it has not yet been created.',
@@ -80,8 +79,8 @@ describe('tag plan validation', function () {
     })
   })
 
-  describe('when editing a tag that already exists and creating it again later on', function () {
-    it('returns an error', async function () {
+  describe('when editing a tag that already exists and creating it again later on', () => {
+    it('returns an error', async () => {
       const tags = [
         {
           sys: { id: 'somethingElse' }
@@ -92,7 +91,7 @@ describe('tag plan validation', function () {
       ]
 
       const errors = await validateChunks(
-        function up(migration) {
+        function up(migration: any) {
           migration.editTag('person', {
             name: 'foo'
           })
@@ -109,7 +108,7 @@ describe('tag plan validation', function () {
         tags
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           type: 'InvalidAction',
           message: 'Tag with id "person" already exists.',
@@ -130,8 +129,8 @@ describe('tag plan validation', function () {
     })
   })
 
-  describe('when creating a tag that already exists', function () {
-    it('returns an error', async function () {
+  describe('when creating a tag that already exists', () => {
+    it('returns an error', async () => {
       const tags = [
         {
           sys: { id: 'somethingElse' },
@@ -144,7 +143,7 @@ describe('tag plan validation', function () {
       ]
 
       const errors = await validateChunks(
-        function up(migration) {
+        function up(migration: any) {
           migration.createTag('person', {
             name: 'foo'
           })
@@ -153,7 +152,7 @@ describe('tag plan validation', function () {
         tags
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           type: 'InvalidAction',
           message: 'Tag with id "person" already exists.',
@@ -174,8 +173,8 @@ describe('tag plan validation', function () {
     })
   })
 
-  describe('when creating a tag with a name that already exists', function () {
-    it('returns an error', async function () {
+  describe('when creating a tag with a name that already exists', () => {
+    it('returns an error', async () => {
       const tags = [
         {
           sys: { id: 'somethingElse' },
@@ -188,7 +187,7 @@ describe('tag plan validation', function () {
       ]
 
       const errors = await validateChunks(
-        function up(migration) {
+        function up(migration: any) {
           migration.createTag('differentId', {
             name: 'foo'
           })
@@ -197,7 +196,7 @@ describe('tag plan validation', function () {
         tags
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           type: 'InvalidAction',
           message: 'Tag with name "foo" already exists.',
@@ -220,8 +219,8 @@ describe('tag plan validation', function () {
     })
   })
 
-  describe('when editing a tag that does not exist', function () {
-    it('returns an error', async function () {
+  describe('when editing a tag that does not exist', () => {
+    it('returns an error', async () => {
       const tags = [
         {
           sys: { id: 'somethingElse' }
@@ -229,7 +228,7 @@ describe('tag plan validation', function () {
       ]
 
       const errors = await validateChunks(
-        function up(migration) {
+        function up(migration: any) {
           migration.editTag('person', {
             name: 'foo'
           })
@@ -246,7 +245,7 @@ describe('tag plan validation', function () {
         tags
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           type: 'InvalidAction',
           message: 'You cannot set a property on tag "person" because it does not exist.',
@@ -287,12 +286,12 @@ describe('tag plan validation', function () {
     })
   })
 
-  describe('when setting the same prop more than once in one chunk', function () {
-    it('returns an error', async function () {
-      const tags = []
+  describe('when setting the same prop more than once in one chunk', () => {
+    it('returns an error', async () => {
+      const tags: any[] = []
 
       const errors = await validateChunks(
-        function up(migration) {
+        function up(migration: any) {
           const person = migration.createTag('person').name('Person')
           person.name('Person McPersonface')
         },
@@ -300,7 +299,7 @@ describe('tag plan validation', function () {
         tags
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           type: 'InvalidAction',
           message:

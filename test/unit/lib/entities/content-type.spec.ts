@@ -1,7 +1,5 @@
-const { expect } = require('chai')
-
-const Fields = require('../../../../src/lib/entities/content-type').Fields
-const ContentType = require('../../../../src/lib/entities/content-type').ContentType
+import { describe, it, beforeEach, expect } from 'vitest'
+import { Fields, ContentType } from '../../../../src/lib/entities/content-type'
 
 it('moves fields correctly', () => {
   const myFields = [
@@ -21,7 +19,7 @@ it('moves fields correctly', () => {
   fields.moveField('f', 'beforeField', 'e')
   fields.moveField('g', 'afterField', 'e')
 
-  expect(myFields).to.eql([
+  expect(myFields).toEqual([
     { id: 'c' },
     { id: 'a' },
     { id: 'b' },
@@ -33,7 +31,7 @@ it('moves fields correctly', () => {
 })
 
 describe('ContentType taxonomy validation', () => {
-  let contentType
+  let contentType: ContentType
 
   beforeEach(() => {
     const apiContentType = {
@@ -77,7 +75,7 @@ describe('ContentType taxonomy validation', () => {
       contentType.setTaxonomyValidations(taxonomyValidations)
 
       const result = contentType.getTaxonomyValidation()
-      expect(result).to.deep.equal(taxonomyValidations)
+      expect(result).toEqual(taxonomyValidations)
     })
 
     it('overwrites taxonomy validation', () => {
@@ -108,7 +106,7 @@ describe('ContentType taxonomy validation', () => {
       contentType.setTaxonomyValidations(newTaxonomyValidations)
 
       const result = contentType.getTaxonomyValidation()
-      expect(result).to.deep.equal(newTaxonomyValidations)
+      expect(result).toEqual(newTaxonomyValidations)
     })
 
     it('includes taxonomy validation in toAPI output', () => {
@@ -126,7 +124,7 @@ describe('ContentType taxonomy validation', () => {
       contentType.setTaxonomyValidations(taxonomyValidations)
 
       const apiOutput = contentType.toAPI()
-      expect(apiOutput.metadata.taxonomy).to.deep.equal(taxonomyValidations)
+      expect(apiOutput.metadata.taxonomy).toEqual(taxonomyValidations)
     })
   })
 
@@ -135,7 +133,7 @@ describe('ContentType taxonomy validation', () => {
       contentType.addTaxonomyValidation('concept-1', 'TaxonomyConcept', { required: true })
 
       const result = contentType.getTaxonomyValidation()
-      expect(result).to.deep.equal([
+      expect(result).toEqual([
         {
           sys: {
             type: 'Link',
@@ -151,7 +149,7 @@ describe('ContentType taxonomy validation', () => {
       contentType.addTaxonomyValidation('scheme-1', 'TaxonomyConceptScheme', { required: false })
 
       const result = contentType.getTaxonomyValidation()
-      expect(result).to.deep.equal([
+      expect(result).toEqual([
         {
           sys: {
             type: 'Link',
@@ -168,9 +166,9 @@ describe('ContentType taxonomy validation', () => {
       contentType.addTaxonomyValidation('scheme-1', 'TaxonomyConceptScheme', { required: false })
 
       const result = contentType.getTaxonomyValidation()
-      expect(result).to.have.length(2)
-      expect(result[0].sys.id).to.equal('concept-1')
-      expect(result[1].sys.id).to.equal('scheme-1')
+      expect(result).toHaveLength(2)
+      expect(result[0].sys.id).toBe('concept-1')
+      expect(result[1].sys.id).toBe('scheme-1')
     })
 
     it('updates existing taxonomy validation when ID already exists', () => {
@@ -178,15 +176,15 @@ describe('ContentType taxonomy validation', () => {
       contentType.addTaxonomyValidation('concept-1', 'TaxonomyConcept', { required: false })
 
       const result = contentType.getTaxonomyValidation()
-      expect(result).to.have.length(1)
-      expect(result[0].required).to.equal(false)
+      expect(result).toHaveLength(1)
+      expect(result[0].required).toBe(false)
     })
 
     it('works without required option', () => {
       contentType.addTaxonomyValidation('concept-1', 'TaxonomyConcept')
 
       const result = contentType.getTaxonomyValidation()
-      expect(result[0]).to.not.have.property('required')
+      expect(result[0]).not.toHaveProperty('required')
     })
   })
 
@@ -197,18 +195,18 @@ describe('ContentType taxonomy validation', () => {
       contentType.addTaxonomyValidation('scheme-1', 'TaxonomyConceptScheme', { required: false })
 
       // Verify they were added
-      expect(contentType.getTaxonomyValidation()).to.have.length(2)
+      expect(contentType.getTaxonomyValidation()).toHaveLength(2)
 
       // Clear them
       contentType.clearTaxonomyValidations()
 
       // Verify they were cleared
-      expect(contentType.getTaxonomyValidation()).to.eql([])
+      expect(contentType.getTaxonomyValidation()).toEqual([])
     })
 
     it('works when there are no existing taxonomy validations', () => {
       contentType.clearTaxonomyValidations()
-      expect(contentType.getTaxonomyValidation()).to.eql([])
+      expect(contentType.getTaxonomyValidation()).toEqual([])
     })
 
     it('includes empty taxonomy array in API payload when cleared', () => {
@@ -220,9 +218,9 @@ describe('ContentType taxonomy validation', () => {
 
       // Verify the API payload includes the empty taxonomy array
       const apiPayload = contentType.toAPI()
-      expect(apiPayload).to.have.property('metadata')
-      expect(apiPayload.metadata).to.have.property('taxonomy')
-      expect(apiPayload.metadata.taxonomy).to.eql([])
+      expect(apiPayload).toHaveProperty('metadata')
+      expect(apiPayload.metadata).toHaveProperty('taxonomy')
+      expect(apiPayload.metadata.taxonomy).toEqual([])
     })
 
     it('includes empty taxonomy array in API payload when cleared on content type with no existing validations', () => {
@@ -231,9 +229,9 @@ describe('ContentType taxonomy validation', () => {
 
       // Verify the API payload still includes the empty taxonomy array
       const apiPayload = contentType.toAPI()
-      expect(apiPayload).to.have.property('metadata')
-      expect(apiPayload.metadata).to.have.property('taxonomy')
-      expect(apiPayload.metadata.taxonomy).to.eql([])
+      expect(apiPayload).toHaveProperty('metadata')
+      expect(apiPayload.metadata).toHaveProperty('taxonomy')
+      expect(apiPayload.metadata.taxonomy).toEqual([])
     })
 
     it('handles mixed metadata scenarios correctly', () => {
@@ -244,22 +242,22 @@ describe('ContentType taxonomy validation', () => {
       contentType.addTaxonomyValidation('concept-1', 'TaxonomyConcept', { required: true })
 
       let apiPayload = contentType.toAPI()
-      expect(apiPayload.metadata.annotations).to.exist()
-      expect(apiPayload.metadata.taxonomy).to.have.length(1)
+      expect(apiPayload.metadata.annotations).toBeDefined()
+      expect(apiPayload.metadata.taxonomy).toHaveLength(1)
 
       // Clear taxonomy but keep annotations
       contentType.clearTaxonomyValidations()
 
       apiPayload = contentType.toAPI()
-      expect(apiPayload.metadata.annotations).to.exist() // annotations preserved
-      expect(apiPayload.metadata.taxonomy).to.eql([]) // taxonomy cleared but present
+      expect(apiPayload.metadata.annotations).toBeDefined() // annotations preserved
+      expect(apiPayload.metadata.taxonomy).toEqual([]) // taxonomy cleared but present
 
       // Clear annotations too
       contentType.clearAnnotations()
 
       apiPayload = contentType.toAPI()
-      expect(apiPayload.metadata.annotations).to.be.undefined() // annotations pruned away
-      expect(apiPayload.metadata.taxonomy).to.eql([]) // taxonomy still present as empty array
+      expect(apiPayload.metadata.annotations).toBeUndefined() // annotations pruned away
+      expect(apiPayload.metadata.taxonomy).toEqual([]) // taxonomy still present as empty array
     })
   })
 })

@@ -1,11 +1,9 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import validateBatches from './validate-batches'
 
-describe('payload validation', function () {
-  describe('when setting a new id but it does not fit the requirements', function () {
-    it('returns an error if too short', async function () {
+describe('payload validation', () => {
+  describe('when setting a new id but it does not fit the requirements', () => {
+    it('returns an error if too short', async () => {
       const migration = function (migration) {
         migration.editContentType('book').changeFieldId('title', '')
       }
@@ -34,7 +32,7 @@ describe('payload validation', function () {
 
       const errors = await validateBatches(migration, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -44,7 +42,7 @@ describe('payload validation', function () {
       ])
     })
 
-    it('returns an error if too long', async function () {
+    it('returns an error if too long', async () => {
       const longId = Array(65).fill('a').join('')
       const migration = function (migration) {
         migration.editContentType('book').changeFieldId('title', longId)
@@ -74,7 +72,7 @@ describe('payload validation', function () {
 
       const errors = await validateBatches(migration, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -84,7 +82,7 @@ describe('payload validation', function () {
       ])
     })
 
-    it('returns an error for wrong characters', async function () {
+    it('returns an error for wrong characters', async () => {
       const migration = function (migration) {
         migration.editContentType('book').changeFieldId('title', '12#hello')
       }
@@ -113,7 +111,7 @@ describe('payload validation', function () {
 
       const errors = await validateBatches(migration, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -124,7 +122,7 @@ describe('payload validation', function () {
     })
   })
 
-  it('does not return errors when referring to a field by its new id in the same migration', async function () {
+  it('does not return errors when referring to a field by its new id in the same migration', async () => {
     const migration = function (migration) {
       const book = migration.editContentType('book')
       book.changeFieldId('title', 'newTitle')
@@ -154,6 +152,6 @@ describe('payload validation', function () {
     ]
 
     const errors = await validateBatches(migration, existingCts)
-    expect(errors).to.eql([[], []])
+    expect(errors).toEqual([[], []])
   })
 })

@@ -1,11 +1,10 @@
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import { omit } from 'lodash'
+import validateChunks from './validate-chunks'
 
-const validateChunks = require('./validate-chunks').default
-
-describe('Derive entries chunk validation', function () {
-  describe('when deriving entries of a non existing Content Type', function () {
-    it('returns an error', async function () {
+describe('Derive entries chunk validation', () => {
+  describe('when deriving entries of a non existing Content Type', () => {
+    it('returns an error', async () => {
       const step = {
         contentType: 'entry',
         derivedContentType: 'author',
@@ -34,7 +33,7 @@ describe('Derive entries chunk validation', function () {
         migration.deriveLinkedEntries(step)
       }, contentTypes)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           details: {
             step: {
@@ -71,8 +70,8 @@ describe('Derive entries chunk validation', function () {
     })
   })
 
-  describe('when transforming entries with invalid "from"', function () {
-    it('returns an error', async function () {
+  describe('when transforming entries with invalid "from"', () => {
+    it('returns an error', async () => {
       const step = {
         contentType: 'entry',
         derivedContentType: 'author',
@@ -105,7 +104,7 @@ describe('Derive entries chunk validation', function () {
         migration.deriveLinkedEntries(step)
       }, contentTypes)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           details: {
             step: {

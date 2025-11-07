@@ -1,15 +1,13 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import { omit } from 'lodash'
 
 import EntryDeriveIntentValidator from '../../../../src/lib/intent-validator/entry-derive'
 import createValidator from './validate-steps'
 const validateSteps = createValidator([EntryDeriveIntentValidator])
 
-describe('Entry derivation', function () {
-  describe('when providing the required properties', function () {
-    it('returns no validation errors', async function () {
+describe('Entry derivation', () => {
+  describe('when providing the required properties', () => {
+    it('returns no validation errors', async () => {
       const validationErrors = await validateSteps(function up(migration) {
         migration.deriveLinkedEntries({
           contentType: 'dog',
@@ -35,12 +33,12 @@ describe('Entry derivation', function () {
         })
       })
 
-      expect(validationErrors).to.eql([])
+      expect(validationErrors).toEqual([])
     })
   })
 
-  describe('when using the wrong type for the properties', function () {
-    it('returns all validation errors', async function () {
+  describe('when using the wrong type for the properties', () => {
+    it('returns all validation errors', async () => {
       const validationErrors = await validateSteps(function up(migration) {
         migration.deriveLinkedEntries({
           contentType: ['dog'],
@@ -54,7 +52,7 @@ describe('Entry derivation', function () {
         })
       })
 
-      expect(validationErrors).to.eql([
+      expect(validationErrors).toEqual([
         {
           type: 'InvalidType',
           message:
@@ -234,8 +232,8 @@ describe('Entry derivation', function () {
     })
   })
 
-  describe('when spelling a property wrong', function () {
-    it('returns all validation errors', async function () {
+  describe('when spelling a property wrong', () => {
+    it('returns all validation errors', async () => {
       const properties = {
         contentType: 'dog',
         derivedContentType: 'owner',
@@ -263,7 +261,7 @@ describe('Entry derivation', function () {
         migration.deriveLinkedEntries(properties)
       })
 
-      expect(validationErrors).to.eql([
+      expect(validationErrors).toEqual([
         {
           type: 'InvalidProperty',
           message:

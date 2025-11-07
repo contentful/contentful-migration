@@ -1,11 +1,9 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import buildPayloads from './build-payloads'
 
-describe('Payload builder', function () {
-  describe('Without a Content Type payload', function () {
-    it('returns the expected payload', async function () {
+describe('Payload builder', () => {
+  describe('Without a Content Type payload', () => {
+    it('returns the expected payload', async () => {
       const requests = await buildPayloads(function up(migration) {
         const person = migration.createContentType('person', {
           name: 'bar',
@@ -26,7 +24,7 @@ describe('Payload builder', function () {
         })
       }, [])
 
-      expect(requests).to.eql([
+      expect(requests).toEqual([
         [
           {
             url: '/content_types/person',
@@ -67,8 +65,8 @@ describe('Payload builder', function () {
     })
   })
 
-  describe('when deleting a field', function () {
-    it('returns the expected payload', async function () {
+  describe('when deleting a field', () => {
+    it('returns the expected payload', async () => {
       const contentTypes = [
         {
           name: 'Very dangerous dog',
@@ -101,7 +99,7 @@ describe('Payload builder', function () {
         dog.createField('foo').name('A foo').type('Symbol')
       }, contentTypes)
 
-      expect(requests).to.eql([
+      expect(requests).toEqual([
         [
           {
             url: '/content_types/dog',
@@ -203,8 +201,8 @@ describe('Payload builder', function () {
     })
   })
 
-  describe('when referring to a field by its new id in the same migration', function () {
-    it('builds the correct requests', async function () {
+  describe('when referring to a field by its new id in the same migration', () => {
+    it('builds the correct requests', async () => {
       const migration = function (migration) {
         const book = migration.editContentType('book')
         book.editField('title').type('Text')
@@ -230,7 +228,7 @@ describe('Payload builder', function () {
       ]
 
       const requests = await buildPayloads(migration, existingCts)
-      expect(requests).to.eql([
+      expect(requests).toEqual([
         [
           {
             url: '/content_types/book',
@@ -330,8 +328,8 @@ describe('Payload builder', function () {
     })
   })
 
-  describe('when reordering a field', function () {
-    it('returns the expected payload', async function () {
+  describe('when reordering a field', () => {
+    it('returns the expected payload', async () => {
       const contentTypes = [
         {
           name: 'Very dangerous dog',
@@ -382,7 +380,7 @@ describe('Payload builder', function () {
         dog.moveField('age').afterField('legs')
       }, contentTypes)
 
-      expect(requests).to.eql([
+      expect(requests).toEqual([
         [
           {
             url: '/content_types/dog',
@@ -437,8 +435,8 @@ describe('Payload builder', function () {
     })
   })
 
-  describe('when deleting a content type', function () {
-    it('returns the expected payload', async function () {
+  describe('when deleting a content type', () => {
+    it('returns the expected payload', async () => {
       const contentTypes = [
         {
           name: 'Very dangerous dog',
@@ -469,7 +467,7 @@ describe('Payload builder', function () {
         migration.deleteContentType('dog')
       }, contentTypes)
 
-      expect(requests).to.eql([
+      expect(requests).toEqual([
         [
           {
             url: '/content_types/dog/published',

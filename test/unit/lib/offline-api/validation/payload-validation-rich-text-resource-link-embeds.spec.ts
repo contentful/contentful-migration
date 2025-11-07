@@ -1,6 +1,4 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import validateBatches from './validate-batches'
 import {
   MAX_ALLOWED_RESOURCES,
@@ -13,9 +11,9 @@ const VALID_ALLOWED_RESOURCE = {
   contentTypes: ['cookingMethod', 'recipe']
 }
 
-describe('payload validation (dependencies)', function () {
-  describe('when setting a field to ResourceLink with valid allowedResources', function () {
-    it('does not return an error', async function () {
+describe('payload validation (dependencies)', () => {
+  describe('when setting a field to ResourceLink with valid allowedResources', () => {
+    it('does not return an error', async () => {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
@@ -37,12 +35,12 @@ describe('payload validation (dependencies)', function () {
           ])
       }, existingCts)
 
-      expect(errors).to.eql([[]])
+      expect(errors).toEqual([[]])
     })
   })
 
-  describe('when setting a field to RichText with embedded-resource-block node enabled but not specifying allowedResources', function () {
-    it('returns an error if node validations do not exist', async function () {
+  describe('when setting a field to RichText with embedded-resource-block node enabled but not specifying allowedResources', () => {
+    it('returns an error if node validations do not exist', async () => {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
@@ -54,7 +52,7 @@ describe('payload validation (dependencies)', function () {
           .validations([{ enabledNodeTypes: ['embedded-resource-block'] }])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -65,7 +63,7 @@ describe('payload validation (dependencies)', function () {
       ])
     })
 
-    it('returns an error if embedded-resource-block node validations do not exist', async function () {
+    it('returns an error if embedded-resource-block node validations do not exist', async () => {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
@@ -77,7 +75,7 @@ describe('payload validation (dependencies)', function () {
           .validations([{ enabledNodeTypes: ['embedded-resource-block'] }, { nodes: {} }])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -88,7 +86,7 @@ describe('payload validation (dependencies)', function () {
       ])
     })
 
-    it('returns an error if allowedResources is empty', async function () {
+    it('returns an error if allowedResources is empty', async () => {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
@@ -103,7 +101,7 @@ describe('payload validation (dependencies)', function () {
           ])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -115,8 +113,8 @@ describe('payload validation (dependencies)', function () {
     })
   })
 
-  describe('when setting a field to RichText with embedded-resource-link node but specifying non-object allowedResources', function () {
-    it('returns an error', async function () {
+  describe('when setting a field to RichText with embedded-resource-link node but specifying non-object allowedResources', () => {
+    it('returns an error', async () => {
       const existingCts = []
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
@@ -133,7 +131,7 @@ describe('payload validation (dependencies)', function () {
           ])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -173,7 +171,7 @@ describe('payload validation (dependencies)', function () {
           ])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -212,7 +210,7 @@ describe('payload validation (dependencies)', function () {
           ])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -252,7 +250,7 @@ describe('payload validation (dependencies)', function () {
           ])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             message:
@@ -287,7 +285,7 @@ describe('payload validation (dependencies)', function () {
           ])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             message:
@@ -323,7 +321,7 @@ describe('payload validation (dependencies)', function () {
           ])
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             message: `The property "validations.1.nodes.embedded-resource-block.allowedResources" on the field "menu" must have at most ${MAX_ALLOWED_RESOURCES} items.`,
@@ -359,7 +357,7 @@ describe('payload validation (dependencies)', function () {
         }
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             message: 'Content type "lunch" cannot have more than 3 resource link fields.',
@@ -383,7 +381,7 @@ describe('payload validation (dependencies)', function () {
         }
       }, existingCts)
 
-      expect(errors).to.eql([[]])
+      expect(errors).toEqual([[]])
     })
   })
 })

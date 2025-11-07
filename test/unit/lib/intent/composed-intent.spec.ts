@@ -1,7 +1,7 @@
+import { describe, it, expect } from 'vitest'
 import { migration as migrationSteps } from '../../../../src/lib/migration-steps'
 import IntentList from '../../../../src/lib/intent-list'
 import ComposedIntent from '../../../../src/lib/intent/composed-intent'
-import { expect } from 'chai'
 import { PlanMessage } from '../../../../src/lib/interfaces/plan-message'
 import chalk from 'chalk'
 
@@ -14,9 +14,9 @@ const composedIntent = async function (migration): Promise<ComposedIntent> {
   return list.compressed().getIntents()[0] as ComposedIntent
 }
 
-describe('ComposedIntent', function () {
-  describe('making a composed intent', function () {
-    it('creates the right plan message for composed ct intent', async function () {
+describe('ComposedIntent', () => {
+  describe('making a composed intent', () => {
+    ;(it('creates the right plan message for composed ct intent', async () => {
       const intent = await composedIntent((migration) => {
         const ct = migration.createContentType('test')
         ct.name('Test CT')
@@ -39,7 +39,7 @@ describe('ComposedIntent', function () {
 
       const message: PlanMessage = intent.toPlanMessage()
 
-      expect(message).to.eql({
+      expect(message).toEqual({
         heading: chalk`Create Content Type {bold.yellow test}`,
         details: [
           chalk`{italic name}: "Test CT"`,
@@ -65,7 +65,7 @@ describe('ComposedIntent', function () {
         ]
       })
     }),
-      it('creates the right plan message for composed tag intent', async function () {
+      it('creates the right plan message for composed tag intent', async () => {
         const intent = await composedIntent((migration) => {
           const ct = migration.createTag('test')
           ct.name('Test Tag')
@@ -73,11 +73,11 @@ describe('ComposedIntent', function () {
 
         const message: PlanMessage = intent.toPlanMessage()
 
-        expect(message).to.eql({
+        expect(message).toEqual({
           heading: chalk`Create Tag {bold.yellow test} with visibility: "private"`,
           details: [chalk`{italic name}: "Test Tag"`],
           sections: []
         })
-      })
+      }))
   })
 })

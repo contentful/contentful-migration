@@ -1,5 +1,5 @@
+import { describe, it, expect } from 'vitest'
 import { migration as migrationSteps } from '../../../../src/lib/migration-steps'
-import { expect } from 'chai'
 import { PlanMessage } from '../../../../src/lib/interfaces/plan-message'
 import IntentList from '../../../../src/lib/intent-list'
 import { Intent } from '../../../../src/lib/interfaces/intent'
@@ -13,9 +13,9 @@ const composedIntent = async function (migration): Promise<Intent[]> {
 
   return list.compressed().getIntents()
 }
-describe('EditorInterfaceCopyIntent', function () {
-  describe('when copying one editorInterface from one field to another', function () {
-    it('copies the editor interface', async function () {
+describe('EditorInterfaceCopyIntent', () => {
+  describe('when copying one editorInterface from one field to another', () => {
+    it('copies the editor interface', async () => {
       const intents = await composedIntent((migration) => {
         const ct = migration.createContentType('test')
         ct.name('Test CT')
@@ -29,7 +29,7 @@ describe('EditorInterfaceCopyIntent', function () {
         ct.copyEditorInterface('name', 'description')
       })
       const message: PlanMessage = intents[1].toPlanMessage()
-      expect(message.heading).to.eq(
+      expect(message.heading).toBe(
         chalk`Copy field control for Content Type {bold.yellow test} from field {italic name} to field {italic description}`
       )
     })

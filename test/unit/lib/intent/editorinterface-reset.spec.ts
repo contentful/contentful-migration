@@ -1,5 +1,5 @@
+import { describe, it, expect } from 'vitest'
 import { migration as migrationSteps } from '../../../../src/lib/migration-steps'
-import { expect } from 'chai'
 import { PlanMessage } from '../../../../src/lib/interfaces/plan-message'
 import IntentList from '../../../../src/lib/intent-list'
 import { Intent } from '../../../../src/lib/interfaces/intent'
@@ -13,9 +13,9 @@ const composedIntent = async function (migration): Promise<Intent[]> {
 
   return list.compressed().getIntents()
 }
-describe('EditorInterfaceResetIntent', function () {
-  describe('when reseting one editorInterface', function () {
-    it('resets the editor interface', async function () {
+describe('EditorInterfaceResetIntent', () => {
+  describe('when reseting one editorInterface', () => {
+    it('resets the editor interface', async () => {
       const intents = await composedIntent((migration) => {
         const ct = migration.createContentType('test')
         ct.name('Test CT')
@@ -29,7 +29,7 @@ describe('EditorInterfaceResetIntent', function () {
         ct.resetEditorInterface('name')
       })
       const message: PlanMessage = intents[1].toPlanMessage()
-      expect(message.heading).to.eq(chalk`Reset field control for Content Type {bold.yellow test}`)
+      expect(message.heading).toBe(chalk`Reset field control for Content Type {bold.yellow test}`)
     })
   })
 })

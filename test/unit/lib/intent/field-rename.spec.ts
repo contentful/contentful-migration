@@ -1,15 +1,15 @@
+import { describe, it, expect } from 'vitest'
 import FieldRenameIntent from '../../../../src/lib/intent/field-rename'
 import actionCreators from '../../../../src/lib/migration-steps/action-creators'
-import { expect } from 'chai'
 import runIntent from './run-intent'
 import fakeCallsite from '../../../helpers/fake-callsite'
 import makeApiEntry from '../../../helpers/make-api-entry'
 
 import { EditorInterfaces } from '../../../../src/lib/entities/content-type'
 
-describe('FieldRenameIntent', function () {
-  describe('when renaming a field of a content type', function () {
-    it('renames the field on all entries', async function () {
+describe('FieldRenameIntent', () => {
+  describe('when renaming a field of a content type', () => {
+    it('renames the field on all entries', async () => {
       const intent: FieldRenameIntent = actionCreators.field.rename(
         'dog',
         0,
@@ -78,7 +78,7 @@ describe('FieldRenameIntent', function () {
       const allEntries = await api.getEntriesForContentType('dog')
       const rawEntries = allEntries.map((entry) => entry.toApiEntry())
 
-      expect(rawEntries).to.eql([
+      expect(rawEntries).toEqual([
         makeApiEntry({
           id: 'bello',
           contentTypeId: 'dog',
@@ -107,8 +107,8 @@ describe('FieldRenameIntent', function () {
     })
   })
 
-  describe('rename Fields with editor interfaces', function () {
-    it('keeps the editor interface when renaming a field', async function () {
+  describe('rename Fields with editor interfaces', () => {
+    it('keeps the editor interface when renaming a field', async () => {
       const editorInterfacesByContentType: Map<String, EditorInterfaces> = new Map()
       const ei = new EditorInterfaces({
         sys: {
@@ -180,8 +180,8 @@ describe('FieldRenameIntent', function () {
 
       const api = await runIntent(intent, contentTypes, entries, [], editorInterfacesByContentType)
       const requestBatches = await api.getRequestBatches()
-      expect(requestBatches[0].requests.length).to.eq(3)
-      expect(requestBatches[0].requests[2].data).to.deep.include({
+      expect(requestBatches[0].requests.length).toBe(3)
+      expect(requestBatches[0].requests[2].data).toMatchObject({
         controls: [
           {
             fieldId: 'bites',
