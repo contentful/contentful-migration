@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { omit } from 'lodash'
+import omit from 'lodash/omit'
 
 const validateChunks = require('./validate-chunks').default
 
