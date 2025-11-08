@@ -26,8 +26,6 @@ jobs:
           path: github-actions
           exportEnv: false
           secrets: |
-            secret/data/github/github_packages_read GITHUB_PACKAGES_READ_TOKEN | GITHUB_PACKAGES_READ_TOKEN;
-            secret/data/github/github_packages_write GITHUB_PACKAGES_WRITE_TOKEN | GITHUB_PACKAGES_WRITE_TOKEN;
             github/token/${{ github.event.repository.name }}-semantic-release token | GITHUB_TOKEN;
 
       - name: Get Automation Bot User ID
@@ -62,10 +60,6 @@ jobs:
           path: |
             dist
           key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
-
-      - name: Setup npmrc file
-        run: |
-          echo -e "//npm.pkg.github.com/:_authToken=${{ steps.vault.outputs.GITHUB_PACKAGES_WRITE_TOKEN }}\n@contentful:registry=https://npm.pkg.github.com" > ./.npmrc
 
       - name: Run Release
         run: |
