@@ -17,12 +17,12 @@ jobs:
     uses: ./.github/workflows/check.yaml
   
   test-integration:
-    needs: build
+    needs: [build, check]
     uses: ./.github/workflows/test-integration.yaml
     secrets: inherit
   
   test-e2e:
-    needs: build
+    needs: [build, check, test-integration]
     uses: ./.github/workflows/test-e2e.yaml
     secrets: inherit
 
