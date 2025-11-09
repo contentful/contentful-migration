@@ -1,8 +1,5 @@
 'use strict'
 
-const Bluebird = require('bluebird')
-const co = Bluebird.coroutine
-
 const { expect } = require('chai')
 const assert = require('./assertions')
 const cli = require('./cli')
@@ -22,18 +19,14 @@ describe('apply content-type migration examples', function () {
   this.timeout(30000)
   let environmentId
 
-  before(
-    co(function* () {
-      this.timeout(30000)
-      environmentId = yield createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
-    })
-  )
+  before(async function () {
+    this.timeout(30000)
+    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
+  })
 
-  after(
-    co(function* () {
-      yield deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId)
-    })
-  )
+  after(async function () {
+    await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId)
+  })
 
   it('aborts 01-angry-dog migration', function (done) {
     cli()
@@ -55,15 +48,13 @@ describe('apply content-type migration examples', function () {
       .respond('y\n')
       .expect(assert.plans.contentType.create('dog', { name: 'angry dog' }))
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          const contentType = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'dog')
-          expect(contentType.name).to.eql('angry dog')
-          expect(contentType.description).to.eql('super angry')
-          expect(contentType.fields.length).to.eql(1)
-          done()
-        })
-      )
+      .end(async function () {
+        const contentType = await getDevContentType(SOURCE_TEST_SPACE, environmentId, 'dog')
+        expect(contentType.name).to.eql('angry dog')
+        expect(contentType.description).to.eql('super angry')
+        expect(contentType.fields.length).to.eql(1)
+        done()
+      })
   })
 
   it('aborts 02-friendly-dog migration', function (done) {
@@ -92,15 +83,13 @@ describe('apply content-type migration examples', function () {
         })
       )
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          const contentType = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'dog')
-          expect(contentType.name).to.eql('Friendly dog')
-          expect(contentType.description).to.eql("Who's a good boy? He is!")
-          expect(contentType.fields.length).to.eql(2)
-          done()
-        })
-      )
+      .end(async function () {
+        const contentType = await getDevContentType(SOURCE_TEST_SPACE, environmentId, 'dog')
+        expect(contentType.name).to.eql('Friendly dog')
+        expect(contentType.description).to.eql("Who's a good boy? He is!")
+        expect(contentType.fields.length).to.eql(2)
+        done()
+      })
   })
 
   it('aborts 03-long-example migration', function (done) {
@@ -169,30 +158,28 @@ describe('apply content-type migration examples', function () {
       )
       .expect(assert.plans.tag.create('longexampletag', { name: 'long example marketing' }))
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          const contentTypePerson = yield getDevContentType(
-            SOURCE_TEST_SPACE,
-            environmentId,
-            'person'
-          )
-          const contentTypeAnimal = yield getDevContentType(
-            SOURCE_TEST_SPACE,
-            environmentId,
-            'animal'
-          )
-          const tag = yield getDevTag(SOURCE_TEST_SPACE, environmentId, 'longexampletag')
+      .end(async function () {
+        const contentTypePerson = await getDevContentType(
+          SOURCE_TEST_SPACE,
+          environmentId,
+          'person'
+        )
+        const contentTypeAnimal = await getDevContentType(
+          SOURCE_TEST_SPACE,
+          environmentId,
+          'animal'
+        )
+        const tag = await getDevTag(SOURCE_TEST_SPACE, environmentId, 'longexampletag')
 
-          expect(contentTypePerson.name).to.eql('Person')
-          expect(contentTypePerson.description).to.eql('A content type for a person')
-          expect(contentTypePerson.fields.length).to.eql(3)
-          expect(contentTypeAnimal.name).to.eql('Animal')
-          expect(contentTypeAnimal.description).to.eql('An animal')
-          expect(contentTypeAnimal.fields.length).to.eql(3)
-          expect(tag.name).to.eql('long example marketing')
-          done()
-        })
-      )
+        expect(contentTypePerson.name).to.eql('Person')
+        expect(contentTypePerson.description).to.eql('A content type for a person')
+        expect(contentTypePerson.fields.length).to.eql(3)
+        expect(contentTypeAnimal.name).to.eql('Animal')
+        expect(contentTypeAnimal.description).to.eql('An animal')
+        expect(contentTypeAnimal.fields.length).to.eql(3)
+        expect(tag.name).to.eql('long example marketing')
+        done()
+      })
   })
 
   it('applies delete-content-type migration', function (done) {
@@ -204,18 +191,16 @@ describe('apply content-type migration examples', function () {
       .respond('Y\n')
       .expect(assert.plans.contentType.delete('dog'))
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          let result
-          try {
-            result = yield getDevContentType(SOURCE_TEST_SPACE, environmentId, 'dog')
-          } catch (err) {
-            expect(err.name).to.eql('NotFound')
-          }
-          expect(result).to.be.undefined()
-          done()
-        })
-      )
+      .end(async function () {
+        let result
+        try {
+          result = await getDevContentType(SOURCE_TEST_SPACE, environmentId, 'dog')
+        } catch (err) {
+          expect(err.name).to.eql('NotFound')
+        }
+        expect(result).to.be.undefined()
+        done()
+      })
   })
 
   it('applies 47-create-resource-link-fields', function (done) {
@@ -250,21 +235,19 @@ describe('apply content-type migration examples', function () {
         })
       )
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          const contentType = yield getDevContentType(
-            SOURCE_TEST_SPACE,
-            environmentId,
-            'contentTypeWithResourceLinks'
-          )
-          expect(contentType.fields.length).to.eql(2)
-          expect(contentType.fields[0].type).to.eql('ResourceLink')
-          expect(contentType.fields[0].allowedResources).to.eql(allowedResources)
-          expect(contentType.fields[1].items.type).to.eql('ResourceLink')
-          expect(contentType.fields[1].allowedResources).to.eql(allowedResources)
-          done()
-        })
-      )
+      .end(async function () {
+        const contentType = await getDevContentType(
+          SOURCE_TEST_SPACE,
+          environmentId,
+          'contentTypeWithResourceLinks'
+        )
+        expect(contentType.fields.length).to.eql(2)
+        expect(contentType.fields[0].type).to.eql('ResourceLink')
+        expect(contentType.fields[0].allowedResources).to.eql(allowedResources)
+        expect(contentType.fields[1].items.type).to.eql('ResourceLink')
+        expect(contentType.fields[1].allowedResources).to.eql(allowedResources)
+        done()
+      })
   })
 
   it('applies 54-create-experience-type', function (done) {
@@ -277,28 +260,26 @@ describe('apply content-type migration examples', function () {
       .expect(assert.plans.contentType.create('experienceType'))
       .expect(assert.plans.annotation.assign('Contentful:ExperienceType'))
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          const contentType = yield getDevContentType(
-            SOURCE_TEST_SPACE,
-            environmentId,
-            'experienceType'
-          )
-          expect(contentType.metadata).to.eql({
-            annotations: {
-              ContentType: [
-                {
-                  sys: {
-                    id: 'Contentful:ExperienceType',
-                    type: 'Link',
-                    linkType: 'Annotation'
-                  }
+      .end(async function () {
+        const contentType = await getDevContentType(
+          SOURCE_TEST_SPACE,
+          environmentId,
+          'experienceType'
+        )
+        expect(contentType.metadata).to.eql({
+          annotations: {
+            ContentType: [
+              {
+                sys: {
+                  id: 'Contentful:ExperienceType',
+                  type: 'Link',
+                  linkType: 'Annotation'
                 }
-              ]
-            }
-          })
-          done()
+              }
+            ]
+          }
         })
-      )
+        done()
+      })
   })
 })
