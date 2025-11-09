@@ -16,34 +16,34 @@ jobs:
       actions: read
 
     steps:
-      - name: 'Retrieve Secrets from Vault'
-        id: vault
-        uses: hashicorp/vault-action@v3.4.0
-        with:
-          url: ${{ secrets.VAULT_URL }}
-          role: ${{ github.event.repository.name }}-github-action
-          method: jwt
-          path: github-actions
-          exportEnv: false
-          secrets: |
-            github/token/${{ github.event.repository.name }}-semantic-release token | GITHUB_TOKEN;
+      # - name: 'Retrieve Secrets from Vault'
+      #   id: vault
+      #   uses: hashicorp/vault-action@v3.4.0
+      #   with:
+      #     url: ${{ secrets.VAULT_URL }}
+      #     role: ${{ github.event.repository.name }}-github-action
+      #     method: jwt
+      #     path: github-actions
+      #     exportEnv: false
+      #     secrets: |
+      #       github/token/${{ github.event.repository.name }}-semantic-release token | GITHUB_TOKEN;
 
-      - name: Get Automation Bot User ID
-        id: get-user-id
-        run: echo "user-id=$(gh api "/users/contentful-automation[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
-        env:
-          GITHUB_TOKEN: ${{ steps.vault.outputs.GITHUB_TOKEN }}
+      # - name: Get Automation Bot User ID
+      #   id: get-user-id
+      #   run: echo "user-id=$(gh api "/users/contentful-automation[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+      #   env:
+      #     GITHUB_TOKEN: ${{ steps.vault.outputs.GITHUB_TOKEN }}
 
-      - name: Setting up Git User Credentials
-        run: |
-          git config --global user.name 'contentful-automation[bot]'
-          git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+contentful-automation[bot]@users.noreply.github.com'
+      # - name: Setting up Git User Credentials
+      #   run: |
+      #     git config --global user.name 'contentful-automation[bot]'
+      #     git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+contentful-automation[bot]@users.noreply.github.com'
 
       - name: Checkout code
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          token: ${{ steps.vault.outputs.GITHUB_TOKEN }}
+          # token: ${{ steps.vault.outputs.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -65,20 +65,22 @@ jobs:
         run: |
           npm run semantic-release
         env:
-          GITHUB_TOKEN: ${{ steps.vault.outputs.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # env:
+        #   GITHUB_TOKEN: ${{ steps.vault.outputs.GITHUB_TOKEN }}
 
-      - name: Get latest release tag
-        id: get-tag
-        run: |
-          TAG=$(gh api repos/${{ github.repository }}/releases/latest --jq .tag_name)
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
-        env:
-          GITHUB_TOKEN: ${{ steps.vault.outputs.GITHUB_TOKEN }}
+      # - name: Get latest release tag
+      #   id: get-tag
+      #   run: |
+      #     TAG=$(gh api repos/${{ github.repository }}/releases/latest --jq .tag_name)
+      #     echo "tag=$TAG" >> $GITHUB_OUTPUT
+      #   env:
+      #     GITHUB_TOKEN: ${{ steps.vault.outputs.GITHUB_TOKEN }}
 
-      - name: Summary
-        run: |
-          VERSION=$(echo "${{ steps.get-tag.outputs.tag }}" | sed 's/^v//')
-          echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **Version**: ${{ steps.get-tag.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **GitHub Release**: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get-tag.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
+      # - name: Summary
+      #   run: |
+      #     VERSION=$(echo "${{ steps.get-tag.outputs.tag }}" | sed 's/^v//')
+      #     echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
+      #     echo "" >> $GITHUB_STEP_SUMMARY
+      #     echo "- **Version**: ${{ steps.get-tag.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
+      #     echo "- **GitHub Release**: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get-tag.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
