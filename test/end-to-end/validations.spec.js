@@ -1,8 +1,5 @@
 'use strict'
 
-const Bluebird = require('bluebird')
-const co = Bluebird.coroutine
-
 const { expect } = require('chai')
 const assert = require('./assertions')
 const cli = require('./cli')
@@ -21,18 +18,14 @@ describe('apply validations migration examples', function () {
   this.timeout(30000)
   let environmentId
 
-  before(
-    co(function* () {
-      this.timeout(30000)
-      environmentId = yield createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
-    })
-  )
+  before(async function () {
+    this.timeout(30000)
+    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
+  })
 
-  after(
-    co(function* () {
-      yield deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId)
-    })
-  )
+  after(async function () {
+    await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId)
+  })
 
   it('aborts 09-validate-validations migration', function (done) {
     cli()
@@ -144,17 +137,15 @@ describe('apply validations migration examples', function () {
         })
       )
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          const contentType = yield getDevContentType(
-            SOURCE_TEST_SPACE,
-            environmentId,
-            'dieatary-food'
-          )
-          expect(contentType.fields).to.eql(expectedFields)
-          done()
-        })
-      )
+      .end(async function () {
+        const contentType = await getDevContentType(
+          SOURCE_TEST_SPACE,
+          environmentId,
+          'dieatary-food'
+        )
+        expect(contentType.fields).to.eql(expectedFields)
+        done()
+      })
   })
 
   it('successfully creates field with rich text and validations', function (done) {
