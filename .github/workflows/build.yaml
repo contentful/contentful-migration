@@ -4,14 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  test-debug:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3      
-      - run: |
-          echo "Check github.event_name: ${{ github.event_name }}"
-          echo "ref: ${{ github.ref }}"
-          echo "evaluated check: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dx-506-github-packages') }}"
+  
   build:
     runs-on: ubuntu-latest
 

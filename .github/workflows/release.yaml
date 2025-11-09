@@ -38,9 +38,6 @@ jobs:
       #   run: |
       #     git config --global user.name 'contentful-automation[bot]'
       #     git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+contentful-automation[bot]@users.noreply.github.com'
-
-      # - name: Install latest npm
-      #   run: npm install -g npm@latest
       
       - name: Checkout code
         uses: actions/checkout@v5
@@ -53,6 +50,9 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
+
+      - name: Install latest npm
+        run: npm install -g npm@latest
 
       - name: Debug Token
         run: |
