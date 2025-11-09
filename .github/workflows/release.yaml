@@ -39,6 +39,13 @@ jobs:
       #     git config --global user.name 'contentful-automation[bot]'
       #     git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+contentful-automation[bot]@users.noreply.github.com'
 
+      - name: Debug Token
+        run: |
+          echo "ACTIONS_ID_TOKEN_REQUEST_TOKEN is ${{ env.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}"
+          echo "NPM Version is $(npm -v)"
+        env:
+          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${{ secrets.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}
+
       - name: Checkout code
         uses: actions/checkout@v5
         with:
