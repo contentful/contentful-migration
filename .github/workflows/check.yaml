@@ -7,6 +7,9 @@ jobs:
   lint:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -27,12 +30,12 @@ jobs:
             dist 
           key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
 
-      # - name: Run linter
-      #   run: npm run lint
+      - name: Run linter
+        run: npm run lint
 
       # formatting wasn't checked in circle ci previously, skipping for now
       # - name: Check formatting
       #   run: npm run format:check
 
-      # - name: Run unit tests
-      #   run: npm run test:unit
+      - name: Run unit tests
+        run: npm run test:unit

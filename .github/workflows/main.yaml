@@ -14,20 +14,19 @@ jobs:
     needs: build
     uses: ./.github/workflows/check.yaml
   
-  # test-integration:
-  #   needs: [build, check]
-  #   uses: ./.github/workflows/test-integration.yaml
-  #   secrets: inherit
+  test-integration:
+    needs: [build, check]
+    uses: ./.github/workflows/test-integration.yaml
+    secrets: inherit
   
-  # test-e2e:
-  #   needs: [build, check, test-integration]
-  #   uses: ./.github/workflows/test-e2e.yaml
-  #   secrets: inherit
+  test-e2e:
+    needs: [build, check, test-integration]
+    uses: ./.github/workflows/test-e2e.yaml
+    secrets: inherit
 
   release:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dx-506-github-packages')
-    # needs: [build, check, test-integration, test-e2e]
-    needs: [build, check]
+    needs: [build, check, test-integration, test-e2e]
     permissions:
       contents: write
       id-token: write
