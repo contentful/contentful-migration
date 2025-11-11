@@ -1,11 +1,11 @@
 blank_issues_enabled: true
 contact_links:
   - name: Question or Discussion
-    url: https://github.com/username/repo-name/discussions
+    url: https://github.com/contentful/contentful-migration/discussions
     about: Ask questions or discuss ideas with the community
   - name: Documentation
     url: https://docs.yourproject.com
     about: Check out our documentation for help and guides
   - name: Security Vulnerability
-    url: https://github.com/username/repo-name/security/advisories/new
+    url: https://github.com/contentful/contentful-migration/security/advisories/new
     about: Report a security vulnerability privately
