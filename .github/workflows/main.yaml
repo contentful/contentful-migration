@@ -25,7 +25,7 @@ jobs:
     secrets: inherit
 
   release:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta')
     needs: [build, check, test-integration, test-e2e]
     uses: ./.github/workflows/release.yaml
     secrets:
