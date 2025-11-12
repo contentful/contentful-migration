@@ -43,8 +43,8 @@ const deleteFieldOnContentTypeWithEditorLayout = require('../../examples/52-dele
 const renameFieldOnContentTypeWithEditorLayout = require('../../examples/53-rename-field-in-content-type-with-editor-layout')
 const createRichTextFieldWithValidation = require('../../examples/22-create-rich-text-field-with-validation')
 const createExperienceType = require('../../examples/54-create-experience-type')
-const { createMigrationParser } = require('../../built/lib/migration-parser')
-const { DEFAULT_SIDEBAR_LIST } = require('../../built/lib/action/sidebarwidget')
+const { createMigrationParser } = require('../../dist/lib/migration-parser')
+const { DEFAULT_SIDEBAR_LIST } = require('../../dist/lib/action/sidebarwidget')
 const taxonomyHelpers = require('../helpers/taxonomy-helpers')
 const co = Bluebird.coroutine
 

@@ -4,8 +4,8 @@ const { expect } = require('chai')
 const { HttpsProxyAgent } = require('https-proxy-agent')
 
 const rewire = require('rewire')
-const { getConfig } = rewire('../../../../built/bin/lib/config')
-const contentfulClient = rewire('../../../../built/bin/lib/contentful-client')
+const { getConfig } = rewire('../../../../dist/bin/lib/config')
+const contentfulClient = rewire('../../../../dist/bin/lib/contentful-client')
 const { createManagementClient } = contentfulClient
 
 // Ensure that when both tokens are defined, we first take the integration one

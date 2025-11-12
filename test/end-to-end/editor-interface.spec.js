@@ -1,8 +1,5 @@
 'use strict'
 
-const Bluebird = require('bluebird')
-const co = Bluebird.coroutine
-
 const { expect } = require('chai')
 const assert = require('./assertions')
 const cli = require('./cli')
@@ -21,18 +18,14 @@ describe('apply editor-interface migration examples', function () {
   this.timeout(30000)
   let environmentId
 
-  before(
-    co(function* () {
-      this.timeout(30000)
-      environmentId = yield createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
-    })
-  )
+  before(async function () {
+    this.timeout(30000)
+    environmentId = await createDevEnvironment(SOURCE_TEST_SPACE, ENVIRONMENT_ID)
+  })
 
-  after(
-    co(function* () {
-      yield deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId)
-    })
-  )
+  after(async function () {
+    await deleteDevEnvironment(SOURCE_TEST_SPACE, environmentId)
+  })
 
   it('aborts 16-change-field-control migration', function (done) {
     cli()
@@ -54,18 +47,16 @@ describe('apply editor-interface migration examples', function () {
       .respond('y\n')
       .expect(assert.plans.editorInterface.change('blogPost', 'slug', 'slugEditor'))
       .expect(assert.plans.actions.apply())
-      .end(
-        co(function* () {
-          const editorInterfaces = yield getDevEditorInterface(
-            SOURCE_TEST_SPACE,
-            environmentId,
-            'blogPost'
-          )
-          const editorInterface = editorInterfaces.controls[0]
-          expect(editorInterface.fieldId).to.eql('slug')
-          expect(editorInterface.widgetId).to.eql('slugEditor')
-          done()
-        })
-      )
+      .end(async function () {
+        const editorInterfaces = await getDevEditorInterface(
+          SOURCE_TEST_SPACE,
+          environmentId,
+          'blogPost'
+        )
+        const editorInterface = editorInterfaces.controls[0]
+        expect(editorInterface.fieldId).to.eql('slug')
+        expect(editorInterface.widgetId).to.eql('slugEditor')
+        done()
+      })
   })
 })

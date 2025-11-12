@@ -1,6 +1,5 @@
 import { expect } from 'chai'
-
-const validateChunks = require('./validate-chunks').default
+import validateChunks from './validate-chunks'
 
 describe('Transform entries chunk validation', function () {
   describe('when transforming entries of a non existing Content Type', function () {

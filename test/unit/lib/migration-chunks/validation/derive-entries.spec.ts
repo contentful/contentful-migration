@@ -1,7 +1,6 @@
 import { expect } from 'chai'
-import { omit } from 'lodash'
-
-const validateChunks = require('./validate-chunks').default
+import omit from 'lodash/omit'
+import validateChunks from './validate-chunks'
 
 describe('Derive entries chunk validation', function () {
   describe('when deriving entries of a non existing Content Type', function () {

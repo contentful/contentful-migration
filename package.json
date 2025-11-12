@@ -4,7 +4,7 @@
   "description": "Migration tooling for contentful",
   "author": "Contentful GmbH",
   "license": "MIT",
-  "main": "built/index",
+  "main": "dist/index",
   "keywords": [
     "contentful",
     "content model",
@@ -22,9 +22,11 @@
     "url": "https://github.com/contentful/contentful-migration"
   },
   "scripts": {
-    "clean": "rimraf built",
     "build": "npm run clean && tsc -p tsconfig.json",
     "build-dev": "npm run clean && tsc -p tsconfig-dev.json",
+    "clean": "rimraf dist",
+    "format:fix": "prettier --write \"**/*.{ts,js,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,js,json,md}\"",
     "prepare": "npm run build && husky install",
     "test": "NOCK_RECORD=0 npm run build && npm run test:unit && npm run test:integration && npm run test:e2e && npm run lint && npm run test:typescript-declaration",
     "test:watch": "npm run test:unit -- --watch",
@@ -46,7 +48,7 @@
     "index.d.ts",
     "CHANGELOG.md",
     "bin",
-    "built",
+    "dist",
     "docs"
   ],
   "dependencies": {
@@ -100,7 +102,7 @@
     "prettier": "^3.0.3",
     "rewire": "^5.0.0",
     "rimraf": "^5.0.1",
-    "semantic-release": "^22.0.12",
+    "semantic-release": "^25.0.2",
     "sinon": "^18.0.0",
     "sinon-chai": "^3.5.0",
     "source-map-support": "^0.5.16",

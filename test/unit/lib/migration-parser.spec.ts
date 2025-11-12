@@ -1,6 +1,6 @@
 'use strict'
 
-const { expect } = require('chai')
+import { expect } from 'chai'
 import Fetcher from '../../../src/lib/fetcher'
 import createMigrationParser from '../../../src/lib/migration-parser'
 

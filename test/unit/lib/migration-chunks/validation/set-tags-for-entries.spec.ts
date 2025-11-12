@@ -1,8 +1,7 @@
 import { expect } from 'chai'
 import { omit } from 'lodash'
 import makeApiTag from '../../../../helpers/make-api-tag'
-
-const validateChunks = require('./validate-chunks').default
+import validateChunks from './validate-chunks'
 
 describe('Set tags chunk validation', function () {
   describe('when setting tags on a non existing Content Type', function () {
