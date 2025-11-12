@@ -22,46 +22,54 @@ describe('apply entry extension migration examples', () => {
     await deleteDevEnvironment(SOURCE_TEST_SPACE!, environmentId)
   })
 
-  it('migrates the editor with 25-configure-entry-editor.js', (done) => {
-    cli()
-      .run(
-        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/25-configure-entry-editor.js`
-      )
-      .on(/\? Do you want to apply the migration \(Y\/n\)/)
-      .respond('y\n')
-      .end(async () => {
-        const editorInterfaces = await getDevEditorInterface(
-          SOURCE_TEST_SPACE!,
-          environmentId,
-          'customEntryEditor_v5'
+  it('migrates the editor with 25-configure-entry-editor.js', async () => {
+    await new Promise<void>((resolve, reject) => {
+      cli()
+        .run(
+          `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/25-configure-entry-editor.js`
         )
-        const editor = editorInterfaces.editor
-
-        expect(editor).toEqual({
-          settings: {},
-          widgetId: 'customEntryEditor_v5',
-          widgetNamespace: 'extension'
+        .on(/\? Do you want to apply the migration \(Y\/n\)/)
+        .respond('y\n')
+        .end((err?: Error) => {
+          if (err) reject(err)
+          else resolve()
         })
-        done()
-      })
+    })
+
+    const editorInterfaces = await getDevEditorInterface(
+      SOURCE_TEST_SPACE!,
+      environmentId,
+      'customEntryEditor_v5'
+    )
+    const editor = editorInterfaces.editor
+
+    expect(editor).toEqual({
+      settings: {},
+      widgetId: 'customEntryEditor_v5',
+      widgetNamespace: 'extension'
+    })
   })
 
-  it('migrates the editor with 26-reset-entry-editor.js', (done) => {
-    cli()
-      .run(
-        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/26-reset-entry-editor.js`
-      )
-      .on(/\? Do you want to apply the migration \(Y\/n\)/)
-      .respond('y\n')
-      .end(async () => {
-        const editorInterfaces = await getDevEditorInterface(
-          SOURCE_TEST_SPACE!,
-          environmentId,
-          'resetEntryEditor_v5'
+  it('migrates the editor with 26-reset-entry-editor.js', async () => {
+    await new Promise<void>((resolve, reject) => {
+      cli()
+        .run(
+          `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/26-reset-entry-editor.js`
         )
-        const editor = editorInterfaces.editor
-        expect(editor).toBeUndefined()
-        done()
-      })
+        .on(/\? Do you want to apply the migration \(Y\/n\)/)
+        .respond('y\n')
+        .end((err?: Error) => {
+          if (err) reject(err)
+          else resolve()
+        })
+    })
+
+    const editorInterfaces = await getDevEditorInterface(
+      SOURCE_TEST_SPACE!,
+      environmentId,
+      'resetEntryEditor_v5'
+    )
+    const editor = editorInterfaces.editor
+    expect(editor).toBeUndefined()
   })
 })

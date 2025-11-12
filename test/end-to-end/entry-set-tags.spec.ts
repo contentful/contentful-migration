@@ -96,49 +96,57 @@ describe('apply set tags transformation', () => {
     await deleteDevEnvironment(SOURCE_TEST_SPACE!, environmentId)
   })
 
-  it('aborts 31-set-tags-for-entries', (done) => {
-    cli()
-      .run(
-        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/31-set-tags-for-entries.js`
-      )
-      .on(/\? Do you want to apply the migration \(Y\/n\)/)
-      .respond('n\n')
-      .expect(assert.plans.entriesSetTags('article'))
-      .expect(assert.plans.actions.abort())
-      .end(done)
+  it('aborts 31-set-tags-for-entries', async () => {
+    await new Promise<void>((resolve, reject) => {
+      cli()
+        .run(
+          `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/31-set-tags-for-entries.js`
+        )
+        .on(/\? Do you want to apply the migration \(Y\/n\)/)
+        .respond('n\n')
+        .expect(assert.plans.entriesSetTags('article'))
+        .expect(assert.plans.actions.abort())
+        .end((err?: Error) => {
+          if (err) reject(err)
+          else resolve()
+        })
+    })
   })
 
-  it('applies 31-set-tags-for-entries', (done) => {
-    cli()
-      .run(
-        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/31-set-tags-for-entries.js`
-      )
-      .on(/\? Do you want to apply the migration \(Y\/n\)/)
-      .respond('y\n')
-      .expect(assert.plans.actions.apply())
-      .end(async () => {
-        const blogEntries = await request({
-          method: 'GET',
-          url: '/entries?content_type=article',
-          headers: {
-            'X-Contentful-Beta-Dev-Spaces': 1
-          }
-        })
-
-        expect(blogEntries.items[0].fields.title).toBeDefined()
-
-        const blogEntriesWithoutSysAndFields = blogEntries.items.map((i) =>
-          _.omit(i, ['sys', 'fields'])
+  it('applies 31-set-tags-for-entries', async () => {
+    await new Promise<void>((resolve, reject) => {
+      cli()
+        .run(
+          `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/31-set-tags-for-entries.js`
         )
-        expect(blogEntriesWithoutSysAndFields[0].metadata.tags.length).toEqual(2)
-        expect(
-          blogEntriesWithoutSysAndFields[0].metadata.tags.some((tag: any) => tag.sys.id === 'new')
-        ).toEqual(true)
-        expect(
-          blogEntriesWithoutSysAndFields[0].metadata.tags.some((tag: any) => tag.sys.id === 'old')
-        ).toEqual(true)
+        .on(/\? Do you want to apply the migration \(Y\/n\)/)
+        .respond('y\n')
+        .expect(assert.plans.actions.apply())
+        .end((err?: Error) => {
+          if (err) reject(err)
+          else resolve()
+        })
+    })
 
-        done()
-      })
+    const blogEntries = await request({
+      method: 'GET',
+      url: '/entries?content_type=article',
+      headers: {
+        'X-Contentful-Beta-Dev-Spaces': 1
+      }
+    })
+
+    expect(blogEntries.items[0].fields.title).toBeDefined()
+
+    const blogEntriesWithoutSysAndFields = blogEntries.items.map((i) =>
+      _.omit(i, ['sys', 'fields'])
+    )
+    expect(blogEntriesWithoutSysAndFields[0].metadata.tags.length).toEqual(2)
+    expect(
+      blogEntriesWithoutSysAndFields[0].metadata.tags.some((tag: any) => tag.sys.id === 'new')
+    ).toEqual(true)
+    expect(
+      blogEntriesWithoutSysAndFields[0].metadata.tags.some((tag: any) => tag.sys.id === 'old')
+    ).toEqual(true)
   })
 })

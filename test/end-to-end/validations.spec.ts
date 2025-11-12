@@ -19,18 +19,23 @@ describe('apply validations migration examples', () => {
     await deleteDevEnvironment(SOURCE_TEST_SPACE!, environmentId)
   })
 
-  it('aborts 09-validate-validations migration', (done) => {
-    cli()
-      .run(
-        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/09-validate-validations.js`
-      )
-      .on(/\? Do you want to apply the migration \(Y\/n\)/)
-      .respond('n\n')
-      .expect(assert.plans.contentType.create('dieatary-food'))
-      .expect(assert.plans.actions.abort())
-      .end(done)
+  it('aborts 09-validate-validations migration', async () => {
+    await new Promise<void>((resolve, reject) => {
+      cli()
+        .run(
+          `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/09-validate-validations.js`
+        )
+        .on(/\? Do you want to apply the migration \(Y\/n\)/)
+        .respond('n\n')
+        .expect(assert.plans.contentType.create('dieatary-food'))
+        .expect(assert.plans.actions.abort())
+        .end((err?: Error) => {
+          if (err) reject(err)
+          else resolve()
+        })
+    })
   })
-  it('applies 09-validate-validations migration', (done) => {
+  it('applies 09-validate-validations migration', async () => {
     const expectedFields = [
       {
         id: 'name',
@@ -78,76 +83,81 @@ describe('apply validations migration examples', () => {
       }
     ]
 
-    cli()
-      .run(
-        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/09-validate-validations.js`
-      )
-      .on(/\? Do you want to apply the migration \(Y\/n\)/)
-      .respond('y\n')
-      .expect(
-        assert.plans.contentType.create('dieatary-food', {
-          name: 'Dieatary Food',
-          description: 'Food with up to 500 calories'
-        })
-      )
-      .expect(
-        assert.plans.field.create('name', {
-          type: 'Symbol',
-          name: 'name of the food',
-          validations: [
-            {
-              unique: true
-            },
-            {
-              prohibitRegexp: {
-                pattern: 'foo',
-                flags: null
+    await new Promise<void>((resolve, reject) => {
+      cli()
+        .run(
+          `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/09-validate-validations.js`
+        )
+        .on(/\? Do you want to apply the migration \(Y\/n\)/)
+        .respond('y\n')
+        .expect(
+          assert.plans.contentType.create('dieatary-food', {
+            name: 'Dieatary Food',
+            description: 'Food with up to 500 calories'
+          })
+        )
+        .expect(
+          assert.plans.field.create('name', {
+            type: 'Symbol',
+            name: 'name of the food',
+            validations: [
+              {
+                unique: true
               },
-              message: 'asdf'
-            }
-          ]
-        })
-      )
-      .expect(
-        assert.plans.field.create('calories', {
-          type: 'Link',
-          linkType: 'Asset',
-          name: 'amount of calories the food contains',
-          validations: [
-            {
-              assetImageDimensions: {
-                width: {
-                  min: 1199,
-                  max: null
+              {
+                prohibitRegexp: {
+                  pattern: 'foo',
+                  flags: null
                 },
-                height: {
-                  min: 1343
+                message: 'asdf'
+              }
+            ]
+          })
+        )
+        .expect(
+          assert.plans.field.create('calories', {
+            type: 'Link',
+            linkType: 'Asset',
+            name: 'amount of calories the food contains',
+            validations: [
+              {
+                assetImageDimensions: {
+                  width: {
+                    min: 1199,
+                    max: null
+                  },
+                  height: {
+                    min: 1343
+                  }
                 }
               }
-            }
-          ]
-        })
-      )
-      .expect(assert.plans.actions.apply())
-      .end(async () => {
-        const contentType = await getDevContentType(
-          SOURCE_TEST_SPACE!,
-          environmentId,
-          'dieatary-food'
+            ]
+          })
         )
-        expect(contentType.fields).toEqual(expectedFields)
-        done()
-      })
+        .expect(assert.plans.actions.apply())
+        .end((err?: Error) => {
+          if (err) reject(err)
+          else resolve()
+        })
+    })
+
+    const contentType = await getDevContentType(SOURCE_TEST_SPACE!, environmentId, 'dieatary-food')
+    expect(contentType.fields).toEqual(expectedFields)
   })
 
-  it('successfully creates field with rich text and validations', (done) => {
-    cli()
-      .run(
-        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/22-create-rich-text-field-with-validation.js`
-      )
-      .on(/\? Do you want to apply the migration \(Y\/n\)/)
-      .respond('y\n')
-      .stdout(/.* Migration successful/)
-      .end(done)
+  it('successfully creates field with rich text and validations', async () => {
+    await new Promise<void>((resolve, reject) => {
+      cli()
+        .run(
+          `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/22-create-rich-text-field-with-validation.js`
+        )
+        .on(/\? Do you want to apply the migration \(Y\/n\)/)
+        .respond('y\n')
+        .stdout(/.* Migration successful/)
+        .end((err?: Error) => {
+          if (err) reject(err)
+          else resolve()
+        })
+    })
   })
 })

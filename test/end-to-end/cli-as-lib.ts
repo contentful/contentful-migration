@@ -7,7 +7,7 @@ const cli = () => {
   return nixt()
     .env('CONTENTFUL_SPACE_ID', SPACE_ID)
     .env('CONTENTFUL_MANAGEMENT_ACCESS_TOKEN', ACCESS_TOKEN)
-    .base('node ./examples/usage-as-lib.js ')
+    .base('npx ts-node ./examples/usage-as-lib.js ')
     .clone()
 }
 

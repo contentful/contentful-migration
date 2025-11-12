@@ -80,76 +80,85 @@ describe('apply derive entry transformation', () => {
     await deleteDevEnvironment(SOURCE_TEST_SPACE!, environmentId)
   })
 
-  it('aborts 15-derive-entry', (done) => {
-    cli()
-      .run(
-        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/15-derive-entry-n-to-1.js`
-      )
-      .on(/\? Do you want to apply the migration \(Y\/n\)/)
-      .respond('n\n')
-      .expect(assert.plans.entriesDerive('dog'))
-      .expect(assert.plans.actions.abort())
-      .end(done)
+  it('aborts 15-derive-entry', async () => {
+    await new Promise<void>((resolve, reject) => {
+      cli()
+        .run(
+          `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/15-derive-entry-n-to-1.js`
+        )
+        .on(/\? Do you want to apply the migration \(Y\/n\)/)
+        .respond('n\n')
+        .expect(assert.plans.entriesDerive('dog'))
+        .expect(assert.plans.actions.abort())
+        .end((err?: Error) => {
+          if (err) reject(err)
+          else resolve()
+        })
+    })
   })
 
-  it('applies 15-derive-entry', (done) => {
-    cli()
-      .run(
-        `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/15-derive-entry-n-to-1.js`
-      )
-      .on(/\? Do you want to apply the migration \(Y\/n\)/)
-      .respond('y\n')
-      .expect(assert.plans.actions.apply())
-      .end(async () => {
-        const sortFn = (entry: any) => entry.fields.name['en-US']
-
-        const dogs = await getEntries(SOURCE_TEST_SPACE!, environmentId, 'dog')
-        const owners = await getEntries(SOURCE_TEST_SPACE!, environmentId, 'owner')
-        const dogsEntriesWithoutSysAndMetadata = _.sortBy(
-          dogs.items.map((i) => _.omit(i, ['sys', 'metadata'])),
-          sortFn
+  it('applies 15-derive-entry', async () => {
+    await new Promise<void>((resolve, reject) => {
+      cli()
+        .run(
+          `--space-id ${SOURCE_TEST_SPACE} --environment-id ${environmentId} ./examples/15-derive-entry-n-to-1.js`
         )
-        const ownersEntriesWithoutSysAndMetadata = owners.items.map((i) =>
-          _.omit(i, ['sys', 'metadata'])
-        )
+        .on(/\? Do you want to apply the migration \(Y\/n\)/)
+        .respond('y\n')
+        .expect(assert.plans.actions.apply())
+        .end((err?: Error) => {
+          if (err) reject(err)
+          else resolve()
+        })
+    })
 
-        const expectedDogs = _.sortBy(
-          [
-            {
-              fields: {
-                name: { 'en-US': 'Moses' },
-                breed: { 'en-US': 'Poodle' },
-                owner: {
-                  'en-US': { sys: { id: 'contentful-office', linkType: 'Entry', type: 'Link' } }
-                }
-              }
-            },
-            {
-              fields: {
-                name: { 'en-US': 'Luna' },
-                breed: { 'en-US': 'Something' },
-                owner: {
-                  'en-US': { sys: { id: 'contentful-office', linkType: 'Entry', type: 'Link' } }
-                }
-              }
-            }
-          ],
-          sortFn
-        )
+    const sortFn = (entry: any) => entry.fields.name['en-US']
 
-        expect(dogsEntriesWithoutSysAndMetadata).toEqual(expectedDogs)
+    const dogs = await getEntries(SOURCE_TEST_SPACE!, environmentId, 'dog')
+    const owners = await getEntries(SOURCE_TEST_SPACE!, environmentId, 'owner')
+    const dogsEntriesWithoutSysAndMetadata = _.sortBy(
+      dogs.items.map((i) => _.omit(i, ['sys', 'metadata'])),
+      sortFn
+    )
+    const ownersEntriesWithoutSysAndMetadata = owners.items.map((i) =>
+      _.omit(i, ['sys', 'metadata'])
+    )
 
-        const expectedOwners = [
-          {
-            fields: {
-              firstName: { 'en-US': 'Contentful' },
-              lastName: { 'en-US': 'Office' }
+    const expectedDogs = _.sortBy(
+      [
+        {
+          fields: {
+            name: { 'en-US': 'Moses' },
+            breed: { 'en-US': 'Poodle' },
+            owner: {
+              'en-US': { sys: { id: 'contentful-office', linkType: 'Entry', type: 'Link' } }
             }
           }
-        ]
-        expect(ownersEntriesWithoutSysAndMetadata.length).toEqual(1)
-        expect(ownersEntriesWithoutSysAndMetadata).toEqual(expectedOwners)
-        done()
-      })
+        },
+        {
+          fields: {
+            name: { 'en-US': 'Luna' },
+            breed: { 'en-US': 'Something' },
+            owner: {
+              'en-US': { sys: { id: 'contentful-office', linkType: 'Entry', type: 'Link' } }
+            }
+          }
+        }
+      ],
+      sortFn
+    )
+
+    expect(dogsEntriesWithoutSysAndMetadata).toEqual(expectedDogs)
+
+    const expectedOwners = [
+      {
+        fields: {
+          firstName: { 'en-US': 'Contentful' },
+          lastName: { 'en-US': 'Office' }
+        }
+      }
+    ]
+    expect(ownersEntriesWithoutSysAndMetadata.length).toEqual(1)
+    expect(ownersEntriesWithoutSysAndMetadata).toEqual(expectedOwners)
   })
 })
