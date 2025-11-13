@@ -123,7 +123,7 @@
       },
       {
         "name": "dev",
-        "channel": "dx-506-github-packages",
+        "channel": "dev",
         "prerelease": true
       }
     ],
