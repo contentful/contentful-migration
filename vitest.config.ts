@@ -17,8 +17,7 @@ export default defineConfig({
         test: {
           name: 'unit',
           include: ['test/unit/**/*.spec.ts'],
-          exclude: ['node_modules', 'dist', 'test/integration', 'test/end-to-end'],
-          setupFiles: ['./test/setup-unit.ts']
+          exclude: ['node_modules', 'dist', 'test/integration', 'test/end-to-end']
         }
       },
       {
