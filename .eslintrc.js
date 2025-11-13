@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ['@contentful/backend', 'prettier'],
+  extends: ['prettier'],
   root: true,
   rules: {
     'max-len': [

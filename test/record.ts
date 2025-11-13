@@ -1,7 +1,7 @@
 import nock from 'nock'
 import path from 'path'
 import fs from 'fs'
-import zlib from 'zlib'
+import zlib from 'node:zlib'
 
 export default function (name: string, options?: { fixtureFolder?: string }) {
   // options tell us where to store our fixtures
@@ -35,8 +35,8 @@ export default function (name: string, options?: { fixtureFolder?: string }) {
     after: function (done?: () => void) {
       if (!hasFixture) {
         const fixtures = nock.recorder.play()
-        const decodedFixtures = fixtures.map((fixture: string) => {
-          if (fixture.indexOf('gzip') !== -1) {
+        const decodedFixtures = fixtures.map((fixture) => {
+          if (typeof fixture === 'string' && fixture.indexOf('gzip') !== -1) {
             const matches = fixture.match(/reply\(\d{3},\s*"([a-f0-9]+)"/)
             if (matches) {
               const gzipped = matches[1]
