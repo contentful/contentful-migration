@@ -1,0 +1,45 @@
+name: Run Checks
+
+on:
+  workflow_call:
+    secrets:
+      CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN:
+        required: true
+      CONTENTFUL_ORGANIZATION_ID:
+        required: true
+      CONTENTFUL_SPACE_ID:
+        required: true
+
+jobs:
+  test-integration:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Restore the build folders
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            dist 
+          key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Run integration tests
+        run: npm run test:integration
+        env:
+          CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
+          CONTENTFUL_ORGANIZATION_ID: ${{ secrets.CONTENTFUL_ORGANIZATION_ID }}
+          CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
