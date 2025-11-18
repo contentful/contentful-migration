@@ -1,41 +1,11 @@
 ![header](./.github/header.png)
 
-<p align="center">
-  <a href="https://www.contentful.com/slack/">
-    <img src="https://img.shields.io/badge/-Join%20Community%20Slack-2AB27B.svg?logo=slack&maxAge=31557600" alt="Join Contentful Community Slack">
-  </a>
-  &nbsp;
-  <a href="https://www.contentfulcommunity.com/">
-    <img src="https://img.shields.io/badge/-Join%20Community%20Forum-3AB2E6.svg?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MiA1OSI+CiAgPHBhdGggZmlsbD0iI0Y4RTQxOCIgZD0iTTE4IDQxYTE2IDE2IDAgMCAxIDAtMjMgNiA2IDAgMCAwLTktOSAyOSAyOSAwIDAgMCAwIDQxIDYgNiAwIDEgMCA5LTkiIG1hc2s9InVybCgjYikiLz4KICA8cGF0aCBmaWxsPSIjNTZBRUQyIiBkPSJNMTggMThhMTYgMTYgMCAwIDEgMjMgMCA2IDYgMCAxIDAgOS05QTI5IDI5IDAgMCAwIDkgOWE2IDYgMCAwIDAgOSA5Ii8+CiAgPHBhdGggZmlsbD0iI0UwNTM0RSIgZD0iTTQxIDQxYTE2IDE2IDAgMCAxLTIzIDAgNiA2IDAgMSAwLTkgOSAyOSAyOSAwIDAgMCA0MSAwIDYgNiAwIDAgMC05LTkiLz4KICA8cGF0aCBmaWxsPSIjMUQ3OEE0IiBkPSJNMTggMThhNiA2IDAgMSAxLTktOSA2IDYgMCAwIDEgOSA5Ii8+CiAgPHBhdGggZmlsbD0iI0JFNDMzQiIgZD0iTTE4IDUwYTYgNiAwIDEgMS05LTkgNiA2IDAgMCAxIDkgOSIvPgo8L3N2Zz4K&maxAge=31557600"
-      alt="Join Contentful Community Forum">
-  </a>
-</p>
+[![CI](https://github.com/contentful/contentful-migration/actions/workflows/main.yaml/badge.svg)](https://github.com/contentful/contentful-migration/actions/workflows/main.yaml)
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release) [![npm downloads](https://img.shields.io/npm/dm/contentful-migration.svg)](http://npm-stat.com/charts.html?package=contentful-migration) [![npm](https://img.shields.io/npm/v/contentful-migration.svg)](https://www.npmjs.com/package/contentful-migration) [![discord](https://img.shields.io/discord/1030176999471321129?logo=discord&label=Discord)](https://discord.com/invite/contentful-1030176999471321129)
 
 # contentful-migration - content model migration tool
 
 > Describe and execute changes to your content model and transform entry content.
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Status-Maintained-green.svg" alt="This repository is actively maintained" /> &nbsp;
-  <a href="LICENSE">
-    <img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT License" />
-  </a>
-  &nbsp;
-  <a href="https://travis-ci.org/contentful/contentful-migration">
-    <img src="https://travis-ci.org/contentful/contentful-migration.svg?branch=master" alt="Build Status">
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://www.npmjs.com/package/contentful-migration">
-    <img src="https://img.shields.io/npm/v/contentful-migration.svg" alt="NPM">
-  </a>
-  &nbsp;
-  <a href="http://npm-stat.com/charts.html?package=contentful-migration">
-    <img src="https://img.shields.io/npm/dm/contentful-migration.svg" alt="NPM downloads">
-  </a>
-  &nbsp;
-</p>
 
 **What is Contentful?**
 
@@ -338,11 +308,9 @@ The derive function is expected to return an object with the desired target fiel
 - **`derivedFields : array`** _(required)_ – Array of the field IDs on the target content type
 
 - **`identityKey: function (fields): string`** _(required)_ - Called once per source entry. Returns the ID used for the derived entry, which is also used for de-duplication so that multiple source entries can link to the same derived entry.
-
   - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `fields == {myField: {'en-US': 'my field value'}}`)
 
 - **`deriveEntryForLocale : function (fields, locale, {id}): object`** _(required)_ – Function that generates the field values for the derived entry.
-
   - `fields` is an object containing each of the `from` fields. Each field will contain their current localized values (i.e. `fields == {myField: {'en-US': 'my field value'}}`)
   - `locale` one of the locales in the space being transformed
   - `id` id of the current entry in scope
@@ -436,7 +404,6 @@ Creates a tag with provided `id` and returns a reference to the newly created ta
 - **`id : string`** – The ID of the tag.
 
 - **`opts : Object`** – Tag definition, with the following options:
-
   - **`name : string`** – Name of the tag.
 
 - **`visibility : 'private' | 'public'`** Tag visibility - defaults to `private`.
