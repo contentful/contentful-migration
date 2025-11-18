@@ -1,5 +1,5 @@
+import { describe, it, expect } from 'vitest'
 import { migration as migrationSteps } from '../../../../src/lib/migration-steps'
-import { expect } from 'chai'
 import chalk from 'chalk'
 import { PlanMessage } from '../../../../src/lib/interfaces/plan-message'
 import IntentList from '../../../../src/lib/intent-list'
@@ -14,9 +14,9 @@ const composedIntent = async function (migration): Promise<Intent[]> {
   return list.compressed().getIntents()
 }
 
-describe('EditorInterfaceUpdateIntent', function () {
-  describe('when updating the editor interface of a field part of a content type', function () {
-    it('updates the editor interface', async function () {
+describe('EditorInterfaceUpdateIntent', () => {
+  describe('when updating the editor interface of a field part of a content type', () => {
+    it('updates the editor interface', async () => {
       const intents = await composedIntent((migration) => {
         const ct = migration.createContentType('test')
         ct.name('Test CT')
@@ -33,7 +33,7 @@ describe('EditorInterfaceUpdateIntent', function () {
         )
       })
       const message1: PlanMessage = intents[1].toPlanMessage()
-      expect(message1).to.eql({
+      expect(message1).toEqual({
         heading: chalk`Update field controls for Content Type {bold.yellow test}`,
         details: [],
         sections: [

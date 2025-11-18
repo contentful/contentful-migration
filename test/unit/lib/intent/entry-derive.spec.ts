@@ -1,14 +1,14 @@
+import { describe, it, expect } from 'vitest'
 import EntryDerive from '../../../../src/lib/interfaces/entry-derive'
 import EntryDeriveIntent from '../../../../src/lib/intent/entry-derive'
 import actionCreators from '../../../../src/lib/migration-steps/action-creators'
-import { expect } from 'chai'
 import runIntent from './run-intent'
 import fakeCallsite from '../../../helpers/fake-callsite'
 import makeApiEntry from '../../../helpers/make-api-entry'
 
-describe('EntryDeriveIntent', function () {
-  describe('when deriving entries from a content type', function () {
-    it('creates the new entries', async function () {
+describe('EntryDeriveIntent', () => {
+  describe('when deriving entries from a content type', () => {
+    it('creates the new entries', async () => {
       const locales = ['de-DE', 'en-US']
 
       const step: EntryDerive = {
@@ -171,7 +171,7 @@ describe('EntryDeriveIntent', function () {
 
       const allAuthors = await api.getEntriesForContentType('author')
       const authorEntries = allAuthors.map((entry) => entry.toApiEntry())
-      expect(sourceEntries).to.eql([
+      expect(sourceEntries).toEqual([
         makeApiEntry({
           id: 'doge',
           contentTypeId: 'entry',
@@ -260,7 +260,7 @@ describe('EntryDeriveIntent', function () {
         })
       ])
 
-      expect(authorEntries).to.eql([
+      expect(authorEntries).toEqual([
         makeApiEntry({
           id: 'mcauthorface',
           contentTypeId: 'author',
@@ -310,7 +310,7 @@ describe('EntryDeriveIntent', function () {
       ])
     })
 
-    it('does not create a new entry and leaves the source entry untouched if it returns undefined for all locales', async function () {
+    it('does not create a new entry and leaves the source entry untouched if it returns undefined for all locales', async () => {
       const locales = ['de-DE', 'en-US']
 
       const step: EntryDerive = {
@@ -475,7 +475,7 @@ describe('EntryDeriveIntent', function () {
       const allAuthors = await api.getEntriesForContentType('author')
       const authorEntries = allAuthors.map((entry) => entry.toApiEntry())
 
-      expect(sourceEntries).to.eql([
+      expect(sourceEntries).toEqual([
         makeApiEntry({
           id: 'doge',
           contentTypeId: 'entry',
@@ -561,7 +561,7 @@ describe('EntryDeriveIntent', function () {
       ])
 
       // we expect that no author entry for Kant was created
-      expect(authorEntries).to.eql([
+      expect(authorEntries).toEqual([
         makeApiEntry({
           id: 'mcauthorface',
           contentTypeId: 'author',

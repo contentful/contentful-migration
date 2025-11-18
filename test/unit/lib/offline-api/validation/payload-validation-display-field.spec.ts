@@ -1,11 +1,9 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import validateBatches from './validate-batches'
 
-describe('payload validation (display field)', function () {
-  describe('when setting a display field that does not (yet) exist', function () {
-    it('returns an error', async function () {
+describe('payload validation (display field)', () => {
+  describe('when setting a display field that does not (yet) exist', () => {
+    it('returns an error', async () => {
       const errors = await validateBatches(function (migration) {
         const lunch = migration.createContentType('lunch').name('lunch')
         lunch.createField('mainCourse').name('mainCourse').type('Symbol')
@@ -17,7 +15,7 @@ describe('payload validation (display field)', function () {
         lunch.createField('dessert').name('dessert').type('Symbol')
       }, [])
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [],
         [],
         [
@@ -42,7 +40,7 @@ describe('payload validation (display field)', function () {
         lunch.displayField('dessert')
       }, [])
 
-      expect(errors).to.eql([[]])
+      expect(errors).toEqual([[]])
     })
   })
 
@@ -59,7 +57,7 @@ describe('payload validation (display field)', function () {
         lunch.deleteField('dessert')
       }, [])
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [],
         [],
         [

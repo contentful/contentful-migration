@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import { EditorInterfaces } from '../../../../src/lib/entities/content-type'
 import {
@@ -44,7 +44,7 @@ describe('EditorInterfaces', () => {
       testWidget.disabled
     )
 
-    expect(editorInterface.getSidebar()).to.eql([...DEFAULT_SIDEBAR_LIST, testWidget])
+    expect(editorInterface.getSidebar()).toEqual([...DEFAULT_SIDEBAR_LIST, testWidget])
   })
 
   it('avoid adding duplicates to default sidebar', () => {
@@ -52,7 +52,7 @@ describe('EditorInterfaces', () => {
 
     editorInterface.addSidebarWidget('translation-widget', 'sidebar-builtin', null, null, false)
 
-    expect(editorInterface.getSidebar()).to.eql(DEFAULT_SIDEBAR_LIST)
+    expect(editorInterface.getSidebar()).toEqual(DEFAULT_SIDEBAR_LIST)
   })
 
   it('adds sidebar widget at the end of custom sidebar', () => {
@@ -66,7 +66,7 @@ describe('EditorInterfaces', () => {
       testWidget.disabled
     )
 
-    expect(editorInterface.getSidebar()).to.eql([existingWidget, testWidget])
+    expect(editorInterface.getSidebar()).toEqual([existingWidget, testWidget])
   })
 
   it('adds sidebar widget before another widget in the custom sidebar', () => {
@@ -85,7 +85,7 @@ describe('EditorInterfaces', () => {
       testWidget.disabled
     )
 
-    expect(editorInterface.getSidebar()).to.eql([existingWidget, testWidget, beforeWidget])
+    expect(editorInterface.getSidebar()).toEqual([existingWidget, testWidget, beforeWidget])
   })
 
   it('removes sidebar widget', () => {
@@ -93,7 +93,7 @@ describe('EditorInterfaces', () => {
 
     editorInterface.removeSidebarWidget(testWidget.widgetId, testWidget.widgetNamespace)
 
-    expect(editorInterface.getSidebar()).to.eql([existingWidget])
+    expect(editorInterface.getSidebar()).toEqual([existingWidget])
   })
 
   it('allows removing built-in sidebar widgets with default settings', () => {
@@ -111,7 +111,7 @@ describe('EditorInterfaces', () => {
       translationWidget.widgetNamespace
     )
 
-    expect(editorInterface.getSidebar()).to.eql(expectedWidgets)
+    expect(editorInterface.getSidebar()).toEqual(expectedWidgets)
   })
 
   it('does not fail when removing non-existing sidebar widget', () => {
@@ -119,7 +119,7 @@ describe('EditorInterfaces', () => {
 
     editorInterface.removeSidebarWidget(testWidget.widgetId, testWidget.widgetNamespace)
 
-    expect(editorInterface.getSidebar()).to.eql([existingWidget])
+    expect(editorInterface.getSidebar()).toEqual([existingWidget])
   })
 
   it('resets custom sidebar to default', () => {
@@ -127,7 +127,7 @@ describe('EditorInterfaces', () => {
 
     editorInterface.resetSidebarToDefault()
 
-    expect(editorInterface.getSidebar()).to.eql(undefined)
+    expect(editorInterface.getSidebar()).toEqual(undefined)
   })
 
   it('resets editor to default', () => {
@@ -135,7 +135,7 @@ describe('EditorInterfaces', () => {
 
     editorInterface.resetEditorToDefault()
 
-    expect(editorInterface.getEditor()).to.eql(undefined)
+    expect(editorInterface.getEditor()).toEqual(undefined)
   })
 
   it('updates field control namespace', () => {
@@ -153,14 +153,14 @@ describe('EditorInterfaces', () => {
     })
     editorInterface.update(control.fieldId, control.widgetId, null, 'extension')
 
-    expect(editorInterface.getControls()).to.eql([
+    expect(editorInterface.getControls()).toEqual([
       {
         ...control,
         widgetNamespace: 'extension'
       }
     ])
 
-    expect(editorInterface.getEditorLayout()).to.eql(undefined)
+    expect(editorInterface.getEditorLayout()).toEqual(undefined)
   })
 
   it('adds field id to editorLayout on field control namespace update for interfaces with editorLayout', () => {
@@ -189,8 +189,8 @@ describe('EditorInterfaces', () => {
 
     editorInterface.createFieldInEditorLayout(control.fieldId)
 
-    expect(editorInterface.getEditorLayout()[0].items.length).to.eql(4)
-    expect(editorInterface.getEditorLayout()[0].items[3]).to.eql({ fieldId: control.fieldId })
+    expect(editorInterface.getEditorLayout()[0].items.length).toEqual(4)
+    expect(editorInterface.getEditorLayout()[0].items[3]).toEqual({ fieldId: control.fieldId })
   })
 
   it('will not add duplicate field id to editorLayout if id already exists', () => {
@@ -219,7 +219,7 @@ describe('EditorInterfaces', () => {
 
     editorInterface.createFieldInEditorLayout(control.fieldId)
 
-    expect(editorInterface.getEditorLayout()[0].items.length).to.eql(3)
+    expect(editorInterface.getEditorLayout()[0].items.length).toEqual(3)
   })
 
   it('will delete field id from editor layout if id already exists', () => {
@@ -248,7 +248,7 @@ describe('EditorInterfaces', () => {
 
     editorInterface.deleteFieldFromEditorLayout('a')
 
-    expect(editorInterface.getEditorLayout()[0].items.length).to.eql(2)
+    expect(editorInterface.getEditorLayout()[0].items.length).toEqual(2)
   })
 
   it('will update field id in editor layout if id already exists', () => {
@@ -277,8 +277,8 @@ describe('EditorInterfaces', () => {
 
     editorInterface.updateFieldIdInEditorLayout('a', 'u')
 
-    expect(editorInterface.getEditorLayout()[0].items.length).to.eql(3)
-    expect(editorInterface.getEditorLayout()[0].items[0]).to.eql({ fieldId: 'u' })
+    expect(editorInterface.getEditorLayout()[0].items.length).toEqual(3)
+    expect(editorInterface.getEditorLayout()[0].items[0]).toEqual({ fieldId: 'u' })
   })
 
   it('configures editor', () => {
@@ -290,9 +290,9 @@ describe('EditorInterfaces', () => {
       settings: { key: 'value' }
     })
 
-    expect(editorInterface.getEditor().widgetId).to.eql('test-widget-id')
-    expect(editorInterface.getEditor().widgetNamespace).to.eql('extension')
-    expect(editorInterface.getEditor().settings.key).to.eql('value')
+    expect(editorInterface.getEditor().widgetId).toEqual('test-widget-id')
+    expect(editorInterface.getEditor().widgetNamespace).toEqual('extension')
+    expect(editorInterface.getEditor().settings.key).toEqual('value')
   })
 
   it('configures editors', () => {
@@ -310,13 +310,13 @@ describe('EditorInterfaces', () => {
       }
     ])
 
-    expect(editorInterface.getEditors().length).to.eql(2)
-    expect(editorInterface.getEditors()[0]).to.eql({
+    expect(editorInterface.getEditors().length).toEqual(2)
+    expect(editorInterface.getEditors()[0]).toEqual({
       widgetId: 'test-widget-id',
       widgetNamespace: 'extension',
       settings: { key: 'value' }
     })
-    expect(editorInterface.getEditors()[1]).to.eql({
+    expect(editorInterface.getEditors()[1]).toEqual({
       widgetId: 'builtin-editor',
       widgetNamespace: 'builtin'
     })
@@ -333,7 +333,7 @@ describe('EditorInterfaces', () => {
 
       editorInterface.createEditorLayoutFieldGroup('tab')
 
-      expect(editorInterface.getEditorLayout()).to.eql([
+      expect(editorInterface.getEditorLayout()).toEqual([
         {
           groupId: 'tab',
           items: [{ fieldId: 'a' }, { fieldId: 'b' }]
@@ -352,7 +352,7 @@ describe('EditorInterfaces', () => {
       editorInterface.createEditorLayoutFieldGroup('tab1')
       editorInterface.createEditorLayoutFieldGroup('tab2')
 
-      expect(editorInterface.getEditorLayout()).to.eql([
+      expect(editorInterface.getEditorLayout()).toEqual([
         {
           groupId: 'tab1',
           items: [{ fieldId: 'a' }, { fieldId: 'b' }]
@@ -373,7 +373,7 @@ describe('EditorInterfaces', () => {
 
       editorInterface.createEditorLayoutFieldGroup('groupId', 'parentId')
 
-      expect(editorInterface.getEditorLayout()).to.eql([
+      expect(editorInterface.getEditorLayout()).toEqual([
         {
           groupId: 'parentId',
           items: [
@@ -402,7 +402,7 @@ describe('EditorInterfaces', () => {
 
       editorInterface.deleteEditorLayoutFieldGroup('tab2')
 
-      expect(editorInterface.getEditorLayout()).to.eql([
+      expect(editorInterface.getEditorLayout()).toEqual([
         {
           groupId: 'tab',
           items: [{ fieldId: 'a' }, { fieldId: 'b' }]
@@ -423,7 +423,7 @@ describe('EditorInterfaces', () => {
 
       editorInterface.deleteEditorLayoutFieldGroup('tab2')
 
-      expect(editorInterface.getEditorLayout()).to.eql([
+      expect(editorInterface.getEditorLayout()).toEqual([
         {
           groupId: 'tab',
           items: [{ fieldId: 'a' }, { fieldId: 'b' }]
@@ -444,7 +444,7 @@ describe('EditorInterfaces', () => {
 
       editorInterface.deleteEditorLayoutFieldGroup('tab2')
 
-      expect(editorInterface.getEditorLayout()).to.eql([
+      expect(editorInterface.getEditorLayout()).toEqual([
         {
           groupId: 'tab',
           items: [{ fieldId: 'a' }, { fieldId: 'b' }, { groupId: 'fieldSet', items: [] }]
@@ -465,7 +465,7 @@ describe('EditorInterfaces', () => {
 
       editorInterface.deleteEditorLayoutFieldGroup('fieldSet')
 
-      expect(editorInterface.getEditorLayout()).to.eql([
+      expect(editorInterface.getEditorLayout()).toEqual([
         { groupId: 'tab', items: [] },
         {
           groupId: 'tab2',
@@ -490,7 +490,7 @@ describe('EditorInterfaces', () => {
 
       editorInterface.deleteEditorLayoutFieldGroup('fieldSet')
 
-      expect(editorInterface.getEditorLayout()).to.eql([
+      expect(editorInterface.getEditorLayout()).toEqual([
         {
           groupId: 'tab',
           items: [{ fieldId: 'a' }, { fieldId: 'b' }, { fieldId: 'c' }, { fieldId: 'd' }]
@@ -511,7 +511,7 @@ describe('EditorInterfaces', () => {
         settings: { helpText: 'help text' }
       })
 
-      expect(editorInterface.getGroupControls()).to.eql([
+      expect(editorInterface.getGroupControls()).toEqual([
         {
           groupId: 'fieldSetId',
           widgetId: 'customWidgetId',
@@ -539,7 +539,7 @@ describe('EditorInterfaces', () => {
         settings: { helpText: 'help text' }
       })
 
-      expect(editorInterface.getGroupControls()).to.eql([
+      expect(editorInterface.getGroupControls()).toEqual([
         {
           groupId: 'fieldSetId',
           widgetId: 'customWidgetId',
@@ -566,7 +566,7 @@ describe('EditorInterfaces', () => {
         widgetNamespace: 'customWidgetNamespace'
       })
 
-      expect(editorInterface.getGroupControls()).to.eql([
+      expect(editorInterface.getGroupControls()).toEqual([
         {
           groupId: 'fieldSetId',
           widgetId: 'customWidgetId',

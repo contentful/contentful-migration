@@ -1,6 +1,4 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import { EntrySetTagsAction } from '../../../../src/lib/action/entry-set-tags'
 import OfflineApi from '../../../../src/lib/offline-api/index'
@@ -10,8 +8,8 @@ import { Tag } from '../../../../src/lib/entities/tag'
 import makeApiEntry from '../../../helpers/make-api-entry'
 import SetTagsForEntry from '../../../../src/lib/interfaces/entry-set-tags'
 
-describe('Entry Action', function () {
-  it('collects errors', async function () {
+describe('Entry Action', () => {
+  it('collects errors', async () => {
     const ourError = new Error('BOOM')
     const transformation = () => {
       throw ourError
@@ -50,13 +48,13 @@ describe('Entry Action', function () {
       await action.applyTo(api)
       await api.stopRecordingRequests()
       const batches = await api.getRequestBatches()
-      expect(batches[0].runtimeErrors).to.eql([ourError, ourError])
+      expect(batches[0].runtimeErrors).toEqual([ourError, ourError])
     } catch (err) {
       expect.fail()
     }
   })
 
-  it('updates tags in transformed entry', async function () {
+  it('updates tags in transformed entry', async () => {
     const transformation: SetTagsForEntry = {
       contentType: 'dog',
       from: ['name'],
@@ -102,14 +100,14 @@ describe('Entry Action', function () {
     await api.stopRecordingRequests()
     const batches = await api.getRequestBatches()
 
-    expect(batches[0].requests.length).to.eq(1)
+    expect(batches[0].requests.length).toBe(1)
     const targetData = batches[0].requests[0].data as APIEntry
 
-    expect(targetData.metadata.tags).to.eql([
+    expect(targetData.metadata.tags).toEqual([
       { sys: { id: 'example', linkType: 'Tag', type: 'Link' } }
     ])
 
-    expect(targetData.sys.id).to.eql('246')
-    expect(targetData.sys.contentType.sys.id).to.eql('dog')
+    expect(targetData.sys.id).toEqual('246')
+    expect(targetData.sys.contentType.sys.id).toEqual('dog')
   })
 })

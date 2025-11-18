@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import { cloneDeep } from 'lodash'
 import { FieldUpdateAction } from '../../../../../src/lib/action/field-update'
 import ContentType from '../../../../../src/lib/entities/content-type'
@@ -61,7 +61,7 @@ describe('delete field', () => {
 
       delete updatedContentType.metadata.annotations.ContentTypeField[fieldId]
 
-      expect(contentType).to.deep.equal(updatedContentType)
+      expect(contentType).toEqual(updatedContentType)
     })
   })
 })

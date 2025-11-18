@@ -1,4 +1,4 @@
-const { runMigration } = require('../dist/bin/cli')
+const { runMigration } = require('../src/bin/cli')
 
 async function main(filePath) {
   let statusCode = 0

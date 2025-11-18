@@ -1,13 +1,11 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import validateBatches from './validate-batches'
 import makeApiEntry from '../../../../helpers/make-api-entry'
 import { Entry } from '../../../../../src/lib/entities/entry'
 
-describe('payload validation attach tags to entry', function () {
-  describe('when trying add a tag that does not exist', function () {
-    it('returns an error', async function () {
+describe('payload validation attach tags to entry', () => {
+  describe('when trying add a tag that does not exist', () => {
+    it('returns an error', async () => {
       const step = {
         contentType: 'entry',
         from: ['name'],
@@ -47,7 +45,7 @@ describe('payload validation attach tags to entry', function () {
         tags,
         entries
       )
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidAction',

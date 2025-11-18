@@ -1,11 +1,9 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import validateBatches from './validate-batches'
 
-describe('payload validation (default value)', function () {
-  describe('when setting default value for non existing locales', function () {
-    it('returns an error', async function () {
+describe('payload validation (default value)', () => {
+  describe('when setting default value for non existing locales', () => {
+    it('returns an error', async () => {
       const errors = await validateBatches(
         function (migration) {
           const lunch = migration.createContentType('lunch').name('lunch')
@@ -21,7 +19,7 @@ describe('payload validation (default value)', function () {
         ['en-US']
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -37,8 +35,8 @@ describe('payload validation (default value)', function () {
       ])
     })
   })
-  describe('when default value does not match the field type', function () {
-    it('returns an error for Symbol', async function () {
+  describe('when default value does not match the field type', () => {
+    it('returns an error for Symbol', async () => {
       const errors = await validateBatches(
         function (migration) {
           const lunch = migration.createContentType('lunch').name('lunch')
@@ -54,7 +52,7 @@ describe('payload validation (default value)', function () {
         ['en-US', 'de-DE', 'fr-FR']
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -69,7 +67,7 @@ describe('payload validation (default value)', function () {
         ]
       ])
     })
-    it('returns an error for Number', async function () {
+    it('returns an error for Number', async () => {
       const errors = await validateBatches(
         function (migration) {
           const lunch = migration.createContentType('lunch').name('lunch')
@@ -85,7 +83,7 @@ describe('payload validation (default value)', function () {
         ['en-US', 'de-DE', 'fr-FR']
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -117,7 +115,7 @@ describe('payload validation (default value)', function () {
         ['en-US', 'de-DE', 'fr-FR', 'it-IT']
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -155,7 +153,7 @@ describe('payload validation (default value)', function () {
         ['en-US', 'de-DE', 'fr-FR', 'it-IT']
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -187,7 +185,7 @@ describe('payload validation (default value)', function () {
         ['en-US', 'de-DE', 'fr-FR']
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -221,7 +219,7 @@ describe('payload validation (default value)', function () {
         ['en-US', 'de-DE', 'fr-FR', 'it-IT', 'es-ES']
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -259,7 +257,7 @@ describe('payload validation (default value)', function () {
         ['en-US']
       )
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidPayload',
@@ -285,7 +283,7 @@ describe('payload validation (default value)', function () {
           ['en-US']
         )
 
-        expect(errors).to.eql([
+        expect(errors).toEqual([
           [
             {
               type: 'InvalidPayload',
@@ -337,6 +335,6 @@ describe('payload validation (default value)', function () {
       ['en-US']
     )
 
-    expect(errors).to.eql([[]])
+    expect(errors).toEqual([[]])
   })
 })

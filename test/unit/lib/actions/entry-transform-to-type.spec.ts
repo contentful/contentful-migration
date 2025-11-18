@@ -1,6 +1,4 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import { EntryTransformToTypeAction } from '../../../../src/lib/action/entry-transform-to-type'
 import OfflineApi from '../../../../src/lib/offline-api/index'
@@ -10,8 +8,8 @@ import makeApiEntry from '../../../helpers/make-api-entry'
 import TransformEntryToType from '../../../../src/lib/interfaces/entry-transform-to-type'
 import APIEntry from '../../../../src/lib/interfaces/api-entry'
 
-describe('Transform Entry to Type Action', function () {
-  it('updates field values in transformed entry', async function () {
+describe('Transform Entry to Type Action', () => {
+  it('updates field values in transformed entry', async () => {
     const transformation: TransformEntryToType = {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
@@ -45,15 +43,15 @@ describe('Transform Entry to Type Action', function () {
     await api.stopRecordingRequests()
     const batches = await api.getRequestBatches()
 
-    expect(batches[0].requests.length).to.eq(1)
+    expect(batches[0].requests.length).toBe(1)
     const targetData = batches[0].requests[0].data as APIEntry
 
-    expect(targetData.fields['name']['en-US']).to.eql('xbob')
-    expect(targetData.sys.id).to.eql('bob')
-    expect(targetData.sys.contentType.sys.id).to.eql('copycat')
+    expect(targetData.fields['name']['en-US']).toEqual('xbob')
+    expect(targetData.sys.id).toEqual('bob')
+    expect(targetData.sys.contentType.sys.id).toEqual('copycat')
   })
 
-  it('updates references to a transformed entry', async function () {
+  it('updates references to a transformed entry', async () => {
     const transformation: TransformEntryToType = {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
@@ -105,13 +103,13 @@ describe('Transform Entry to Type Action', function () {
     await api.stopRecordingRequests()
     const batches = await api.getRequestBatches()
 
-    expect(batches[0].requests.length).to.eq(2)
+    expect(batches[0].requests.length).toBe(2)
 
     const updatedParent = batches[0].requests[1].data as APIEntry
-    expect(updatedParent.fields['pet']['en-US'].sys.id).to.eql('bob')
+    expect(updatedParent.fields['pet']['en-US'].sys.id).toEqual('bob')
   })
 
-  it('removes source entry when configured', async function () {
+  it('removes source entry when configured', async () => {
     const transformation: TransformEntryToType = {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
@@ -146,11 +144,11 @@ describe('Transform Entry to Type Action', function () {
     await api.stopRecordingRequests()
     const batches = await api.getRequestBatches()
 
-    expect(batches[0].requests.length).to.eq(2)
+    expect(batches[0].requests.length).toBe(2)
 
     const deleteRequest = batches[0].requests[1]
-    expect(deleteRequest.method).to.eql('DELETE')
-    expect(deleteRequest.url).to.eql('/entries/246')
+    expect(deleteRequest.method).toEqual('DELETE')
+    expect(deleteRequest.url).toEqual('/entries/246')
   })
 
   it('publishes all changed entries', async (): Promise<void> => {
@@ -206,13 +204,13 @@ describe('Transform Entry to Type Action', function () {
     await api.stopRecordingRequests()
     const batches = await api.getRequestBatches()
 
-    expect(batches[0].requests.length).to.eq(4)
+    expect(batches[0].requests.length).toBe(4)
 
-    expect(batches[0].requests[1].method).to.eql('PUT')
-    expect(batches[0].requests[1].url).to.eql('/entries/345/published')
+    expect(batches[0].requests[1].method).toEqual('PUT')
+    expect(batches[0].requests[1].url).toEqual('/entries/345/published')
 
-    expect(batches[0].requests[3].method).to.eql('PUT')
-    expect(batches[0].requests[3].url).to.eql('/entries/123/published')
+    expect(batches[0].requests[3].method).toEqual('PUT')
+    expect(batches[0].requests[3].url).toEqual('/entries/123/published')
   })
 
   it('preserves locale-based published state of target entry and referenced entries', async (): Promise<void> => {
@@ -284,27 +282,27 @@ describe('Transform Entry to Type Action', function () {
     await api.stopRecordingRequests()
     const batches = await api.getRequestBatches()
 
-    expect(batches[0].requests.length).to.eq(4)
+    expect(batches[0].requests.length).toBe(4)
 
-    expect(batches[0].requests[1].method).to.eql('PUT')
-    expect(batches[0].requests[1].url).to.eql('/entries/345/published')
+    expect(batches[0].requests[1].method).toEqual('PUT')
+    expect(batches[0].requests[1].url).toEqual('/entries/345/published')
     expect(
       (
         batches[0].requests[1].data as {
           add?: { fields?: { '*': string[] } | undefined } | undefined
         }
       )?.add?.fields?.['*']
-    ).to.have.all.members(['hawaii'])
+    ).toEqual(['hawaii'])
 
-    expect(batches[0].requests[3].method).to.eql('PUT')
-    expect(batches[0].requests[3].url).to.eql('/entries/123/published')
+    expect(batches[0].requests[3].method).toEqual('PUT')
+    expect(batches[0].requests[3].url).toEqual('/entries/123/published')
     expect(
       (
         batches[0].requests[3].data as {
           add?: { fields?: { '*': string[] } | undefined } | undefined
         }
       )?.add?.fields?.['*']
-    ).to.have.all.members(['hawaii'])
+    ).toEqual(['hawaii'])
   })
 
   it('preserves publish state of child entry', async (): Promise<void> => {
@@ -362,10 +360,10 @@ describe('Transform Entry to Type Action', function () {
     await api.stopRecordingRequests()
     const batches = await api.getRequestBatches()
 
-    expect(batches[0].requests.length).to.eq(3)
+    expect(batches[0].requests.length).toBe(3)
 
-    expect(batches[0].requests[1].method).to.eql('PUT')
-    expect(batches[0].requests[1].url).to.eql('/entries/345/published')
+    expect(batches[0].requests[1].method).toEqual('PUT')
+    expect(batches[0].requests[1].url).toEqual('/entries/345/published')
   })
 
   it('preserves publish state of parent entry', async (): Promise<void> => {
@@ -425,10 +423,10 @@ describe('Transform Entry to Type Action', function () {
     await api.stopRecordingRequests()
     const batches = await api.getRequestBatches()
 
-    expect(batches[0].requests.length).to.eq(3)
+    expect(batches[0].requests.length).toBe(3)
 
-    expect(batches[0].requests[2].method).to.eql('PUT')
-    expect(batches[0].requests[2].url).to.eql('/entries/123/published')
+    expect(batches[0].requests[2].method).toEqual('PUT')
+    expect(batches[0].requests[2].url).toEqual('/entries/123/published')
   })
 
   it('disable publishing of any entry', async (): Promise<void> => {
@@ -486,7 +484,7 @@ describe('Transform Entry to Type Action', function () {
     await api.stopRecordingRequests()
     const batches = await api.getRequestBatches()
 
-    expect(batches[0].requests.length).to.eq(2)
+    expect(batches[0].requests.length).toBe(2)
   })
 
   it('skip entry when undefined', async (): Promise<void> => {
@@ -526,10 +524,10 @@ describe('Transform Entry to Type Action', function () {
     await api.stopRecordingRequests()
     const batches = await api.getRequestBatches()
 
-    expect(batches[0].requests.length).to.eq(0)
+    expect(batches[0].requests.length).toBe(0)
   })
 
-  it('passes only specified fields from source entry', async function () {
+  it('passes only specified fields from source entry', async () => {
     let passedObject: any = {}
 
     const transformation: TransformEntryToType = {
@@ -569,11 +567,11 @@ describe('Transform Entry to Type Action', function () {
     await action.applyTo(api)
     await api.stopRecordingRequests()
 
-    expect(passedObject).to.have.property('name')
-    expect(passedObject).to.not.have.property('other')
+    expect(passedObject).toHaveProperty('name')
+    expect(passedObject).not.toHaveProperty('other')
   })
 
-  it('passes all fields from source entry if no source field specified', async function () {
+  it('passes all fields from source entry if no source field specified', async () => {
     let passedObject: any = {}
 
     const transformation: TransformEntryToType = {
@@ -612,11 +610,11 @@ describe('Transform Entry to Type Action', function () {
     await action.applyTo(api)
     await api.stopRecordingRequests()
 
-    expect(passedObject).to.have.property('name')
-    expect(passedObject).to.have.property('other')
+    expect(passedObject).toHaveProperty('name')
+    expect(passedObject).toHaveProperty('other')
   })
 
-  it('provides entry id', async function () {
+  it('provides entry id', async () => {
     const ids = []
 
     const transformation: TransformEntryToType = {
@@ -650,10 +648,10 @@ describe('Transform Entry to Type Action', function () {
 
     await action.applyTo(api)
     await api.stopRecordingRequests()
-    expect(ids).to.eql(['246'])
+    expect(ids).toEqual(['246'])
   })
 
-  it('transforms only specified entries when entryIds is provided', async function () {
+  it('transforms only specified entries when entryIds is provided', async () => {
     const transformation: TransformEntryToType = {
       sourceContentType: 'dog',
       targetContentType: 'copycat',
@@ -699,9 +697,9 @@ describe('Transform Entry to Type Action', function () {
     await api.stopRecordingRequests()
     const batches = await api.getRequestBatches()
 
-    expect(batches[0].requests.length).to.eq(1)
+    expect(batches[0].requests.length).toBe(1)
     const targetData = batches[0].requests[0].data as APIEntry
-    expect(targetData.fields['name']['en-US']).to.eql('xbob')
-    expect(targetData.sys.id).to.eql('bob')
+    expect(targetData.fields['name']['en-US']).toEqual('xbob')
+    expect(targetData.sys.id).toEqual('bob')
   })
 })

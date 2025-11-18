@@ -1,5 +1,5 @@
+import { describe, it, expect } from 'vitest'
 import { migration as migrationSteps } from '../../../../src/lib/migration-steps'
-import { expect } from 'chai'
 import IntentList from '../../../../src/lib/intent-list'
 import { Intent } from '../../../../src/lib/interfaces/intent'
 import { SaveEditorInterfaceAction } from '../../../../src/lib/action/editorinterface-save'
@@ -31,9 +31,9 @@ const withCreatedContentType = (block: (ContentType) => void) => (migration) => 
   return block(ct)
 }
 
-describe('SidebarWidgetAddIntent', function () {
-  describe('when adding a sidebar widget to the editor interface', function () {
-    it('creates the necessary actions to add the widget', async function () {
+describe('SidebarWidgetAddIntent', () => {
+  describe('when adding a sidebar widget to the editor interface', () => {
+    it('creates the necessary actions to add the widget', async () => {
       const intents = await composedIntent(
         withCreatedContentType((ct) => {
           ct.addSidebarWidget(
@@ -49,7 +49,7 @@ describe('SidebarWidgetAddIntent', function () {
 
       const actions = intents[1].toActions()
 
-      expect(actions[0]).to.eql(
+      expect(actions[0]).toEqual(
         new SidebarWidgetAddAction(
           ctId,
           'widgetId',
@@ -60,13 +60,13 @@ describe('SidebarWidgetAddIntent', function () {
         )
       )
 
-      expect(actions[1]).to.eql(new SaveEditorInterfaceAction(ctId))
+      expect(actions[1]).toEqual(new SaveEditorInterfaceAction(ctId))
     })
   })
 })
 
-describe('SidebarWidgetUpdateIntent', function () {
-  it('creates the necessary actions to update the widget', async function () {
+describe('SidebarWidgetUpdateIntent', () => {
+  it('creates the necessary actions to update the widget', async () => {
     const intents = await composedIntent(
       withCreatedContentType((ct) => {
         ct.updateSidebarWidget('extension', 'widgetId', {
@@ -77,16 +77,16 @@ describe('SidebarWidgetUpdateIntent', function () {
 
     const actions = intents[1].toActions()
 
-    expect(actions[0]).to.eql(
+    expect(actions[0]).toEqual(
       new SidebarWidgetUpdateAction(ctId, 'widgetId', 'extension', { setting: 'set-2' }, undefined)
     )
 
-    expect(actions[1]).to.eql(new SaveEditorInterfaceAction(ctId))
+    expect(actions[1]).toEqual(new SaveEditorInterfaceAction(ctId))
   })
 })
 
-describe('SidebarWidgetRemoveIntent', function () {
-  it('creates the necessary actions to remove the widget', async function () {
+describe('SidebarWidgetRemoveIntent', () => {
+  it('creates the necessary actions to remove the widget', async () => {
     const intents = await composedIntent(
       withCreatedContentType((ct) => {
         ct.removeSidebarWidget('extension', 'widgetId')
@@ -95,8 +95,8 @@ describe('SidebarWidgetRemoveIntent', function () {
 
     const actions = intents[1].toActions()
 
-    expect(actions[0]).to.eql(new SidebarWidgetRemoveAction(ctId, 'widgetId', 'extension'))
+    expect(actions[0]).toEqual(new SidebarWidgetRemoveAction(ctId, 'widgetId', 'extension'))
 
-    expect(actions[1]).to.eql(new SaveEditorInterfaceAction(ctId))
+    expect(actions[1]).toEqual(new SaveEditorInterfaceAction(ctId))
   })
 })

@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import { Entry } from '../../../../src/lib/entities/entry'
 import shouldPublishLocalChanges from '../../../../src/lib/utils/should-publish-local-changes'
 import makeApiEntry from '../../../helpers/make-api-entry'
@@ -20,27 +20,27 @@ function entry(version, publishedVersion) {
   )
 }
 
-describe('A shouldPublish util function', function () {
+describe('A shouldPublish util function', () => {
   it('returns true if explicitly set', () => {
-    expect(shouldPublishLocalChanges(true, entry(1, 1))).to.eql(true)
+    expect(shouldPublishLocalChanges(true, entry(1, 1))).toBe(true)
   })
 
   it('returns false if explicitly set', () => {
-    expect(shouldPublishLocalChanges(false, entry(1, 1))).to.eql(false)
+    expect(shouldPublishLocalChanges(false, entry(1, 1))).toBe(false)
   })
 
   it('returns false for "preserve" and pending remote changes', () => {
-    expect(shouldPublishLocalChanges('preserve', entry(4, 1))).to.eql(false)
-    expect(shouldPublishLocalChanges('preserve', entry(5, 1))).to.eql(false)
+    expect(shouldPublishLocalChanges('preserve', entry(4, 1))).toBe(false)
+    expect(shouldPublishLocalChanges('preserve', entry(5, 1))).toBe(false)
   })
 
   it('returns true for "preserve" and no pending remote changes', () => {
-    expect(shouldPublishLocalChanges('preserve', entry(2, 1))).to.eql(true)
+    expect(shouldPublishLocalChanges('preserve', entry(2, 1))).toBe(true)
   })
 
   it('returns false if shouldPublish is not defined', () => {
-    expect(shouldPublishLocalChanges(undefined, entry(2, 1))).to.eql(false)
-    expect(shouldPublishLocalChanges(undefined, entry(5, 1))).to.eql(false)
+    expect(shouldPublishLocalChanges(undefined, entry(2, 1))).toBe(false)
+    expect(shouldPublishLocalChanges(undefined, entry(5, 1))).toBe(false)
   })
 
   describe('with locale based publishing', function () {
@@ -55,19 +55,19 @@ describe('A shouldPublish util function', function () {
     }
 
     it('returns true if explicitly set', () => {
-      expect(shouldPublishLocalChanges(true, changedEntity)).to.eql(true)
+      expect(shouldPublishLocalChanges(true, changedEntity)).toBe(true)
     })
 
     it('returns false if explicitly set', () => {
-      expect(shouldPublishLocalChanges(false, publishedEntity)).to.eql(false)
+      expect(shouldPublishLocalChanges(false, publishedEntity)).toBe(false)
     })
 
     it('returns false for "preserve" and pending remote changes', () => {
-      expect(shouldPublishLocalChanges('preserve', changedEntity)).to.eql(false)
+      expect(shouldPublishLocalChanges('preserve', changedEntity)).toBe(false)
     })
 
     it('returns true for "preserve" and no pending remote changes', () => {
-      expect(shouldPublishLocalChanges('preserve', publishedEntity)).to.eql(true)
+      expect(shouldPublishLocalChanges('preserve', publishedEntity)).toBe(true)
     })
   })
 })

@@ -1,9 +1,9 @@
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import validateChunks from './validate-chunks'
 
-describe('Transform entries chunk validation', function () {
-  describe('when transforming entries of a non existing Content Type', function () {
-    it('returns an error', async function () {
+describe('Transform entries chunk validation', () => {
+  describe('when transforming entries of a non existing Content Type', () => {
+    it('returns an error', async () => {
       const func = () => {
         console.log('transform')
       }
@@ -17,7 +17,7 @@ describe('Transform entries chunk validation', function () {
         })
       }, contentTypes)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           details: {
             step: {
@@ -42,8 +42,8 @@ describe('Transform entries chunk validation', function () {
     })
   })
 
-  describe('when transforming entries of a deleted content type', function () {
-    it('returns an error', async function () {
+  describe('when transforming entries of a deleted content type', () => {
+    it('returns an error', async () => {
       const func = () => {
         console.log('transform')
       }
@@ -58,7 +58,7 @@ describe('Transform entries chunk validation', function () {
         })
       }, contentTypes)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           details: {
             step: {
@@ -83,8 +83,8 @@ describe('Transform entries chunk validation', function () {
     })
   })
 
-  describe('when transforming entries to a just created field', function () {
-    it('returns no error', async function () {
+  describe('when transforming entries to a just created field', () => {
+    it('returns no error', async () => {
       const func = () => {
         console.log('transform')
       }
@@ -104,12 +104,12 @@ describe('Transform entries chunk validation', function () {
         })
       }, contentTypes)
 
-      expect(errors).to.eql([])
+      expect(errors).toEqual([])
     })
   })
 
-  describe('when transforming entries of a not yet created content type', function () {
-    it('returns an error', async function () {
+  describe('when transforming entries of a not yet created content type', () => {
+    it('returns an error', async () => {
       const func = () => {
         console.log('transform')
       }
@@ -124,7 +124,7 @@ describe('Transform entries chunk validation', function () {
         migration.createContentType('dog')
       }, contentTypes)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           details: {
             step: {
@@ -169,7 +169,7 @@ describe('Transform entries chunk validation', function () {
         })
       }, contentTypes)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           details: {
             step: {

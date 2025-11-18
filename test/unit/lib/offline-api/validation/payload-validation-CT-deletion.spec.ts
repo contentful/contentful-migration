@@ -1,10 +1,8 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import validateBatches from './validate-batches'
 
-describe('payload validation (content type deletion)', function () {
-  it('skips ct delete payloads', async function () {
+describe('payload validation (content type deletion)', () => {
+  it('skips ct delete payloads', async () => {
     const existingCts = [
       {
         sys: { id: 'breakfast' },
@@ -19,6 +17,6 @@ describe('payload validation (content type deletion)', function () {
       migration.deleteContentType('breakfast')
     }, existingCts)
 
-    expect(errors).to.eql([[], []])
+    expect(errors).toEqual([[], []])
   })
 })

@@ -1,15 +1,13 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import ContentTypeUpdateValidator from '../../../../src/lib/intent-validator/content-type-update'
 import FieldUpdateValidator from '../../../../src/lib/intent-validator/field-update'
 import createValidator from './validate-steps'
 const validateSteps = createValidator([FieldUpdateValidator, ContentTypeUpdateValidator])
 
-describe('migration-steps validation', function () {
-  describe('when invoking methods for invalid props', function () {
-    it('returns all the validation errors', async function () {
+describe('migration-steps validation', () => {
+  describe('when invoking methods for invalid props', () => {
+    it('returns all the validation errors', async () => {
       const validationErrors = await validateSteps(function up(migration) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
@@ -26,7 +24,7 @@ describe('migration-steps validation', function () {
         fullName.bla('a person')
       })
 
-      expect(validationErrors).to.eql([
+      expect(validationErrors).toEqual([
         {
           type: 'InvalidProperty',
           message: '"invalidProp" is not a valid property name for a content type.',
@@ -107,8 +105,8 @@ describe('migration-steps validation', function () {
     })
   })
 
-  describe('when passing the wrong type for a prop', function () {
-    it('returns all the validation errors', async function () {
+  describe('when passing the wrong type for a prop', () => {
+    it('returns all the validation errors', async () => {
       const invalidFunction = function () {
         return undefined
       }
@@ -130,7 +128,7 @@ describe('migration-steps validation', function () {
         fullName.deleted(null)
       })
 
-      expect(validationErrors).to.eql([
+      expect(validationErrors).toEqual([
         {
           type: 'InvalidType',
           message:
@@ -278,8 +276,8 @@ describe('migration-steps validation', function () {
     })
   })
 
-  describe('when invoking methods for invalid props that are very close to valid props', function () {
-    it('returns all the validation errors', async function () {
+  describe('when invoking methods for invalid props that are very close to valid props', () => {
+    it('returns all the validation errors', async () => {
       const validationErrors = await validateSteps(function up(migration) {
         const person = migration.createContentType('person', {
           description: 'A content type for a person',
@@ -292,7 +290,7 @@ describe('migration-steps validation', function () {
         })
       })
 
-      expect(validationErrors).to.eql([
+      expect(validationErrors).toEqual([
         {
           type: 'InvalidProperty',
           message: '"nmae" is not a valid property name for a content type. Did you mean "name"?',
@@ -336,15 +334,15 @@ describe('migration-steps validation', function () {
     })
   })
 
-  describe('when setting an empty description for a content type', function () {
-    it('does not return any errors', async function () {
+  describe('when setting an empty description for a content type', () => {
+    it('does not return any errors', async () => {
       const validationErrors = await validateSteps(function up(migration) {
         migration.createContentType('person', {
           description: ''
         })
       })
 
-      expect(validationErrors).to.eql([])
+      expect(validationErrors).toEqual([])
     })
   })
 })

@@ -1,13 +1,13 @@
+import { describe, it, expect } from 'vitest'
 import actionCreators from '../../../../src/lib/migration-steps/action-creators'
 import FieldDeleteIntent from '../../../../src/lib/intent/field-delete'
-import { expect } from 'chai'
 import runIntent from './run-intent'
 import fakeCallsite from '../../../helpers/fake-callsite'
 import makeApiEntry from '../../../helpers/make-api-entry'
 
-describe('FieldDeleteIntent', function () {
-  describe('when deleting a field of a content type', function () {
-    it('removes the field from all entries', async function () {
+describe('FieldDeleteIntent', () => {
+  describe('when deleting a field of a content type', () => {
+    it('removes the field from all entries', async () => {
       const intent: FieldDeleteIntent = actionCreators.field.delete(
         'dog',
         0,
@@ -68,7 +68,7 @@ describe('FieldDeleteIntent', function () {
       const allEntries = await api.getEntriesForContentType('dog')
       const rawEntries = allEntries.map((entry) => entry.toApiEntry())
 
-      expect(rawEntries).to.eql([
+      expect(rawEntries).toEqual([
         makeApiEntry({
           id: 'bello',
           contentTypeId: 'dog',

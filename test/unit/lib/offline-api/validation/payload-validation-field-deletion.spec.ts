@@ -1,11 +1,9 @@
-'use strict'
-
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import validateBatches from './validate-batches'
 
-describe('payload validation (deletion)', function () {
-  describe('when setting a field to deleted that is not omitted', function () {
-    it('returns an error', async function () {
+describe('payload validation (deletion)', () => {
+  describe('when setting a field to deleted that is not omitted', () => {
+    it('returns an error', async () => {
       const existingCts = [
         {
           sys: { id: 'lunch' },
@@ -20,7 +18,7 @@ describe('payload validation (deletion)', function () {
         lunch.editField('mainCourse').deleted(true)
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidAction',
@@ -48,7 +46,7 @@ describe('payload validation (deletion)', function () {
         lunch.editField('mainCourse').deleted(true).omitted(true)
       }, existingCts)
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         [
           {
             type: 'InvalidAction',
@@ -76,7 +74,7 @@ describe('payload validation (deletion)', function () {
         lunch.editField('mainCourse').deleted(true)
       }, existingCts)
 
-      expect(errors).to.eql([[]])
+      expect(errors).toEqual([[]])
     })
   })
 
@@ -98,7 +96,7 @@ describe('payload validation (deletion)', function () {
         dog.createField('owner').type('Symbol').name('Owner name').required(false)
       }, existingCts)
 
-      expect(errors).to.eql([[], []])
+      expect(errors).toEqual([[], []])
     })
   })
 })
