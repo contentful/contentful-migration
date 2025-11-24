@@ -62,7 +62,7 @@
     "didyoumean2": "^7.0.4",
     "https-proxy-agent": "^5.0.0",
     "inquirer": "^8.1.2",
-    "joi": "^17.4.0",
+    "joi": "^18.0.2",
     "kind-of": "^6.0.3",
     "listr2": "^3.13.5",
     "lodash": "^4.17.15",
