@@ -38,6 +38,8 @@ updates:
           - '>=12.0.0'
 
   # Enable version updates for GitHub Actions
+    cooldown:
+      default-days: 15
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
