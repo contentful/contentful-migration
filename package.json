@@ -72,6 +72,7 @@
   },
   "devDependencies": {
     "@contentful/eslint-config-backend": "^11.0.2",
+    "@lavamoat/allow-scripts": "^3.4.1",
     "@semantic-release/changelog": "^6.0.0",
     "@types/chai": "^4.2.11",
     "@types/hoek": "^4.1.3",
@@ -162,5 +163,10 @@
     "*.md": [
       "prettier --write"
     ]
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "vitest>vite>esbuild": true
+    }
   }
 }
