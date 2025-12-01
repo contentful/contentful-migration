@@ -67,7 +67,7 @@ jobs:
         run: |
           echo "Starting Semantic Release Process"
           echo "npm version: $(npm -v)"
-          npm run semantic-release
+          npm run semantic-release --dry-run
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
