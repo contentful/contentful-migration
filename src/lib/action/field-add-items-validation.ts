@@ -13,7 +13,7 @@ class FieldAddItemsValidationAction extends FieldAction {
     const fields = ct.fields
     const field = fields.getField(this.getFieldId())
 
-    if (!field.items) {
+    if (!field.items && ['Array', 'Link'].includes(field.type)) {
       field.items = { type: 'Symbol' } // Default type for array items
     }
 
