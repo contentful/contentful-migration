@@ -1,5 +1,6 @@
 'use strict'
 
+import { describe, it } from 'vitest'
 import { expect } from 'chai'
 import lodash from 'lodash'
 const { omit } = lodash
@@ -36,7 +37,7 @@ describe('Entry derivation', () => {
         })
       })
 
-      expect(validationErrors).toEqual([])
+      expect(validationErrors).to.deep.equal([])
     })
   })
 
@@ -55,7 +56,7 @@ describe('Entry derivation', () => {
         })
       })
 
-      expect(validationErrors).toEqual([
+      expect(validationErrors).to.deep.equal([
         {
           type: 'InvalidType',
           message:
@@ -264,7 +265,7 @@ describe('Entry derivation', () => {
         migration.deriveLinkedEntries(properties)
       })
 
-      expect(validationErrors).toEqual([
+      expect(validationErrors).to.deep.equal([
         {
           type: 'InvalidProperty',
           message:

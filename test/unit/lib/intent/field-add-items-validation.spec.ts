@@ -1,3 +1,4 @@
+import { describe, it } from 'vitest'
 import actionCreators from '../../../../src/lib/migration-steps/action-creators'
 import FieldAddItemsValidationIntent from '../../../../src/lib/intent/field-add-items-validation'
 import { expect } from 'chai'

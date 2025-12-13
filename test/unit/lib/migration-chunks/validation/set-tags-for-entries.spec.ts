@@ -1,3 +1,4 @@
+import { describe, it } from 'vitest'
 import { expect } from 'chai'
 import lodash from 'lodash'
 const { omit } = lodash
@@ -26,7 +27,7 @@ describe('Set tags chunk validation', function () {
         tags
       )
 
-      expect(errors).toEqual([
+      expect(errors).to.deep.equal([
         {
           details: {
             step: {

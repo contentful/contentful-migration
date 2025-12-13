@@ -1,3 +1,4 @@
+import { describe, it } from 'vitest'
 import { expect } from 'chai'
 import lodash from 'lodash'
 const { omit } = lodash
@@ -34,7 +35,7 @@ describe('Derive entries chunk validation', function () {
         migration.deriveLinkedEntries(step)
       }, contentTypes)
 
-      expect(errors).toEqual([
+      expect(errors).to.deep.equal([
         {
           details: {
             step: {
@@ -105,7 +106,7 @@ describe('Derive entries chunk validation', function () {
         migration.deriveLinkedEntries(step)
       }, contentTypes)
 
-      expect(errors).toEqual([
+      expect(errors).to.deep.equal([
         {
           details: {
             step: {

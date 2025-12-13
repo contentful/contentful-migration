@@ -1,3 +1,4 @@
+import { describe, it } from 'vitest'
 import { expect } from 'chai'
 import lodash from 'lodash'
 import { FieldRenameAction } from '../../../../../src/lib/action/field-rename'
@@ -63,7 +64,7 @@ describe('rename field', () => {
 
       delete updatedContentType.metadata.annotations.ContentTypeField[fieldId]
 
-      expect(contentTypeObj.toAPI()).toEqual(updatedContentType)
+      expect(contentTypeObj.toAPI()).to.deep.equal(updatedContentType)
     })
   })
 })

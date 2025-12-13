@@ -1,5 +1,6 @@
 'use strict'
 
+import { describe, it } from 'vitest'
 import { expect } from 'chai'
 import Fetcher from '../../../src/lib/fetcher'
 import createMigrationParser from '../../../src/lib/migration-parser'
@@ -114,16 +115,16 @@ describe('Migration parser', () => {
       const parseResult = await migrationParser(throws)
       const result = parseResult.batches
 
-      expect(result.length).toBe(2)
+      expect(result.length).to.equal(2)
 
-      expect(result[0].requests.length).toBe(1)
-      expect(result[0].requests[0].url).toEqual('/entries/456')
-      expect(result[0].runtimeErrors.length).toBe(1)
-      expect(result[0].runtimeErrors).toEqual([fooError])
+      expect(result[0].requests.length).to.equal(1)
+      expect(result[0].requests[0].url).to.equal('/entries/456')
+      expect(result[0].runtimeErrors.length).to.equal(1)
+      expect(result[0].runtimeErrors).to.deep.equal([fooError])
 
-      expect(result[1].requests.length).toBe(0)
-      expect(result[1].runtimeErrors.length).toBe(1)
-      expect(result[1].runtimeErrors).toEqual([catError])
+      expect(result[1].requests.length).to.equal(0)
+      expect(result[1].runtimeErrors.length).to.equal(1)
+      expect(result[1].runtimeErrors).to.deep.equal([catError])
     })
   })
 
@@ -210,11 +211,11 @@ describe('Migration parser', () => {
       const parseResult = await migrationParser(transformFunction)
       const result = parseResult.batches
 
-      expect(result.length).toBe(1)
-      expect(result[0].requests.length).toBe(2)
-      expect(result[0].requests[0].url).toEqual('/entries/123')
-      expect(result[0].requests[1].url).toEqual('/entries/456')
-      expect(result[0].validationErrors).toEqual([])
+      expect(result.length).to.equal(1)
+      expect(result[0].requests.length).to.equal(2)
+      expect(result[0].requests[0].url).to.equal('/entries/123')
+      expect(result[0].requests[1].url).to.equal('/entries/456')
+      expect(result[0].validationErrors).to.deep.equal([])
     })
   })
 })

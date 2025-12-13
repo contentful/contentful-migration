@@ -1,3 +1,4 @@
+import { describe, it } from 'vitest'
 import { expect } from 'chai'
 import validateChunks from './validate-chunks'
 
@@ -17,7 +18,7 @@ describe('Transform entries chunk validation', function () {
         })
       }, contentTypes)
 
-      expect(errors).toEqual([
+      expect(errors).to.deep.equal([
         {
           details: {
             step: {
@@ -58,7 +59,7 @@ describe('Transform entries chunk validation', function () {
         })
       }, contentTypes)
 
-      expect(errors).toEqual([
+      expect(errors).to.deep.equal([
         {
           details: {
             step: {
@@ -104,7 +105,7 @@ describe('Transform entries chunk validation', function () {
         })
       }, contentTypes)
 
-      expect(errors).toEqual([])
+      expect(errors).to.deep.equal([])
     })
   })
 
@@ -124,7 +125,7 @@ describe('Transform entries chunk validation', function () {
         migration.createContentType('dog')
       }, contentTypes)
 
-      expect(errors).toEqual([
+      expect(errors).to.deep.equal([
         {
           details: {
             step: {
@@ -169,7 +170,7 @@ describe('Transform entries chunk validation', function () {
         })
       }, contentTypes)
 
-      expect(errors).toEqual([
+      expect(errors).to.deep.equal([
         {
           details: {
             step: {
