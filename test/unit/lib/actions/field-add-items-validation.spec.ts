@@ -86,10 +86,10 @@ describe('FieldAddItemsValidationAction', () => {
       await action.applyTo(contentType)
 
       const field = contentType.fields.getField('test')
-      expect(field.items).to.exist
+      expect(field.items).to.not.equal(undefined)
       expect(field.items?.type).to.equal('Symbol')
       expect(field.items?.validations).to.have.length(1)
       expect(field.items?.validations?.[0]).to.deep.equal({ unique: true })
     })
   })
-}) 
+})

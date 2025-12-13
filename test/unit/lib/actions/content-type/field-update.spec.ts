@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest'
-import { cloneDeep } from 'lodash'
+import { expect } from 'chai'
+import lodash from 'lodash'
+const { cloneDeep } = lodash
 import { FieldUpdateAction } from '../../../../../src/lib/action/field-update'
 import ContentType from '../../../../../src/lib/entities/content-type'
 import APIContentType from '../../../../../src/lib/interfaces/content-type'

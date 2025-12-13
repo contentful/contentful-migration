@@ -1,9 +1,9 @@
-import { describe, it, expect } from 'vitest'
+import { expect } from 'chai'
 import validateChunks from './validate-chunks'
 
-describe('Transform entries chunk validation', () => {
-  describe('when transforming entries of a non existing Content Type', () => {
-    it('returns an error', async () => {
+describe('Transform entries chunk validation', function () {
+  describe('when transforming entries of a non existing Content Type', function () {
+    it('returns an error', async function () {
       const func = () => {
         console.log('transform')
       }

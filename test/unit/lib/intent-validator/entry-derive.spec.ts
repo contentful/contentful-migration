@@ -1,5 +1,8 @@
-import { describe, it, expect } from 'vitest'
-import { omit } from 'lodash'
+'use strict'
+
+import { expect } from 'chai'
+import lodash from 'lodash'
+const { omit } = lodash
 
 import EntryDeriveIntentValidator from '../../../../src/lib/intent-validator/entry-derive'
 import createValidator from './validate-steps'
