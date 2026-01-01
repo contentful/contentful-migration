@@ -184,6 +184,20 @@ describe('payload validation', () => {
       expect(errors).toEqual([[]])
     })
 
+    it('allows actual RegExp', async function () {
+      const errors = await validateBatches(function up(migration) {
+        const person = migration.createContentType('person').name('Person').description('A Person')
+
+        person
+          .createField('fullName')
+          .name('Full Name')
+          .type('Symbol')
+          .validations([{ regexp: /^[A-Za-zs]+$/g }])
+      }, [])
+
+      expect(errors).to.eql([[]])
+    })
+
     it('can validate all blocks and inlines for RichText', async function () {
       const errors = await validateBatches(function up(migration) {
         const novel = migration
