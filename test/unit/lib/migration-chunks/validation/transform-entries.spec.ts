@@ -1,9 +1,10 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it } from 'vitest'
+import { expect } from 'chai'
 import validateChunks from './validate-chunks'
 
-describe('Transform entries chunk validation', () => {
-  describe('when transforming entries of a non existing Content Type', () => {
-    it('returns an error', async () => {
+describe('Transform entries chunk validation', function () {
+  describe('when transforming entries of a non existing Content Type', function () {
+    it('returns an error', async function () {
       const func = () => {
         console.log('transform')
       }
@@ -17,7 +18,7 @@ describe('Transform entries chunk validation', () => {
         })
       }, contentTypes)
 
-      expect(errors).toEqual([
+      expect(errors).to.deep.equal([
         {
           details: {
             step: {
@@ -58,7 +59,7 @@ describe('Transform entries chunk validation', () => {
         })
       }, contentTypes)
 
-      expect(errors).toEqual([
+      expect(errors).to.deep.equal([
         {
           details: {
             step: {
@@ -104,7 +105,7 @@ describe('Transform entries chunk validation', () => {
         })
       }, contentTypes)
 
-      expect(errors).toEqual([])
+      expect(errors).to.deep.equal([])
     })
   })
 
@@ -124,7 +125,7 @@ describe('Transform entries chunk validation', () => {
         migration.createContentType('dog')
       }, contentTypes)
 
-      expect(errors).toEqual([
+      expect(errors).to.deep.equal([
         {
           details: {
             step: {
@@ -169,7 +170,7 @@ describe('Transform entries chunk validation', () => {
         })
       }, contentTypes)
 
-      expect(errors).toEqual([
+      expect(errors).to.deep.equal([
         {
           details: {
             step: {

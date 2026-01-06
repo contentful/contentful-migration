@@ -1,11 +1,13 @@
-import { describe, it, expect } from 'vitest'
-import { omit } from 'lodash'
+import { describe, it } from 'vitest'
+import { expect } from 'chai'
+import lodash from 'lodash'
+const { omit } = lodash
 import makeApiTag from '../../../../helpers/make-api-tag'
 import validateChunks from './validate-chunks'
 
-describe('Set tags chunk validation', () => {
-  describe('when setting tags on a non existing Content Type', () => {
-    it('returns an error', async () => {
+describe('Set tags chunk validation', function () {
+  describe('when setting tags on a non existing Content Type', function () {
+    it('returns an error', async function () {
       const step = {
         contentType: 'entry',
         from: ['authorName'],
@@ -25,7 +27,7 @@ describe('Set tags chunk validation', () => {
         tags
       )
 
-      expect(errors).toEqual([
+      expect(errors).to.deep.equal([
         {
           details: {
             step: {
