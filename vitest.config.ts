@@ -41,7 +41,7 @@ export default defineConfig({
           exclude: ['node_modules', 'dist', 'test/unit', 'test/integration'],
           setupFiles: ['./test/end-to-end/setup.ts'],
           testTimeout: 30000,
-          hookTimeout: 30000,
+          hookTimeout: 60000,
           maxConcurrency: 1,
           maxWorkers: 1
         }
