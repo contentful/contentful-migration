@@ -4,7 +4,7 @@
   "description": "Migration tooling for contentful",
   "author": "Contentful GmbH",
   "license": "MIT",
-  "main": "dist/index",
+  "main": "built/index",
   "keywords": [
     "contentful",
     "content model",
@@ -24,7 +24,7 @@
   "scripts": {
     "build": "npm run clean && tsc -p tsconfig.json",
     "build-dev": "npm run clean && tsc -p tsconfig-dev.json",
-    "clean": "rimraf dist",
+    "clean": "rimraf built",
     "format:fix": "prettier --write \"**/*.{ts,js,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,js,json,md}\"",
     "prepare": "npm run build && husky install",
@@ -48,7 +48,7 @@
     "index.d.ts",
     "CHANGELOG.md",
     "bin",
-    "dist",
+    "built",
     "docs"
   ],
   "dependencies": {
