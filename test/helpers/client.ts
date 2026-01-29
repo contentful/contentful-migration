@@ -1,5 +1,5 @@
 import packageVersion from '../../package.json'
-import { createManagementClient } from '../../dist/bin/lib/contentful-client'
+import { createManagementClient } from '../../built/bin/lib/contentful-client'
 import { createMakeRequest } from '../../src/bin/cli'
 
 const config = {

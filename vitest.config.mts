@@ -7,7 +7,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      exclude: ['node_modules/', 'test/', 'dist/', '**/*.spec.ts', '**/*.d.ts']
+      exclude: ['node_modules/', 'test/', 'built/', '**/*.spec.ts', '**/*.d.ts']
     },
     testTimeout: 10000,
     slowTestThreshold: 5000,
@@ -17,7 +17,7 @@ export default defineConfig({
         test: {
           name: 'unit',
           include: ['test/unit/**/*.spec.ts'],
-          exclude: ['node_modules', 'dist', 'test/integration', 'test/end-to-end']
+          exclude: ['node_modules', 'built', 'test/integration', 'test/end-to-end']
         }
       },
       {
@@ -25,7 +25,7 @@ export default defineConfig({
         test: {
           name: 'integration',
           include: ['test/integration/**/*.spec.ts'],
-          exclude: ['node_modules', 'dist', 'test/unit', 'test/end-to-end'],
+          exclude: ['node_modules', 'built', 'test/unit', 'test/end-to-end'],
           setupFiles: ['./test/integration/setup.ts'],
           testTimeout: 30000,
           hookTimeout: 60000,
@@ -38,7 +38,7 @@ export default defineConfig({
         test: {
           name: 'e2e',
           include: ['test/end-to-end/**/*.spec.ts'],
-          exclude: ['node_modules', 'dist', 'test/unit', 'test/integration'],
+          exclude: ['node_modules', 'built', 'test/unit', 'test/integration'],
           setupFiles: ['./test/end-to-end/setup.ts'],
           testTimeout: 30000,
           hookTimeout: 60000,
