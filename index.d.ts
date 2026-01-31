@@ -773,4 +773,4 @@ export type MigrationContext = ClientConfig & {
 /**
  * The shape of the migration function that should be exported.
  */
-export type MigrationFunction = (migration: Migration, context?: MigrationContext) => void
+export type MigrationFunction = (migration: Migration, context: MigrationContext) => void
