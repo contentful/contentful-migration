@@ -36,8 +36,9 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: |
-            dist 
+            built 
           key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
+          fail-on-cache-miss: true
 
       - name: Run e2e tests
         run: npm run test:e2e
