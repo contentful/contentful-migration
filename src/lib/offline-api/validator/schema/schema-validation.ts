@@ -342,11 +342,14 @@ const validateFields = function (
       }
 
       if (type === 'array.unique') {
+        const identifier = context.value.source
+          ? `source "${context.value.source}"`
+          : `type "${context.value.type}"`
         return {
           type: 'InvalidPayload',
           message: errorMessages.allowedResources.DUPLICATE_SOURCE(
             field.id,
-            context.value.source,
+            identifier,
             'allowedResources'
           )
         }
@@ -367,11 +370,14 @@ const validateFields = function (
       }
 
       if (type === 'array.unique') {
+        const identifier = context.value.source
+          ? `source "${context.value.source}"`
+          : `type "${context.value.type}"`
         return {
           type: 'InvalidPayload',
           message: errorMessages.allowedResources.DUPLICATE_SOURCE(
             field.id,
-            context.value.source,
+            identifier,
             prop
           )
         }
