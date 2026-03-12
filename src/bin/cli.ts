@@ -280,6 +280,6 @@ const createRun = ({ shouldThrow }) =>
       console.warn(chalk`⚠️  {bold.yellow Migration aborted}`)
     }
   }
-
 export const runMigration = createRun({ shouldThrow: true })
 export default createRun({ shouldThrow: false })
+

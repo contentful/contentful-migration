@@ -3,7 +3,8 @@ import { describe, it, expect } from 'vitest'
 import ContentTransformIntentValidator from '../../../../src/lib/intent-validator/content-transform'
 import createValidator from './validate-steps'
 const validateSteps = createValidator([ContentTransformIntentValidator])
-import { omit } from 'lodash'
+import lodash from 'lodash'
+const { omit } = lodash
 
 describe('Content transformation', () => {
   describe('when providing the required properties', () => {

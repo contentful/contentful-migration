@@ -1,10 +1,12 @@
-import { describe, it, expect } from 'vitest'
-import { omit } from 'lodash'
+import { describe, it } from 'vitest'
+import { expect } from 'chai'
+import lodash from 'lodash'
+const { omit } = lodash
 import validateChunks from './validate-chunks'
 
-describe('Derive entries chunk validation', () => {
-  describe('when deriving entries of a non existing Content Type', () => {
-    it('returns an error', async () => {
+describe('Derive entries chunk validation', function () {
+  describe('when deriving entries of a non existing Content Type', function () {
+    it('returns an error', async function () {
       const step = {
         contentType: 'entry',
         derivedContentType: 'author',
@@ -33,7 +35,7 @@ describe('Derive entries chunk validation', () => {
         migration.deriveLinkedEntries(step)
       }, contentTypes)
 
-      expect(errors).toEqual([
+      expect(errors).to.deep.equal([
         {
           details: {
             step: {
@@ -104,7 +106,7 @@ describe('Derive entries chunk validation', () => {
         migration.deriveLinkedEntries(step)
       }, contentTypes)
 
-      expect(errors).toEqual([
+      expect(errors).to.deep.equal([
         {
           details: {
             step: {

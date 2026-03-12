@@ -1,5 +1,9 @@
-import { describe, it, expect } from 'vitest'
-import { omit } from 'lodash'
+'use strict'
+
+import { describe, it } from 'vitest'
+import { expect } from 'chai'
+import lodash from 'lodash'
+const { omit } = lodash
 
 import EntryDeriveIntentValidator from '../../../../src/lib/intent-validator/entry-derive'
 import createValidator from './validate-steps'
@@ -33,7 +37,7 @@ describe('Entry derivation', () => {
         })
       })
 
-      expect(validationErrors).toEqual([])
+      expect(validationErrors).to.deep.equal([])
     })
   })
 
@@ -52,7 +56,7 @@ describe('Entry derivation', () => {
         })
       })
 
-      expect(validationErrors).toEqual([
+      expect(validationErrors).to.deep.equal([
         {
           type: 'InvalidType',
           message:
@@ -261,7 +265,7 @@ describe('Entry derivation', () => {
         migration.deriveLinkedEntries(properties)
       })
 
-      expect(validationErrors).toEqual([
+      expect(validationErrors).to.deep.equal([
         {
           type: 'InvalidProperty',
           message:
