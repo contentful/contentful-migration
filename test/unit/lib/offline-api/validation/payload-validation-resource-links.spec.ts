@@ -387,6 +387,75 @@ describe('payload validation (dependencies)', () => {
     })
   })
 
+  describe('when setting a field to ResourceLink with multiple different 3rd party resource types', function () {
+    it('does not return an error', async function () {
+      const existingCts = []
+      const errors = await validateBatches(function (migration) {
+        const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
+
+        lunch
+          .createField('mainCourse')
+          .name('Main Course')
+          .type('ResourceLink')
+          .allowedResources([
+            { type: 'Shopify:Product' },
+            { type: 'Shopify:Collection' }
+          ])
+      }, existingCts)
+
+      expect(errors).toEqual([[]])
+    })
+  })
+
+  describe('when setting a field to ResourceLink with duplicate 3rd party resource types', function () {
+    it('returns an error', async function () {
+      const existingCts = []
+      const errors = await validateBatches(function (migration) {
+        const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
+
+        lunch
+          .createField('mainCourse')
+          .name('Main Course')
+          .type('ResourceLink')
+          .allowedResources([
+            { type: 'Shopify:Product' },
+            { type: 'Shopify:Product' }
+          ])
+      }, existingCts)
+
+      expect(errors).toEqual([
+        [
+          {
+            message:
+              'The property "allowedResources" on the field "mainCourse" contains duplicate type "Shopify:Product".',
+            type: 'InvalidPayload'
+          }
+        ]
+      ])
+    })
+  })
+
+  describe('when setting a field to ResourceLink with a mix of Contentful and 3rd party resource types', function () {
+    it('does not return an error', async function () {
+      const existingCts = []
+      const errors = await validateBatches(function (migration) {
+        const lunch = migration.createContentType('lunch').name('Lunch').description('A Lunch')
+
+        lunch
+          .createField('mainCourse')
+          .name('Main Course')
+          .type('ResourceLink')
+          .allowedResources([
+            VALID_ALLOWED_RESOURCE,
+            { type: 'Shopify:Product' },
+            { type: 'Shopify:Collection' }
+          ])
+      }, existingCts)
+
+      expect(errors).toEqual([[]])
+    })
+  })
+
   describe(`when adding more than ${MAX_RESOURCE_LINKS} resource links`, function () {
     it('returns an error', async function () {
       const existingCts = []
