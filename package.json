@@ -4,7 +4,7 @@
   "description": "Migration tooling for contentful",
   "author": "Contentful GmbH",
   "license": "MIT",
-  "main": "dist/index",
+  "main": "built/index",
   "keywords": [
     "contentful",
     "content model",
@@ -24,7 +24,7 @@
   "scripts": {
     "build": "npm run clean && tsc -p tsconfig.json",
     "build-dev": "npm run clean && tsc -p tsconfig-dev.json",
-    "clean": "rimraf dist",
+    "clean": "rimraf built",
     "format:fix": "prettier --write \"**/*.{ts,js,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,js,json,md}\"",
     "prepare": "npm run build && husky install",
@@ -48,12 +48,12 @@
     "index.d.ts",
     "CHANGELOG.md",
     "bin",
-    "dist",
+    "built",
     "docs"
   ],
   "dependencies": {
     "@hapi/hoek": "^11.0.4",
-    "axios": "^1.12.2",
+    "axios": "^1.13.5",
     "bluebird": "^3.7.2",
     "callsites": "^3.1.0",
     "cardinal": "^2.1.1",
@@ -61,11 +61,11 @@
     "contentful-management": "12.0.0-new-beta.14",
     "didyoumean2": "^7.0.4",
     "https-proxy-agent": "^5.0.0",
-    "inquirer": "^8.1.2",
+    "inquirer": "^8.2.7",
     "joi": "^17.4.0",
     "kind-of": "^6.0.3",
     "listr2": "^3.13.5",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.23",
     "p-throttle": "^4.1.1",
     "uuid": "^10.0.0",
     "yargs": "^15.3.1"
@@ -94,7 +94,7 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-standard": "^5.0.0",
     "husky": "^7.0.4",
-    "lint-staged": "^13.1.0",
+    "lint-staged": "^15.5.2",
     "nixt": "^0.5.1",
     "nock": "^13.0.0",
     "prettier": "^3.0.3",
@@ -105,7 +105,7 @@
     "source-map-support": "^0.5.16",
     "strip-ansi": "^6.0.0",
     "ts-node": "^10.0.0",
-    "typescript": "^4.9.4",
+    "typescript": "^5.9.3",
     "vitest": "^4.0.8"
   },
   "bin": {

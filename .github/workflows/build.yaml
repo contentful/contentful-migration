@@ -31,11 +31,11 @@ jobs:
         run: npm run build
 
       - name: Check build artifacts
-        run: ls -la dist/
+        run: ls -la built/
 
       - name: Save Build folders
         uses: actions/cache/save@v4
         with:
           path: |
-            dist            
+            built            
           key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}

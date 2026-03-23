@@ -864,7 +864,7 @@ You can check out the [examples](/examples) to learn more about the migrations D
 Each example file is prefixed with a sequence number, specifying the order in which you're supposed to run the migrations, as follows:
 
 ```javascript
-const runMigration = require('contentful-migration/dist/bin/cli').runMigration
+const runMigration = require('contentful-migration/built/bin/cli').runMigration
 
 const options = {
   spaceId: '<space-id>',
