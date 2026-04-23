@@ -171,7 +171,7 @@ export interface IValidation {
   /** Takes min and/or max parameters and validates the range of a value. */
   range?: { max?: number; min?: number }
   /** Takes a string that reflects a JS regex and flags, validates against a string. See JS reference for the parameters. */
-  regexp?: { pattern: string; flags?: string }
+  regexp?: { pattern: string; flags?: string | null }
   /** Validates that there are no other entries that have the same field value at the time of publication. */
   unique?: true
   /** Validates that a value falls within a certain range of dates. */
