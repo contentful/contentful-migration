@@ -1,0 +1,18 @@
+Use the repository's written documentation as review context and check whether
+the change matches the documented intent.
+
+- Start from README.md, ARCHITECTURE.md, AGENTS.md, CONTRIBUTING.md, and docs/ADRs/
+  for architectural context.
+- Check whether code, tests, and documentation all tell the same story. Flag
+  mismatches between implementation and the documented architecture or ADRs.
+- Treat AGENTS.md as the authoritative guide for sharp edges and invariants. If a
+  change violates an invariant documented there, flag it.
+- If CI or another required check already enforces a merge rule, do not ask for
+  duplicate PR template sections or manual checklists.
+- Ask for an ADR update when a change is architecture-significant (new module, new
+  dependency, new persistence strategy, new integration).
+- Distinguish the current public API (index.d.ts, runMigration, DSL methods) from
+  internal implementation details. Public type/interface changes require extra scrutiny.
+- The public API surface is defined in index.d.ts — any change there is a contract change.
+- src/lib/migration-steps/ defines the DSL proxy layer — changes here affect every
+  migration script ever written. Backward compatibility is paramount.
