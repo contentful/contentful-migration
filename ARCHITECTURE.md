@@ -166,7 +166,7 @@ Rollback: since this is an npm library, rollback means publishing a new patch ve
 
 ### Failure Modes
 
-- **CMA rate limiting** — Migrations making many requests can hit CMA rate limits. The library has built-in throttling (`p-throttle`, default 10 req/sec) and retry logic (`retryLimit` option, default 5 retries with exponential backoff).
+- **CMA rate limiting** — Migrations making many requests can hit CMA rate limits. The library has built-in throttling (`p-throttle`, default 10 req/sec) and a configurable `retryLimit` option (default 5, passed to the `contentful-management` SDK which handles exponential backoff).
 - **Space access errors** — If the token lacks permissions for the target space/environment, the library throws `SpaceAccessError` early before any mutations.
 - **Large content transformations** — `transformEntries` and `deriveLinkedEntries` iterate over all entries of a content type. For content types with thousands of entries, this can be slow and memory-intensive.
 - **Nock fixture staleness** — Integration test fixtures (recorded HTTP interactions) can become stale when CMA response formats change. Set `NOCK_RECORD=1` to re-record.
