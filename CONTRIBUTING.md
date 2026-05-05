@@ -179,6 +179,20 @@ No manual steps required. Version is `0.0.0-development` in source (semantic-rel
 | CodeQL (`codeql.yaml`) | Push/PR | GitHub code scanning |
 | Dependabot auto-merge | Dependabot PRs | Auto-approves and requests merge for dependency updates |
 
+## Adding New Migration Operations
+
+When adding support for a new DSL method (e.g., a new entity type or operation), follow this pattern:
+
+1. **Intent** — Create a new intent class in `src/lib/intent/` (extend `BaseIntent`)
+2. **Action** — Create a corresponding action in `src/lib/action/` that converts the intent to CMA requests
+3. **Migration Steps** — Register the DSL method in `src/lib/migration-steps/` so user scripts can call it
+4. **Offline API** — Add handling in `src/lib/offline-api/` so the operation can be simulated for validation
+5. **Validator** — If the operation has constraints, add an intent validator in `src/lib/intent-validator/`
+6. **Types** — Update `index.d.ts` with the new public TypeScript interface
+7. **Tests** — Add unit tests in `test/unit/` and integration tests in `test/integration/`
+
+Existing examples to follow: look at any of the `tag-*` or `entry-transform*` files across these directories for a recent pattern.
+
 ## File-Level Guidance
 
 | Path | Notes |

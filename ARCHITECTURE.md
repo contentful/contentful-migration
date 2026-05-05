@@ -170,3 +170,14 @@ Rollback: since this is an npm library, rollback means publishing a new patch ve
 - **Space access errors** — If the token lacks permissions for the target space/environment, the library throws `SpaceAccessError` early before any mutations.
 - **Large content transformations** — `transformEntries` and `deriveLinkedEntries` iterate over all entries of a content type. For content types with thousands of entries, this can be slow and memory-intensive.
 - **Nock fixture staleness** — Integration test fixtures (recorded HTTP interactions) can become stale when CMA response formats change. Set `NOCK_RECORD=1` to re-record.
+
+### Monitoring and Observability
+
+This is a client-side library — there are no production dashboards, logs, or alerts to monitor. When users report issues, diagnosis starts from their error output (the library logs structured error messages to stderr) and the CMA API response codes. npm download stats and GitHub issues are the primary signals of library health.
+
+## Known Tech Debt
+
+- **Legacy JavaScript** — `src/lib/migration-steps/first-external-caller.js` is the only remaining JS file; the rest is TypeScript
+- **Chai/Sinon assertion library** — Tests use Chai + Sinon from the pre-Vitest era; could be migrated to Vitest's built-in assertions
+- **Bluebird dependency** — Promise utility library from when Node.js Promises were less capable; could be replaced with native async/await patterns
+- **`index.d.ts` manually maintained** — Public types are hand-written rather than generated from source; risks drift between implementation and types
