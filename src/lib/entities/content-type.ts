@@ -49,6 +49,59 @@ function prune(obj: any) {
   return isEmpty ? undefined : obj
 }
 
+const regexpValidationNames = ['regexp', 'prohibitRegexp']
+
+type FieldWithValidations = {
+  validations?: any[]
+  items?: {
+    type: string
+    linkType?: string
+    validations?: any[]
+  }
+}
+
+function serializeRegExp(validation: any): { pattern: string; flags?: string | null } {
+  const pattern = validation.pattern
+  const flags = validation.flags === undefined || validation.flags === null ? pattern.flags : validation.flags
+  const serializedValidation = {
+    ...validation,
+    pattern: pattern.source
+  }
+
+  if (flags.length > 0) {
+    serializedValidation.flags = flags
+  }
+
+  return serializedValidation
+}
+
+function serializeRegExpValidations<T extends FieldWithValidations>(field: T): T {
+  const serializedField = { ...field }
+
+  if (serializedField.validations) {
+    serializedField.validations = serializedField.validations.map((validation) => {
+      for (const validationName of regexpValidationNames) {
+        const regexpValidation = validation[validationName]
+
+        if (regexpValidation?.pattern instanceof RegExp) {
+          return {
+            ...validation,
+            [validationName]: serializeRegExp(regexpValidation)
+          }
+        }
+      }
+
+      return validation
+    })
+  }
+
+  if (serializedField.items) {
+    serializedField.items = serializeRegExpValidations(serializedField.items)
+  }
+
+  return serializedField
+}
+
 export type EditorLayoutFieldMovementDirection =
   | 'afterField'
   | 'beforeField'
@@ -812,7 +865,7 @@ class ContentType {
       },
       name: this.name,
       displayField: this.displayField,
-      fields: this.fields.toRaw(),
+      fields: this.fields.toRaw().map(serializeRegExpValidations),
       description: this.description
     }
 
