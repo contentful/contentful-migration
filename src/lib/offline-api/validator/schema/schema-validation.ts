@@ -25,6 +25,7 @@ interface SimplifiedValidationError {
     dupeValue?: any
     key?: any
     keys?: any[]
+    types?: string[]
     valids?: any[]
     value?: any
   }
@@ -490,6 +491,22 @@ const validateFields = function (
       if (type.endsWith('.base')) {
         const [expectedType] = type.split('.base')
         const actualType = kindOf(reach(field, prop))
+
+        return {
+          type: 'InvalidPayload',
+          message: errorMessages.field.validations.INVALID_VALIDATION_PARAMETER(
+            context.key,
+            expectedType,
+            actualType
+          )
+        }
+      }
+
+      if (type === 'alternatives.types') {
+        const actualType = kindOf(reach(field, prop))
+        const expectedType = context.types.includes('string')
+          ? 'string'
+          : context.types.join(' or ')
 
         return {
           type: 'InvalidPayload',

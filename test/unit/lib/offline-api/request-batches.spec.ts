@@ -63,6 +63,65 @@ describe('Payload builder', () => {
         ]
       ])
     })
+
+    it('serializes RegExp validation patterns in the content type payload', async () => {
+      const requests = await buildPayloads(function up(migration) {
+        const person = migration.createContentType('person', {
+          name: 'Person'
+        })
+
+        person.createField('slug', {
+          name: 'Slug',
+          type: 'Symbol',
+          validations: [
+            { regexp: { pattern: /^[a-z\s]+$/i } },
+            { prohibitRegexp: { pattern: /admin/g } }
+          ]
+        })
+
+        person.createField('aliases', {
+          name: 'Aliases',
+          type: 'Array',
+          items: {
+            type: 'Symbol',
+            validations: [{ regexp: { pattern: /^[a-z]+$/ } }]
+          }
+        })
+
+        person.createField('code', {
+          name: 'Code',
+          type: 'Symbol',
+          validations: [{ regexp: { pattern: /^[0-9]+$/i, flags: 'g' } }]
+        })
+      }, [])
+
+      expect(requests[0][0].data.fields).toEqual([
+        {
+          id: 'slug',
+          name: 'Slug',
+          type: 'Symbol',
+          validations: [
+            { regexp: { pattern: '^[a-z\\s]+$', flags: 'i' } },
+            { prohibitRegexp: { pattern: 'admin', flags: 'g' } }
+          ]
+        },
+        {
+          id: 'aliases',
+          name: 'Aliases',
+          type: 'Array',
+          items: {
+            type: 'Symbol',
+            validations: [{ regexp: { pattern: '^[a-z]+$' } }]
+          }
+        },
+        {
+          id: 'code',
+          name: 'Code',
+          type: 'Symbol',
+          validations: [{ regexp: { pattern: '^[0-9]+$', flags: 'g' } }]
+        }
+      ])
+    })
   })
 
   describe('when deleting a field', () => {

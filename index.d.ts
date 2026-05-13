@@ -74,6 +74,8 @@ type FieldType =
   | 'Link'
   | 'ResourceLink'
 
+type RegExpValidation = { pattern: string | RegExp; flags?: string }
+
 export interface IFieldOptions {
   newId?: string
 
@@ -170,8 +172,10 @@ export interface IValidation {
   size?: { max?: number; min?: number }
   /** Takes min and/or max parameters and validates the range of a value. */
   range?: { max?: number; min?: number }
-  /** Takes a string that reflects a JS regex and flags, validates against a string. See JS reference for the parameters. */
-  regexp?: { pattern: string; flags?: string }
+  /** Takes a string or RegExp pattern and flags, validates against a string. Explicit flags override RegExp flags. See JS reference for the parameters. */
+  regexp?: RegExpValidation
+  /** Takes a string or RegExp pattern and flags, validates that a value does not match a pattern. Explicit flags override RegExp flags. */
+  prohibitRegexp?: RegExpValidation
   /** Validates that there are no other entries that have the same field value at the time of publication. */
   unique?: true
   /** Validates that a value falls within a certain range of dates. */
