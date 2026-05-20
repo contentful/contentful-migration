@@ -10,6 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == github.event.pull_request.head.repo.full_name
     steps:
-      - uses: contentful/github-auto-merge@v1
+      - uses: contentful/github-auto-merge@v2
         with:
           VAULT_URL: ${{ secrets.VAULT_URL }}
