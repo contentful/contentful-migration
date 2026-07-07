@@ -4,11 +4,11 @@
   "packageRules": [
     {
       "matchPackageNames": ["husky"],
-      "allowedVersions": "<5"
+      "allowedVersions": "<8"
     },
     {
       "matchPackageNames": ["semantic-release"],
-      "allowedVersions": "<23"
+      "allowedVersions": "<26"
     },
     {
       "matchPackageNames": ["chalk"],
