@@ -1,0 +1,29 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["local>contentful/renovate-config"],
+  "packageRules": [
+    {
+      "matchPackageNames": ["husky"],
+      "allowedVersions": "<5"
+    },
+    {
+      "matchPackageNames": ["semantic-release"],
+      "allowedVersions": "<23"
+    },
+    {
+      "matchPackageNames": ["chalk"],
+      "allowedVersions": "<5",
+      "description": "Pure ESM package – remove when ESM is supported (https://github.com/chalk/chalk/releases/tag/v5.0.0)"
+    },
+    {
+      "matchPackageNames": ["inquirer"],
+      "allowedVersions": "<9",
+      "description": "Pure ESM package – remove when ESM is supported (https://github.com/SBoudrias/Inquirer.js/releases/tag/inquirer%409.0.0)"
+    },
+    {
+      "matchPackageNames": ["uuid"],
+      "allowedVersions": "<12",
+      "description": "Pure ESM package – remove when ESM is supported (https://github.com/uuidjs/uuid/releases/tag/v12.0.0)"
+    }
+  ]
+}
