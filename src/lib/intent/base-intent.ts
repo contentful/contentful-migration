@@ -98,6 +98,10 @@ export default abstract class Intent implements IntentInterface {
     return false
   }
 
+  isFieldAddItemsValidation() {
+    return false
+  }
+
   isContentTransform() {
     return false
   }
