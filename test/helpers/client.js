@@ -2,8 +2,8 @@
 
 const Bluebird = require('bluebird')
 const packageVersion = require('../../package.json').version
-const { createManagementClient } = require('../../dist/bin/lib/contentful-client')
-const createMakeRequest = require('../../dist/bin/cli').createMakeRequest
+const { createManagementClient } = require('../../built/bin/lib/contentful-client')
+const createMakeRequest = require('../../built/bin/cli').createMakeRequest
 
 const config = {
   accessToken: process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN,

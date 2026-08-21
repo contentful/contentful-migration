@@ -1,0 +1,40 @@
+Critical domain invariants for contentful-migration:
+
+1. CMA VERSION ALIGNMENT
+   The contentful-management dependency version must stay aligned with contentful-cli,
+   contentful-import, contentful-export, and contentful-batch-libs. Never bump it in
+   isolation without checking compatibility with these satellite packages.
+
+2. PUBLIC API BACKWARD COMPATIBILITY
+   index.d.ts is the public TypeScript contract. The DSL methods (createContentType,
+   editContentType, createField, transformEntries, deriveLinkedEntries, etc.) must
+   remain backward compatible. Breaking changes require a major version bump and
+   coordinated release with contentful-cli.
+
+3. OFFLINE VALIDATION BEFORE EXECUTION
+   The migration engine MUST validate the entire migration plan offline (via OfflineAPI)
+   before sending any requests to CMA. Never skip or short-circuit the validation phase.
+   This is a safety invariant — users rely on it to catch errors before mutations occur.
+
+4. THROTTLING AND RATE LIMITING
+   All CMA requests must go through the throttled makeRequest function (p-throttle,
+   default 10 req/sec). Never bypass throttling — CMA will reject requests and migrations
+   will fail unpredictably.
+
+5. INTENT COMPRESSION
+   Consecutive intents targeting the same entity are compressed into a single batch.
+   This is not just an optimization — it ensures content type updates are atomic.
+   Changes to intent-list compression logic can cause migration failures.
+
+6. COMMONJS OUTPUT
+   The build target is CommonJS (tsconfig.json module: "commonjs"). Migration scripts
+   are loaded via require(). Do not introduce ESM-only dependencies or syntax in
+   compiled output.
+
+7. NOCK FIXTURES ARE RECORDINGS, NOT HAND-WRITTEN
+   test/fixtures/ contains recorded HTTP interactions. They must be re-recorded
+   (NOCK_RECORD=1) when CMA response shapes change, not manually edited.
+
+8. SEQUENTIAL TEST EXECUTION FOR INTEGRATION/E2E
+   Integration and e2e tests MUST run with maxConcurrency:1 and maxWorkers:1
+   to avoid CMA rate limiting and state conflicts between parallel tests.

@@ -4,7 +4,13 @@ import { MAX_ALLOWED_RESOURCES } from '../../../utils/resource-links'
 export const allowedResourcesSchema = Joi.array()
   .min(1)
   .max(MAX_ALLOWED_RESOURCES)
-  .unique('source')
+  // 3rd party resource types do not have a source, need to use type instead
+  .unique(function (a, b) {
+    if (a.source && b.source) {
+        return a.source === b.source;
+    }
+    return a.type === b.type;
+})
   .items(
     Joi.alternatives().conditional(
       Joi.object({ type: Joi.string().regex(/^Contentful:/) }).unknown(),

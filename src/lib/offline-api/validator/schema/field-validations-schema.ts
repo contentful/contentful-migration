@@ -27,21 +27,15 @@ const linkMimetypeGroup = validation('linkMimetypeGroup', Joi.array().items(Joi.
 const size = validation('size', range('number'))
 const rangeValidation = validation('range', range('number'))
 
-const regexp = validation(
-  'regexp',
+const regexpValidation = () =>
   Joi.object({
-    pattern: Joi.string(),
+    pattern: Joi.alternatives().try(Joi.string(), Joi.object().instance(RegExp)),
     flags: Joi.string().allow(null).optional()
   })
-)
 
-const prohibitRegexp = validation(
-  'prohibitRegexp',
-  Joi.object({
-    pattern: Joi.string(),
-    flags: Joi.string().allow(null).optional()
-  })
-)
+const regexp = validation('regexp', regexpValidation())
+
+const prohibitRegexp = validation('prohibitRegexp', regexpValidation())
 
 const unique = validation('unique', Joi.boolean())
 const dateRange = validation('dateRange', rangeForDate())

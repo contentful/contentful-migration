@@ -42,8 +42,8 @@ import deleteFieldOnContentTypeWithEditorLayout from '../../examples/52-delete-f
 import renameFieldOnContentTypeWithEditorLayout from '../../examples/53-rename-field-in-content-type-with-editor-layout'
 import createRichTextFieldWithValidation from '../../examples/22-create-rich-text-field-with-validation'
 import createExperienceType from '../../examples/54-create-experience-type'
-import { createMigrationParser } from '../../src/lib/migration-parser'
-import { DEFAULT_SIDEBAR_LIST } from '../../src/lib/action/sidebarwidget'
+import { createMigrationParser } from '../../built/lib/migration-parser'
+import { DEFAULT_SIDEBAR_LIST } from '../../built/lib/action/sidebarwidget'
 import * as taxonomyHelpers from '../helpers/taxonomy-helpers'
 import record from '../record'
 

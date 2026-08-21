@@ -47,7 +47,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: "22"
+          node-version: "24"
           cache: "npm"
 
       - name: Install latest npm
@@ -62,8 +62,9 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: |
-            dist
+            built
           key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
+          fail-on-cache-miss: true
 
       - name: Run Release
         run: |

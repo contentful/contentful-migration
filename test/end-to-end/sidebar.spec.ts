@@ -5,7 +5,7 @@ import {
   deleteDevEnvironment,
   getDevEditorInterface
 } from '../helpers/client'
-import { DEFAULT_SIDEBAR_LIST } from '../../dist/lib/action/sidebarwidget'
+import { DEFAULT_SIDEBAR_LIST } from '../../built/lib/action/sidebarwidget'
 
 import { v4 as uuidv4 } from 'uuid'
 const ENVIRONMENT_ID = uuidv4()

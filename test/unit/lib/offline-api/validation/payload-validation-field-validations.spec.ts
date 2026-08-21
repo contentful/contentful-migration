@@ -184,6 +184,44 @@ describe('payload validation', () => {
       expect(errors).toEqual([[]])
     })
 
+    it('allows RegExp values for regexp validation patterns', async function () {
+      const errors = await validateBatches(function up(migration) {
+        const person = migration.createContentType('person').name('Person').description('A Person')
+
+        person
+          .createField('fullName')
+          .name('Full Name')
+          .type('Symbol')
+          .validations([
+            { regexp: { pattern: /^[A-Za-z\s]+$/i } },
+            { prohibitRegexp: { pattern: /admin/g } }
+          ])
+      }, [])
+
+      expect(errors).toEqual([[]])
+    })
+
+    it('errors on wrong regexp pattern parameter type', async function () {
+      const errors = await validateBatches(function up(migration) {
+        const person = migration.createContentType('person').name('Person').description('A Person')
+
+        person
+          .createField('fullName')
+          .name('Full Name')
+          .type('Symbol')
+          .validations([{ regexp: { pattern: 1 } }])
+      }, [])
+
+      expect(errors).toEqual([
+        [
+          {
+            type: 'InvalidPayload',
+            message: `"pattern" validation expected to be "string", but got "number"`
+          }
+        ]
+      ])
+    })
+
     it('can validate all blocks and inlines for RichText', async function () {
       const errors = await validateBatches(function up(migration) {
         const novel = migration

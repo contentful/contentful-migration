@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { HttpsProxyAgent } from 'https-proxy-agent'
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { getConfig } from '../../../../src/bin/lib/config'
+import { getConfig } from '../../../../built/bin/lib/config'
 
 // Mock contentful-management module with a factory that can be controlled
 const mockCreateClientFn = vi.fn()
