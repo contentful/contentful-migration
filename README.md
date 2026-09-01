@@ -415,7 +415,7 @@ Uses the same options as [`createTag`](#createtagid-opts).
 
 #### `deleteTag(id)`
 
-Deletes the tag with the provided id and returns `undefined`. Note that this deletes the tag even if it is still attached to entries or assets.
+Deletes the tag with the provided id and returns `undefined`. This sends a delete request directly to the Contentful Management API. It does not remove the tag from any entries or assets first, and it does not republish affected content. If the tag is still assigned to any entry or asset, the Management API rejects the request with `ActionPreconditionsFailed` ("Tag is referenced by another entity"). Use [`setTagsForEntries`](#settagsforentriesconfig) to remove the tag from entries (and republish as needed) before deleting it.
 
 #### `setTagsForEntries(config)`
 
