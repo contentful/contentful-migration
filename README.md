@@ -735,7 +735,7 @@ Deletes the editor layout for this content type.
 
 #### `setAnnotations(AnnotationId[])`
 
-Configure the annotations assigned to this content type. See [annotations documentation](https://www.contentful.com/developers/docs/references/content-management-api/#annotations) for more details on valid `AnnotationId`.
+Configure the annotations assigned to this content type. See the [annotations documentation](https://www.contentful.com/developers/docs/references/content-management-api/content-types#annotations) for more details on valid `AnnotationId`.
 
 #### `clearAnnotations()`
 
@@ -782,7 +782,9 @@ In addition the following methods allow to manage field annotations.
 
 #### `setAnnotations(AnnotationId[])`
 
-Configure the annotations assigned to this field. See [annotations documentation](https://www.contentful.com/developers/docs/references/content-management-api/#annotations) for more details on valid `AnnotationId`.
+Configure the annotations assigned to this field. An optional payload can be provided for field annotations. See the [annotations documentation](https://www.contentful.com/developers/docs/references/content-management-api/content-types#annotations) for more details on valid `AnnotationId`.
+
+**`fieldAnnotationPayload : Object`** – Optional payload associated with the field annotations.
 
 #### `clearAnnotations()`
 
