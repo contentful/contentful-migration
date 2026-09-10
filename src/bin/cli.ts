@@ -278,6 +278,7 @@ const createRun = ({ shouldThrow }) =>
       }
     } else {
       console.warn(chalk`⚠️  {bold.yellow Migration aborted}`)
+      terminate({ shouldThrow: true })
     }
   }
 
