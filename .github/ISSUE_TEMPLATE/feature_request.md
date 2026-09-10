@@ -26,8 +26,8 @@ Describe the use case for this feature. How would you use it?
 ```javascript
 // Example of how the feature would be used
 const example = new Feature({
-  option: 'value',
-});
+  option: 'value'
+})
 ```
 
 ## Alternatives Considered

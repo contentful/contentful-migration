@@ -11,6 +11,7 @@ The repository needed a reliable, automated release process that derives version
 ## Decision
 
 Adopted `semantic-release` with the following configuration (in `package.json`):
+
 - Commit analysis with custom rules (breaking changes → major, `build(deps)` → patch)
 - Automated changelog generation via `@semantic-release/changelog`
 - npm publishing via `@semantic-release/npm`

@@ -142,10 +142,7 @@ export interface Field {
   defaultValue(defaultValue: { [locale: string]: any }): Field
 
   /** Set annotations associated with the field. */
-  setAnnotations(
-    annotationIds: AnnotationId[],
-    fieldAnnotationPayload?: Record<string, any>
-  ): Field
+  setAnnotations(annotationIds: AnnotationId[], fieldAnnotationPayload?: Record<string, any>): Field
 
   /** Removes all annotaions associated with the field */
   clearAnnotations(): Field

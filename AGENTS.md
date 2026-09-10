@@ -6,14 +6,14 @@ Read this file first. It tells you where to find context in this repo.
 
 ## Quick Reference
 
-| What you need | Where to look |
-|---|---|
-| How this repo is structured | [ARCHITECTURE.md](./ARCHITECTURE.md) |
-| How to build/test/run | [CONTRIBUTING.md](./CONTRIBUTING.md) |
-| Why decisions were made | [docs/ADRs/](./docs/ADRs/) |
-| What this repo does | [README.md](./README.md) |
-| PR review rules | [.bito/guidelines/](./.bito/guidelines/) |
-| Active specs/work | [docs/specs/](./docs/specs/) |
+| What you need               | Where to look                            |
+| --------------------------- | ---------------------------------------- |
+| How this repo is structured | [ARCHITECTURE.md](./ARCHITECTURE.md)     |
+| How to build/test/run       | [CONTRIBUTING.md](./CONTRIBUTING.md)     |
+| Why decisions were made     | [docs/ADRs/](./docs/ADRs/)               |
+| What this repo does         | [README.md](./README.md)                 |
+| PR review rules             | [.bito/guidelines/](./.bito/guidelines/) |
+| Active specs/work           | [docs/specs/](./docs/specs/)             |
 
 ## Sharp Edges & Invariants
 
@@ -38,10 +38,12 @@ Read this file first. It tells you where to find context in this repo.
 ## Integration Points
 
 **Upstream (this repo consumes):**
+
 - Contentful Management API (CMA) — all content model and entry mutations
 - `contentful-management` npm package — SDK for CMA HTTP communication
 
 **Downstream (consumes this repo):**
+
 - `contentful-cli` — wraps this as its `space migration` command
 - User migration scripts — consume the library API via `require('contentful-migration')`
 - CI pipelines — run migration scripts in automated deployment flows
