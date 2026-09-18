@@ -89,6 +89,41 @@ class Field extends DispatchProxy {
     )
     return this
   }
+
+  addAnnotation(annotationIds: string[], fieldAnnotationPayload?: Record<string, any>) {
+    const callsite = getFirstExternalCaller()
+    const fieldInstanceId = this.contentType.fieldInstanceIds.getNew(this.id)
+    this.contentType.dispatch(
+      actionCreators.field.addAnnotation(
+        this.contentType.id,
+        this.contentType.instanceId,
+        this.id,
+        fieldInstanceId,
+        callsite,
+        annotationIds,
+        fieldAnnotationPayload
+      )
+    )
+
+    return this
+  }
+
+  addItemsValidation(validations: any[]) {
+    const callsite = getFirstExternalCaller()
+    const fieldInstanceId = this.contentType.fieldInstanceIds.getNew(this.id)
+    this.contentType.dispatch(
+      actionCreators.field.addItemsValidation(
+        this.contentType.id,
+        this.contentType.instanceId,
+        this.id,
+        fieldInstanceId,
+        callsite,
+        validations
+      )
+    )
+
+    return this
+  }
 }
 
 class EditorLayout extends DispatchProxy {
