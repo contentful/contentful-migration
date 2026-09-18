@@ -397,10 +397,7 @@ describe('payload validation (dependencies)', () => {
           .createField('mainCourse')
           .name('Main Course')
           .type('ResourceLink')
-          .allowedResources([
-            { type: 'Shopify:Product' },
-            { type: 'Shopify:Collection' }
-          ])
+          .allowedResources([{ type: 'Shopify:Product' }, { type: 'Shopify:Collection' }])
       }, existingCts)
 
       expect(errors).toEqual([[]])
@@ -417,10 +414,7 @@ describe('payload validation (dependencies)', () => {
           .createField('mainCourse')
           .name('Main Course')
           .type('ResourceLink')
-          .allowedResources([
-            { type: 'Shopify:Product' },
-            { type: 'Shopify:Product' }
-          ])
+          .allowedResources([{ type: 'Shopify:Product' }, { type: 'Shopify:Product' }])
       }, existingCts)
 
       expect(errors).toEqual([

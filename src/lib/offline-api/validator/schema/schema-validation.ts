@@ -376,11 +376,7 @@ const validateFields = function (
           : `type "${context.value.type}"`
         return {
           type: 'InvalidPayload',
-          message: errorMessages.allowedResources.DUPLICATE_SOURCE(
-            field.id,
-            identifier,
-            prop
-          )
+          message: errorMessages.allowedResources.DUPLICATE_SOURCE(field.id, identifier, prop)
         }
       }
     } else if (
