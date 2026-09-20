@@ -72,7 +72,7 @@
   },
   "devDependencies": {
     "@contentful/eslint-config-backend": "^11.0.2",
-    "@lavamoat/allow-scripts": "^3.4.1",
+    "@lavamoat/allow-scripts": "^5.0.0",
     "@semantic-release/changelog": "^6.0.0",
     "@types/chai": "^4.2.11",
     "@types/hoek": "^4.1.3",
