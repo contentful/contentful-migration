@@ -96,7 +96,7 @@
     "husky": "^7.0.4",
     "lint-staged": "^15.5.2",
     "nixt": "^0.5.1",
-    "nock": "^13.0.0",
+    "nock": "^14.0.0",
     "prettier": "^3.0.3",
     "rimraf": "^5.0.1",
     "semantic-release": "^25.0.2",
