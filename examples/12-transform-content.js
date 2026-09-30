@@ -8,10 +8,10 @@ module.exports = function (migration) {
     to: ['byline'],
     transformEntryForLocale: function (fromFields, currentLocale) {
       if (currentLocale === 'de-DE') {
-        return;
+        return
       }
-      const newByline = `${fromFields.author[currentLocale]} ${fromFields.authorCity[currentLocale]}`;
-      return { byline: newByline };
+      const newByline = `${fromFields.author[currentLocale]} ${fromFields.authorCity[currentLocale]}`
+      return { byline: newByline }
     }
-  });
-};
+  })
+}

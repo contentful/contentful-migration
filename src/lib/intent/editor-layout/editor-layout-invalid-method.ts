@@ -2,28 +2,28 @@ import Intent from '../base-intent'
 import { PlanMessage } from '../../interfaces/plan-message'
 
 export default class EditorLayoutInvalidMethodIntent extends Intent {
-  isEditorLayoutUpdate (): boolean {
+  isEditorLayoutUpdate(): boolean {
     return true
   }
-  isEditorLayoutInvalidMethod (): boolean {
+  isEditorLayoutInvalidMethod(): boolean {
     return true
   }
-  groupsWith (): boolean {
+  groupsWith(): boolean {
     return false
   }
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return false
   }
-  shouldSave (): boolean {
+  shouldSave(): boolean {
     return false
   }
-  shouldPublish (): boolean {
+  shouldPublish(): boolean {
     return false
   }
-  toActions () {
+  toActions() {
     return []
   }
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     return {
       heading: '',
       details: [],

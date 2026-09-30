@@ -189,8 +189,12 @@ const checks = {
   }
 }
 
-export default function (intents: Intent[], contentTypes: ContentType[] = []): {
-  errors: ValidationError[], fieldsContext: FieldsContext
+export default function (
+  intents: Intent[],
+  contentTypes: ContentType[] = []
+): {
+  errors: ValidationError[]
+  fieldsContext: FieldsContext
 } {
   const errors = []
   const contentTypeFields: { [key: string]: Set<string> } = contentTypes.reduce((acc, curr) => {
@@ -291,7 +295,8 @@ export default function (intents: Intent[], contentTypes: ContentType[] = []): {
   }
 
   return {
-    errors, fieldsContext: {
+    errors,
+    fieldsContext: {
       contentTypeFields,
       recentlyRemoved,
       recentlyMoved,
