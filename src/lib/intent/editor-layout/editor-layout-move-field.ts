@@ -5,43 +5,41 @@ import { EditorLayoutMoveFieldGroupAction } from '../../action/editor-layout/edi
 import { EditorLayoutFieldMovementDirection } from '../../entities/content-type'
 
 export default class EditorLayoutMoveFieldIntent extends Intent {
-  isEditorInterfaceIntent () {
+  isEditorInterfaceIntent() {
     return true
   }
-  isEditorLayoutUpdate () {
+  isEditorLayoutUpdate() {
     return true
   }
-  requiresContentType () {
+  requiresContentType() {
     // We need the fields to validate field IDs
     return true
   }
-  isGroupable () {
+  isGroupable() {
     return true
   }
-  groupsWith (other: Intent): boolean {
-    return other.isGroupable()
-      && other.isEditorLayoutUpdate()
-      && this.isSameContentType(other)
+  groupsWith(other: Intent): boolean {
+    return other.isGroupable() && other.isEditorLayoutUpdate() && this.isSameContentType(other)
   }
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return false
   }
-  shouldSave (): boolean {
+  shouldSave(): boolean {
     return true
   }
-  shouldPublish (): boolean {
+  shouldPublish(): boolean {
     return false
   }
 
-  getPivotId () {
+  getPivotId() {
     return this.payload.movement.pivot
   }
 
-  getDirection () {
+  getDirection() {
     return this.payload.movement.direction as EditorLayoutFieldMovementDirection
   }
 
-  toActions () {
+  toActions() {
     return [
       new EditorLayoutMoveFieldGroupAction(
         this.payload.contentTypeId,
@@ -52,8 +50,7 @@ export default class EditorLayoutMoveFieldIntent extends Intent {
     ]
   }
 
-  toPlanMessage (): PlanMessage {
-
+  toPlanMessage(): PlanMessage {
     const direction = this.getDirection()
     const pivot = this.getPivotId()
     let humanizedMovement
@@ -84,10 +81,12 @@ export default class EditorLayoutMoveFieldIntent extends Intent {
 
     return {
       heading: chalk`Update editor layout for content type {bold.yellow ${this.getContentTypeId()}}`,
-      sections: [{
-        heading: chalk`Move field {yellow ${this.payload.fieldId}} ${humanizedMovement}`,
-        details: []
-      }],
+      sections: [
+        {
+          heading: chalk`Move field {yellow ${this.payload.fieldId}} ${humanizedMovement}`,
+          details: []
+        }
+      ],
       details: []
     }
   }

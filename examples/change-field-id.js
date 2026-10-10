@@ -1,6 +1,6 @@
 module.exports = function (migration) {
-  const dog = migration.editContentType('dog');
+  const dog = migration.editContentType('dog')
 
-  dog.changeFieldId('goodboys', 'aDifferentId');
-  dog.editField('aDifferentId').name('ID switching is fun!');
-};
+  dog.changeFieldId('goodboys', 'aDifferentId')
+  dog.editField('aDifferentId').name('ID switching is fun!')
+}

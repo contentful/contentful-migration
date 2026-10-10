@@ -4,35 +4,31 @@ import chalk from 'chalk'
 import { EditorLayoutDeleteAction } from '../../action/editor-layout/editor-layout-delete'
 
 export default class EditorLayoutDeleteIntent extends Intent {
-  isEditorInterfaceIntent () {
+  isEditorInterfaceIntent() {
     return true
   }
-  isEditorLayoutDelete () {
+  isEditorLayoutDelete() {
     return true
   }
-  isGroupable () {
+  isGroupable() {
     return false
   }
-  groupsWith (): boolean {
+  groupsWith(): boolean {
     return false
   }
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return true
   }
-  shouldSave (): boolean {
+  shouldSave(): boolean {
     return true
   }
-  shouldPublish (): boolean {
+  shouldPublish(): boolean {
     return false
   }
-  toActions () {
-    return [
-      new EditorLayoutDeleteAction(
-        this.payload.contentTypeId
-      )
-    ]
+  toActions() {
+    return [new EditorLayoutDeleteAction(this.payload.contentTypeId)]
   }
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     return {
       heading: chalk`Delete editor layout for content type {bold.yellow ${this.getContentTypeId()}}`,
       sections: [],
