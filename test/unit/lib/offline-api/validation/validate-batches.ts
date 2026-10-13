@@ -1,8 +1,5 @@
 import IntentList from '../../../../../src/lib/intent-list'
-import {
-  ContentType,
-  EditorInterfaces
-} from '../../../../../src/lib/entities/content-type'
+import { ContentType, EditorInterfaces } from '../../../../../src/lib/entities/content-type'
 import { Tag } from '../../../../../src/lib/entities/tag'
 import { OfflineAPI } from '../../../../../src/lib/offline-api/index'
 import { migration } from '../../../../../src/lib/migration-steps'

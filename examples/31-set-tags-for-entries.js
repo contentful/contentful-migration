@@ -3,8 +3,8 @@ module.exports = function (migration) {
     contentType: 'article',
     from: ['title'],
     setTagsForEntry: (fields, entryTags, apiTags) => {
-      const newTag = apiTags.find(tag => tag.sys.id === 'new');
-      return [...entryTags, newTag];
+      const newTag = apiTags.find((tag) => tag.sys.id === 'new')
+      return [...entryTags, newTag]
     }
-  });
-};
+  })
+}

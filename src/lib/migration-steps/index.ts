@@ -18,6 +18,7 @@ import {
   TaxonomyConceptValidationLink,
   TaxonomyConceptSchemeValidationLink
 } from '../interfaces/content-type'
+import { AnnotationId } from '../interfaces/annotation'
 
 const createInstanceIdManager = () => {
   const instanceCounts = {}
@@ -56,7 +57,7 @@ class Field extends DispatchProxy {
     })
   }
 
-  setAnnotations(annotationIds: string[], fieldAnnotationPayload?: Record<string, any>) {
+  setAnnotations(annotationIds: AnnotationId[], fieldAnnotationPayload?: Record<string, any>) {
     const callsite = getFirstExternalCaller()
     const fieldInstanceId = this.contentType.fieldInstanceIds.getNew(this.id)
     this.contentType.dispatch(
@@ -296,7 +297,7 @@ class ContentType extends DispatchProxy {
 
   public dispatch?(step: Intent): void
 
-  setAnnotations(annotationIds: string[]) {
+  setAnnotations(annotationIds: AnnotationId[]) {
     const callsite = getFirstExternalCaller()
 
     this.dispatch(

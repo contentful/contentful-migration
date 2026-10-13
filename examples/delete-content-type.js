@@ -1,3 +1,3 @@
 module.exports = function (migration) {
-  migration.deleteContentType('dog');
-};
+  migration.deleteContentType('dog')
+}

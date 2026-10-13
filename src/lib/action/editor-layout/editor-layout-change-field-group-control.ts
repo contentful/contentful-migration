@@ -7,22 +7,26 @@ class EditorLayoutChangeFieldGroupControlAction extends EntityAction {
   private readonly fieldGroupId: string
   private readonly groupControl: Omit<APIEditorInterfaceGroupControl, 'groupId'>
 
-  constructor (contentTypeId: string, fieldGroupId: string, groupControl: Omit<APIEditorInterfaceGroupControl, 'groupId'>) {
+  constructor(
+    contentTypeId: string,
+    fieldGroupId: string,
+    groupControl: Omit<APIEditorInterfaceGroupControl, 'groupId'>
+  ) {
     super()
     this.contentTypeId = contentTypeId
     this.fieldGroupId = fieldGroupId
     this.groupControl = groupControl
   }
 
-  getEntityType (): EntityType {
+  getEntityType(): EntityType {
     return EntityType.EditorInterface
   }
 
-  getEntityId (): string {
+  getEntityId(): string {
     return this.contentTypeId
   }
 
-  async applyTo (editorInterfaces: EditorInterfaces) {
+  async applyTo(editorInterfaces: EditorInterfaces) {
     await editorInterfaces.updateGroupControl(this.fieldGroupId, this.groupControl)
   }
 }

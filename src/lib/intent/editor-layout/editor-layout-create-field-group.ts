@@ -4,33 +4,31 @@ import chalk from 'chalk'
 import { EditorLayoutCreateFieldGroupAction } from '../../action/editor-layout/editor-layout-create-field-group'
 
 export default class EditorLayoutCreateFieldGroupIntent extends Intent {
-  isEditorInterfaceIntent () {
+  isEditorInterfaceIntent() {
     return true
   }
-  isEditorLayoutUpdate () {
+  isEditorLayoutUpdate() {
     return true
   }
-  isFieldGroupCreate () {
+  isFieldGroupCreate() {
     return true
   }
-  isGroupable () {
+  isGroupable() {
     return true
   }
-  groupsWith (other: Intent): boolean {
-    return other.isGroupable()
-      && other.isEditorLayoutUpdate()
-      && this.isSameContentType(other)
+  groupsWith(other: Intent): boolean {
+    return other.isGroupable() && other.isEditorLayoutUpdate() && this.isSameContentType(other)
   }
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return false
   }
-  shouldSave (): boolean {
+  shouldSave(): boolean {
     return false
   }
-  shouldPublish (): boolean {
+  shouldPublish(): boolean {
     return false
   }
-  toActions () {
+  toActions() {
     return [
       new EditorLayoutCreateFieldGroupAction(
         this.payload.contentTypeId,
@@ -39,14 +37,18 @@ export default class EditorLayoutCreateFieldGroupIntent extends Intent {
       )
     ]
   }
-  toPlanMessage (): PlanMessage {
-    const parentInfo = this.payload.parentFieldGroupId ? chalk` in field group {yellow ${this.payload.parentFieldGroupId}}` : ''
+  toPlanMessage(): PlanMessage {
+    const parentInfo = this.payload.parentFieldGroupId
+      ? chalk` in field group {yellow ${this.payload.parentFieldGroupId}}`
+      : ''
     return {
       heading: chalk`Update editor layout for content type {bold.yellow ${this.getContentTypeId()}}`,
-      sections: [{
-        heading: chalk`Create field group {yellow ${this.getFieldGroupId()}}${parentInfo}`,
-        details: []
-      }],
+      sections: [
+        {
+          heading: chalk`Create field group {yellow ${this.getFieldGroupId()}}${parentInfo}`,
+          details: []
+        }
+      ],
       details: []
     }
   }

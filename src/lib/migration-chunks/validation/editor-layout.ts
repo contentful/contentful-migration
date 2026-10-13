@@ -13,7 +13,7 @@ const ABSOLUTE_MOVEMENTS = ['toTheTopOfFieldGroup', 'toTheBottomOfFieldGroup']
 const VALID_MOVEMENT_DIRECTIONS = [...RELATIVE_MOVEMENTS, ...ABSOLUTE_MOVEMENTS]
 
 interface ValidationContext {
-  fields: FieldsContext,
+  fields: FieldsContext
   remoteEditorLayouts: Set<string>
   createdEditorLayouts: Set<string>
   remoteFieldGroups: Set<string>
@@ -23,11 +23,11 @@ interface ValidationContext {
 }
 
 interface EditorLayoutValidation {
-  validate (intent: Intent, context: ValidationContext): string | string[] | undefined
+  validate(intent: Intent, context: ValidationContext): string | string[] | undefined
 }
 
 class DuplicateCreate implements EditorLayoutValidation {
-  validate (intent: Intent, context: ValidationContext) {
+  validate(intent: Intent, context: ValidationContext) {
     if (!intent.isEditorLayoutCreate()) {
       return
     }
@@ -36,12 +36,14 @@ class DuplicateCreate implements EditorLayoutValidation {
       return
     }
 
-    return editorLayoutErrors.createEditorLayout.EDITOR_LAYOUT_ALREADY_CREATED(intent.getContentTypeId())
+    return editorLayoutErrors.createEditorLayout.EDITOR_LAYOUT_ALREADY_CREATED(
+      intent.getContentTypeId()
+    )
   }
 }
 
 class AlreadyExistingCreates implements EditorLayoutValidation {
-  validate (intent: Intent, context: ValidationContext) {
+  validate(intent: Intent, context: ValidationContext) {
     if (!intent.isEditorLayoutCreate()) {
       return
     }
@@ -50,12 +52,14 @@ class AlreadyExistingCreates implements EditorLayoutValidation {
       return
     }
 
-    return editorLayoutErrors.createEditorLayout.EDITOR_LAYOUT_ALREADY_EXISTS(intent.getContentTypeId())
+    return editorLayoutErrors.createEditorLayout.EDITOR_LAYOUT_ALREADY_EXISTS(
+      intent.getContentTypeId()
+    )
   }
 }
 
 class InvalidEditorLayoutMethod implements EditorLayoutValidation {
-  validate (intent: Intent): string | string[] {
+  validate(intent: Intent): string | string[] {
     if (intent.isEditorLayoutInvalidMethod()) {
       return editorLayoutErrors.updateEditorLayout.INVALID_METHOD(intent.getInvalidMethod())
     }
@@ -63,7 +67,7 @@ class InvalidEditorLayoutMethod implements EditorLayoutValidation {
 }
 
 class DuplicateFieldGroupCreate implements EditorLayoutValidation {
-  validate (intent: Intent, context: ValidationContext) {
+  validate(intent: Intent, context: ValidationContext) {
     if (!intent.isFieldGroupCreate()) {
       return
     }
@@ -80,7 +84,7 @@ class DuplicateFieldGroupCreate implements EditorLayoutValidation {
 }
 
 class AlreadyExistingFieldGroupCreates implements EditorLayoutValidation {
-  validate (intent: Intent, context: ValidationContext) {
+  validate(intent: Intent, context: ValidationContext) {
     if (!intent.isFieldGroupCreate()) {
       return
     }
@@ -97,12 +101,14 @@ class AlreadyExistingFieldGroupCreates implements EditorLayoutValidation {
 }
 
 class InvalidFieldGroupId implements EditorLayoutValidation {
-  validate (intent: Intent) {
+  validate(intent: Intent) {
     if (!intent.isFieldGroupCreate() && !intent.isFieldGroupIdChange()) {
       return
     }
 
-    const fieldGroupId = intent.isFieldGroupIdChange() ? intent.getNewFieldGroupId() : intent.getFieldGroupId()
+    const fieldGroupId = intent.isFieldGroupIdChange()
+      ? intent.getNewFieldGroupId()
+      : intent.getFieldGroupId()
 
     if (!fieldGroupId.match(/^[a-zA-Z0-9_]+$/) || fieldGroupId.length === 0) {
       return editorLayoutErrors.createFieldGroup.INVALID_CHARACTER_IN_ID(
@@ -128,7 +134,7 @@ class InvalidFieldGroupId implements EditorLayoutValidation {
 }
 
 class InvalidFieldGroupName implements EditorLayoutValidation {
-  validate (intent: Intent) {
+  validate(intent: Intent) {
     if (!intent.isFieldGroupUpdate()) {
       return
     }
@@ -144,7 +150,7 @@ class InvalidFieldGroupName implements EditorLayoutValidation {
 }
 
 class NonExistingDeletes implements EditorLayoutValidation {
-  validate (intent: Intent, context: ValidationContext) {
+  validate(intent: Intent, context: ValidationContext) {
     if (!intent.isFieldGroupDelete()) {
       return
     }
@@ -167,12 +173,15 @@ class NonExistingDeletes implements EditorLayoutValidation {
 }
 
 class InvalidFieldMove implements EditorLayoutValidation {
-  validate (intent: Intent, { fields, remoteFieldGroups, createdFieldGroups, deletedFieldGroups }: ValidationContext): string | string[] {
+  validate(
+    intent: Intent,
+    { fields, remoteFieldGroups, createdFieldGroups, deletedFieldGroups }: ValidationContext
+  ): string | string[] {
     if (intent.getRawType() !== 'contentType/moveFieldInEditorLayout') {
       return
     }
 
-    const moveIntent = (intent as EditorLayoutMoveFieldIntent)
+    const moveIntent = intent as EditorLayoutMoveFieldIntent
     const { moveField: moveFieldError } = editorLayoutErrors
 
     const fieldId = moveIntent.getFieldId()
@@ -182,7 +191,8 @@ class InvalidFieldMove implements EditorLayoutValidation {
       return moveFieldError.MISSING_FIELD_ID()
     }
 
-    const fieldExists = fields.contentTypeFields[contentTypeId]?.has(fieldId) &&
+    const fieldExists =
+      fields.contentTypeFields[contentTypeId]?.has(fieldId) &&
       !fields.recentlyRemoved[contentTypeId]?.has(fieldId)
 
     if (!fieldExists) {
@@ -205,20 +215,22 @@ class InvalidFieldMove implements EditorLayoutValidation {
     }
 
     if (pivotId) {
-
       const scopedPivotId = `${contentTypeId}.${pivotId}`
-      const groupWithPivotIdExists = (remoteFieldGroups.has(scopedPivotId) || createdFieldGroups.has(scopedPivotId))
-        && !deletedFieldGroups.has(scopedPivotId)
-      const fieldWithPivotIdExists = fields.contentTypeFields[contentTypeId].has(pivotId) &&
+      const groupWithPivotIdExists =
+        (remoteFieldGroups.has(scopedPivotId) || createdFieldGroups.has(scopedPivotId)) &&
+        !deletedFieldGroups.has(scopedPivotId)
+      const fieldWithPivotIdExists =
+        fields.contentTypeFields[contentTypeId].has(pivotId) &&
         !fields.recentlyRemoved[contentTypeId].has(pivotId)
 
-      const pivotExists = pivotType === 'field group' && groupWithPivotIdExists ||
-        pivotType === 'field' && fieldWithPivotIdExists
+      const pivotExists =
+        (pivotType === 'field group' && groupWithPivotIdExists) ||
+        (pivotType === 'field' && fieldWithPivotIdExists)
 
       if (!pivotExists) {
-        const explanation = ABSOLUTE_MOVEMENTS.includes(direction) ?
-          `destination group "${pivotId}" does not exist` :
-          `pivot ${pivotType} "${pivotId}" does not exist`
+        const explanation = ABSOLUTE_MOVEMENTS.includes(direction)
+          ? `destination group "${pivotId}" does not exist`
+          : `pivot ${pivotType} "${pivotId}" does not exist`
         return moveFieldError.INVALID_PIVOT(fieldId, explanation)
       }
     }
@@ -226,7 +238,7 @@ class InvalidFieldMove implements EditorLayoutValidation {
 }
 
 class DuplicateDeletes implements EditorLayoutValidation {
-  validate (intent: Intent, context: ValidationContext) {
+  validate(intent: Intent, context: ValidationContext) {
     if (!intent.isFieldGroupDelete()) {
       return
     }
@@ -245,7 +257,10 @@ class DuplicateDeletes implements EditorLayoutValidation {
 }
 
 class InvalidFielGroupIdChange implements EditorLayoutValidation {
-  validate (intent: Intent, { remoteFieldGroups, createdFieldGroups }: ValidationContext): string | string[] {
+  validate(
+    intent: Intent,
+    { remoteFieldGroups, createdFieldGroups }: ValidationContext
+  ): string | string[] {
     if (!intent.isFieldGroupIdChange()) {
       return
     }
@@ -270,21 +285,29 @@ class InvalidFielGroupIdChange implements EditorLayoutValidation {
       return changeErrors.SELF_FIELD_GROUP(fieldGroupId)
     }
     const scopedNewFieldGroupId = generateScopedId(contentTypeId, newFieldGroupId)
-    if (remoteFieldGroups.has(scopedNewFieldGroupId) || createdFieldGroups.has(scopedNewFieldGroupId)) {
+    if (
+      remoteFieldGroups.has(scopedNewFieldGroupId) ||
+      createdFieldGroups.has(scopedNewFieldGroupId)
+    ) {
       return changeErrors.FIELD_GROUP_CONFLICT(newFieldGroupId, contentTypeId)
     }
   }
 }
 
 class InvalidFieldGroupControlChange implements EditorLayoutValidation {
-  validate (intent: Intent, { remoteFieldGroups, createdFieldGroups }: ValidationContext): string | string[] {
+  validate(
+    intent: Intent,
+    { remoteFieldGroups, createdFieldGroups }: ValidationContext
+  ): string | string[] {
     if (!intent.isFieldGroupControlChange()) {
       return
     }
 
     const scopedFieldGroupId = getScopedFieldGroupId(intent)
     if (!remoteFieldGroups.has(scopedFieldGroupId) && !createdFieldGroups.has(scopedFieldGroupId)) {
-      return editorLayoutErrors.changeFieldGroupControl.FIELD_GROUP_DOES_NOT_EXIST(intent.getFieldGroupId())
+      return editorLayoutErrors.changeFieldGroupControl.FIELD_GROUP_DOES_NOT_EXIST(
+        intent.getFieldGroupId()
+      )
     }
   }
 }
@@ -304,11 +327,11 @@ const checks: EditorLayoutValidation[] = [
   new InvalidEditorLayoutMethod()
 ]
 
-function getScopedFieldGroupId (intent: Intent) {
+function getScopedFieldGroupId(intent: Intent) {
   return generateScopedId(intent.getContentTypeId(), intent.getFieldGroupId())
 }
 
-function generateScopedId (ctId: string, id: string) {
+function generateScopedId(ctId: string, id: string) {
   return `${ctId}.${id}`
 }
 
@@ -324,10 +347,14 @@ export default function (
     const editorLayout = editorInterfaces.getEditorLayout()
     if (editorLayout) {
       remoteEditorLayouts.add(ctId)
-      remoteFieldGroups = remoteFieldGroups.concat(collectFieldGroupIds(editorLayout).map(id => `${ctId}.${id}`))
+      remoteFieldGroups = remoteFieldGroups.concat(
+        collectFieldGroupIds(editorLayout).map((id) => `${ctId}.${id}`)
+      )
     }
   })
-  const toBeCreated = intents.filter((intent) => intent.isFieldGroupCreate()).map(getScopedFieldGroupId)
+  const toBeCreated = intents
+    .filter((intent) => intent.isFieldGroupCreate())
+    .map(getScopedFieldGroupId)
 
   let context: ValidationContext = {
     fields: fieldsContext, // all currently existing fields as collected by field validation
@@ -350,7 +377,12 @@ export default function (
       const contentTypeId = intent.getContentTypeId()
       const contentTypeExists = Boolean(contentTypes.find((ct) => ct.id === contentTypeId))
       if (!contentTypeExists) {
-        errors.push(invalidActionError(editorLayoutErrors.updateEditorLayout.CONTENT_TYPE_DOES_NOT_EXIST(contentTypeId), intent))
+        errors.push(
+          invalidActionError(
+            editorLayoutErrors.updateEditorLayout.CONTENT_TYPE_DOES_NOT_EXIST(contentTypeId),
+            intent
+          )
+        )
       }
     }
 

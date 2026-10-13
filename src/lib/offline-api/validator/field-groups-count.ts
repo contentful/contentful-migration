@@ -8,7 +8,7 @@ import { PayloadValidationError } from '../../interfaces/errors'
 export default class FieldGroupsCountValidator implements EditorInterfacePayloadValidator {
   public hooks = [ApiHook.SaveEditorInterface]
 
-  public validate (editorInterface: EditorInterfaces): PayloadValidationError[] {
+  public validate(editorInterface: EditorInterfaces): PayloadValidationError[] {
     const errors: PayloadValidationError[] = []
     const editorLayout = editorInterface.getEditorLayout()
 
