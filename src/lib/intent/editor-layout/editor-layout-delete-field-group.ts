@@ -4,47 +4,44 @@ import chalk from 'chalk'
 import { EditorLayoutDeleteFieldGroupAction } from '../../action/editor-layout/editor-layout-delete-field-group'
 
 export default class EditorLayoutDeleteFieldGroupIntent extends Intent {
-  isEditorInterfaceIntent () {
+  isEditorInterfaceIntent() {
     return true
   }
-  isEditorLayoutUpdate () {
+  isEditorLayoutUpdate() {
     return true
   }
-  isFieldGroupDelete () {
+  isFieldGroupDelete() {
     return true
   }
-  isGroupable () {
+  isGroupable() {
     return true
   }
-  groupsWith (other: Intent): boolean {
-    return other.isGroupable()
-      && other.isEditorLayoutUpdate()
-      && this.isSameContentType(other)
+  groupsWith(other: Intent): boolean {
+    return other.isGroupable() && other.isEditorLayoutUpdate() && this.isSameContentType(other)
   }
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return false
   }
-  shouldSave (): boolean {
+  shouldSave(): boolean {
     return true
   }
-  shouldPublish (): boolean {
+  shouldPublish(): boolean {
     return false
   }
-  toActions () {
+  toActions() {
     return [
-      new EditorLayoutDeleteFieldGroupAction(
-        this.payload.contentTypeId,
-        this.payload.fieldGroupId
-      )
+      new EditorLayoutDeleteFieldGroupAction(this.payload.contentTypeId, this.payload.fieldGroupId)
     ]
   }
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     return {
       heading: chalk`Update editor layout for content type {bold.yellow ${this.getContentTypeId()}}`,
-      sections: [{
-        heading: chalk`Delete field group {yellow ${this.getFieldGroupId()}}`,
-        details: []
-      }],
+      sections: [
+        {
+          heading: chalk`Delete field group {yellow ${this.getFieldGroupId()}}`,
+          details: []
+        }
+      ],
       details: []
     }
   }

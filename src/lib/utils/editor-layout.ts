@@ -18,11 +18,11 @@ export type EditorLayout = EditorLayoutItem[]
 
 type Path = (string | number)[]
 
-export function isFieldGroupItem (item: EditorLayoutItem): item is FieldGroupItem {
+export function isFieldGroupItem(item: EditorLayoutItem): item is FieldGroupItem {
   return Boolean((item as FieldGroupItem).groupId)
 }
 
-export function isFieldItem (item: EditorLayoutItem): item is FieldItem {
+export function isFieldItem(item: EditorLayoutItem): item is FieldItem {
   return Boolean((item as FieldItem).fieldId)
 }
 
@@ -52,7 +52,7 @@ export const collectFieldGroupIds = (editorLayout: FieldGroupItem[]) => {
   return fieldGroupIds
 }
 
-function visitEditorLayout (editorLayout: EditorLayoutItem[], cb: (item: EditorLayoutItem) => void) {
+function visitEditorLayout(editorLayout: EditorLayoutItem[], cb: (item: EditorLayoutItem) => void) {
   for (const currentItem of editorLayout) {
     cb(currentItem)
 
@@ -62,7 +62,7 @@ function visitEditorLayout (editorLayout: EditorLayoutItem[], cb: (item: EditorL
   }
 }
 
-export function find<ItemType = EditorLayoutItem> (
+export function find<ItemType = EditorLayoutItem>(
   editorLayout: FieldGroupItem[],
   predicate: (item: EditorLayoutItem) => boolean
 ): { item: ItemType; path: Path } | undefined {

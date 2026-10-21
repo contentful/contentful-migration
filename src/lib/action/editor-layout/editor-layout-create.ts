@@ -4,12 +4,12 @@ import { APIAction } from '../action'
 class EditorLayoutCreateAction extends APIAction {
   private readonly contentTypeId: string
 
-  constructor (contentTypeId: string) {
+  constructor(contentTypeId: string) {
     super()
     this.contentTypeId = contentTypeId
   }
 
-  async applyTo (api: OfflineAPI) {
+  async applyTo(api: OfflineAPI) {
     const editorInterfaces = await api.getEditorInterfaces(this.contentTypeId)
     const contentType = await api.getContentType(this.contentTypeId)
 

@@ -1,4 +1,5 @@
 import * as axios from 'axios'
+import { AnnotationId } from './src/lib/interfaces/annotation'
 
 export type RunMigrationConfig = {
   accessToken?: string
@@ -140,8 +141,8 @@ export interface Field {
   /** Sets the default value for the field. */
   defaultValue(defaultValue: { [locale: string]: any }): Field
 
-  /** Set annotations associated with the field */
-  setAnnotations(annotationsIds: string[]): Field
+  /** Set annotations associated with the field. */
+  setAnnotations(annotationIds: AnnotationId[], fieldAnnotationPayload?: Record<string, any>): Field
 
   /** Removes all annotaions associated with the field */
   clearAnnotations(): Field
@@ -275,10 +276,10 @@ export interface ContentType {
   /** ID of the field to use as the display field for the content type. */
   displayField(displayField: string): ContentType
 
-  /** Annotations associated with the content type */
-  setAnnotations(annotationIds: string[]): ContentType
+  /** Annotations associated with the content type. */
+  setAnnotations(annotationIds: AnnotationId[]): ContentType
 
-  /** Removes all annotaions associated with the field */
+  /** Removes all annotations associated with the content type. */
   clearAnnotations(): ContentType
 
   /** Set taxonomy validations associated with the content type */
