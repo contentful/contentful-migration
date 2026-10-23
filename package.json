@@ -103,7 +103,7 @@
     "sinon": "^18.0.0",
     "sinon-chai": "^3.5.0",
     "source-map-support": "^0.5.16",
-    "strip-ansi": "^6.0.0",
+    "strip-ansi": "^7.0.0",
     "ts-node": "^10.0.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.8"
