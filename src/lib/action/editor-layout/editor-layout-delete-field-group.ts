@@ -19,21 +19,21 @@ class EditorLayoutDeleteFieldGroupAction extends EntityAction {
   private readonly contentTypeId: string
   private readonly fieldGroupId: string
 
-  constructor (contentTypeId: string, fieldGroupId: string) {
+  constructor(contentTypeId: string, fieldGroupId: string) {
     super()
     this.contentTypeId = contentTypeId
     this.fieldGroupId = fieldGroupId
   }
 
-  getEntityType (): EntityType {
+  getEntityType(): EntityType {
     return EntityType.EditorInterface
   }
 
-  getEntityId (): string {
+  getEntityId(): string {
     return this.contentTypeId
   }
 
-  async applyTo (editorInterfaces: EditorInterfaces) {
+  async applyTo(editorInterfaces: EditorInterfaces) {
     await editorInterfaces.deleteEditorLayoutFieldGroup(this.fieldGroupId)
     await editorInterfaces.deleteGroupControl(this.fieldGroupId)
   }

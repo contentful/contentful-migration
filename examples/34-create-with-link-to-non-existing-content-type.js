@@ -1,5 +1,5 @@
 module.exports = function (migration) {
-  const contentTypeWithLink = migration.createContentType('contentTypeWithLink');
+  const contentTypeWithLink = migration.createContentType('contentTypeWithLink')
   contentTypeWithLink
     .name('ContentTypeWithLink')
     .createField('linkToNonExistingContentType')
@@ -11,5 +11,5 @@ module.exports = function (migration) {
       {
         linkContentType: ['doesNotExist']
       }
-    ]);
-};
+    ])
+}

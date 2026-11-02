@@ -33,10 +33,10 @@ npm test
 
 ## Prerequisites
 
-| Tool | Version | Notes |
-|---|---|---|
+| Tool    | Version                            | Notes                                 |
+| ------- | ---------------------------------- | ------------------------------------- |
 | Node.js | >=22 (see `.nvmrc` for exact: v24) | Use `nvm use` to switch automatically |
-| npm | Bundled with Node | No `packageManager` field pinned |
+| npm     | Bundled with Node                  | No `packageManager` field pinned      |
 
 ## Getting Started
 
@@ -112,6 +112,7 @@ npm run format:fix      # source: package.json → scripts.format:fix — Pretti
 ### Running integration/e2e tests locally
 
 Requires environment variables:
+
 - `CONTENTFUL_SPACE_ID` — test space ID
 - `CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN` — CMA token with access to the test space
 - `CONTENTFUL_ORGANIZATION_ID` — organization ID for the test space
@@ -137,6 +138,7 @@ Valid types: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `perf`, `ci`, `
 Use `npm run cm` (or `git cz`) for the interactive commit prompt.
 
 Examples:
+
 ```
 feat(content-type): add taxonomy validation support
 fix(transform): handle undefined locale in transformEntries
@@ -155,6 +157,7 @@ Breaking changes use `feat!:` or include `BREAKING CHANGE:` in the commit footer
 ## Release Process
 
 Fully automated via **semantic-release** on merge to `main`, `beta`, or `dev`:
+
 1. CI runs: build → lint → unit tests → integration tests → e2e tests
 2. On success, semantic-release analyzes commits, determines version bump, generates changelog, publishes to npm, creates GitHub release
 
@@ -169,15 +172,15 @@ No manual steps required. Version is `0.0.0-development` in source (semantic-rel
 
 ## CI/CD
 
-| Job | Trigger | What it does |
-|---|---|---|
-| Build (`build.yaml`) | Push to any branch, PRs | `npm ci`, `npx allow-scripts`, `npm run build`, caches `built/` |
-| Check (`check.yaml`) | After Build | Runs linter (`npm run lint`) and unit tests (`npm run test:unit`) |
-| Integration (`test-integration.yaml`) | After Build+Check | Runs integration tests with CMA credentials |
-| E2E (`test-e2e.yaml`) | After Build+Check+Integration | Runs end-to-end tests with CMA credentials |
-| Release (`release.yaml`) | Push to main/beta/dev (after all checks) | semantic-release publishes to npm |
-| CodeQL (`codeql.yaml`) | Push/PR | GitHub code scanning |
-| Dependabot auto-merge | Dependabot PRs | Auto-approves and requests merge for dependency updates |
+| Job                                   | Trigger                                  | What it does                                                      |
+| ------------------------------------- | ---------------------------------------- | ----------------------------------------------------------------- |
+| Build (`build.yaml`)                  | Push to any branch, PRs                  | `npm ci`, `npx allow-scripts`, `npm run build`, caches `built/`   |
+| Check (`check.yaml`)                  | After Build                              | Runs linter (`npm run lint`) and unit tests (`npm run test:unit`) |
+| Integration (`test-integration.yaml`) | After Build+Check                        | Runs integration tests with CMA credentials                       |
+| E2E (`test-e2e.yaml`)                 | After Build+Check+Integration            | Runs end-to-end tests with CMA credentials                        |
+| Release (`release.yaml`)              | Push to main/beta/dev (after all checks) | semantic-release publishes to npm                                 |
+| CodeQL (`codeql.yaml`)                | Push/PR                                  | GitHub code scanning                                              |
+| Dependabot auto-merge                 | Dependabot PRs                           | Auto-approves and requests merge for dependency updates           |
 
 ## Adding New Migration Operations
 
@@ -195,13 +198,13 @@ Existing examples to follow: look at any of the `tag-*` or `entry-transform*` fi
 
 ## File-Level Guidance
 
-| Path | Notes |
-|---|---|
-| `index.d.ts` | **Public API types** — manually maintained; must stay in sync with DSL capabilities. Changes here affect all TypeScript consumers. |
-| `built/` | **Generated** — TypeScript compilation output; never edit directly. Gitignored. |
-| `test/fixtures/` | **Nock recordings** — auto-generated HTTP fixtures. Re-record with `NOCK_RECORD=1`, do not hand-edit. |
-| `examples/` | **Numbered migration examples** — referenced by README documentation; keep numbering sequential. |
-| `src/lib/migration-steps/` | **DSL proxy layer** — changes here affect the entire public migration API surface. High caution required. |
-| `src/lib/offline-api/` | **Offline validation engine** — simulates CMA locally; must stay in sync with real CMA behavior. |
-| `bin/contentful-migration` | **CLI entry point** — thin wrapper; requires `built/` to exist. |
-| `.npmrc` | Registry config — `ignore-scripts=true` for security; requires `npx allow-scripts` after install. |
+| Path                       | Notes                                                                                                                              |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `index.d.ts`               | **Public API types** — manually maintained; must stay in sync with DSL capabilities. Changes here affect all TypeScript consumers. |
+| `built/`                   | **Generated** — TypeScript compilation output; never edit directly. Gitignored.                                                    |
+| `test/fixtures/`           | **Nock recordings** — auto-generated HTTP fixtures. Re-record with `NOCK_RECORD=1`, do not hand-edit.                              |
+| `examples/`                | **Numbered migration examples** — referenced by README documentation; keep numbering sequential.                                   |
+| `src/lib/migration-steps/` | **DSL proxy layer** — changes here affect the entire public migration API surface. High caution required.                          |
+| `src/lib/offline-api/`     | **Offline validation engine** — simulates CMA locally; must stay in sync with real CMA behavior.                                   |
+| `bin/contentful-migration` | **CLI entry point** — thin wrapper; requires `built/` to exist.                                                                    |
+| `.npmrc`                   | Registry config — `ignore-scripts=true` for security; requires `npx allow-scripts` after install.                                  |

@@ -5,33 +5,31 @@ import { entries } from 'lodash'
 import { EditorLayoutChangeFieldGroupControlAction } from '../../action/editor-layout/editor-layout-change-field-group-control'
 
 export default class EditorLayoutChangeFieldGroupControlIntent extends Intent {
-  isEditorInterfaceIntent () {
+  isEditorInterfaceIntent() {
     return true
   }
-  isEditorLayoutUpdate () {
+  isEditorLayoutUpdate() {
     return true
   }
-  isFieldGroupControlChange () {
+  isFieldGroupControlChange() {
     return true
   }
-  isGroupable () {
+  isGroupable() {
     return true
   }
-  groupsWith (other): boolean {
-    return other.isGroupable()
-      && other.isEditorLayoutUpdate()
-      && this.isSameContentType(other)
+  groupsWith(other): boolean {
+    return other.isGroupable() && other.isEditorLayoutUpdate() && this.isSameContentType(other)
   }
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return false
   }
-  shouldSave (): boolean {
+  shouldSave(): boolean {
     return true
   }
-  shouldPublish (): boolean {
+  shouldPublish(): boolean {
     return false
   }
-  toActions () {
+  toActions() {
     return [
       new EditorLayoutChangeFieldGroupControlAction(
         this.payload.contentTypeId,
@@ -40,17 +38,19 @@ export default class EditorLayoutChangeFieldGroupControlIntent extends Intent {
       )
     ]
   }
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     const details = entries(this.payload.groupControl).map(([key, value]) => {
       return chalk`{italic ${key}}: ${JSON.stringify(value)}`
     })
 
     return {
       heading: chalk`Update editor layout for content type {bold.yellow ${this.getContentTypeId()}}`,
-      sections: [{
-        heading: chalk`Update group controls for field group {yellow ${this.getFieldGroupId()}}`,
-        details
-      }],
+      sections: [
+        {
+          heading: chalk`Update group controls for field group {yellow ${this.getFieldGroupId()}}`,
+          details
+        }
+      ],
       details: []
     }
   }

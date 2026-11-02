@@ -16,7 +16,12 @@ const stripCallsites = (errors) => {
   })
 }
 
-const validateChunks = async function (migration, testCts: any[], testTags: any[] = [], testEis: Record<string, any> = {}) {
+const validateChunks = async function (
+  migration,
+  testCts: any[],
+  testTags: any[] = [],
+  testEis: Record<string, any> = {}
+) {
   const intents = await migrationSteps(migration, noOp, {})
   const list = new IntentList(intents)
 

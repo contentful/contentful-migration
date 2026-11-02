@@ -7,7 +7,7 @@ module.exports = function (migration) {
     from: ['author', 'authorCity'],
     to: ['byline'],
     transformEntryForLocale: function () {
-      throw new Error('boom');
+      throw new Error('boom')
     }
-  });
-};
+  })
+}

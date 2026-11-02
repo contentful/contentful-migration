@@ -4,39 +4,35 @@ import chalk from 'chalk'
 import { EditorLayoutCreateAction } from '../../action/editor-layout/editor-layout-create'
 
 export default class EditorLayoutCreateIntent extends Intent {
-  isEditorInterfaceIntent () {
+  isEditorInterfaceIntent() {
     return true
   }
-  requiresContentType () {
+  requiresContentType() {
     // We need the fields to build the initial editor layout
     return true
   }
-  isEditorLayoutCreate () {
+  isEditorLayoutCreate() {
     return true
   }
-  isGroupable () {
+  isGroupable() {
     return false
   }
-  groupsWith (): boolean {
+  groupsWith(): boolean {
     return false
   }
-  endsGroup (): boolean {
+  endsGroup(): boolean {
     return false
   }
-  shouldSave (): boolean {
+  shouldSave(): boolean {
     return false
   }
-  shouldPublish (): boolean {
+  shouldPublish(): boolean {
     return false
   }
-  toActions () {
-    return [
-      new EditorLayoutCreateAction(
-        this.payload.contentTypeId
-      )
-    ]
+  toActions() {
+    return [new EditorLayoutCreateAction(this.payload.contentTypeId)]
   }
-  toPlanMessage (): PlanMessage {
+  toPlanMessage(): PlanMessage {
     return {
       heading: chalk`Create editor layout for content type {bold.yellow ${this.getContentTypeId()}}`,
       details: [],
