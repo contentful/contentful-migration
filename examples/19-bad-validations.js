@@ -2,7 +2,7 @@ module.exports = function (migration) {
   const dog = migration.createContentType('dogAsset', {
     name: 'angry dog',
     description: 'super angry'
-  });
+  })
 
   dog.createField('assetTest', {
     type: 'Link',
@@ -17,5 +17,5 @@ module.exports = function (migration) {
         }
       }
     ]
-  });
-};
+  })
+}

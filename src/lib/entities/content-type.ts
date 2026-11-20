@@ -62,7 +62,8 @@ type FieldWithValidations = {
 
 function serializeRegExp(validation: any): { pattern: string; flags?: string | null } {
   const pattern = validation.pattern
-  const flags = validation.flags === undefined || validation.flags === null ? pattern.flags : validation.flags
+  const flags =
+    validation.flags === undefined || validation.flags === null ? pattern.flags : validation.flags
   const serializedValidation = {
     ...validation,
     pattern: pattern.source

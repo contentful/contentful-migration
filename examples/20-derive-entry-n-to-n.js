@@ -9,13 +9,17 @@
 // owner entries. We don't create any values for the locale 'en-US' on the derived entries.
 
 module.exports = function (migration) {
-  const owner = migration.createContentType('owner').name('Owner').description('An owner of a dog');
-  owner.createField('firstName').type('Symbol').name('First Name');
-  owner.createField('lastName').type('Symbol').name('Last Name');
-  owner.displayField('firstName');
+  const owner = migration.createContentType('owner').name('Owner').description('An owner of a dog')
+  owner.createField('firstName').type('Symbol').name('First Name')
+  owner.createField('lastName').type('Symbol').name('Last Name')
+  owner.displayField('firstName')
 
-  const dog = migration.editContentType('dog');
-  dog.createField('ownersRef').type('Array').items({ type: 'Link', linkType: 'Entry' }).name('The Owner');
+  const dog = migration.editContentType('dog')
+  dog
+    .createField('ownersRef')
+    .type('Array')
+    .items({ type: 'Link', linkType: 'Entry' })
+    .name('The Owner')
   migration.deriveLinkedEntries({
     contentType: 'dog',
     derivedContentType: 'owner',
@@ -23,21 +27,21 @@ module.exports = function (migration) {
     toReferenceField: 'ownersRef',
     derivedFields: ['firstName', 'lastName'],
     identityKey: async (fromFields) => {
-      return fromFields.owner['en-US'].toLowerCase().replace(' ', '-');
+      return fromFields.owner['en-US'].toLowerCase().replace(' ', '-')
     },
     shouldPublish: true,
     deriveEntryForLocale: async (inputFields, locale) => {
       if (locale !== 'en-US') {
-        return;
+        return
       }
-      const [firstName, lastName] = inputFields.owner[locale].split(' ');
+      const [firstName, lastName] = inputFields.owner[locale].split(' ')
 
       return {
         firstName,
         lastName
-      };
+      }
     }
-  });
+  })
 
-  dog.deleteField('owner');
-};
+  dog.deleteField('owner')
+}

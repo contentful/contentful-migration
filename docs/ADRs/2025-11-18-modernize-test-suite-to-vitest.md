@@ -11,6 +11,7 @@ The test suite previously used a combination of Mocha and custom test runners. A
 ## Decision
 
 Adopted Vitest (v4) as the sole test runner. Configured three test projects in `vitest.config.mts`:
+
 - `unit` — fast, isolated tests in `test/unit/`
 - `integration` — tests against real CMA in `test/integration/` (serial execution, 30s timeout)
 - `e2e` — end-to-end CLI tests in `test/end-to-end/` (serial execution, 30s timeout)

@@ -7,23 +7,26 @@ class EditorLayoutMoveFieldGroupAction extends EntityAction {
   private readonly direction: EditorLayoutFieldMovementDirection
   private readonly pivot: string
 
-  constructor (contentTypeId: string, fieldId: string, direction: EditorLayoutFieldMovementDirection, pivot?: string) {
+  constructor(
+    contentTypeId: string,
+    fieldId: string,
+    direction: EditorLayoutFieldMovementDirection,
+    pivot?: string
+  ) {
     super()
     this.contentTypeId = contentTypeId
-    this.fieldId = fieldId,
-    this.direction = direction,
-    this.pivot = pivot
+    ;((this.fieldId = fieldId), (this.direction = direction), (this.pivot = pivot))
   }
 
-  getEntityType (): EntityType {
+  getEntityType(): EntityType {
     return EntityType.EditorInterface
   }
 
-  getEntityId (): string {
+  getEntityId(): string {
     return this.contentTypeId
   }
 
-  async applyTo (editorInterfaces: EditorInterfaces) {
+  async applyTo(editorInterfaces: EditorInterfaces) {
     await editorInterfaces.moveFieldInEditorLayout(this.fieldId, this.direction, this.pivot)
   }
 }

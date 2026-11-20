@@ -34,7 +34,7 @@ const renderStepsErrors = function (errors: ValidationError[]) {
   const messages = []
 
   for (const file of Object.keys(errorsByFile)) {
-    const filePath = file.startsWith(`file://`) ? url.fileURLToPath(file) : file;
+    const filePath = file.startsWith(`file://`) ? url.fileURLToPath(file) : file
     const fileContents = fs.readFileSync(filePath, 'utf-8')
     const highlightedCode = cardinal.highlight(fileContents, { linenos: true })
     const lines = highlightedCode.split('\n')

@@ -1,3 +1,3 @@
 module.exports = function (migration) {
-  migration.deleteTag('sampletag');
-};
+  migration.deleteTag('sampletag')
+}

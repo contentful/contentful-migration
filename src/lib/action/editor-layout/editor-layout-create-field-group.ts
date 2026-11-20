@@ -6,22 +6,22 @@ class EditorLayoutCreateFieldGroupAction extends EntityAction {
   private readonly fieldGroupId: string
   private readonly parentFieldGroupId: string
 
-  constructor (contentTypeId: string, fieldGroupId: string, parentFieldGroupId?: string) {
+  constructor(contentTypeId: string, fieldGroupId: string, parentFieldGroupId?: string) {
     super()
     this.contentTypeId = contentTypeId
     this.fieldGroupId = fieldGroupId
     this.parentFieldGroupId = parentFieldGroupId
   }
 
-  getEntityType (): EntityType {
+  getEntityType(): EntityType {
     return EntityType.EditorInterface
   }
 
-  getEntityId (): string {
+  getEntityId(): string {
     return this.contentTypeId
   }
 
-  async applyTo (editorInterfaces: EditorInterfaces) {
+  async applyTo(editorInterfaces: EditorInterfaces) {
     await editorInterfaces.createEditorLayoutFieldGroup(this.fieldGroupId, this.parentFieldGroupId)
     if (!this.parentFieldGroupId) {
       await editorInterfaces.createTabGroupControl(this.fieldGroupId)
